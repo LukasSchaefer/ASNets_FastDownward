@@ -1,0 +1,14 @@
+#TeXlipse project settings
+#Tue Feb 13 07:38:01 CET 2018
+markTmpDer=true
+builderNum=2
+outputDir=
+makeIndSty=
+bibrefDir=
+outputFormat=pdf
+tempDir=tmp
+mainTexFile=document.tex
+outputFile=discussion.pdf
+langSpell=en
+markDer=true
+srcDir=

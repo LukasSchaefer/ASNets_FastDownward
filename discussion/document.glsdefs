@@ -1,0 +1,30 @@
+\ifglsentryexists{nn}{}%
+{%
+\gls@defglossaryentry{nn}%
+{%
+name={NN},%
+sort={NN},%
+type={acronym},%
+first={Neural Network\glsspace (NN)},%
+firstplural={Neural Networks\glsspace (NNs)},%
+text={NN},%
+plural={NNs},%
+description={Neural Network},%
+descriptionplural={Neural Network\acrpluralsuffix },%
+symbol={\relax },%
+symbolplural={\relax },%
+user1={},%
+user2={},%
+user3={},%
+user4={},%
+user5={},%
+user6={},%
+long={Neural Network},%
+longplural={Neural Networks},%
+short={NN},%
+shortplural={NNs},%
+counter={page},%
+parent={},%
+%
+}%
+}%

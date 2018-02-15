@@ -1,0 +1,19 @@
+./fd --network "nn=NeuralNetworkClass(definition={File, string, Db, ZMQ}, storage={None, File, string, Db, ZMQ}, misc)" --training TrainerMethod(network={None,NeuralNetworkClass}, sampler={None, SamplingClass}, condition={None, TrainingsCondition}) --training-time-limit Y --training-memory-limit Z
+
+NeuralNetworkClass := Class for a neural network in FD AND Python (for training) OR soleley in FD if TrainerMethod works in FD, too
+	definition := Place to obtain network definition from
+		File(PATH, mode={default POSIX file modes}) := represents a file and how to work with it. Might not be necessary, just use string
+		string := path to neural network definition/stored/... (trainer has to detect what it is)
+		Db(whatever needed) := load definition/stored/... from a database
+		ZMQ(address={None, ADDRESS}) := obtain definition/stored/... from other process/internet/... if no address is given, then FD tries to find it automatically (the only case I have here is if trainer has store ZMQ and search has definition ZMQ, then an interprocess communication will be set up for the network transfer
+
+
+TrainerMethod := tells which training scheme to use. The FD driver has to detect if this method is implemented in Python and call the python code or forward it to FD (such that C++  can handle the training)
+	network := network class definition to train. If missing, the training steps are skipped
+	SamplingClass(search(...), condition={None, SamplingCondition}) := tells which method to use for sampling. The defined search will be used by FD Search (this should be a custom search class, because the default search classes to not gather training data). The condition tells when to stop a SINGLE sampling run
+	condition(epochs, earlystopping, ...) := when to stop execution of training maybe should allow simple and/or formulas
+
+
+sampler := method to use for sampling in FD Search
+	search := method to use
+	Condition(
