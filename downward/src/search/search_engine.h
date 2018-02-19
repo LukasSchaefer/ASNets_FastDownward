@@ -6,6 +6,7 @@
 #include "search_progress.h"
 #include "search_space.h"
 #include "search_statistics.h"
+#include "state_id.h"
 #include "state_registry.h"
 #include "task_proxy.h"
 
@@ -28,11 +29,14 @@ enum SearchStatus {IN_PROGRESS, TIMEOUT, FAILED, SOLVED};
 class SearchEngine {
 public:
     using Plan = std::vector<OperatorID>;
+    using Trajectory = std::vector<StateID>;
 private:
     SearchStatus status;
-    bool solution_found;
     Plan plan;
+    Trajectory trajectory;
 protected:
+    bool solution_found;
+
     // Hold a reference to the task implementation and pass it to objects that need it.
     const std::shared_ptr<AbstractTask> task;
     // Use task_proxy to access task information.
@@ -50,7 +54,10 @@ protected:
     virtual SearchStatus step() = 0;
 
     void set_plan(const Plan &plan);
+    void set_trajectory(const Trajectory &trajectory);
     bool check_goal_and_set_plan(const GlobalState &state);
+    bool check_goal_and_set_plan_and_set_trajectory(const GlobalState &state);
+
     int get_adjusted_cost(const OperatorProxy &op) const;
 public:
     SearchEngine(const options::Options &opts);

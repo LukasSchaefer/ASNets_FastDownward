@@ -67,6 +67,11 @@ void SearchEngine::set_plan(const Plan &p) {
     plan = p;
 }
 
+void SearchEngine::set_trajectory(const Trajectory &t) {
+    solution_found = true;
+    trajectory = t;
+}
+
 void SearchEngine::search() {
     initialize();
     utils::CountdownTimer timer(max_time);
@@ -89,6 +94,21 @@ bool SearchEngine::check_goal_and_set_plan(const GlobalState &state) {
         Plan plan;
         search_space.trace_path(state, plan);
         set_plan(plan);
+        return true;
+    }
+    return false;
+}
+
+bool SearchEngine::check_goal_and_set_plan_and_set_trajectory(
+    const GlobalState &state) {
+    
+    if (test_goal(state)) {
+        cout << "Solution found!" << endl;
+        Plan plan;
+        Trajectory trajectory;
+        search_space.trace_path(state, plan,trajectory);
+        set_plan(plan);
+        set_trajectory(trajectory);
         return true;
     }
     return false;

@@ -5,6 +5,7 @@
 #include "operator_cost.h"
 #include "per_state_information.h"
 #include "search_node_info.h"
+#include "state_id.h"
 
 #include <vector>
 
@@ -62,6 +63,9 @@ public:
     SearchNode get_node(const GlobalState &state);
     void trace_path(const GlobalState &goal_state,
                     std::vector<OperatorID> &path) const;
+    void trace_path(const GlobalState &goal_state,
+                    std::vector<OperatorID> &path,
+                    std::vector<StateID> &trajectory) const;
 
     void dump(const TaskProxy &task_proxy) const;
     void print_statistics() const;

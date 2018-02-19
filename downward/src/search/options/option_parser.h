@@ -8,6 +8,7 @@
 #include <string>
 #include <vector>
 
+#include <iostream>
 class SearchEngine;
 
 namespace options {
@@ -186,6 +187,7 @@ void OptionParser::add_option(
         utils::make_unique_ptr<OptionParser>(subtree(parse_tree, arg), dry_run());
     T result = TokenParser<T>::parse(*subparser);
     check_bounds<T>(key, result, bounds);
+    
     opts.set<T>(key, result);
     /* If we have not reached the keyword parameters yet and have not used the
        default value, increment the argument position pointer. */
@@ -201,6 +203,8 @@ void OptionParser::add_list_option(
     const std::string &default_value) {
     add_option<std::vector<T>>(key, help, default_value);
 }
+
+ParseTree generate_parse_tree(const std::string &config);
 }
 
 #endif

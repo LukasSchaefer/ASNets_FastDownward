@@ -275,7 +275,7 @@ string OptionParser::usage(const string &progname) {
 }
 
 
-static ParseTree generate_parse_tree(const string &config) {
+ParseTree generate_parse_tree(const string &config) {
     ParseTree tree;
     ParseTree::sibling_iterator pseudoroot =
         tree.insert(tree.begin(), ParseNode("pseudoroot", ""));
@@ -352,7 +352,7 @@ OptionParser::OptionParser(const ParseTree &parse_tree, bool dry_run, bool help_
 }
 
 OptionParser::OptionParser(const string &config, bool dry_run, bool help_mode)
-    : OptionParser(generate_parse_tree(config), dry_run, help_mode) {
+    : OptionParser(options::generate_parse_tree(config), dry_run, help_mode) {
 }
 
 string OptionParser::get_unparsed_config() const {

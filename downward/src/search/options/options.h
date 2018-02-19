@@ -30,12 +30,14 @@ public:
 
     template<typename T>
     T get(const std::string &key) const {
+
         const auto it = storage.find(key);
         if (it == storage.end()) {
             ABORT("Attempt to retrieve nonexisting object of name " +
                   key + " (type: " + TypeNamer<T>::name() +
                   ") from options.");
         }
+
         try {
             T result = any_cast<T>(it->second);
             return result;
@@ -50,6 +52,8 @@ public:
 
     template<typename T>
     T get(const std::string &key, const T &default_value) const {
+                std::cout << "Get Wrong"<< std::endl;
+
         if (storage.count(key))
             return get<T>(key);
         else

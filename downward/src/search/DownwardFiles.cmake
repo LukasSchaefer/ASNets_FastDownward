@@ -395,6 +395,24 @@ fast_downward_plugin(
 )
 
 fast_downward_plugin(
+    NAME PLUGIN_SAMPLING_SEARCH
+    HELP "Sampling search plugin"
+    SOURCES
+        search_engines/plugin_sampling
+    DEPENDS SAMPLING_SEARCH SEARCH_COMMON
+)
+
+fast_downward_plugin(
+    NAME SAMPLING_SEARCH
+    HELP "Sampling search algorithm"
+    SOURCES
+        search_engines/sampling_search
+    DEPENDS NULL_PRUNING_METHOD ORDERED_SET SUCCESSOR_GENERATOR
+    DEPENDENCY_ONLY
+)
+
+
+fast_downward_plugin(
     NAME LP_SOLVER
     HELP "Interface to an LP solver"
     SOURCES
