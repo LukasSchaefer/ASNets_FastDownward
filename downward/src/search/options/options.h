@@ -52,8 +52,6 @@ public:
 
     template<typename T>
     T get(const std::string &key, const T &default_value) const {
-                std::cout << "Get Wrong"<< std::endl;
-
         if (storage.count(key))
             return get<T>(key);
         else

@@ -62,6 +62,11 @@ const SearchEngine::Plan &SearchEngine::get_plan() const {
     return plan;
 }
 
+const SearchEngine::Trajectory &SearchEngine::get_trajectory() const {
+    assert(solution_found);
+    return trajectory;
+}
+
 void SearchEngine::set_plan(const Plan &p) {
     solution_found = true;
     plan = p;
@@ -70,6 +75,18 @@ void SearchEngine::set_plan(const Plan &p) {
 void SearchEngine::set_trajectory(const Trajectory &t) {
     solution_found = true;
     trajectory = t;
+}
+
+const StateRegistry &SearchEngine::get_state_registry() const {
+    return state_registry;
+}
+
+const SearchSpace &SearchEngine::get_search_space() const {
+    return search_space;
+}
+
+const TaskProxy &SearchEngine::get_task_proxy() const {
+    return task_proxy;
 }
 
 void SearchEngine::search() {
@@ -88,6 +105,7 @@ void SearchEngine::search() {
          << " [t=" << utils::g_timer << "]" << endl;
 }
 
+/*
 bool SearchEngine::check_goal_and_set_plan(const GlobalState &state) {
     if (test_goal(state)) {
         cout << "Solution found!" << endl;
@@ -98,8 +116,9 @@ bool SearchEngine::check_goal_and_set_plan(const GlobalState &state) {
     }
     return false;
 }
+*/
 
-bool SearchEngine::check_goal_and_set_plan_and_set_trajectory(
+bool SearchEngine::check_goal_and_finalize(
     const GlobalState &state) {
     
     if (test_goal(state)) {

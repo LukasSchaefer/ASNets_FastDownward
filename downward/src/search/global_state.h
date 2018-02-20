@@ -49,8 +49,8 @@ public:
 
     std::vector<int> get_values() const;
 
-    void dump_pddl() const;
-    void dump_fdr() const;
+    void dump_pddl(std::ostream& out = std::cout) const;
+    void dump_fdr(std::ostream& out = std::cout) const;
 };
 
 

@@ -6,18 +6,18 @@
 
 using namespace std;
 
-void State::dump_pddl() const {
+void State::dump_pddl(std::ostream& out) const {
     for (FactProxy fact : (*this)) {
         string fact_name = fact.get_name();
         if (fact_name != "<none of those>")
-            cout << fact_name << endl;
+            out << fact_name << endl;
     }
 }
 
-void State::dump_fdr() const {
+void State::dump_fdr(std::ostream& out) const {
     for (FactProxy fact : (*this)) {
         VariableProxy var = fact.get_variable();
-        cout << "  #" << var.get_id() << " [" << var.get_name() << "] -> "
+        out << "  #" << var.get_id() << " [" << var.get_name() << "] -> "
              << fact.get_value() << endl;
     }
 }

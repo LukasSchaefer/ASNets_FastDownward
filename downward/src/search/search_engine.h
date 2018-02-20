@@ -55,8 +55,8 @@ protected:
 
     void set_plan(const Plan &plan);
     void set_trajectory(const Trajectory &trajectory);
-    bool check_goal_and_set_plan(const GlobalState &state);
-    bool check_goal_and_set_plan_and_set_trajectory(const GlobalState &state);
+    bool check_goal_and_finalize(const GlobalState &state);
+    //bool check_goal_and_set_plan_and_set_trajectory(const GlobalState &state);
 
     int get_adjusted_cost(const OperatorProxy &op) const;
 public:
@@ -67,6 +67,10 @@ public:
     bool found_solution() const;
     SearchStatus get_status() const;
     const Plan &get_plan() const;
+    const Trajectory &get_trajectory() const;
+    const StateRegistry &get_state_registry() const;
+    const SearchSpace &get_search_space() const;
+    const TaskProxy &get_task_proxy() const;
     void search();
     const SearchStatistics &get_statistics() const {return statistics; }
     void set_bound(int b) {bound = b; }

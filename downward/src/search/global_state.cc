@@ -33,12 +33,12 @@ vector<int> GlobalState::get_values() const {
     return values;
 }
 
-void GlobalState::dump_pddl() const {
+void GlobalState::dump_pddl(ostream& out) const {
     State state(registry->get_task(), get_values());
-    state.dump_pddl();
+    state.dump_pddl(out);
 }
 
-void GlobalState::dump_fdr() const {
+void GlobalState::dump_fdr(ostream& out) const {
     State state(registry->get_task(), get_values());
-    state.dump_fdr();
+    state.dump_fdr(out);
 }

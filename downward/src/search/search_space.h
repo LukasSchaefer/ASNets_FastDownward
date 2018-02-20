@@ -64,6 +64,8 @@ public:
     void trace_path(const GlobalState &goal_state,
                     std::vector<OperatorID> &path) const;
     void trace_path(const GlobalState &goal_state,
+                    std::vector<StateID> &trajectory) const;
+    void trace_path(const GlobalState &goal_state,
                     std::vector<OperatorID> &path,
                     std::vector<StateID> &trajectory) const;
 
