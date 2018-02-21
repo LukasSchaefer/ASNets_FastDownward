@@ -395,22 +395,21 @@ fast_downward_plugin(
 )
 
 fast_downward_plugin(
+    NAME SAMPLING_SEARCH
+    HELP "Sampling search algorithm"
+    SOURCES
+        search_engines/sampling_search
+    DEPENDS EXTRA_TASKS NULL_PRUNING_METHOD ORDERED_SET SAMPLING SUCCESSOR_GENERATOR
+    DEPENDENCY_ONLY
+)
+
+fast_downward_plugin(
     NAME PLUGIN_SAMPLING_SEARCH
     HELP "Sampling search plugin"
     SOURCES
         search_engines/plugin_sampling
     DEPENDS SAMPLING_SEARCH SEARCH_COMMON
 )
-
-fast_downward_plugin(
-    NAME SAMPLING_SEARCH
-    HELP "Sampling search algorithm"
-    SOURCES
-        search_engines/sampling_search
-    DEPENDS NULL_PRUNING_METHOD ORDERED_SET SUCCESSOR_GENERATOR
-    DEPENDENCY_ONLY
-)
-
 
 fast_downward_plugin(
     NAME LP_SOLVER
@@ -527,6 +526,7 @@ fast_downward_plugin(
         tasks/domain_abstracted_task_factory
         tasks/modified_goals_task
         tasks/modified_operator_costs_task
+	tasks/modified_init_goals_task
     DEPENDS TASK_PROPERTIES
     DEPENDENCY_ONLY
 )
