@@ -42,6 +42,23 @@ std::vector<State> sample_states_with_random_walks(
                                                  return false;
                                              },
     const utils::CountdownTimer *timer = nullptr);
+                                             
+/*
+  Performs a single sampling run with forward walks of length 'length'.
+  Whenever a dead end is detected or a state has no
+  successors, restart from the initial state. The function
+  'is_dead_end' should return whether a given state is a dead end. If
+  omitted, no dead end detection is performed.
+*/
+State sample_state_with_random_forward_walk(
+    TaskProxy &task_proxy,
+    const successor_generator::SuccessorGenerator &successor_generator,
+    const State &initial_state,
+    int length,
+    utils::RandomNumberGenerator &rng,
+    std::function<bool(State)> is_dead_end = [] (const State &) {
+                                                 return false;
+                                             });
 }
 
 #endif

@@ -9,7 +9,7 @@
 ^downward/misc/autodoc/downward-xmlrpc\.secret$
 ^downward/builds/
 ^downward/src/CMakeLists.txt.user$
-
+^NeuralFastDownward/nbproject
 
 
 syntax: glob

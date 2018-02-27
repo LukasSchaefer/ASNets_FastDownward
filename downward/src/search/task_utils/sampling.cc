@@ -56,30 +56,47 @@ vector<State> sample_states_with_random_walks(
                 ++length;
         }
 
-        // Sample one state with a random walk of length length.
-        State current_state(initial_state);
-        vector<OperatorID> applicable_operators;
-        for (int j = 0; j < length; ++j) {
-            applicable_operators.clear();
-            successor_generator.generate_applicable_ops(current_state,
-                                                        applicable_operators);
-            // If there are no applicable operators, do not walk further.
-            if (applicable_operators.empty()) {
-                break;
-            } else {
-                OperatorID random_op_id = *rng.choose(applicable_operators);
-                OperatorProxy random_op = task_proxy.get_operators()[random_op_id];
-                assert(task_properties::is_applicable(random_op, current_state));
-                current_state = current_state.get_successor(random_op);
-                /* If current state is a dead end, then restart the random walk
-                   with the initial state. */
-                if (is_dead_end(current_state))
-                    current_state = State(initial_state);
-            }
-        }
-        // The last state of the random walk is used as a sample.
-        samples.push_back(current_state);
+
+        samples.push_back(sample_state_with_random_forward_walk(
+                          task_proxy,successor_generator, initial_state,
+                          length, rng, is_dead_end));
     }
     return samples;
+}
+
+
+State sample_state_with_random_forward_walk(
+    TaskProxy &task_proxy,
+    const successor_generator::SuccessorGenerator &successor_generator,
+    const State &initial_state,
+    int length,
+    utils::RandomNumberGenerator &rng,
+    function<bool (State)> is_dead_end) {
+    
+   
+
+    // Sample one state with a random walk of length length.
+    State current_state(initial_state);
+    vector<OperatorID> applicable_operators;
+    for (int j = 0; j < length; ++j) {
+        applicable_operators.clear();
+        successor_generator.generate_applicable_ops(current_state,
+                                                    applicable_operators);
+        // If there are no applicable operators, do not walk further.
+        if (applicable_operators.empty()) {
+            break;
+        } else {
+            OperatorID random_op_id = *rng.choose(applicable_operators);
+            OperatorProxy random_op = task_proxy.get_operators()[random_op_id];
+            assert(task_properties::is_applicable(random_op, current_state));
+            current_state = current_state.get_successor(random_op);
+            /* If current state is a dead end, then restart the random walk
+               with the initial state. */
+            if (is_dead_end(current_state))
+                current_state = State(initial_state);
+        }
+    }
+    // The last state of the random walk is used as a sample.
+    return current_state;
 }
 }
