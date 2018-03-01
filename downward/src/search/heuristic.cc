@@ -46,7 +46,8 @@ void Heuristic::add_options_to_parser(OptionParser &parser) {
     parser.add_option<shared_ptr<AbstractTask>>(
         "transform",
         "Optional task transformation for the heuristic."
-        " Currently, adapt_costs() and no_transform() are available.",
+        " Currently, adapt_costs(), sampling_transform(), and no_transform() are "
+        "available.",
         "no_transform()");
     parser.add_option<bool>("cache_estimates", "cache heuristic estimates", "true");
 }

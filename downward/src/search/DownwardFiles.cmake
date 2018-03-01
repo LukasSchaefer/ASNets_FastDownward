@@ -399,7 +399,7 @@ fast_downward_plugin(
     HELP "Sampling search algorithm"
     SOURCES
         search_engines/sampling_search
-    DEPENDS EXTRA_TASKS NULL_PRUNING_METHOD ORDERED_SET SAMPLING SUCCESSOR_GENERATOR
+    DEPENDS EXTRA_TASKS NULL_PRUNING_METHOD ORDERED_SET SAMPLING_TECHNIQUES
     DEPENDENCY_ONLY
 )
 
@@ -536,6 +536,15 @@ fast_downward_plugin(
     HELP "Causal Graph"
     SOURCES
         task_utils/causal_graph
+    DEPENDENCY_ONLY
+)
+
+fast_downward_plugin(
+    NAME SAMPLING_TECHNIQUES
+    HELP "Sampling Techniques"
+    SOURCES
+        task_utils/sampling_technique
+    DEPENDS SAMPLING EXTRA_TASKS TASK_PROPERTIES
     DEPENDENCY_ONLY
 )
 

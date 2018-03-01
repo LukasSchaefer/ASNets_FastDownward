@@ -29,11 +29,10 @@ enum SearchStatus {IN_PROGRESS, TIMEOUT, FAILED, SOLVED};
 class SearchEngine {
 public:
     using Plan = std::vector<OperatorID>;
-    using Trajectory = std::vector<StateID>;
 private:
     SearchStatus status;
     Plan plan;
-    Trajectory trajectory;
+    StateID goal_state;
 protected:
     bool solution_found;
 
@@ -54,10 +53,7 @@ protected:
     virtual SearchStatus step() = 0;
 
     void set_plan(const Plan &plan);
-    void set_trajectory(const Trajectory &trajectory);
-    bool check_goal_and_finalize(const GlobalState &state);
-    //bool check_goal_and_set_plan_and_set_trajectory(const GlobalState &state);
-
+    bool check_goal_and_set_plan(const GlobalState &state);
     int get_adjusted_cost(const OperatorProxy &op) const;
 public:
     SearchEngine(const options::Options &opts);
@@ -67,7 +63,7 @@ public:
     bool found_solution() const;
     SearchStatus get_status() const;
     const Plan &get_plan() const;
-    const Trajectory &get_trajectory() const;
+    const GlobalState get_goal_state() const;
     const StateRegistry &get_state_registry() const;
     const SearchSpace &get_search_space() const;
     const TaskProxy &get_task_proxy() const;

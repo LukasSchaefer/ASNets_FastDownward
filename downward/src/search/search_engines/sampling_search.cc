@@ -9,6 +9,7 @@
 #include "../pruning_method.h"
 
 #include "../algorithms/ordered_set.h"
+#include "../tasks/modified_init_goals_task.h"
 #include "../task_utils/successor_generator.h"
 #include "../task_utils/sampling.h"
 #include "../utils/rng.h"
@@ -26,169 +27,19 @@ using namespace std;
 
 namespace sampling_search {
 
-/* START DEFINITION SAMPLING_TECHNIQUE */
-SamplingTechnique::SamplingTechnique(const options::Options& opts)
-: count(opts.get<int>("count")),
-rng(utils::parse_rng_from_options(opts)) { }
 
-SamplingTechnique::SamplingTechnique(int count)
-: count(count) { }
-
-int SamplingTechnique::get_count() const {
-    return count;
-}
-
-int SamplingTechnique::get_counter() const {
-    return counter;
-}
-
-bool SamplingTechnique::empty() const {
-    return (counter >= count);
-}
-
-const shared_ptr<AbstractTask> SamplingTechnique::next(
-    const shared_ptr<AbstractTask> seed_task) {
-
-    if (empty()) {
-        return nullptr;
-    } else {
-        counter++;
-        return create_next(seed_task);
-    }
-}
-
-void SamplingTechnique::add_options_to_parser(options::OptionParser& parser) {
-    parser.add_option<int>("count", "Number of times this sampling "
-        "technique shall be used.");
-    utils::add_rng_options(parser);
-}
-
-/* START DEFINITION TECHNIQUE_NULL */
-const std::string TechniqueNull::name = "null";
-
-const string &TechniqueNull::get_name() const {
-    return name;
-}
-
-TechniqueNull::TechniqueNull()
-: SamplingTechnique(0) { }
-
-TechniqueNull::~TechniqueNull() { }
-
-const shared_ptr<AbstractTask> TechniqueNull::create_next(
-    const shared_ptr<AbstractTask> seed_task) const {
-    // HACK to circumvent the WError + UnusedParameterWarning
-    shared_ptr<AbstractTask> hack = seed_task;
-    hack = nullptr;
-    return hack;
-}
-
-/*
- I think it is not necessary for the user to parse TechniqueNull
-
- TechniqueNull::TechniqueNull(const options::Options& opts)
-: SamplingTechnique(opts) { }
- 
-static shared_ptr<SamplingTechnique> _parse_technique_null(
-    OptionParser &parser) {
-    SamplingTechnique::add_options_to_parser(parser);
-    Options opts = parser.parse();
-
-    shared_ptr<TechniqueNull> technique;
-    if (!parser.dry_run()) {
-        technique = make_shared<sampling_search::TechniqueNull>(opts);
-    }
-    return technique;
-}
-
-static PluginShared<SamplingTechnique> _plugin_technique_none_none(
-    TechniqueNull::name, _parse_technique_null);
-*/
-
-/* START DEFINITION TECHNIQUE_NONE_NONE */
-const std::string TechniqueNoneNone::name = "none_none";
-
-const string &TechniqueNoneNone::get_name() const {
-    return name;
-}
-
-TechniqueNoneNone::TechniqueNoneNone(const options::Options& opts)
-: SamplingTechnique(opts) { }
-
-TechniqueNoneNone::TechniqueNoneNone(int count)
-: SamplingTechnique(count) { }
-
-TechniqueNoneNone::~TechniqueNoneNone() { }
-
-const shared_ptr<AbstractTask> TechniqueNoneNone::create_next(
-    const shared_ptr<AbstractTask> seed_task) const {
-    return seed_task;
-}
-
-static shared_ptr<SamplingTechnique> _parse_technique_none_none(
-    OptionParser &parser) {
-    SamplingTechnique::add_options_to_parser(parser);
-    Options opts = parser.parse();
-
-    shared_ptr<TechniqueNoneNone> technique;
-    if (!parser.dry_run()) {
-        technique = make_shared<sampling_search::TechniqueNoneNone>(opts);
-    }
-    return technique;
-}
-static PluginShared<SamplingTechnique> _plugin_technique_none_none(
-    TechniqueNoneNone::name, _parse_technique_none_none);
-
-/* START DEFINITION TECHNIQUE_FORWARD_NONE */
-const std::string TechniqueForwardNone::name = "forward_none";
-
-const string &TechniqueForwardNone::get_name() const {
-    return name;
-}
-
-TechniqueForwardNone::TechniqueForwardNone(const options::Options& opts)
-: SamplingTechnique(opts) { }
-
-TechniqueForwardNone::~TechniqueForwardNone() { }
-
-const shared_ptr<AbstractTask> TechniqueForwardNone::create_next(
-    const shared_ptr<AbstractTask> seed_task) const {
-
-    TaskProxy task_proxy(*seed_task);
-    const successor_generator::SuccessorGenerator successor_generator(task_proxy);
-    const State initial_state = task_proxy.get_initial_state();
-    
-    State s = sampling::sample_state_with_random_forward_walk(task_proxy,
-        successor_generator, initial_state, 10, *rng);
-    cout << ">>>>>>>>>>>>>>>>NEW STATE "<<endl;
-    s.dump_pddl();
-    cout << endl;
-    return seed_task;
-}
-
-static shared_ptr<SamplingTechnique> _parse_technique_forward_none(
-    OptionParser &parser) {
-    SamplingTechnique::add_options_to_parser(parser);
-    Options opts = parser.parse();
-
-    shared_ptr<TechniqueForwardNone> technique;
-    if (!parser.dry_run()) {
-        technique = make_shared<sampling_search::TechniqueForwardNone>(opts);
-    }
-    return technique;
-}
-static PluginShared<SamplingTechnique> _plugin_technique_forward_none(
-    TechniqueForwardNone::name, _parse_technique_forward_none);
-
-/* START DEFINITION SAMPLING_SEARCH */
 SamplingSearch::SamplingSearch(const Options &opts)
 : SearchEngine(opts),
 search_parse_tree(prepare_search_parse_tree(opts.get_unparsed_config())),
 problem_hash(opts.get<string>("hash")),
 target_location(opts.get<string>("target")),
 field_separator(opts.get<string>("separator")),
+store_solution_trajectories(opts.get<bool>("store_solution_trajectory")),
+expand_solution_trajectory(opts.get<bool>("expand_solution_trajectory")),
+store_other_trajectories(opts.get<bool>("store_other_trajectories")),
+store_all_states(opts.get<bool>("store_all_states")),
 sampling_techniques(prepare_sampling_techniques(
-                    opts.get_list<shared_ptr<SamplingTechnique>>("techniques"))),
+opts.get_list<shared_ptr<sampling_technique::SamplingTechnique>>("techniques"))),
 current_technique(sampling_techniques.begin()) { }
 
 options::ParseTree SamplingSearch::prepare_search_parse_tree(
@@ -197,16 +48,17 @@ options::ParseTree SamplingSearch::prepare_search_parse_tree(
     return subtree(pt, options::first_child_of_root(pt));
 }
 
-vector<shared_ptr<SamplingTechnique>>
-    SamplingSearch::prepare_sampling_techniques(
-                vector<shared_ptr<SamplingTechnique>> input) const {
-    if (input.empty()){
-        input.push_back(make_shared<sampling_search::TechniqueNull>());
+vector<shared_ptr<sampling_technique::SamplingTechnique>>
+SamplingSearch::prepare_sampling_techniques(
+    vector<shared_ptr<sampling_technique::SamplingTechnique>> input) const {
+    if (input.empty()) {
+        input.push_back(make_shared<sampling_technique::TechniqueNull>());
     }
     return input;
 }
 
 void SamplingSearch::next_engine() {
+    sampling_search::trajectories.clear();
     OptionParser engine_parser(search_parse_tree, false);
     engine = engine_parser.start_parsing<shared_ptr < SearchEngine >> ();
 }
@@ -222,32 +74,65 @@ std::string SamplingSearch::extract_modification_hash(
 }
 
 std::string SamplingSearch::extract_sample_entries() const {
-    Plan plan = engine->get_plan();
-    Trajectory trajectory = engine->get_trajectory();
+    /* 
+     Data set format (; represents the field separator which can be changed):
+     <T>;<ProblemHash>;<ModificationHash>;<CurrentState>;<GoalPredicates>;
+        <Operator>;<OtherState>;<HeuristicViaTrajectory>;<Heuristics>*
+     
+     All files exists in every sampling entry, although some might be empty.
+     <T> := * if entry belongs to solution path, 
+            + if entry belongs to a trajectory stored by the search algorithm,
+            - if the entry belongs to an arbitrary visited state
+     <ModificationHash> := md5 hash of input problem file (or 'NA' if missing)
+     <ModificationHash> := hash of the modified states initial state + goals
+     <CurrentState> := State of this entry
+     <GoalPredicates> := goal predicates of the problem to solve
+     
+     The next two are either both filled or both empty:
+     <Operator> :=  if <T> in {*,+}: operator chosen in the current state
+                    if <T> in {-}: operator used to reach current state
+     <OtherState> := if <T> in {*,+}: state resulting from applying operator
+                     if <T> in {-}: parent state using operator to reach current
+     
+     <HeuristicViaTrajectory> := if the current state is in the solution
+     path, then this heuristic value is the value of cost accumulated from goal
+     to current state. Otherwise, this field is empty
+     <Heuristics>* := List of heuristic values estimated for the current state
+    */
+    
+    const GlobalState goal_state = engine->get_goal_state();
     const StateRegistry &sr = engine->get_state_registry();
+    const SearchSpace &ss = engine->get_search_space();
     const TaskProxy &tp = engine->get_task_proxy();
     OperatorsProxy ops = tp.get_operators();
 
     std::string modification_hash = extract_modification_hash(
         tp.get_initial_state(), tp.get_goals());
+    
 
 
     ostringstream new_entries;
-
-    for (int idx_goal = trajectory.size() - 1;
-        idx_goal >= 1; idx_goal--) {
+    
+    if (store_solution_trajectories && engine->found_solution()){
+            Plan plan = engine->get_plan();
+            
+            Trajectory trajectory;
+            ss.trace_path(goal_state, trajectory);
+            
+            for (int idx_goal = trajectory.size() - 1; idx_goal >= 1; idx_goal--) {
 
         int heuristic = 0;
         ostringstream pddl_goal;
         // TODO: Replace by partial assignments via Regression from Goal
         sr.lookup_state(trajectory[idx_goal]).dump_pddl(pddl_goal);
 
-        for (int idx_init = idx_goal - 1;
-            idx_init >= 0; idx_init--) {
+        for (int idx_init = idx_goal - 1; idx_init >= 0; idx_init--) {
 
             heuristic += ops[plan[idx_init]].get_cost();
 
-
+            if (idx_goal == (int)(trajectory.size()-1) && idx_init == 0){
+                new_entries <<">>>>>>>>>>>>>>>>>>>>>>>>>";
+            }
             new_entries << problem_hash << field_separator;
             new_entries << modification_hash << field_separator;
 
@@ -262,6 +147,22 @@ std::string SamplingSearch::extract_sample_entries() const {
 
         }
     }
+
+    }
+    
+    if (store_other_trajectories){
+        for (const Trajectory& trajectory: sampling_search::trajectories){
+            
+        }
+    }
+    
+    if (store_all_states){
+        
+    }
+    
+    
+
+    
     string post = new_entries.str();
     replace(post.begin(), post.end(), '\n', '\t');
     replace(post.begin(), post.end(), '~', '\n');
@@ -270,8 +171,8 @@ std::string SamplingSearch::extract_sample_entries() const {
 
 void SamplingSearch::initialize() {
     cout << "Sampling Manager...";
-    
-    
+
+
     cout << "done." << endl;
 }
 
@@ -284,12 +185,13 @@ SearchStatus SamplingSearch::step() {
         }
     }
     TaskProxy tp(*g_root_task());
-    cout <<"ORIG"<<endl;
+    cout << "ORIG" << endl;
     tp.get_initial_state().dump_pddl();
+    
     modified_task = (*current_technique)->next(g_root_task());
     next_engine();
     engine->search();
-    
+
     //TODO this is for debugging and shows the last technique's run output
     this->set_plan(engine->get_plan());
     this->set_trajectory(engine->get_trajectory());
@@ -353,9 +255,26 @@ void SamplingSearch::add_sampling_options(OptionParser &parser) {
     parser.add_option<std::string> ("target",
         "Place to save the sampled data (currently only appending files"
         "is supported", "None");
-    parser.add_list_option<shared_ptr < SamplingTechnique >> ("techniques",
+    parser.add_list_option<shared_ptr < sampling_technique::SamplingTechnique >> ("techniques",
         "List of sampling technique definitions to use",
         "[]");
+    parser.add_option<bool> ("store_solution_trajectory",
+        "Stores for every state on the solution path which operator was chosen"
+        "next to reach the goal, the next state reached, and the heuristic "
+        "values estimated for the state.", "true");
+    parser.add_option<bool> ("expand_solution_trajectory",
+        "Stores for every state on the solution path which operator was chosen"
+        "next to reach the goal, the next state reached, and the heuristic "
+        "values estimated for the state.", "true");
+    parser.add_option<bool> ("store_other_trajectories",
+        "Stores for every state on the other trajectories (has only an effect,"
+        "if the used search engine stores other trajectories) which operator "
+        "was chosen next to reach the goal, the next state reached, and the "
+        "heuristic values estimated for the state.", "true");
+    parser.add_option<bool> ("store_all_states",
+        "Stores for every state visited the operator chosen to reach it,"
+        ", its parent state, and the heuristic "
+        "values estimated for the state.", "true");
     parser.add_option<std::string> ("hash",
         "MD5 hash of the input problem. This can be used to "
         "differentiate which problems created which entries.", "None");
@@ -371,16 +290,25 @@ void SamplingSearch::add_sampling_options(OptionParser &parser) {
  * 
  * We use this to instanciate search engines with our desired modified tasks.
  */
-std::shared_ptr<AbstractTask> modified_task = nullptr;
+std::shared_ptr<AbstractTask> modified_task = g_root_task();
 
 static shared_ptr<AbstractTask> _parse_sampling_transform(
     OptionParser &parser) {
-    if (parser.dry_run())
+    if (parser.dry_run()){
         return nullptr;
-    else
+    } else {
         return modified_task;
+    }
 }
 static PluginShared<AbstractTask> _plugin_sampling_transform(
     "sampling_transform", _parse_sampling_transform);
 
+
+
+/* Global variable for search algorithms to store arbitrary trajectories 
+   (the storing of the solution trajectory is independent of this variable).
+   The variable will be cleaned for every new search engine and is checked for
+   storage afte reach search engine execution. */
+std::vector<Trajectory> trajectories();
+   
 }

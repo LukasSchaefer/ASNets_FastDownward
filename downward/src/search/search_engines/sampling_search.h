@@ -4,6 +4,8 @@
 #include "../open_list.h"
 #include "../search_engine.h"
 
+#include "../task_utils/sampling_technique.h"
+
 #include <functional>
 #include <memory>
 #include <sstream>
@@ -21,75 +23,7 @@ namespace options {
 }
 
 namespace sampling_search {
-
-    struct DataEntry {
-    };
-
-    class SamplingTechnique {
-    private:
-        const int count;
-        int counter = 0;
-
-    protected:
-        std::shared_ptr<utils::RandomNumberGenerator> rng;
-        
-        virtual const std::shared_ptr<AbstractTask> create_next(
-                const std::shared_ptr<AbstractTask> seed_task) const = 0;
-
-    public:
-        SamplingTechnique(const options::Options &opts);
-        SamplingTechnique(int count);
-        virtual ~SamplingTechnique() = default;
-
-        int get_count() const;
-        int get_counter() const;
-        bool empty() const;
-        const std::shared_ptr<AbstractTask> next(
-                const std::shared_ptr<AbstractTask> seed_task = g_root_task());
-
-        virtual void initialize() {};
-        virtual const std::string &get_name() const = 0;
-        static void add_options_to_parser(options::OptionParser &parser);
-    };
-
-    class TechniqueNull : public SamplingTechnique {
-    protected:
-        virtual const std::shared_ptr<AbstractTask> create_next(
-                const std::shared_ptr<AbstractTask> seed_task) const override;
-    public:
-        //TechniqueNull(const options::Options &opts);
-        TechniqueNull();
-        virtual ~TechniqueNull() override;
-
-        virtual const std::string &get_name() const override;
-        const static std::string name;
-    };
-    
-    class TechniqueNoneNone : public SamplingTechnique {
-    protected:
-        virtual const std::shared_ptr<AbstractTask> create_next(
-                const std::shared_ptr<AbstractTask> seed_task) const override;
-    public:
-        TechniqueNoneNone(const options::Options &opts);
-        TechniqueNoneNone(int count);
-        virtual ~TechniqueNoneNone() override;
-
-        virtual const std::string &get_name() const override;
-        const static std::string name;
-    };
-
-    class TechniqueForwardNone : public SamplingTechnique {
-    protected:
-        virtual const std::shared_ptr<AbstractTask> create_next(
-                const std::shared_ptr<AbstractTask> seed_task) const override;
-        
-    public:
-        TechniqueForwardNone(const options::Options &opts);
-        virtual ~TechniqueForwardNone() override;
-
-        virtual const std::string &get_name() const override;
-        const static std::string name;
-    };
+    using Trajectory = std::vector<StateID>;
 
     class SamplingSearch : public SearchEngine {
     private:
@@ -100,10 +34,15 @@ namespace sampling_search {
         const std::string problem_hash;
         const std::string target_location;
         const std::string field_separator;
+        
+        const bool store_solution_trajectories;
+        const bool expand_solution_trajectory;
+        const bool store_other_trajectories;
+        const bool store_all_states;
 
-        const std::vector<std::shared_ptr<SamplingTechnique>> sampling_techniques;
+        const std::vector<std::shared_ptr<sampling_technique::SamplingTechnique>> sampling_techniques;
     private:
-        std::vector<std::shared_ptr<SamplingTechnique>>::const_iterator current_technique;
+        std::vector<std::shared_ptr<sampling_technique::SamplingTechnique>>::const_iterator current_technique;
 
     protected:
         
@@ -115,8 +54,8 @@ namespace sampling_search {
 
         options::ParseTree prepare_search_parse_tree(
                 const std::string& unparsed_config) const;
-        std::vector<std::shared_ptr<SamplingTechnique>> prepare_sampling_techniques(
-                std::vector<std::shared_ptr<SamplingTechnique>> input) const;
+        std::vector<std::shared_ptr<sampling_technique::SamplingTechnique>> prepare_sampling_techniques(
+                std::vector<std::shared_ptr<sampling_technique::SamplingTechnique>> input) const;
         void next_engine();
         std::string extract_modification_hash(State init, GoalsProxy goals) const;
         std::string extract_sample_entries() const;
@@ -139,6 +78,7 @@ namespace sampling_search {
     };
     
     extern std::shared_ptr<AbstractTask> modified_task;
+    extern std::vector<Trajectory> trajectories;
 }
 
 #endif

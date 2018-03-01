@@ -26,10 +26,10 @@ class PruningMethod;
 SearchEngine::SearchEngine(const Options &opts)
     : status(IN_PROGRESS),
       solution_found(false),
-      task(g_root_task()),
+      task(opts.get<shared_ptr<AbstractTask>>("transform")),
       task_proxy(*task),
       state_registry(
-          *task, *g_state_packer, *g_axiom_evaluator, g_initial_state_data),
+          *task, *g_state_packer, *g_axiom_evaluator, task->get_initial_state_values()),
       search_space(state_registry,
                    static_cast<OperatorCost>(opts.get_enum("cost_type"))),
       cost_type(static_cast<OperatorCost>(opts.get_enum("cost_type"))),
@@ -62,19 +62,15 @@ const SearchEngine::Plan &SearchEngine::get_plan() const {
     return plan;
 }
 
-const SearchEngine::Trajectory &SearchEngine::get_trajectory() const {
+const GlobalState SearchEngine::get_goal_state() const {
     assert(solution_found);
-    return trajectory;
+    return state_registry.lookup_state(goal_state);
 }
+
 
 void SearchEngine::set_plan(const Plan &p) {
     solution_found = true;
     plan = p;
-}
-
-void SearchEngine::set_trajectory(const Trajectory &t) {
-    solution_found = true;
-    trajectory = t;
 }
 
 const StateRegistry &SearchEngine::get_state_registry() const {
@@ -105,29 +101,14 @@ void SearchEngine::search() {
          << " [t=" << utils::g_timer << "]" << endl;
 }
 
-/*
+
 bool SearchEngine::check_goal_and_set_plan(const GlobalState &state) {
     if (test_goal(state)) {
         cout << "Solution found!" << endl;
+        goal_state = state.get_id();
         Plan plan;
         search_space.trace_path(state, plan);
         set_plan(plan);
-        return true;
-    }
-    return false;
-}
-*/
-
-bool SearchEngine::check_goal_and_finalize(
-    const GlobalState &state) {
-    
-    if (test_goal(state)) {
-        cout << "Solution found!" << endl;
-        Plan plan;
-        Trajectory trajectory;
-        search_space.trace_path(state, plan,trajectory);
-        set_plan(plan);
-        set_trajectory(trajectory);
         return true;
     }
     return false;
@@ -172,6 +153,12 @@ void SearchEngine::add_options_to_parser(OptionParser &parser) {
         "experiments. Timed-out searches are treated as failed searches, "
         "just like incomplete search algorithms that exhaust their search space.",
         "infinity");
+    parser.add_option<shared_ptr<AbstractTask>>(
+        "transform",
+        "Optional task transformation for the search algorithm."
+        " Currently, adapt_costs(), sampling_transform(), and no_transform() are "
+        "available.",
+        "no_transform()");
 }
 
 /* Method doesn't belong here because it's only useful for certain derived classes.
