@@ -185,7 +185,7 @@ SearchStatus LazySearch::step() {
                 }
             }
             node.close();
-            if (check_goal_and_finalize(current_state))
+            if (check_goal_and_set_plan(current_state))
                 return SOLVED;
             if (search_progress.check_progress(current_eval_context)) {
                 print_checkpoint_line(current_g);

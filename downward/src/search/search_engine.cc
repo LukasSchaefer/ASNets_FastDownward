@@ -64,7 +64,7 @@ const SearchEngine::Plan &SearchEngine::get_plan() const {
 
 const GlobalState SearchEngine::get_goal_state() const {
     assert(solution_found);
-    return state_registry.lookup_state(goal_state);
+    return state_registry.lookup_state(goal_id);
 }
 
 
@@ -105,7 +105,7 @@ void SearchEngine::search() {
 bool SearchEngine::check_goal_and_set_plan(const GlobalState &state) {
     if (test_goal(state)) {
         cout << "Solution found!" << endl;
-        goal_state = state.get_id();
+        goal_id = state.get_id();
         Plan plan;
         search_space.trace_path(state, plan);
         set_plan(plan);

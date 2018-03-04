@@ -20,6 +20,7 @@
 #include <set>
 #include <sstream>
 #include <string>
+#include <unordered_map>
 #include <vector>
 
 using namespace std;
@@ -385,3 +386,34 @@ int g_num_previously_generated_plans = 0;
 bool g_is_part_of_anytime_portfolio = false;
 
 utils::Log g_log;
+
+
+map<string, Heuristic*> g_registered_heuristics;
+
+
+bool g_register_heuristic(string name, Heuristic* heuristic) {
+    if (name == "None"){
+        return false;
+    }
+    if (g_registered_heuristics.find(name) == g_registered_heuristics.end()) {
+        g_registered_heuristics[name] = heuristic;
+        return true;
+    } else {
+        return false;
+    }
+}
+
+bool g_unregister_heuristic(std::string name, Heuristic* heuristic) {
+    if (g_registered_heuristics.find(name) == g_registered_heuristics.end()
+        && g_registered_heuristics[name] == heuristic) {
+        g_registered_heuristics.erase(name);
+        return true;
+    } else {
+        return false;
+    }
+}
+
+void g_reset_registered_heuristics(){
+    g_registered_heuristics.erase(g_registered_heuristics.begin(),
+                                  g_registered_heuristics.end());
+}

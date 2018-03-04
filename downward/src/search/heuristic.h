@@ -59,6 +59,9 @@ protected:
     const std::shared_ptr<AbstractTask> task;
     // Use task_proxy to access task information.
     TaskProxy task_proxy;
+    
+    const std::string register_name;
+    const bool registered;
 
     enum {DEAD_END = -1, NO_VALUE = -2};
 

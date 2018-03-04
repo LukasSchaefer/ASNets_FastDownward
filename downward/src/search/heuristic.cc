@@ -20,10 +20,15 @@ Heuristic::Heuristic(const Options &opts)
       heuristic_cache(HEntry(NO_VALUE, true)), //TODO: is true really a good idea here?
       cache_h_values(opts.get<bool>("cache_estimates")),
       task(opts.get<shared_ptr<AbstractTask>>("transform")),
-      task_proxy(*task) {
+      task_proxy(*task),
+      register_name(opts.get<string>("register")),
+      registered(g_register_heuristic(this->register_name, this)){
 }
 
 Heuristic::~Heuristic() {
+    if (registered){
+        g_unregister_heuristic(register_name, this);
+    }
 }
 
 void Heuristic::set_preferred(const OperatorProxy &op) {
@@ -49,7 +54,10 @@ void Heuristic::add_options_to_parser(OptionParser &parser) {
         " Currently, adapt_costs(), sampling_transform(), and no_transform() are "
         "available.",
         "no_transform()");
-    parser.add_option<bool>("cache_estimates", "cache heuristic estimates", "true");
+    parser.add_option<string>("register", "Registers a heuristic pointer by a"
+    "given name on the task object.", "None");
+        parser.add_option<bool>("cache_estimates", "cache heuristic estimates", "true");
+
 }
 
 // This solution to get default values seems nonoptimal.

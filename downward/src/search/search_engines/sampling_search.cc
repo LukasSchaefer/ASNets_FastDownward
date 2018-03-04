@@ -21,12 +21,12 @@
 #include <fstream>
 #include <iostream>
 #include <set>
+#include <stdlib.h>
 
 
 using namespace std;
 
 namespace sampling_search {
-
 
 SamplingSearch::SamplingSearch(const Options &opts)
 : SearchEngine(opts),
@@ -38,6 +38,8 @@ store_solution_trajectories(opts.get<bool>("store_solution_trajectory")),
 expand_solution_trajectory(opts.get<bool>("expand_solution_trajectory")),
 store_other_trajectories(opts.get<bool>("store_other_trajectories")),
 store_all_states(opts.get<bool>("store_all_states")),
+use_heuristics(opts.get_list<string>("use_registered_heuristics")),
+threshold_samples_for_disk(opts.get<int>("sample_cache_size")),
 sampling_techniques(prepare_sampling_techniques(
 opts.get_list<shared_ptr<sampling_technique::SamplingTechnique>>("techniques"))),
 current_technique(sampling_techniques.begin()) { }
@@ -58,7 +60,8 @@ SamplingSearch::prepare_sampling_techniques(
 }
 
 void SamplingSearch::next_engine() {
-    sampling_search::trajectories.clear();
+    sampling_search::paths.clear();
+    g_reset_registered_heuristics();
     OptionParser engine_parser(search_parse_tree, false);
     engine = engine_parser.start_parsing<shared_ptr < SearchEngine >> ();
 }
@@ -73,7 +76,123 @@ std::string SamplingSearch::extract_modification_hash(
     return to_string(SamplingSearch::shash(merged));
 }
 
-std::string SamplingSearch::extract_sample_entries() const {
+void SamplingSearch::extract_sample_entries_add_heuristics(
+    const GlobalState &state, std::ostream& stream) const {
+    for (const string &heuristic : use_heuristics) {
+        EvaluationContext eval_context(state);
+
+        stream << field_separator
+               << g_registered_heuristics[heuristic]
+                    ->compute_result(eval_context).get_h_value();
+    }
+}
+
+int SamplingSearch::extract_sample_entries_trajectory(
+    const Plan &plan, const Trajectory &trajectory, bool expand,
+    const StateRegistry &sr, OperatorsProxy &ops,
+    const string& modification_hash, SampleType trajectory_type,
+    ostream &stream) const {
+
+    int counter = 0;
+    string type_sign = "NA";
+    switch (trajectory_type) {
+        case SampleType::TRAJECTORY_SOLUTION:
+            type_sign = "*";
+            break;
+        case SampleType::TRAJECTORY_OTHER:
+            type_sign = "+";
+            break;
+        default:
+            exit(1);
+            cerr << "Sampling search unable to store entry for unkown "
+                << "sample type " << trajectory_type << endl;
+    }
+    int min_idx_goal = (expand) ? (1) : (trajectory.size() - 1);
+    for (int idx_goal = trajectory.size() - 1; idx_goal >= min_idx_goal;
+        idx_goal--) {
+
+        int heuristic = 0;
+        ostringstream pddl_goal;
+        // TODO: Replace by partial assignments via Regression from Goal
+        sr.lookup_state(trajectory[idx_goal]).dump_pddl(pddl_goal);
+
+        for (int idx_init = idx_goal - 1; idx_init >= 0; idx_init--) {
+
+            heuristic += ops[plan[idx_init]].get_cost();
+
+            if ((!expand) && (idx_init != 0)) {
+                continue;
+            }
+
+            GlobalState init_state = sr.lookup_state(trajectory[idx_init]);
+
+            stream << type_sign << field_separator
+                << problem_hash << field_separator
+                << modification_hash << field_separator;
+            init_state.dump_pddl(stream);
+            stream << field_separator
+                << pddl_goal.str() << field_separator
+                << ops[plan[idx_init]].get_name() << field_separator;
+            sr.lookup_state(trajectory[idx_init + 1]).dump_pddl(stream);
+            stream << field_separator
+                << heuristic;
+
+            // the heuristics calculate their values only w.r.t. the true goal
+            if (idx_goal == (int) trajectory.size() - 1) {
+                extract_sample_entries_add_heuristics(init_state, stream);
+            }
+
+            stream << "~";
+            counter++;
+        }
+    }
+    return counter;
+}
+
+void SamplingSearch::extract_sample_entries_state(
+    StateID &sid, SampleType type, const string &goal_description,
+    const StateRegistry &sr, const SearchSpace &ss, OperatorsProxy &ops,
+    const string& modification_hash,
+    ostream &stream) const {
+
+    string type_sign = "NA";
+    switch (type) {
+        case SampleType::STATE_OTHER:
+            type_sign = "-";
+            break;
+
+        default:
+            exit(1);
+            cerr << "Sampling search unable to store entry for unkown "
+                << "sample type " << type << endl;
+    }
+
+    const GlobalState state = sr.lookup_state(sid);
+    OperatorID oid = ss.get_creating_operator(state);
+    StateID pid = ss.get_parent_id(state);
+
+    stream << type_sign << field_separator
+        << problem_hash << field_separator
+        << modification_hash << field_separator;
+    state.dump_pddl(stream);
+    stream << field_separator
+        << goal_description << field_separator;
+
+    if (oid != OperatorID::no_operator) {
+        stream << ops[oid].get_name();
+    }
+    stream << field_separator;
+    if (pid != StateID::no_state) {
+        sr.lookup_state(ss.get_parent_id(state)).dump_pddl(stream);
+    }
+    stream << field_separator;
+
+    extract_sample_entries_add_heuristics(state, stream);
+
+    stream << "~";
+}
+
+std::string SamplingSearch::extract_sample_entries() {
     /* 
      Data set format (; represents the field separator which can be changed):
      <T>;<ProblemHash>;<ModificationHash>;<CurrentState>;<GoalPredicates>;
@@ -94,82 +213,72 @@ std::string SamplingSearch::extract_sample_entries() const {
      <OtherState> := if <T> in {*,+}: state resulting from applying operator
                      if <T> in {-}: parent state using operator to reach current
      
-     <HeuristicViaTrajectory> := if the current state is in the solution
-     path, then this heuristic value is the value of cost accumulated from goal
-     to current state. Otherwise, this field is empty
+     <HeuristicViaTrajectory> := cost from the current state to the end of the
+            trajectory. If the trajectory is the solution path, then this is
+            the cost to the goal. Otherwise, this is the cost to some arbitrary
+            trajectory end. If the entry does not belong to a trajectory, then
+            this field is empty.
      <Heuristics>* := List of heuristic values estimated for the current state
-    */
-    
+     */
+
     const GlobalState goal_state = engine->get_goal_state();
     const StateRegistry &sr = engine->get_state_registry();
     const SearchSpace &ss = engine->get_search_space();
     const TaskProxy &tp = engine->get_task_proxy();
     OperatorsProxy ops = tp.get_operators();
 
+    int count = 0;
+    
     std::string modification_hash = extract_modification_hash(
         tp.get_initial_state(), tp.get_goals());
-    
-
 
     ostringstream new_entries;
-    
-    if (store_solution_trajectories && engine->found_solution()){
-            Plan plan = engine->get_plan();
-            
-            Trajectory trajectory;
-            ss.trace_path(goal_state, trajectory);
-            
-            for (int idx_goal = trajectory.size() - 1; idx_goal >= 1; idx_goal--) {
 
-        int heuristic = 0;
+    if (store_solution_trajectories && engine->found_solution()) {
+        Plan plan = engine->get_plan();
+        Trajectory trajectory;
+        ss.trace_path(goal_state, trajectory);
+
+        count += extract_sample_entries_trajectory(plan, trajectory,
+            expand_solution_trajectory, sr, ops, modification_hash,
+            SampleType::TRAJECTORY_SOLUTION,
+            new_entries);
+    }
+
+    if (store_other_trajectories) {
+        for (const Path& path : sampling_search::paths) {
+            count += extract_sample_entries_trajectory(
+                path.get_plan(), path.get_trajectory(),
+                false, sr, ops, modification_hash, SampleType::TRAJECTORY_OTHER,
+                new_entries);
+        }
+    }
+
+    if (store_all_states) {
         ostringstream pddl_goal;
         // TODO: Replace by partial assignments via Regression from Goal
-        sr.lookup_state(trajectory[idx_goal]).dump_pddl(pddl_goal);
+        engine->get_goal_state().dump_pddl(pddl_goal);
 
-        for (int idx_init = idx_goal - 1; idx_init >= 0; idx_init--) {
-
-            heuristic += ops[plan[idx_init]].get_cost();
-
-            if (idx_goal == (int)(trajectory.size()-1) && idx_init == 0){
-                new_entries <<">>>>>>>>>>>>>>>>>>>>>>>>>";
-            }
-            new_entries << problem_hash << field_separator;
-            new_entries << modification_hash << field_separator;
-
-            sr.lookup_state(trajectory[idx_init]).dump_pddl(new_entries);
-            new_entries << field_separator;
-            new_entries << pddl_goal.str() << field_separator;
-            new_entries << heuristic << field_separator;
-            new_entries << ops[plan[idx_init]].get_name() << field_separator;
-
-            sr.lookup_state(trajectory[idx_init + 1]).dump_pddl(new_entries);
-            new_entries << "~";
-
+        for (StateRegistry::const_iterator iter = sr.begin();
+            iter != sr.end(); ++iter) {
+            StateID state = *iter;
+            extract_sample_entries_state(state, SampleType::STATE_OTHER,
+                pddl_goal.str(),
+                sr, ss, ops, modification_hash, new_entries);
+            count++;
         }
     }
 
-    }
-    
-    if (store_other_trajectories){
-        for (const Trajectory& trajectory: sampling_search::trajectories){
-            
-        }
-    }
-    
-    if (store_all_states){
-        
-    }
-    
-    
-
-    
     string post = new_entries.str();
     replace(post.begin(), post.end(), '\n', '\t');
     replace(post.begin(), post.end(), '~', '\n');
+
+    samples_for_disk += count;
     return post;
 }
 
 void SamplingSearch::initialize() {
+
     cout << "Sampling Manager...";
 
 
@@ -184,21 +293,17 @@ SearchStatus SamplingSearch::step() {
             return SOLVED;
         }
     }
-    TaskProxy tp(*g_root_task());
-    cout << "ORIG" << endl;
-    tp.get_initial_state().dump_pddl();
-    
+
     modified_task = (*current_technique)->next(g_root_task());
     next_engine();
     engine->search();
 
-    //TODO this is for debugging and shows the last technique's run output
-    this->set_plan(engine->get_plan());
-    this->set_trajectory(engine->get_trajectory());
-    this->solution_found = engine->found_solution();
-
     samples << extract_sample_entries();
-
+    
+    if (samples_for_disk > threshold_samples_for_disk){
+        save_plan_intermediate();
+        samples_for_disk = 0;
+    }
     return IN_PROGRESS;
 
 }
@@ -217,6 +322,7 @@ void SamplingSearch::print_statistics() const {
     cout << "Generated Samples: " << (generated_samples + new_samples) << endl;
     cout << "Sampling Techniques used:" << endl;
     for (auto &st : sampling_techniques) {
+
         cout << '\t' << st->get_name();
         cout << ":\t" << st->get_counter();
         cout << "/" << st->get_count() << '\n';
@@ -231,17 +337,18 @@ void SamplingSearch::save_plan_intermediate() {
         outfile << s;
         for (unsigned int i = 0; i <= s.size(); i++) {
             if (s[i] == '\n') {
+
                 generated_samples++;
             }
         }
         samples.str("");
         samples.clear();
     }
-
 }
 
 void SamplingSearch::save_plan_if_necessary() const {
     if (samples.str().compare("")) {
+
         string s = samples.str();
 
         ofstream outfile(g_plan_filename, ios::app);
@@ -250,6 +357,7 @@ void SamplingSearch::save_plan_if_necessary() const {
 }
 
 void SamplingSearch::add_sampling_options(OptionParser &parser) {
+
     parser.add_option<shared_ptr < SearchEngine >> ("search",
         "Search engine to use for sampling");
     parser.add_option<std::string> ("target",
@@ -261,7 +369,7 @@ void SamplingSearch::add_sampling_options(OptionParser &parser) {
     parser.add_option<bool> ("store_solution_trajectory",
         "Stores for every state on the solution path which operator was chosen"
         "next to reach the goal, the next state reached, and the heuristic "
-        "values estimated for the state.", "true");
+        "values estimated for the state.", "false");
     parser.add_option<bool> ("expand_solution_trajectory",
         "Stores for every state on the solution path which operator was chosen"
         "next to reach the goal, the next state reached, and the heuristic "
@@ -270,11 +378,19 @@ void SamplingSearch::add_sampling_options(OptionParser &parser) {
         "Stores for every state on the other trajectories (has only an effect,"
         "if the used search engine stores other trajectories) which operator "
         "was chosen next to reach the goal, the next state reached, and the "
-        "heuristic values estimated for the state.", "true");
+        "heuristic values estimated for the state.", "false");
     parser.add_option<bool> ("store_all_states",
         "Stores for every state visited the operator chosen to reach it,"
         ", its parent state, and the heuristic "
         "values estimated for the state.", "true");
+    parser.add_option<int> ("sample_cache_size",
+        "If more than sample_cache_size samples are cached, then the entries"
+    " are written to disk and the cache is emptied. When sampling "
+    "finishes, all remaining cached samples are written to disk.", "5000");
+    parser.add_list_option<std::string> ("use_registered_heuristics",
+        "Stores for every state visited the operator chosen to reach it,"
+        ", its parent state, and the heuristic "
+        "values estimated for the state.", "[]");
     parser.add_option<std::string> ("hash",
         "MD5 hash of the input problem. This can be used to "
         "differentiate which problems created which entries.", "None");
@@ -294,21 +410,44 @@ std::shared_ptr<AbstractTask> modified_task = g_root_task();
 
 static shared_ptr<AbstractTask> _parse_sampling_transform(
     OptionParser &parser) {
-    if (parser.dry_run()){
+    if (parser.dry_run()) {
         return nullptr;
     } else {
+
         return modified_task;
     }
 }
 static PluginShared<AbstractTask> _plugin_sampling_transform(
     "sampling_transform", _parse_sampling_transform);
 
-
-
-/* Global variable for search algorithms to store arbitrary trajectories 
+/* Global variable for search algorithms to store arbitrary paths (plans [
+   operator ids] and trajectories [state ids]).
    (the storing of the solution trajectory is independent of this variable).
    The variable will be cleaned for every new search engine and is checked for
    storage afte reach search engine execution. */
-std::vector<Trajectory> trajectories();
-   
+Path::Path(StateID start) {
+
+    trajectory.push_back(start);
+}
+
+Path::~Path() { }
+
+void Path::add(OperatorID op, StateID next) {
+
+    plan.push_back(op);
+    trajectory.push_back(next);
+}
+
+const Path::Plan &Path::get_plan() const {
+
+    return plan;
+}
+
+const Trajectory &Path::get_trajectory() const {
+    return trajectory;
+}
+
+
+std::vector<Path> paths;
+
 }

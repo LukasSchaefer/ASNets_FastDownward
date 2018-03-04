@@ -28,6 +28,15 @@ public:
     StateID get_state_id() const {
         return state_id;
     }
+    
+    StateID get_parent_id() const {
+        return info.parent_state_id;
+    }
+    
+    OperatorID get_creating_operator() const {
+        return info.creating_operator;
+    }
+    
     GlobalState get_state() const;
 
     bool is_new() const;
@@ -61,6 +70,17 @@ public:
     SearchSpace(StateRegistry &state_registry, OperatorCost cost_type);
 
     SearchNode get_node(const GlobalState &state);
+    
+    const SearchNode get_node(const GlobalState &state) const;
+    
+    StateID get_parent_id(const GlobalState &state) const {
+        return search_node_infos[state].parent_state_id;
+    }
+    
+    OperatorID get_creating_operator(const GlobalState &state) const {
+        return search_node_infos[state].creating_operator;
+    }
+    
     void trace_path(const GlobalState &goal_state,
                     std::vector<OperatorID> &path) const;
     void trace_path(const GlobalState &goal_state,

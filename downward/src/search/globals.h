@@ -1,12 +1,14 @@
 #ifndef GLOBALS_H
 #define GLOBALS_H
 
+
 #include "operator_id.h"
 
 #include <iosfwd>
 #include <memory>
 #include <string>
 #include <vector>
+#include <map>
 
 class AbstractTask;
 class Axiom;
@@ -14,6 +16,7 @@ class AxiomEvaluator;
 struct FactPair;
 class GlobalOperator;
 class GlobalState;
+class Heuristic;
 class StateRegistry;
 class TaskProxy;
 
@@ -84,4 +87,9 @@ extern const std::shared_ptr<AbstractTask> g_root_task();
 
 extern utils::Log g_log;
 
+extern std::map<std::string, Heuristic*> g_registered_heuristics;
+
+bool g_register_heuristic(std::string name, Heuristic* heuristic);
+bool g_unregister_heuristic(std::string name, Heuristic* heuristic);
+void g_reset_registered_heuristics();
 #endif

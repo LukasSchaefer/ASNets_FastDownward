@@ -32,7 +32,7 @@ public:
 private:
     SearchStatus status;
     Plan plan;
-    StateID goal_state;
+    StateID goal_id = StateID::no_state;
 protected:
     bool solution_found;
 

@@ -147,7 +147,9 @@ void SearchSpace::trace_path(const GlobalState &goal_state,
                              vector<StateID> &trajectory) const {
 
     GlobalState current_state = goal_state;
-    assert(path.empty());
+    
+    assert(trajectory.empty());
+    trajectory.push_back(goal_state.get_id());
     for (;;) {
         const SearchNodeInfo &info = search_node_infos[current_state];
         if (info.creating_operator == OperatorID::no_operator) {
@@ -165,7 +167,10 @@ void SearchSpace::trace_path(const GlobalState &goal_state,
                              vector<StateID> &trajectory) const {
 
     GlobalState current_state = goal_state;
+    
     assert(path.empty());
+    assert(trajectory.empty());
+    trajectory.push_back(goal_state.get_id());
     for (;;) {
         const SearchNodeInfo &info = search_node_infos[current_state];
         if (info.creating_operator == OperatorID::no_operator) {
