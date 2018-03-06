@@ -28,6 +28,7 @@ class GoalsProxy;
 class OperatorProxy;
 class OperatorsProxy;
 class PreconditionsProxy;
+class PartialAssignment;
 class State;
 class TaskProxy;
 class VariableProxy;
@@ -578,41 +579,44 @@ public:
     }
 };
 
-
+bool does_fire(const EffectProxy &effect, const PartialAssignment &assignment);
 bool does_fire(const EffectProxy &effect, const State &state);
 bool does_fire(const EffectProxy &effect, const GlobalState &state);
 
-class State {
+class PartialAssignment {
+    friend class State;
     const AbstractTask *task;
+    //if values[i] == -1 => not assigned value.
     std::vector<int> values;
 public:
     using ItemType = FactProxy;
+    static const int UNASSIGNED = -1;
 
-    State(const AbstractTask &task, std::vector<int> &&values)
+    PartialAssignment(const AbstractTask &task, std::vector<int> &&values)
     : task(&task), values(std::move(values)) {
         assert(static_cast<int> (size()) == this->task->get_num_variables());
     }
-    ~State() = default;
-    State(const State &) = default;
+    virtual ~PartialAssignment() = default;
+    PartialAssignment(const PartialAssignment &) = default;
 
-    State(State &&other)
+    PartialAssignment(PartialAssignment &&other)
     : task(other.task), values(std::move(other.values)) {
         other.task = nullptr;
     }
 
-    State &operator=(const State &&other) {
+    PartialAssignment &operator=(const PartialAssignment &&other) {
         if (this != &other) {
             values = std::move(other.values);
         }
         return *this;
     }
 
-    bool operator==(const State &other) const {
+    bool operator==(const PartialAssignment &other) const {
         assert(task == other.task);
         return values == other.values;
     }
 
-    bool operator!=(const State &other) const {
+    bool operator!=(const PartialAssignment &other) const {
         return !(*this == other);
     }
 
@@ -621,12 +625,32 @@ public:
         return hasher(values);
     }
 
+    bool assigned(std::size_t var_id) const {
+        assert(var_id < size());
+        return (values[var_id] != -1);
+    }
+
+    bool assigned(VariableProxy var) const {
+        return (values[var.get_id()] != -1);
+    }
+
     std::size_t size() const {
         return values.size();
     }
 
+    std::size_t assigned_size() const {
+        std::size_t size = 0;
+        for (std::size_t var = 0; var < (*this).size(); ++var) {
+            if ((*this).assigned(var)) {
+                ++size;
+            }
+        }
+        return size;
+    }
+
     FactProxy operator[](std::size_t var_id) const {
         assert(var_id < size());
+        assert(values[var_id] != -1);
         return FactProxy(*task, var_id, values[var_id]);
     }
 
@@ -638,6 +662,53 @@ public:
 
     const std::vector<int> &get_values() const {
         return values;
+    }
+
+    PartialAssignment get_partial_successor(OperatorProxy op) const {
+        if (task->get_num_axioms() > 0) {
+            ABORT("PartialAssignment::apply currently does not support axioms.");
+        }
+        assert(!op.is_axiom());
+        //assert(is_applicable(op, state));
+        std::vector<int> new_values = values;
+        for (EffectProxy effect : op.get_effects()) {
+            if (does_fire(effect, *this)) {
+                FactProxy effect_fact = effect.get_fact();
+                new_values[effect_fact.get_variable().get_id()] = effect_fact.get_value();
+            }
+        }
+        return PartialAssignment(*task, std::move(new_values));
+    }
+
+    //bool is_more_general(const PartialAssignment &other) const {}
+
+    virtual void dump_pddl(std::ostream& out = std::cout) const;
+    virtual void dump_fdr(std::ostream& out = std::cout) const;
+
+};
+
+class State : public PartialAssignment {
+    //const AbstractTask *task;
+    //std::vector<int> values;
+public:
+    //using ItemType = FactProxy;
+
+    State(const AbstractTask &task, std::vector<int> &&values)
+    : PartialAssignment(task, std::move(values)) {
+    }
+
+    virtual ~State() = default;
+    State(const State &) = default;
+
+    State(State &&other)
+    : PartialAssignment(std::move(other)) {
+    }
+
+    State &operator=(const State &&other) {
+        if (this != &other) {
+            values = std::move(other.values);
+        }
+        return *this;
     }
 
     State get_successor(OperatorProxy op) const {
@@ -656,17 +727,26 @@ public:
         return State(*task, std::move(new_values));
     }
 
-    void dump_pddl(std::ostream& out = std::cout) const;
-    void dump_fdr(std::ostream& out = std::cout) const;
+    virtual void dump_pddl(std::ostream& out = std::cout) const override;
+    virtual void dump_fdr(std::ostream& out = std::cout) const override;
 };
 
 
 namespace std {
 
     template<>
+    struct hash<PartialAssignment> {
+
+        size_t operator()(const PartialAssignment &assignment) const {
+            return assignment.hash();
+        }
+    };
+
+    template<>
     struct hash<State> {
 
         size_t operator()(const State &state) const {
+
             return state.hash();
         }
     };
@@ -733,8 +813,17 @@ inline VariableProxy FactProxy::get_variable() const {
     return VariableProxy(*task, fact.var);
 }
 
-inline TaskProxy State::get_task() const {
+inline TaskProxy PartialAssignment::get_task() const {
     return TaskProxy(*task);
+}
+
+inline bool does_fire(const EffectProxy &effect, const PartialAssignment &assignment) {
+    for (FactProxy condition : effect.get_conditions()) {
+        if (!assignment.assigned(condition.get_variable())
+                || assignment[condition.get_variable()] != condition)
+            return false;
+    }
+    return true;
 }
 
 inline bool does_fire(const EffectProxy &effect, const State &state) {

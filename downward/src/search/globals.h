@@ -57,6 +57,7 @@ void verify_no_axioms_no_conditional_effects();
 void check_magic(std::istream &in, std::string magic);
 
 bool are_mutex(const FactPair &a, const FactPair &b);
+int g_num_mutexes();
 
 extern bool g_use_metric;
 extern int g_min_action_cost;

@@ -1,6 +1,10 @@
 #ifndef TASK_UTILS_SAMPLING_H
 #define TASK_UTILS_SAMPLING_H
 
+#include "regression_utils.h"
+
+#include "../task_proxy.h"
+
 #include <exception>
 #include <functional>
 #include <memory>
@@ -59,6 +63,11 @@ State sample_state_with_random_forward_walk(
     std::function<bool(State)> is_dead_end = [] (const State &) {
                                                  return false;
                                              });
+
+std::pair<State, int> sample_state_with_random_backward_walk(
+    RegressionTaskProxy &regression_task_proxy,
+    int solution_steps_estimate);
+}
 }
 
 #endif

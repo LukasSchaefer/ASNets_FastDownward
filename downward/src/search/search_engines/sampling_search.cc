@@ -226,7 +226,8 @@ std::string SamplingSearch::extract_sample_entries() {
     const SearchSpace &ss = engine->get_search_space();
     const TaskProxy &tp = engine->get_task_proxy();
     OperatorsProxy ops = tp.get_operators();
-
+    const GoalsProxy gps = tp.get_goals();
+    
     int count = 0;
     
     std::string modification_hash = extract_modification_hash(
@@ -257,7 +258,7 @@ std::string SamplingSearch::extract_sample_entries() {
     if (store_all_states) {
         ostringstream pddl_goal;
         // TODO: Replace by partial assignments via Regression from Goal
-        engine->get_goal_state().dump_pddl(pddl_goal);
+        gps.dump_pddl(pddl_goal);
 
         for (StateRegistry::const_iterator iter = sr.begin();
             iter != sr.end(); ++iter) {

@@ -2,8 +2,6 @@
 
 #include "successor_generator.h"
 
-#include "../task_proxy.h"
-
 #include "../task_utils/task_properties.h"
 #include "../utils/countdown_timer.h"
 #include "../utils/rng.h"
@@ -99,4 +97,45 @@ State sample_state_with_random_forward_walk(
     // The last state of the random walk is used as a sample.
     return current_state;
 }
+
+
+
+pair<State, int> sample_state_with_regression_random_walk(
+    const Task &task,
+    int solution_steps_estimate) {
+    // Start in partial goal state.
+    State partial_state = *task.get_initial_regression_state();
+
+    // The expected walk length is np = estimated number of solution steps.
+    int n = 2 * solution_steps_estimate;
+    double p = 0.5;
+
+    // Calculate length of random walk according to a binomial distribution.
+    int length = 0;
+    for (int j = 0; j < n; ++j) {
+        double random = rng(); // [0..1)
+        if (random < p)
+            ++length;
+    }
+
+    // Sample one state with a random walk of 'length' steps.
+    int distance = 0;
+    for (int j = 0; j < length; ++j) {
+        vector<const Operator *> applicable_ops =
+            task.get_applicable_operators(partial_state);
+        if (applicable_ops.empty()) {
+            // If there are no reverse applicable operators, do not walk further.
+            break;
+        } else {
+            const Operator *op = *rng.choose(applicable_ops);
+            partial_state = State(partial_state, *op);
+            distance += op->get_cost();
+        }
+    }
+    return make_pair(partial_state, distance);
+}
+
+
+
+
 }

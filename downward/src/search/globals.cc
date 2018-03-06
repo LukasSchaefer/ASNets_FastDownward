@@ -36,6 +36,7 @@ static const int PRE_FILE_VERSION = 3;
 //       structure globally.)
 
 static vector<vector<set<FactPair>>> g_inconsistent_facts;
+static int g_num_inconsistenf_facts = 0;
 
 bool test_goal(const GlobalState &state) {
     for (size_t i = 0; i < g_goal.size(); ++i) {
@@ -184,10 +185,12 @@ void read_mutexes(istream &in) {
                        to *some* redundant mutexes, where some but not
                        all facts talk about the same variable. */
                     g_inconsistent_facts[fact1.var][fact1.value].insert(fact2);
+                    ++g_num_inconsistenf_facts;
                 }
             }
         }
     }
+    g_num_inconsistenf_facts /= 2;
 }
 
 void read_goal(istream &in) {
@@ -358,6 +361,10 @@ bool are_mutex(const FactPair &a, const FactPair &b) {
         return a.value != b.value;
     }
     return bool(g_inconsistent_facts[a.var][a.value].count(b));
+}
+
+int g_num_mutexes(){
+    return g_num_inconsistenf_facts;
 }
 
 const shared_ptr<AbstractTask> g_root_task() {
