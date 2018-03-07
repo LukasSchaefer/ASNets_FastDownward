@@ -24,6 +24,9 @@
 #include <stdlib.h>
 
 
+#include "../task_utils/regression_utils.h"
+#include "../task_utils/predecessor_generator.h"
+
 using namespace std;
 
 namespace sampling_search {
@@ -298,7 +301,26 @@ SearchStatus SamplingSearch::step() {
     modified_task = (*current_technique)->next(g_root_task());
     next_engine();
     engine->search();
-
+    
+    RegressionTaskProxy rtp(*(modified_task.get()));
+    cout<<"QWER"<<endl;
+    cout << "MUTEX" << rtp.has_mutexes() << endl;
+    cout << "NOPS" <<rtp.test()<<endl;
+    TaskProxy tp(*modified_task);
+    predecessor_generator::PredecessorGenerator pregen(rtp);
+    cout << " Inititial State " << endl;
+    tp.get_initial_state().dump_pddl();
+    cout << "OPS applicable" << endl;
+        
+    vector<OperatorID> applicable;
+    pregen.generate_applicable_ops(tp.get_initial_state(), applicable);
+    cout << "obtained" << endl;
+    for (OperatorID &id : applicable){
+        cout << OperatorProxy(*modified_task, id.get_index(), false).get_name() << endl;
+        
+    }
+    cout <<"done"<< endl;
+    exit(99);
     samples << extract_sample_entries();
     
     if (samples_for_disk > threshold_samples_for_disk){

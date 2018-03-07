@@ -9,11 +9,16 @@
 #include "../utils/rng.h"
 
 #include <cassert>
+#include <set>
 #include <string>
 #include <utility>
 #include <vector>
 
+/* Special thanks to Jendrik Seipp from whom I got an initial code base for
+   regression.*/
+
 class RegressionCondition {
+    friend class RegressionConditionProxy;
 public:
     FactPair data;
 
@@ -38,7 +43,7 @@ public:
 
 class RegressionConditionProxy {
     const AbstractTask *task;
-    RegressionCondition condition;
+    const RegressionCondition condition;
 public:
     RegressionConditionProxy(const AbstractTask &task, int var_id, int value);
     RegressionConditionProxy(const AbstractTask &task, const RegressionCondition &fact);
@@ -78,7 +83,38 @@ public:
     }
 };
 
+class RegressionConditionsProxy : public ConditionsProxy {
+    const std::vector<RegressionCondition> conditions;
+
+public:
+    using ItemType = RegressionConditionProxy;
+
+    RegressionConditionsProxy(const AbstractTask &task,
+            const std::vector<RegressionCondition> & conditions)
+    : ConditionsProxy(task), conditions(conditions) {
+    }
+    ~RegressionConditionsProxy() = default;
+
+    std::size_t size() const override {
+        return conditions.size();
+    }
+
+    bool empty() const {
+        return size() == 0;
+    }
+
+    FactProxy operator[](std::size_t fact_index) const override {
+        assert(fact_index < size());
+        return FactProxy(*task, conditions[fact_index].data);
+    }
+
+    RegressionCondition get(std::size_t fact_index) const {
+        return conditions[fact_index];
+    }
+};
+
 class RegressionEffect {
+    friend class RegressionEffectProxy;
 public:
     FactPair data;
 
@@ -141,21 +177,77 @@ public:
     }
 };
 
+class RegressionEffectsProxy : public ConditionsProxy {
+    const std::vector<RegressionEffect> effects;
+
+public:
+    using ItemType = RegressionEffectProxy;
+
+    RegressionEffectsProxy(const AbstractTask &task,
+            const std::vector<RegressionEffect> & effects)
+    : ConditionsProxy(task), effects(effects) {
+    }
+    ~RegressionEffectsProxy() = default;
+
+    std::size_t size() const override {
+        return effects.size();
+    }
+
+    bool empty() const {
+        return size() == 0;
+    }
+
+    FactProxy operator[](std::size_t fact_index) const override {
+        assert(fact_index < size());
+        return FactProxy(*task, effects[fact_index].data);
+    }
+
+    RegressionEffect get(std::size_t fact_index) const {
+        return effects[fact_index];
+    }
+};
+
 class RegressionOperator {
+    friend class RegressionOperatorProxy;
+    const int original_index;
+    const int cost;
+    const std::string name;
+    const bool is_an_axiom;
+
     std::vector<RegressionCondition> preconditions;
     std::vector<RegressionEffect> effects;
-    std::unordered_set<int> original_effect_vars;
-    std::string name;
-    int cost;
+    std::set<int> original_effect_vars;
+
 
 public:
     explicit RegressionOperator(OperatorProxy &op);
     ~RegressionOperator() = default;
 
+    bool operator==(const RegressionOperator &other) const {
+        return preconditions == other.preconditions
+                && effects == other.effects
+                && original_effect_vars == other.original_effect_vars
+                && name == other.name
+                && cost == other.cost
+                && is_an_axiom == other.is_an_axiom;
+    }
+
+    bool operator!=(const RegressionOperator &other) const {
+        return !(*this == other);
+    }
+
+    int get_original_index() const {
+        return original_index;
+    }
+    
     int get_cost() const {
         return cost;
     }
 
+    bool is_axiom() const {
+        return is_an_axiom;
+    }
+        
     const std::string &get_name() const {
         return name;
     }
@@ -168,62 +260,104 @@ public:
         return effects;
     }
 
+    const std::set<int> get_original_effect_vars() const {
+        return original_effect_vars;
+    }
+
     bool is_applicable(const PartialAssignment &assignment) const;
 
 };
 
 class RegressionOperatorProxy {
     const AbstractTask *task;
-    int index;
+    const RegressionOperator op;
     bool is_an_axiom;
 public:
 
-    OperatorProxy(const AbstractTask &task, int index, bool is_axiom)
-    : task(&task), index(index), is_an_axiom(is_axiom) {
+    RegressionOperatorProxy(const AbstractTask &task, const RegressionOperator &op)
+    : task(&task), op(op), is_an_axiom(false) {
     }
-    ~OperatorProxy() = default;
+    ~RegressionOperatorProxy() = default;
 
-    bool operator==(const OperatorProxy &other) const {
+    bool operator==(const RegressionOperatorProxy &other) const {
         assert(task == other.task);
-        return index == other.index && is_an_axiom == other.is_an_axiom;
+        return op == other.op && is_an_axiom == other.is_an_axiom;
     }
 
-    bool operator!=(const OperatorProxy &other) const {
+    bool operator!=(const RegressionOperatorProxy &other) const {
         return !(*this == other);
     }
 
-    PreconditionsProxy get_preconditions() const {
-        return PreconditionsProxy(*task, index, is_an_axiom);
+    RegressionConditionsProxy get_preconditions() const {
+        return RegressionConditionsProxy(*task, op.preconditions);
     }
 
-    EffectsProxy get_effects() const {
-        return EffectsProxy(*task, index, is_an_axiom);
+    RegressionEffectsProxy get_effects() const {
+        return RegressionEffectsProxy(*task, op.effects);
+    }
+
+    std::set<int> get_original_effect_vars() const {
+        return op.original_effect_vars;
     }
 
     int get_cost() const {
-        return task->get_operator_cost(index, is_an_axiom);
+        return op.cost;
     }
 
     bool is_axiom() const {
         return is_an_axiom;
     }
 
-    std::string get_name() const {
-        return task->get_operator_name(index, is_an_axiom);
+    int get_id() const {
+        return op.original_index;
     }
 
-    int get_id() const {
-        return index;
+    std::string get_name() const {
+        std::cout<<"ID"<<get_id() <<" A"<<is_an_axiom<<std::endl;
+        std::cout << op.get_name() << std::endl;
+        std::cout<< task->get_num_operators() << std::endl;
+        std::cout<<"ASDF"<<std::endl;
+        return "Regression" + task->get_operator_name(get_id(), op.is_an_axiom);
     }
 
     OperatorID get_global_operator_id() const {
         assert(!is_an_axiom);
-        return task->get_global_operator_id(OperatorID(index));
+        return task->get_global_operator_id(OperatorID(get_id()));
+    }
+
+    bool is_applicable(const PartialAssignment &assignment) const {
+        return op.is_applicable(assignment);
     }
 };
 
-class RegressionTaskProxy {
+class RegressionOperatorsProxy {
     const AbstractTask *task;
+    const std::vector<RegressionOperator> ops;
+
+public:
+    using ItemType = RegressionOperatorProxy;
+
+    RegressionOperatorsProxy(const AbstractTask &task,
+            const std::vector<RegressionOperator> & ops)
+    : task(&task), ops(ops) {
+    }
+    ~RegressionOperatorsProxy() = default;
+
+    std::size_t size() const {
+        return ops.size();
+    }
+
+    bool empty() const {
+        return size() == 0;
+    }
+
+    RegressionOperatorProxy operator[](std::size_t op_index) const {
+        assert(op_index < size());
+        return RegressionOperatorProxy(*task, ops[op_index]);
+    }
+};
+
+class RegressionTaskProxy : public TaskProxy {
     const bool possess_mutexes;
     const std::vector<int> domain_sizes;
     const std::vector<RegressionOperator> operators;
@@ -233,20 +367,19 @@ public:
     explicit RegressionTaskProxy(const AbstractTask &task);
     ~RegressionTaskProxy() = default;
 
-    VariablesProxy get_variables() const {
-        return VariablesProxy(*task);
-    }
-
-    std::vector<RegressionOperator> &get_operators() const {
-        return operators;
+    RegressionOperatorsProxy get_regression_operators() const {
+        return RegressionOperatorsProxy(*task, operators);
     }
 
     bool has_mutexes() {
         return possess_mutexes;
     }
 
-    PartialAssignment get_goals() const {
-        GoalsProxy gp = GoalsProxy(task);
+    int test() const {
+        return task->get_num_operators();
+    }
+    PartialAssignment get_goal_assignment() const {
+        GoalsProxy gp = GoalsProxy(*task);
         std::vector<int> values(gp.size(),
                 PartialAssignment::UNASSIGNED);
         for (FactProxy goal : gp) {
@@ -258,13 +391,12 @@ public:
         return PartialAssignment(*task, std::move(values));
     }
 
-    State get_initial_state() const {
-        return State(*task, task->get_initial_state_values());
-    }
-
     std::pair<bool, State> convert_to_full_state(PartialAssignment &assignment,
-            bool check_mutexes, utils::RandomNumberGenerator &rng);
+            bool check_mutexes, utils::RandomNumberGenerator &rng) const;
 
+    PartialAssignment create_partial_assignment(std::vector<int> &&values) const {
+        return PartialAssignment(*task, std::move(values));
+    }
     const causal_graph::CausalGraph &get_causal_graph() const;
 };
 

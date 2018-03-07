@@ -17,9 +17,10 @@ class OperatorsProxy;
 namespace predecessor_generator {
 
 class PredecessorGenerator {
-    ops;
+    const RegressionTaskProxy rtp;
+    const RegressionOperatorsProxy ops;
 public:
-    explicit PredecessorGenerator(const TaskProxy &task_proxy);
+    explicit PredecessorGenerator(const RegressionTaskProxy &task_proxy);
     /*
       We cannot use the default destructor (implicitly or explicitly)
       here because GeneratorBase is a forward declaration and the

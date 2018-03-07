@@ -753,6 +753,7 @@ namespace std {
 }
 
 class TaskProxy {
+protected:
     const AbstractTask *task;
 public:
 
@@ -761,15 +762,15 @@ public:
     }
     ~TaskProxy() = default;
 
-    VariablesProxy get_variables() const {
+    virtual VariablesProxy get_variables() const {
         return VariablesProxy(*task);
     }
 
-    OperatorsProxy get_operators() const {
+    virtual OperatorsProxy get_operators() const {
         return OperatorsProxy(*task);
     }
 
-    AxiomsProxy get_axioms() const {
+    virtual AxiomsProxy get_axioms() const {
         return AxiomsProxy(*task);
     }
 

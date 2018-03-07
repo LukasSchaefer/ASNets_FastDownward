@@ -538,13 +538,23 @@ fast_downward_plugin(
         task_utils/causal_graph
     DEPENDENCY_ONLY
 )
+fast_downward_plugin(
+    NAME REGRESSION
+    HELP "Tools for regression"
+    SOURCES
+        task_utils/regression_utils
+        task_utils/predecessor_generator
+    DEPENDS TASK_PROPERTIES
+    DEPENDENCY_ONLY
+)
+
 
 fast_downward_plugin(
     NAME SAMPLING_TECHNIQUES
     HELP "Sampling Techniques"
     SOURCES
         task_utils/sampling_technique
-    DEPENDS SAMPLING EXTRA_TASKS TASK_PROPERTIES
+    DEPENDS SAMPLING EXTRA_TASKS TASK_PROPERTIES REGRESSION
     DEPENDENCY_ONLY
 )
 

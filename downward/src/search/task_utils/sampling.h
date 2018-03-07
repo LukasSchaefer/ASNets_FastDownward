@@ -68,6 +68,6 @@ std::pair<State, int> sample_state_with_random_backward_walk(
     RegressionTaskProxy &regression_task_proxy,
     int solution_steps_estimate);
 }
-}
+
 
 #endif

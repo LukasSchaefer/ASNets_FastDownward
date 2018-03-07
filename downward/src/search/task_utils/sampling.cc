@@ -99,7 +99,7 @@ State sample_state_with_random_forward_walk(
 }
 
 
-
+/*
 pair<State, int> sample_state_with_regression_random_walk(
     const Task &task,
     int solution_steps_estimate) {
@@ -134,6 +134,7 @@ pair<State, int> sample_state_with_regression_random_walk(
     }
     return make_pair(partial_state, distance);
 }
+ */
 
 
 
