@@ -10,7 +10,7 @@
 ^downward/builds/
 ^downward/src/CMakeLists.txt.user$
 ^NeuralFastDownward/nbproject
-
+^discussion/Ferber_Msc_Thesis_Src
 
 syntax: glob
 *.bak

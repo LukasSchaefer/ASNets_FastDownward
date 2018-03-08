@@ -596,6 +596,11 @@ public:
     : task(&task), values(std::move(values)) {
         assert(static_cast<int> (size()) == this->task->get_num_variables());
     }
+
+    PartialAssignment(const PartialAssignment &assignment, std::vector<int> &&values)
+    : task(assignment.task), values(std::move(values)) {
+        assert(static_cast<int> (size()) == this->task->get_num_variables());
+    }
     virtual ~PartialAssignment() = default;
     PartialAssignment(const PartialAssignment &) = default;
 
@@ -662,6 +667,16 @@ public:
 
     const std::vector<int> &get_values() const {
         return values;
+    }
+
+    const std::vector<FactPair> get_assigned_facts() {
+        std::vector<FactPair> facts;
+        for (unsigned int i = 0; i < size(); ++i) {
+            if (assigned(i)) {
+                facts.emplace_back(i, values[i]);
+            }
+        }
+        return facts;
     }
 
     PartialAssignment get_partial_successor(OperatorProxy op) const {

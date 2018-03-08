@@ -3,6 +3,7 @@
 
 #include <algorithm>
 #include <cassert>
+#include <memory>
 #include <random>
 #include <vector>
 
@@ -14,6 +15,7 @@ class RandomNumberGenerator {
 public:
     RandomNumberGenerator(); // Seed with a value depending on time and process ID.
     explicit RandomNumberGenerator(int seed);
+    explicit RandomNumberGenerator(std::mt19937 &rng);
     RandomNumberGenerator(const RandomNumberGenerator &) = delete;
     RandomNumberGenerator &operator=(const RandomNumberGenerator &) = delete;
     ~RandomNumberGenerator();

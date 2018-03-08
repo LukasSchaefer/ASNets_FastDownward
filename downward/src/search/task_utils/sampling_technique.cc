@@ -14,10 +14,11 @@ namespace sampling_technique {
 /* START DEFINITION SAMPLING_TECHNIQUE */
 SamplingTechnique::SamplingTechnique(const options::Options& opts)
 : count(opts.get<int>("count")),
-rng(utils::parse_rng_from_options(opts)) { }
+rng(utils::parse_rng_from_options(opts)){ }
 
-SamplingTechnique::SamplingTechnique(int count)
-: count(count) { }
+SamplingTechnique::SamplingTechnique(int count, mt19937 &mt)
+: count(count),
+rng(make_shared<utils::RandomNumberGenerator>(mt)){ }
 
 int SamplingTechnique::get_count() const {
     return count;
@@ -138,7 +139,8 @@ const string &TechniqueForwardNone::get_name() const {
 }
 
 TechniqueForwardNone::TechniqueForwardNone(const options::Options& opts)
-: SamplingTechnique(opts) { }
+: SamplingTechnique(opts),
+steps(opts.get<shared_ptr<utils::DiscreteDistribution>>("distribution")){ }
 
 TechniqueForwardNone::~TechniqueForwardNone() { }
 
@@ -148,11 +150,36 @@ const shared_ptr<AbstractTask> TechniqueForwardNone::create_next(
     TaskProxy task_proxy(*seed_task);
     const successor_generator::SuccessorGenerator successor_generator(task_proxy);
     State new_init = sampling::sample_state_with_random_forward_walk(task_proxy,
-        successor_generator, task_proxy.get_initial_state(), 10, *rng);
+        successor_generator, task_proxy.get_initial_state(), steps->next(), *rng);
 
     return make_shared<extra_tasks::ModifiedInitGoalsTask>(seed_task,
         extractInitialState(new_init),
         extractGoalFacts(task_proxy.get_goals()));
+}
+/* START DEFINITION TECHNIQUE_NONE_BACKWARDS */
+const std::string TechniqueNoneBackward::name = "none_backward";
+
+const string &TechniqueNoneBackward::get_name() const {
+    return name;
+}
+
+TechniqueNoneBackward::TechniqueNoneBackward(const options::Options& opts)
+: SamplingTechnique(opts),
+steps(opts.get<shared_ptr<utils::DiscreteDistribution>>("distribution")){ }
+
+TechniqueNoneBackward::~TechniqueNoneBackward() { }
+
+const shared_ptr<AbstractTask> TechniqueNoneBackward::create_next(
+    const shared_ptr<AbstractTask> seed_task) const {
+
+    RegressionTaskProxy task_proxy(*seed_task);
+    const predecessor_generator::PredecessorGenerator predecessor_generator(task_proxy);
+    PartialAssignment new_goal = sampling::sample_partial_assignment_with_random_backward_walk(
+        task_proxy, predecessor_generator, task_proxy.get_goal_assignment(), steps->next(), *rng);
+
+    return make_shared<extra_tasks::ModifiedInitGoalsTask>(seed_task,
+        extractInitialState(task_proxy.get_initial_state()),
+        new_goal.get_assigned_facts());
 }
 
 /* SHARED PLUGINS FOR PARSING */
@@ -173,6 +200,11 @@ static PluginShared<SamplingTechnique> _plugin_technique_none_none(
 static shared_ptr<SamplingTechnique> _parse_technique_forward_none(
     OptionParser &parser) {
     SamplingTechnique::add_options_to_parser(parser);
+    parser.add_option<shared_ptr<utils::DiscreteDistribution>>("distribution",
+        "Discrete random distribution to determine the random walk length used"
+        " by this technique.");
+        
+        
     Options opts = parser.parse();
 
     shared_ptr<TechniqueForwardNone> technique;
@@ -185,5 +217,24 @@ static shared_ptr<SamplingTechnique> _parse_technique_forward_none(
 static PluginShared<SamplingTechnique> _plugin_technique_forward_none(
     TechniqueForwardNone::name, _parse_technique_forward_none);
 
+
+static shared_ptr<SamplingTechnique> _parse_technique_none_backward(
+    OptionParser &parser) {
+    SamplingTechnique::add_options_to_parser(parser);
+    parser.add_option<shared_ptr<utils::DiscreteDistribution>>("distribution",
+        "Discrete random distribution to determine the random walk length used"
+        " by this technique.");
+        
+    Options opts = parser.parse();
+
+    shared_ptr<TechniqueNoneBackward> technique;
+    if (!parser.dry_run()) {
+        technique = make_shared<TechniqueNoneBackward>(opts);
+    }
+    return technique;
+}
+
+static PluginShared<SamplingTechnique> _plugin_technique_none_backward(
+    TechniqueNoneBackward::name, _parse_technique_none_backward);
 
 }

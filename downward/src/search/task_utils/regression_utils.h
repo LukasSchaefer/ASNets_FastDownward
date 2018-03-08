@@ -87,8 +87,6 @@ class RegressionConditionsProxy : public ConditionsProxy {
     const std::vector<RegressionCondition> conditions;
 
 public:
-    using ItemType = RegressionConditionProxy;
-
     RegressionConditionsProxy(const AbstractTask &task,
             const std::vector<RegressionCondition> & conditions)
     : ConditionsProxy(task), conditions(conditions) {
@@ -117,23 +115,50 @@ class RegressionEffect {
     friend class RegressionEffectProxy;
 public:
     FactPair data;
+    std::vector<FactPair> conditions;
 
     RegressionEffect(int var, int value);
     ~RegressionEffect() = default;
 
     bool operator<(const RegressionEffect &other) const {
-        return data.var < other.data.var
-                || (data.var == other.data.var && data.value < other.data.value);
+        return data < other.data
+                || (data == other.data && conditions < other.conditions);
     }
 
     bool operator==(const RegressionEffect &other) const {
-        return data.var == other.data.var && data.value == other.data.value;
+        return data == other.data && conditions == other.conditions;
     }
 
     bool operator!=(const RegressionEffect &other) const {
         return !(*this == other);
     }
 };
+
+class RegressionEffectConditionsProxy : public ConditionsProxy {
+    const std::vector<FactPair> conditions;
+
+public:
+
+    RegressionEffectConditionsProxy(const AbstractTask &task,
+            const std::vector<FactPair> & conditions)
+    : ConditionsProxy(task), conditions(conditions) {
+    }
+    ~RegressionEffectConditionsProxy() = default;
+
+    std::size_t size() const override {
+        return conditions.size();
+    }
+
+    bool empty() const {
+        return size() == 0;
+    }
+
+    FactProxy operator[](std::size_t fact_index) const override {
+        assert(fact_index < size());
+        return FactProxy(*task, conditions[fact_index]);
+    }
+};
+
 
 class RegressionEffectProxy {
     const AbstractTask *task;
@@ -143,6 +168,10 @@ public:
     RegressionEffectProxy(const AbstractTask &task, const RegressionEffect &fact);
     ~RegressionEffectProxy() = default;
 
+    RegressionEffectConditionsProxy get_conditions() const {
+        return RegressionEffectConditionsProxy(*task, effect.conditions);
+    }
+    
     VariableProxy get_variable() const {
         return VariableProxy(*task, effect.data.var);
     }
@@ -176,6 +205,24 @@ public:
         return task->are_facts_mutex(effect.data, other.effect.data);
     }
 };
+
+inline bool does_fire(const RegressionEffect &effect,
+        const PartialAssignment &assignment) {
+    for (FactPair condition_pair : effect.conditions) {
+        if (assignment[condition_pair.var].get_value() != condition_pair.value)
+            return false;
+    }
+    return true;
+}
+inline bool does_fire(const RegressionEffectProxy &effect,
+        const PartialAssignment &assignment) {
+    for (FactProxy condition : effect.get_conditions()) {
+        FactPair condition_pair = condition.get_pair();
+        if (assignment[condition_pair.var].get_value() != condition_pair.value)
+            return false;
+    }
+    return true;
+}
 
 class RegressionEffectsProxy : public ConditionsProxy {
     const std::vector<RegressionEffect> effects;
@@ -266,6 +313,16 @@ public:
 
     bool is_applicable(const PartialAssignment &assignment) const;
 
+    PartialAssignment get_anonym_predecessor(const PartialAssignment &assignment) const {
+        std::vector<int> new_values = assignment.get_values();
+        for (const RegressionEffect &effect: effects){
+            if (does_fire(effect, assignment)){
+                new_values[effect.data.var] = effect.data.value;
+            }
+        }
+        
+        return PartialAssignment(assignment, std::move(new_values));
+    }
 };
 
 class RegressionOperatorProxy {
@@ -313,10 +370,6 @@ public:
     }
 
     std::string get_name() const {
-        std::cout<<"ID"<<get_id() <<" A"<<is_an_axiom<<std::endl;
-        std::cout << op.get_name() << std::endl;
-        std::cout<< task->get_num_operators() << std::endl;
-        std::cout<<"ASDF"<<std::endl;
         return "Regression" + task->get_operator_name(get_id(), op.is_an_axiom);
     }
 
@@ -327,6 +380,10 @@ public:
 
     bool is_applicable(const PartialAssignment &assignment) const {
         return op.is_applicable(assignment);
+    }
+    
+    PartialAssignment get_anonym_predecessor(const PartialAssignment & assignment){
+        return op.get_anonym_predecessor(assignment);
     }
 };
 
@@ -375,13 +432,11 @@ public:
         return possess_mutexes;
     }
 
-    int test() const {
-        return task->get_num_operators();
-    }
     PartialAssignment get_goal_assignment() const {
         GoalsProxy gp = GoalsProxy(*task);
-        std::vector<int> values(gp.size(),
+        std::vector<int> values(task->get_num_variables(),
                 PartialAssignment::UNASSIGNED);
+
         for (FactProxy goal : gp) {
             int var_id = goal.get_variable().get_id();
             int value = goal.get_value();
@@ -389,6 +444,17 @@ public:
             values[var_id] = value;
         }
         return PartialAssignment(*task, std::move(values));
+    }
+    
+    RegressionOperatorProxy get_regression_operator(std::size_t index){
+        assert(index<operators.size());
+        return RegressionOperatorProxy(*task, operators[index]);
+    }    
+    
+    RegressionOperatorProxy get_regression_operator(OperatorID &id){
+        assert(id.get_index() < operators.size());
+        assert(operators[id.get_index()].get_original_index == id.get_index());
+        return RegressionOperatorProxy(*task, operators[id.get_index()]);
     }
 
     std::pair<bool, State> convert_to_full_state(PartialAssignment &assignment,
@@ -401,5 +467,14 @@ public:
 };
 
 
+namespace task_properties {
+inline bool is_applicable(RegressionOperatorProxy op, const PartialAssignment &assignment) {
+    for (FactProxy precondition : op.get_preconditions()) {
+        if (assignment[precondition.get_variable()] != precondition)
+            return false;
+    }
+    return true;
+}
+}
 #endif
 

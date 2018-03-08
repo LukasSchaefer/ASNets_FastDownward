@@ -9,13 +9,13 @@
 namespace extra_tasks {
 
     class ModifiedInitGoalsTask : public tasks::DelegatingTask {
-        std::vector<int> initial_state;
+        const std::vector<int> initial_state;
         const std::vector<FactPair> goals;
     public:
         ModifiedInitGoalsTask(
             const std::shared_ptr<AbstractTask> &parent,
-            std::vector<int> &&initial_state,
-            std::vector<FactPair> &&goals);
+            const std::vector<int> &&initial_state,
+            const std::vector<FactPair> &&goals);
         virtual ~ModifiedInitGoalsTask() = default;
     
         virtual int get_num_goals() const override;

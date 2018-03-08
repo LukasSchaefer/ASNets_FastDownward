@@ -23,18 +23,11 @@ ops(task_proxy.get_regression_operators()) {
 
 void PredecessorGenerator::generate_applicable_ops(
     const PartialAssignment &assignment, vector<OperatorID> &applicable_ops) const {
-    cout << "START gen app ops"<< endl;
-    cout <<rtp.get_operators().size()<<endl;
-    const RegressionOperatorProxy tst = ops[0];
-    cout << ops.size()<<endl;
+
     for (const RegressionOperatorProxy op : ops) {
-        cout << " IN" <<endl;
-        cout << "CHECK OP" << op.get_name() << endl;
         if (op.is_applicable(assignment)) {
-            cout << "added" << endl;
             applicable_ops.push_back(op.get_global_operator_id());
         }
-        cout << "do next" << endl;
     }
 }
 

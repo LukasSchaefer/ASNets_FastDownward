@@ -5,8 +5,8 @@ using namespace std;
 namespace extra_tasks {
 ModifiedInitGoalsTask::ModifiedInitGoalsTask(
     const shared_ptr<AbstractTask> &parent,
-    vector<int> &&initial_state,
-    vector<FactPair> &&goals)
+    const vector<int> &&initial_state,
+    const vector<FactPair> &&goals)
     : DelegatingTask(parent),
       initial_state(move(initial_state)),
       goals(move(goals)) {

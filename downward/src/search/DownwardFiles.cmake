@@ -115,6 +115,7 @@ fast_downward_plugin(
         utils/memory
         utils/rng
         utils/rng_options
+        utils/distribution
         utils/system
         utils/system_unix
         utils/system_windows
@@ -547,7 +548,6 @@ fast_downward_plugin(
     DEPENDS TASK_PROPERTIES
     DEPENDENCY_ONLY
 )
-
 
 fast_downward_plugin(
     NAME SAMPLING_TECHNIQUES

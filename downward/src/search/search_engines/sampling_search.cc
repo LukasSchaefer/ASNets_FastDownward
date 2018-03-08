@@ -15,6 +15,9 @@
 #include "../utils/rng.h"
 #include "../utils/rng_options.h"
 
+#include "../task_utils/sampling.h"
+#include "../utils/rng.h"
+
 #include <algorithm>
 #include <cassert>
 #include <cstdlib>
@@ -85,8 +88,8 @@ void SamplingSearch::extract_sample_entries_add_heuristics(
         EvaluationContext eval_context(state);
 
         stream << field_separator
-               << g_registered_heuristics[heuristic]
-                    ->compute_result(eval_context).get_h_value();
+            << g_registered_heuristics[heuristic]
+            ->compute_result(eval_context).get_h_value();
     }
 }
 
@@ -230,9 +233,9 @@ std::string SamplingSearch::extract_sample_entries() {
     const TaskProxy &tp = engine->get_task_proxy();
     OperatorsProxy ops = tp.get_operators();
     const GoalsProxy gps = tp.get_goals();
-    
+
     int count = 0;
-    
+
     std::string modification_hash = extract_modification_hash(
         tp.get_initial_state(), tp.get_goals());
 
@@ -301,29 +304,10 @@ SearchStatus SamplingSearch::step() {
     modified_task = (*current_technique)->next(g_root_task());
     next_engine();
     engine->search();
-    
-    RegressionTaskProxy rtp(*(modified_task.get()));
-    cout<<"QWER"<<endl;
-    cout << "MUTEX" << rtp.has_mutexes() << endl;
-    cout << "NOPS" <<rtp.test()<<endl;
-    TaskProxy tp(*modified_task);
-    predecessor_generator::PredecessorGenerator pregen(rtp);
-    cout << " Inititial State " << endl;
-    tp.get_initial_state().dump_pddl();
-    cout << "OPS applicable" << endl;
-        
-    vector<OperatorID> applicable;
-    pregen.generate_applicable_ops(tp.get_initial_state(), applicable);
-    cout << "obtained" << endl;
-    for (OperatorID &id : applicable){
-        cout << OperatorProxy(*modified_task, id.get_index(), false).get_name() << endl;
-        
-    }
-    cout <<"done"<< endl;
-    exit(99);
+
     samples << extract_sample_entries();
-    
-    if (samples_for_disk > threshold_samples_for_disk){
+
+    if (samples_for_disk > threshold_samples_for_disk) {
         save_plan_intermediate();
         samples_for_disk = 0;
     }
@@ -408,8 +392,8 @@ void SamplingSearch::add_sampling_options(OptionParser &parser) {
         "values estimated for the state.", "true");
     parser.add_option<int> ("sample_cache_size",
         "If more than sample_cache_size samples are cached, then the entries"
-    " are written to disk and the cache is emptied. When sampling "
-    "finishes, all remaining cached samples are written to disk.", "5000");
+        " are written to disk and the cache is emptied. When sampling "
+        "finishes, all remaining cached samples are written to disk.", "5000");
     parser.add_list_option<std::string> ("use_registered_heuristics",
         "Stores for every state visited the operator chosen to reach it,"
         ", its parent state, and the heuristic "
