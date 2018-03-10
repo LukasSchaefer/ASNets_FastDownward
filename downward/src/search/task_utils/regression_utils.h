@@ -440,7 +440,7 @@ public:
         for (FactProxy goal : gp) {
             int var_id = goal.get_variable().get_id();
             int value = goal.get_value();
-            assert(in_bounds(var_id, values));
+            assert(utils::in_bounds(var_id, values));
             values[var_id] = value;
         }
         return PartialAssignment(*task, std::move(values));
@@ -452,8 +452,8 @@ public:
     }    
     
     RegressionOperatorProxy get_regression_operator(OperatorID &id){
-        assert(id.get_index() < operators.size());
-        assert(operators[id.get_index()].get_original_index == id.get_index());
+        assert(utils::in_bounds(id.get_index(), operators));
+        assert(operators[id.get_index()].get_original_index() == id.get_index());
         return RegressionOperatorProxy(*task, operators[id.get_index()]);
     }
 
@@ -476,5 +476,5 @@ inline bool is_applicable(RegressionOperatorProxy op, const PartialAssignment &a
     return true;
 }
 }
-#endif
 
+#endif

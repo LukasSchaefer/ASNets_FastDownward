@@ -120,7 +120,7 @@ operators(extract_regression_operators(task, *this)) { }
 bool contains_mutex(const vector<int> &values) {
 
     for (size_t var1 = 0; var1 < values.size(); ++var1) {
-        assert(in_bounds(var1, values));
+        assert(utils::in_bounds(var1, values));
             int value1 = values[var1];
         if (value1 == PartialAssignment::UNASSIGNED) {
             continue;
@@ -128,7 +128,7 @@ bool contains_mutex(const vector<int> &values) {
         FactPair fp1(var1, value1);
 
         for (size_t var2 = var1 + 1; var2 < values.size(); ++var2) {
-            assert(in_bounds(var2, values));
+            assert(utils::in_bounds(var2, values));
                 int value2 = values[var2];
             if (value2 == PartialAssignment::UNASSIGNED) {
                 continue;
