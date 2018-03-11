@@ -11,6 +11,7 @@
 ^downward/src/CMakeLists.txt.user$
 ^NeuralFastDownward/nbproject
 ^discussion/Ferber_Msc_Thesis_Src
+^downward/src/tst.py
 
 syntax: glob
 *.bak
