@@ -1,7 +1,9 @@
 from .base_conditions import Condition, CTrue, CFalse
 from .advanced_conditions import CThreshold, CModulo
 
-from ..variable import Variable
+from . import register
+
+from .. import append_register
 
 import abc
 
@@ -70,13 +72,22 @@ class MAdd(Mutator):
         self._variable.value = self._reset_value
 
 
+append_register(register, MAdd, "m_add")
+
+
 class MThreshold(MAdd):
     def __init__(self, variable, threshold, reset_value=None, step=1):
         MAdd.__init__(self, variable, None, CThreshold(variable, threshold),
                       CThreshold(variable, threshold), step, reset_value)
 
 
+append_register(register, MThreshold, "m_threshold")
+
+
 class MModulo(MAdd):
     def __init__(self, variable, threshold, reset_value=None, step=1):
         MAdd.__init__(self, variable, None, CModulo(variable, threshold),
                       CModulo(variable, threshold), step, reset_value)
+
+
+append_register(register, MModulo, "m_modulo")

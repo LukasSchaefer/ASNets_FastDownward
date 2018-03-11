@@ -1,3 +1,7 @@
+from . import register
+
+from .. import append_register
+
 import abc
 from future.utils import with_metaclass
 import re
@@ -8,6 +12,11 @@ class InvalidSorterInput(Exception):
 
 
 class ProblemSorter(with_metaclass(abc.ABCMeta, object)):
+    """
+    Base class for all problem sorter.
+    Do not forget to register your network subclass in this packages 'register'
+    dictionary via 'append_register' of the main package.
+    """
     def __init__(self, feed=None):
         self._input = None
         self._output = None
@@ -47,6 +56,10 @@ class LexicographicArraySorter(ProblemSorter):
         return self.get_output()
 
 
+append_register(register, LexicographicArraySorter, "lexicographic_sorter",
+                "lexico")
+
+
 class DifficultySorter(ProblemSorter):
     patterns_difficulty = [
         (re.compile("difficulty(-)?(\d)+"), 1),
@@ -84,3 +97,6 @@ class DifficultySorter(ProblemSorter):
             for elem in self.get_output()[key]:
                 l.append(elem)
         return l
+
+
+append_register(register, DifficultySorter, "dificulty_sorter", "diff")

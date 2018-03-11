@@ -1,4 +1,7 @@
-from .message import Message
+from . import register
+
+from .. import append_register
+from .. import Message
 
 def train(condition, sampler, network=None):
 
@@ -16,7 +19,7 @@ def train(condition, sampler, network=None):
             msg = network.train(msg_sampler, msg_network, data)
             network.store()
 
-sampler.finalize()
-network.finalize()
+    sampler.finalize()
+    network.finalize()
 
-
+append_register(register, train, "alternating", "alt")

@@ -1,6 +1,8 @@
 from .base_conditions import Condition, CFalse, CTrue
 
-from ..variable import Variable
+from . import register
+
+from .. import append_register
 
 
 class CFlip(Condition):
@@ -21,6 +23,9 @@ class CFlip(Condition):
         return self.value
 
 
+append_register(register, CFlip, "flip")
+
+
 class CThreshold(Condition):
     def __init__(self, variable, threshold):
         Condition.__init__(self)
@@ -31,6 +36,9 @@ class CThreshold(Condition):
         return self.variable.value >= self.threshold
 
 
+append_register(register, CThreshold, "threshold")
+
+
 class CModulo(Condition):
     def __init__(self, variable, modulo):
         Condition.__init__(self)
@@ -39,6 +47,9 @@ class CModulo(Condition):
 
     def _satisfied(self):
         return self.variable.value % self.modulo == 0
+
+
+append_register(register, CModulo, "modulo")
 
 
 class CHistory(Condition):
@@ -60,6 +71,9 @@ class CHistory(Condition):
 
         cnd = self.condition_class(*self.history)
         return cnd.satisfied()
+
+
+append_register(register, CHistory, "history")
 
 
 class CHistories(Condition):
@@ -84,3 +98,6 @@ class CHistories(Condition):
 
         cnd = self.condition_class(*self.history)
         return cnd.satisfied()
+
+
+append_register(register, CHistory, "histories")
