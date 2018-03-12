@@ -1,11 +1,11 @@
-from tree import TreeNode
+from . import TreeNode
 
 
 class ParseError(Exception):
     pass
 
 
-def parse(config):
+def parse_tree(config):
     """
     Parse an input configuration to a parse tree. This uses the same algorithm
     which FastDownwards search component uses (and therefore, the same syntax).
@@ -68,9 +68,8 @@ def parse(config):
 
 
     if cur_node.data != pseudoroot.data:
-        raise ParseError("Missing )")
+        raise ParseError("Missing )" + str(cur_node.data))
     if buffer != "":
         cur_node.add_child(TreeNode((buffer, key)))
 
-    cur_node.disp()
     return cur_node

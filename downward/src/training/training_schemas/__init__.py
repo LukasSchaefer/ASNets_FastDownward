@@ -2,7 +2,9 @@
 """
 register = {}
 
-from . import alternating_schema
+
+from .base_schema import Schema
+
 
 
 

@@ -1,6 +1,6 @@
 from . import register
 
-from .. import append_register
+from .. import parser
 
 import abc
 from future.utils import with_metaclass
@@ -56,7 +56,7 @@ class LexicographicArraySorter(ProblemSorter):
         return self.get_output()
 
 
-append_register(register, LexicographicArraySorter, "lexicographic_sorter",
+parser.append_register(register, LexicographicArraySorter, "lexicographic_sorter",
                 "lexico")
 
 
@@ -99,4 +99,4 @@ class DifficultySorter(ProblemSorter):
         return l
 
 
-append_register(register, DifficultySorter, "dificulty_sorter", "diff")
+parser.append_register(register, DifficultySorter, "dificulty_sorter", "diff")

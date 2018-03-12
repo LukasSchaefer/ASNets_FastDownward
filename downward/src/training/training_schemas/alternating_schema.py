@@ -1,25 +1,34 @@
 from . import register
+from . import Schema
 
-from .. import append_register
+from .. import parser
 from .. import Message
 
-def train(condition, sampler, network=None):
 
-    sampler.initialize()
-    if network is not None:
-        network.initialize()
+class AlternatingSchema(Schema):
+    def __init__(self, condition, sampler, network=None):
+        self.condition = condition
+        self.sampler = sampler
+        self.network = network
 
-    msg_sampler = Message()
-    msg_network = Message()
-    while condition.satisfied():
-        data, msg = sampler.sample(msg_sampler, msg_network)
-        #preprocess data
+    def train(self):
+        self.sampler.initialize()
+        if self.network is not None:
+            self.network.initialize()
 
-        if network is not None:
-            msg = network.train(msg_sampler, msg_network, data)
-            network.store()
+        msg_sampler = Message()
+        msg_network = Message()
+        while self.condition.satisfied():
+            data, msg = self.sampler.sample(msg_sampler, msg_network)
+            #preprocess data
 
-    sampler.finalize()
-    network.finalize()
+            if network is not None:
+                msg = self.network.train(msg_sampler, msg_network, data)
+                self.network.store()
 
-append_register(register, train, "alternating", "alt")
+        self.sampler.finalize()
+        if self.network is not None:
+            self.network.finalize()
+
+
+parser.append_register(register, AlternatingSchema, "alternating", "alt")

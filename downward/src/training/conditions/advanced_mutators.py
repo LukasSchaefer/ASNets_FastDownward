@@ -1,6 +1,10 @@
+from . import register
+
+from . import Condition
+
 from .base_mutators import Mutator
 
-
+from .. import parser
 
 class MGroup(Mutator):
     def __init__(self, mutators, condition_mutate=None,
@@ -16,6 +20,13 @@ class MGroup(Mutator):
     def _reset(self):
         for m in self._mutate():
             m._reset()
+
+    def parse(tree, definitions):
+        return parser.try_whole_obj_parse_process(tree, definitions,
+                                                  Condition, MGroup)
+
+
+parser.append_register(register, MGroup, "m_group")
 
 
 class MRoundRobin(Mutator):
@@ -34,6 +45,13 @@ class MRoundRobin(Mutator):
         self._next_mutator = 0
         for m in self._mutate():
             m._reset()
+
+    def parse(tree, definitions):
+        return parser.try_whole_obj_parse_process(tree, definitions,
+                                                  Condition, MRoundRobin)
+
+
+parser.append_register(register, MRoundRobin, "m_roundrobin")
 
 
 class MLeft2Right(Mutator):
@@ -54,3 +72,10 @@ class MLeft2Right(Mutator):
         self._next_mutator = 0
         for m in self._mutate():
             m._reset()
+
+    def parse(tree, definitions):
+        return parser.try_whole_obj_parse_process(tree, definitions,
+                                                  Condition, MLeft2Right)
+
+
+parser.append_register(register, MLeft2Right, "m_Left2Right")
