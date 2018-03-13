@@ -1,8 +1,8 @@
-from . import register
-
+from .. import main_register
 from .. import parser
+from .. import parser_tools as parset
 
-from ..parser import ArgumentException
+from ..parser_tools import ArgumentException
 
 import abc
 from future.utils import with_metaclass
@@ -31,7 +31,7 @@ class Condition(with_metaclass(abc.ABCMeta, object)):
     their type.
     """
 
-    arguments = parser.ClassArguments('Condition', None,
+    arguments = parset.ClassArguments('Condition', None,
         ('id', True, None, str)
     )
 
@@ -69,8 +69,8 @@ class Condition(with_metaclass(abc.ABCMeta, object)):
         """
         pass
 
-    def parse(tree, definitions):
-        obj = parser.try_lookup_obj(tree, definitions, Condition, None)
+    def parse(tree, item_cache):
+        obj = parser.try_lookup_obj(tree, item_cache, Condition, None)
         if obj is not None:
             return obj
         else:
@@ -79,12 +79,13 @@ class Condition(with_metaclass(abc.ABCMeta, object)):
                                     " defined condition via 'Condition(id=ID)'")
 
 
-parser.append_register(register, Condition, "condition", "cnd")
+main_register.append_register(Condition, "condition", "cnd")
+cregister = main_register.get_register(Condition)
 
 
 class CTrue(Condition):
 
-    arguments = parser.ClassArguments('CTrue', Condition.arguments)
+    arguments = parset.ClassArguments('CTrue', Condition.arguments)
 
     def __init__(self, id=None):
         Condition.__init__(self, id)
@@ -92,17 +93,17 @@ class CTrue(Condition):
     def _satisfied(self):
         return True
 
-    def parse(tree, definitions):
-        return parser.try_whole_obj_parse_process(tree, definitions,
-                                                  Condition, CTrue)
+    def parse(tree, item_cache):
+        return parser.try_whole_obj_parse_process(tree, item_cache,
+                                                  CTrue)
 
 
-parser.append_register(register, CTrue, "ctrue", "true", "t")
+main_register.append_register(CTrue, "ctrue", "true", "t")
 
 
 class CFalse(Condition):
 
-    arguments = parser.ClassArguments('CTrue', Condition.arguments)
+    arguments = parset.ClassArguments('CFalse', Condition.arguments)
 
     def __init__(self, id=None):
         Condition.__init__(self, id)
@@ -110,17 +111,17 @@ class CFalse(Condition):
     def _satisfied(self):
         return False
 
-    def parse(tree, definitions):
-        return parser.try_whole_obj_parse_process(tree, definitions,
-                                                  Condition, CFalse)
+    def parse(tree, item_cache):
+        return parser.try_whole_obj_parse_process(tree, item_cache,
+                                                  CFalse)
 
 
-parser.append_register(register, CFalse, "cfalse", "false", "f")
+main_register.append_register(CFalse, "cfalse", "false", "f")
 
 
 class CNot(Condition):
-    arguments = parser.ClassArguments('CNot', Condition.arguments,
-                                      ('condition', False, None, register),
+    arguments = parset.ClassArguments('CNot', Condition.arguments,
+                                      ('condition', False, None, cregister),
                                       order=['condition', 'id'])
 
     def __init__(self, condition, id=None):
@@ -130,17 +131,17 @@ class CNot(Condition):
     def _satisfied(self):
         return not self.condition.satisfied()
 
-    def parse(tree, definitions):
-        return parser.try_whole_obj_parse_process(tree, definitions,
-                                                  Condition, CNot)
+    def parse(tree, item_cache):
+        return parser.try_whole_obj_parse_process(tree, item_cache,
+                                                  CNot)
 
 
-parser.append_register(register, CNot, "not", "!", "~")
+main_register.append_register(CNot, "not", "!", "~")
 
 
 class CAnd(Condition):
-    arguments = parser.ClassArguments('CAnd', Condition.arguments,
-                                      ('conditions', False, None, register),
+    arguments = parset.ClassArguments('CAnd', Condition.arguments,
+                                      ('conditions', False, None, cregister),
                                       order=['conditions', 'id'])
 
     def __init__(self, conditions, id=None):
@@ -157,17 +158,17 @@ class CAnd(Condition):
                 sat = False
         return sat
 
-    def parse(tree, definitions):
-        return parser.try_whole_obj_parse_process(tree, definitions,
-                                                  Condition, CAnd)
+    def parse(tree, item_cache):
+        return parser.try_whole_obj_parse_process(tree, item_cache,
+                                                  CAnd)
 
 
-parser.append_register(register, CAnd, "and", "&")
+main_register.append_register(CAnd, "and", "&")
 
 
 class COr(Condition):
-    arguments = parser.ClassArguments('COr', Condition.arguments,
-                                      ('conditions', False, None, register),
+    arguments = parset.ClassArguments('COr', Condition.arguments,
+                                      ('conditions', False, None, cregister),
                                       order=['conditions', 'id'])
 
     def __init__(self, conditions, id=None):
@@ -184,18 +185,18 @@ class COr(Condition):
                 sat = True
         return sat
 
-    def parse(tree, definitions):
-        return parser.try_whole_obj_parse_process(tree, definitions,
-                                                  Condition, COr)
+    def parse(tree, item_cache):
+        return parser.try_whole_obj_parse_process(tree, item_cache,
+                                                  COr)
 
 
-parser.append_register(register, COr, "or", "|")
+main_register.append_register(COr, "or", "|")
 
 
 class CXor(Condition):
-    arguments = parser.ClassArguments('CXor', Condition.arguments,
-                                      ('condition1', False, None, register),
-                                      ('condition2', False, None, register),
+    arguments = parset.ClassArguments('CXor', Condition.arguments,
+                                      ('condition1', False, None, cregister),
+                                      ('condition2', False, None, cregister),
                                       order=['condition1', 'condition2', 'id'])
 
     def __init__(self, condition1, condition2, id=None):
@@ -206,10 +207,10 @@ class CXor(Condition):
     def _satisfied(self):
         return self.condition1.satisfied() ^ self.condition2.satisfied()
 
-    def parse(tree, definitions):
-        return parser.try_whole_obj_parse_process(tree, definitions,
-                                                  Condition, CXor)
+    def parse(tree, item_cache):
+        return parser.try_whole_obj_parse_process(tree, item_cache,
+                                                  CXor)
 
 
-parser.append_register(register, CXor, "xor", "^")
+main_register.append_register(CXor, "xor", "^")
 

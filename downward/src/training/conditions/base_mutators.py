@@ -1,9 +1,12 @@
+from . import cregister
+
 from .base_conditions import Condition, CTrue, CFalse
 from .advanced_conditions import CThreshold, CModulo
 
-from . import register
-
+from .. import main_register
 from .. import parser
+from .. import parser_tools as parset
+from .. import vregister
 
 import abc
 
@@ -40,7 +43,7 @@ class Mutator(Condition):
         if self._fired_reset:
             self._reset()
 
-        return
+        return self._satisfied()
 
     @abc.abstractmethod
     def _mutate(self):
@@ -53,8 +56,33 @@ class Mutator(Condition):
     def _satisfied(self):
         return self.fired_signal()
 
+    def parse(tree, item_cache):
+        obj = parser.try_lookup_obj(tree, item_cache, Mutator, None)
+        if obj is not None:
+            return obj
+        else:
+            raise parset.ArgumentException(
+                                    "The definition of the base mutation can "
+                                    "only be used for look up of any previously"
+                                    " defined mutations via 'Mutator(id=ID)'")
+
+
+main_register.append_register(Mutator, "mutator")
+mregister = main_register.get_register(Mutator)
 
 class MAdd(Mutator):
+    arguments = parset.ClassArguments('MAdd', Condition.arguments,
+                                      ('variable', False, None, vregister),
+                                      ('condition_mutate', True, None, cregister),
+                                      ('condition_signal', True, None, cregister),
+                                      ('condition_reset', True, None, cregister),
+                                      ('step', True, 1, int),
+                                      ('reset_value', True, 0, int),
+                                      order=['variable', 'condition_mutate',
+                                             'condition_signal',
+                                             'condition_reset', 'step',
+                                             'reset_value', 'id'])
+
     def __init__(self, variable, condition_mutate=None,
                  condition_signal = None, condition_reset=None,
                  step=1, reset_value=0, id=None):
@@ -71,35 +99,51 @@ class MAdd(Mutator):
     def _reset(self):
         self._variable.value = self._reset_value
 
-    def parse(tree, definitions):
-        return parser.try_whole_obj_parse_process(tree, definitions,
-                                                  Condition, MAdd)
+    def parse(tree, item_cache):
+        return parser.try_whole_obj_parse_process(tree, item_cache,
+                                                  MAdd)
 
 
-parser.append_register(register, MAdd, "m_add")
+main_register.append_register(MAdd, "m_add")
 
 
 class MThreshold(MAdd):
+    arguments = parset.ClassArguments('MThreshold', Condition.arguments,
+                                      ('variable', False, None, vregister),
+                                      ('threshold', False, None, int),
+                                      ('reset_value', True, 0, int),
+                                      ('step', True, 1, int),
+                                      order=['variable', 'threshold',
+                                             'reset_value', 'step', 'id'])
+
     def __init__(self, variable, threshold, reset_value=None, step=1, id=None):
         MAdd.__init__(self, variable, None, CThreshold(variable, threshold),
                       CThreshold(variable, threshold), step, reset_value, id)
 
-    def parse(tree, definitions):
-        return parser.try_whole_obj_parse_process(tree, definitions,
-                                                  Condition, MThreshold)
+    def parse(tree, item_cache):
+        return parser.try_whole_obj_parse_process(tree, item_cache,
+                                                  MThreshold)
 
 
-parser.append_register(register, MThreshold, "m_threshold")
+main_register.append_register(MThreshold, "m_threshold")
 
 
 class MModulo(MAdd):
-    def __init__(self, variable, threshold, reset_value=None, step=1, id=None):
-        MAdd.__init__(self, variable, None, CModulo(variable, threshold),
-                      CModulo(variable, threshold), step, reset_value, id)
+    arguments = parset.ClassArguments('MModulo', Condition.arguments,
+                                      ('variable', False, None, vregister),
+                                      ('modulo', False, None, int),
+                                      ('reset_value', True, 0, int),
+                                      ('step', True, 1, int),
+                                      order=['variable', 'modulo',
+                                             'reset_value', 'step', 'id'])
 
-    def parse(tree, definitions):
-        return parser.try_whole_obj_parse_process(tree, definitions,
-                                                  Condition, MModulo)
+    def __init__(self, variable, modulo, reset_value=None, step=1, id=None):
+        MAdd.__init__(self, variable, None, CModulo(variable, modulo),
+                      CModulo(variable, modulo), step, reset_value, id)
+
+    def parse(tree, item_cache):
+        return parser.try_whole_obj_parse_process(tree, item_cache,
+                                                  MModulo)
 
 
-parser.append_register(register, MModulo, "m_modulo")
+main_register.append_register(MModulo, "m_modulo")

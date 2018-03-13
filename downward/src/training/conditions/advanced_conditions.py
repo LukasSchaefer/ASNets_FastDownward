@@ -1,13 +1,17 @@
+from . import cregister
+
 from .base_conditions import Condition, CFalse, CTrue
 
-from . import class_reference_converter, register
-
+from .. import main_register
 from .. import parser
-from ..variable import register as var_register
+from .. import parser_tools as parset
+from .. import vregister
+
+
 
 class CFlip(Condition):
-    arguments = parser.ClassArguments('CFlip', Condition.arguments,
-                                      ('init_value', True, True, int),
+    arguments = parset.ClassArguments('CFlip', Condition.arguments,
+                                      ('init_value', True, True, parser.convert_bool),
                                       ('flip_points', True, [1], int),
                                       order=['init_value', 'flip_points', 'id'])
 
@@ -27,21 +31,21 @@ class CFlip(Condition):
             self.counter = 0
         return self.value
 
-    def parse(tree, definitions):
-        return parser.try_whole_obj_parse_process(tree, definitions,
-                                                  Condition, CFlip)
+    def parse(tree, item_cache):
+        return parser.try_whole_obj_parse_process(tree, item_cache,
+                                                  CFlip)
 
 
-parser.append_register(register, CFlip, "flip")
+main_register.append_register(CFlip, "flip")
 
 
 class CThreshold(Condition):
-    arguments = parser.ClassArguments('CThreshold', Condition.arguments,
-                                      ('variable', False, None, var_register),
+    arguments = parset.ClassArguments('CThreshold', Condition.arguments,
+                                      ('variable', False, None, vregister),
                                       ('threshold', False, None, int),
                                       order=['variable', 'threshold', 'id'])
 
-    def __init__(self, variable, threshold, id):
+    def __init__(self, variable, threshold, id=None):
         Condition.__init__(self, id)
         self.variable = variable
         self.threshold = threshold
@@ -49,21 +53,21 @@ class CThreshold(Condition):
     def _satisfied(self):
         return self.variable.value >= self.threshold
 
-    def parse(tree, definitions):
-        return parser.try_whole_obj_parse_process(tree, definitions,
-                                                  Condition, CThreshold)
+    def parse(tree, item_cache):
+        return parser.try_whole_obj_parse_process(tree, item_cache,
+                                                  CThreshold)
 
 
-parser.append_register(register, CThreshold, "threshold")
+main_register.append_register(CThreshold, "threshold")
 
 
 class CModulo(Condition):
-    arguments = parser.ClassArguments('CModulo', Condition.arguments,
-                                      ('variable', False, None, var_register),
+    arguments = parset.ClassArguments('CModulo', Condition.arguments,
+                                      ('variable', False, None, vregister),
                                       ('modulo', False, None, int),
                                       order=['variable', 'modulo', 'id'])
 
-    def __init__(self, variable, modulo, id):
+    def __init__(self, variable, modulo, id=None):
         Condition.__init__(self, id)
         self.variable = variable
         self.modulo = modulo
@@ -71,24 +75,24 @@ class CModulo(Condition):
     def _satisfied(self):
         return self.variable.value % self.modulo == 0
 
-    def parse(tree, definitions):
-        return parser.try_whole_obj_parse_process(tree, definitions,
-                                                  Condition, CModulo)
+    def parse(tree, item_cache):
+        return parser.try_whole_obj_parse_process(tree, item_cache,
+                                                  CModulo)
 
 
-parser.append_register(register, CModulo, "modulo")
+main_register.append_register(CModulo, "modulo")
 
 
 class CHistory(Condition):
-    arguments = parser.ClassArguments('CHistory', Condition.arguments,
+    arguments = parset.ClassArguments('CHistory', Condition.arguments,
                                       ('condition_class', False, None,
-                                       class_reference_converter.convert),
+                                       cregister.get_reference),
                                       ('length', False, None, int),
-                                      ('condition', False, None, register),
+                                      ('condition', False, None, cregister),
                                       order=['condition_class', 'length',
                                              'condition', 'id'])
 
-    def __init__(self, condition_class, length, condition, id):
+    def __init__(self, condition_class, length, condition, id=None):
         Condition.__init__(self, id)
         self.condition_class = condition_class
         self.length = length
@@ -107,28 +111,28 @@ class CHistory(Condition):
         cnd = self.condition_class(self.history)
         return cnd.satisfied()
 
-    def parse(tree, definitions):
-        return parser.try_whole_obj_parse_process(tree, definitions,
-                                                  Condition, CHistory)
+    def parse(tree, item_cache):
+        return parser.try_whole_obj_parse_process(tree, item_cache,
+                                                  CHistory)
 
 
-parser.append_register(register, CHistory, "history")
+main_register.append_register(CHistory, "history")
 
 
 class CHistories(Condition):
-    arguments = parser.ClassArguments('CHistories', Condition.arguments,
+    arguments = parset.ClassArguments('CHistories', Condition.arguments,
                                       ('history_condition_class', False, None,
-                                       class_reference_converter.convert),
+                                       cregister.get_reference),
                                       ('timestep_condition_class', False, None,
-                                       class_reference_converter.convert),
+                                       cregister.get_reference),
                                       ('length', False, None, int),
-                                      ('conditions', False, None, register),
+                                      ('conditions', False, None, cregister),
                                       order=['history_condition_class',
                                              'timestep_condition_class',
                                              'length', 'conditions', 'id'])
 
     def __init__(self, history_condition_class, timestep_condition_class,
-                 length, conditions, id):
+                 length, conditions, id=None):
         Condition.__init__(self, id)
         self.history_condition_class = history_condition_class
         self.timestep_condition_class = timestep_condition_class
@@ -151,9 +155,9 @@ class CHistories(Condition):
         cnd = self.history_condition_class(self.history)
         return cnd.satisfied()
 
-    def parse(tree, definitions):
-        return parser.try_whole_obj_parse_process(tree, definitions,
-                                                  Condition, CHistories)
+    def parse(tree, item_cache):
+        return parser.try_whole_obj_parse_process(tree, item_cache,
+                                                  CHistories)
 
 
-parser.append_register(register, CHistories, "histories")
+main_register.append_register(CHistories, "histories")

@@ -1,6 +1,8 @@
-from . import register
-
+from .. import main_register
 from .. import parser
+from .. import parser_tools as parset
+
+from ..parser_tools import ArgumentException
 
 import abc
 from future.utils import with_metaclass
@@ -17,7 +19,8 @@ class ProblemSorter(with_metaclass(abc.ABCMeta, object)):
     Do not forget to register your network subclass in this packages 'register'
     dictionary via 'append_register' of the main package.
     """
-    def __init__(self, feed=None):
+    def __init__(self, feed=None, id=None):
+        self.id = id
         self._input = None
         self._output = None
 
@@ -45,6 +48,10 @@ class ProblemSorter(with_metaclass(abc.ABCMeta, object)):
         pass
 
 
+main_register.append_register(ProblemSorter, "sorter")
+pregister = main_register.get_register(ProblemSorter)
+
+
 class LexicographicArraySorter(ProblemSorter):
     def __init__(self, feed):
         ProblemSorter.__init__(self, feed)
@@ -56,7 +63,7 @@ class LexicographicArraySorter(ProblemSorter):
         return self.get_output()
 
 
-parser.append_register(register, LexicographicArraySorter, "lexicographic_sorter",
+main_register.append_register(LexicographicArraySorter, "lexicographic_sorter",
                 "lexico")
 
 
@@ -99,4 +106,4 @@ class DifficultySorter(ProblemSorter):
         return l
 
 
-parser.append_register(register, DifficultySorter, "dificulty_sorter", "diff")
+main_register.append_register(DifficultySorter, "dificulty_sorter", "diff")

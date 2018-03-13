@@ -1,4 +1,6 @@
 from . import parser
+from . import parser_tools as parset
+from . import main_register
 
 
 register = {}
@@ -10,7 +12,7 @@ class VariableTypeException(Exception):
 
 class Variable(object):
 
-    arguments = parser.ClassArguments('Variable', None,
+    arguments = parset.ClassArguments('Variable', None,
         ("value", True, None, str),
         ('vtype', True, None, str),
         ('id', True, None, str)
@@ -49,9 +51,10 @@ class Variable(object):
         return ("Variable(" + str(self.value) + ", " + str(self.vtype) + ", "
                 + str(self.id) + ")")
 
-    def parse(tree, definitions):
-        return parser.try_whole_obj_parse_process(tree, definitions,
-                                                  Variable, None, Variable)
+    def parse(tree, item_cache):
+        return parser.try_whole_obj_parse_process(tree, item_cache,
+                                                  Variable, True)
 
 
-parser.append_register(register, Variable, "variable", "var", "v")
+main_register.append_register(Variable, "variable", "var", "v")
+vregister = main_register.get_register(Variable)

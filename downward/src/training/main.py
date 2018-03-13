@@ -1,12 +1,13 @@
-from .parser import ArgumentException, construct
+from .parser_tools import ArgumentException, ItemCache
+from .parser import construct
+
 from . import conditions
 from . import networks
+from . import main_register
 from . import problem_sorter
 from . import samplers
 from . import training_schemas
-from . import tree_parser
 from . import variable
-
 
 import sys
 
@@ -14,15 +15,7 @@ import sys
 
 
 def main(argv):
-    definitions = {}
-    definitions[variable.Variable] = {}
-    definitions[conditions.Condition] = {}
-    definitions[networks.Network] = {}
-    definitions[problem_sorter.ProblemSorter] = {}
-    definitions[samplers.Sampler] = {}
-    definitions[training_schemas.Schema] = {}
-    definitions["global"] = {}
-
+    item_cache = ItemCache()
 
     main_schema = None
     buffer = []
@@ -37,7 +30,7 @@ def main(argv):
             if len(argv) <= idx_arg + 1:
                 raise ArgumentException("After " + arg + " a further argument"
                                         "was expected defining a variable.")
-            construct(definitions, variable.register,
+            construct(item_cache, main_register.get_register(variable.Variable),
                       argv[idx_arg + 1])
             idx_arg += 1
 
@@ -45,27 +38,43 @@ def main(argv):
             if len(argv) <= idx_arg + 1:
                 raise ArgumentException("After " + arg + " a further argument"
                                         "was expected defining a condition.")
-            construct(definitions, conditions.register,
+            construct(item_cache, main_register.get_register(conditions.Condition),
                       argv[idx_arg + 1])
             idx_arg += 1
 
         idx_arg += 1
 
     print("Definitions")
-    for cat in definitions:
-        print("\t", str(cat))
-        for id in definitions[cat]:
-            obj = definitions[cat][id]
-            print("\t\t", id , ' - ', obj)
+    print(item_cache.to_string())
 
-    print(definitions['global']['tst'].satisfied())
-    print(definitions['global']['tst'].satisfied())
-    print(definitions['global']['tst'].satisfied())
-    print(definitions['global']['tst'].satisfied())
-    print(definitions['global']['tst'].satisfied())
-    print(definitions['global']['tst'].satisfied())
+    print(item_cache.get(None, 'v0').value)
+    print(item_cache.get(None, 'v2').value)
 
-    print(definitions['global']['tst'].id)
+    print(item_cache.get(None, 'tst').next())
+    print(item_cache.get(None, 'v0').value)
+    print(item_cache.get(None, 'v2').value)
+
+    print(item_cache.get(None, 'tst').next())
+    print(item_cache.get(None, 'v0').value)
+    print(item_cache.get(None, 'v2').value)
+
+    print(item_cache.get(None, 'tst').next())
+    print(item_cache.get(None, 'v0').value)
+    print(item_cache.get(None, 'v2').value)
+
+    print(item_cache.get(None, 'tst').next())
+    print(item_cache.get(None, 'v0').value)
+    print(item_cache.get(None, 'v2').value)
+
+    print(item_cache.get(None, 'tst').next())
+    print(item_cache.get(None, 'v0').value)
+    print(item_cache.get(None, 'v2').value)
+
+    print(item_cache.get(None, 'tst').next())
+    print(item_cache.get(None, 'v0').value)
+    print(item_cache.get(None, 'v2').value)
+
+    print(item_cache.get(None, 'tst').id)
 
 
 

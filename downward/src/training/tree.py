@@ -1,9 +1,10 @@
 from __future__ import print_function
 
+
 class TreeNode(object):
     def __init__(self, data, parent=None, children=None):
         self.data = data
-        #if needed, then parent.add_child will set the correct parent value
+        # if needed, then parent.add_child will set the correct parent value
         self._parent = None
 
         if parent is None:

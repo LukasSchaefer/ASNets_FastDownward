@@ -1,9 +1,18 @@
+# independent modules
 from .message import Message
+
+# parsing related modules
 from .tree import TreeNode
 from .tree_parser import parse_tree
-from .variable import Variable
 
+from .parser_tools import main_register
+from . import parser_tools
 from . import parser
+
+
+# modules defining the objects for the user
+from .variable import Variable, vregister
+
 from . import conditions
 from . import networks
 from . import problem_sorter

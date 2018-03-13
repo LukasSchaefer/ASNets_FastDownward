@@ -1,7 +1,8 @@
-from . import register
-from . import Schema
+from . import Schema, sregister
 
+from .. import main_register
 from .. import parser
+from .. import parser_tools as parset
 from .. import Message
 
 
@@ -31,4 +32,4 @@ class AlternatingSchema(Schema):
             self.network.finalize()
 
 
-parser.append_register(register, AlternatingSchema, "alternating", "alt")
+main_register.append_register(AlternatingSchema, "alternating", "alt")
