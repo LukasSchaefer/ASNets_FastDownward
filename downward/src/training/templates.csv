@@ -1,0 +1,1 @@
+sample_schema;-schema;gschema=alt(not(threshold(Var(0,int,id=rounds), 5)), DirSingleSampler(../../problems, s_lex()), keras(pathNN), variables={rounds=var(id=rounds)})

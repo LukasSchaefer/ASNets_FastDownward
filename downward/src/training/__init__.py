@@ -17,6 +17,7 @@ from . import conditions
 from . import networks
 from . import problem_sorter
 from . import samplers
+from . import networks
 from . import training_schemas as schemas
 from . import variable
 

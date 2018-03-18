@@ -222,7 +222,8 @@ class ItemCache(object):
             if silent:
                 return None
             else:
-                raise ArgumentException("Unable to look up '" + str(clazz)
+                raise ArgumentException("Unable to look up '"
+                                        + ('global' if clazz is None else str(clazz))
                                         + "' with id '" + str(id) + "'.")
         else:
             if register is None or register.is_class_registered(obj):
@@ -248,7 +249,8 @@ class ItemCache(object):
 
 
 class ClassArguments:
-    def __init__(self, class_name, base_class_arguments, *args, order=None):
+    def __init__(self, class_name, base_class_arguments, *args, variables = {},
+                 order=None):
         """
         List of arguments which a class needs to be constructe. Each entry is
         of the form (name, optional, default, register_or_converter) with:
@@ -264,6 +266,9 @@ class ClassArguments:
                                 If the subtrees root is a list, then this is
                                 done for every child of it and the results are
                                 put into a list.
+                                The register can be a list of registers (then
+                                the object has to be uniquely defined in one of
+                                them)
 
         :param class_name: name of the class associated with this object
         :param args: sequence of (name, optional, default,
@@ -279,6 +284,17 @@ class ClassArguments:
                                 internally converted to the previous case
                             Callable => calls the callable with the received
                                         data.
+        :param variables: Optional. Describes the variables which the associated
+                            class may use to provide other objects access to
+                            some data. The format is
+                            [(name, initial value, value type)].
+                            The order of variables is first come the variables
+                            from the base_class_arguments (in the order defined
+                            there), then are added the variables defined here.
+                            Some variable description has the same name
+                            as a previous one, then it modifies the previous one
+                            and does not appear again in the order.
+        :param order: defines a new order for the args order.
         """
         self.class_name = class_name
 
@@ -298,6 +314,14 @@ class ClassArguments:
                 arg = (arg[0], arg[1], arg[2], [arg[3]])
 
             self.parameters[arg[0]] = arg
+
+
+        self.variables_order = []
+        self.variables = {}
+        for (var_key, init, vtype) in variables:
+            if var_key not in self.variables:
+                self.variables_order.append(var_key)
+            self.variables[var_key] = (init, vtype)
 
         if order is not None:
             self.change_order(*order)
@@ -361,6 +385,17 @@ class ClassArguments:
                 obj.append(obj_child)
             return obj
 
+        elif tree.data[0] == "map":
+            obj = {}
+            for child in tree.children:
+                obj_child = self.parse(parameter, child, item_cache)
+                map_key = child.data[1]
+                if map_key in obj:
+                    raise ArgumentException("Multiple objects defined for the"
+                                            " same map key : " + map_key)
+                obj[map_key] = obj_child
+            return obj
+
         else:
             if reg_or_conv is None:
                 return tree.data[0]
@@ -394,3 +429,48 @@ class ClassArguments:
 
 
         return obj
+
+
+    def validate_and_return_variables(self, vars, order=None):
+        """
+        If the given variable object has not defined the initial value and/or
+        the value type, this will be set here, too.
+        :param vars:
+        :param order:
+        :return:
+        """
+
+        for var_key in vars:
+            if var_key not in self.variables:
+                continue
+
+            init, vtype = self.variables[var_key]
+            var = vars[var_key]
+            if var.value is None:
+                var.value = init
+            elif var.value != init:
+                raise ArgumentException("A variable given to " + self.class_name
+                                        + " has an invalid initial value ("
+                                        + str(var.value) + " instead of "
+                                        + str(init) + ").")
+
+            if var.vtype is None:
+                var.ctype = vtype
+            elif var.vtype != vtype:
+                raise ArgumentException("A variable given to " + self.class_name
+                                        + " has an invalid value type("
+                                        + str(var.vtype) + " instead of "
+                                        + str(vtype) + ").")
+
+        to_return = []
+        order = self.variables_order if order is None else order
+
+        for var_key in order:
+            if var_key not in vars:
+                to_return.append(None)
+            else:
+                to_return.append(vars[var_key])
+                del vars[var_key]
+
+        return to_return
+

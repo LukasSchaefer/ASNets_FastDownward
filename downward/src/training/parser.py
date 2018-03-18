@@ -1,5 +1,4 @@
 from . import parse_tree
-from . import parser_tools as parset
 
 from .parser_tools import ArgumentException
 
@@ -75,6 +74,8 @@ def construct(item_cache, register, arg):
         else:
             item_cache.add(item_key, item_obj, glob=True)
 
+    return item_obj
+
 
 def map_object_parameters(tree, class_arguments):
     parameters = class_arguments.order
@@ -148,7 +149,7 @@ def try_construct_from_tree_and_class_arguments(clazz, tree, item_cache):
     call = {}
     for name in clazz.arguments.order:
         call[name] = clazz.arguments.parse(name, args[name], item_cache)
-    print(clazz)
+
     obj = clazz(**call)
 
     return obj
@@ -162,7 +163,7 @@ def try_whole_obj_parse_process(tree, item_cache,
         return obj
 
     # if clazz is also None, can this happen?
-    #if instantiation_clazz is None:
+    # if instantiation_clazz is None:
     #    raise ValueError("Cannot parse object, because the concrete class "
     #                     "reference is missing")
 
@@ -182,3 +183,34 @@ def try_whole_obj_parse_process(tree, item_cache,
 
     else:
         return None
+
+
+
+def load_csv_templates(path, templates):
+    with open(path, 'r') as f:
+        for line in f:
+            if line.startswith("#") or line == "":
+                continue
+
+            parts = line.split(";")
+            if len(parts) < 3:
+                raise ValueError("Invalid template in CSV template " + path
+                                 + ". CSV tempaltes have the format:\n"
+                                 "KEY;(optional)ARG KEY (e.g. -variable); X; Y;"
+                                   " ... . The KEY defines later the template."
+                                   "If a template uses an existing key, it"
+                                   "overwrites the old template of that key."
+                                   "ARG KEY defines which argument the template"
+                                   "belongs to. If the template is included with"
+                                   "the argument key, then it inserts '-ARG KEY'"
+                                   "in the command line. Everything after"
+                                   "(X,Y,...) is always inserted into the"
+                                   "argument list. Each entry separated by ';'"
+                                   "is inserted as an own element.")
+
+            key = parts[0]
+            arg = parts[1]
+            items = parts[2:]
+            for i in range(len(items)):
+                items[i] = items[i]
+            templates[key] = (arg, items)

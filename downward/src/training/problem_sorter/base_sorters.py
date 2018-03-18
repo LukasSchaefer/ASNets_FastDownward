@@ -16,25 +16,57 @@ class InvalidSorterInput(Exception):
 class ProblemSorter(with_metaclass(abc.ABCMeta, object)):
     """
     Base class for all problem sorter.
-    Do not forget to register your network subclass in this packages 'register'
-    dictionary via 'append_register' of the main package.
+    Do not forget to register your problem sorter subclass.
+    via 'main_register.append_register' of the main package.
     """
-    def __init__(self, feed=None, id=None):
+
+    # needs reference to ClassRegister of ProblemSorter, thus, has to be
+    # defined after class ProblemSorter.
+    arguments = None
+
+    def __init__(self, prev_sorter=None, id=None):
+        """
+        CONSTRUCTOR
+        :param prev_sorter: if not None, then on calling sort the input is
+                            first given to prev_sorter and the output of prev_
+                            sorter is used as input
+        :param id: id of the ProblemSorter
+        """
         self.id = id
-        self._input = None
+        self._prev = prev_sorter
         self._output = None
 
-        feed = feed.get_output() if isinstance(feed, ProblemSorter) else feed
+    def sort(self, feed, linearize=False):
+        """
+        Sorts the problems given to the function. The expected data format of
+        feed depends on the implementation of _sort in concrete subclasses.
+        If the sorter has a previous sorter registered, then feed is given
+        to the previous sorter and the output is further processed by this
+        sorter.
+        :param feed: problems to sort
+        :return: sorted structure of problems (not necessarily vector)
+        """
+        if self._prev is not None:
+            feed = self._prev.sort(feed)
 
-        if feed is not None:
-            self.sort(feed)
-
-    def sort(self, feed):
-        self._input = feed
         self._output = self._sort(feed)
 
-    def get_input(self):
-        return self._input
+        return self.linearize() if linearize else self._output
+
+    def linearize(self, feed=None):
+        """
+        Linearizes data in the format of the output of this sorter into a
+        vector.
+        :param feed: if None, then the previously sorted output is linearized,
+                     otherwise feed is linearized
+        :return: vector of sorted problems
+        """
+        if feed is None:
+            feed = self._output
+        return self._linearize(feed)
+
+    def get_prev(self):
+        return self._prev
 
     def get_output(self):
         return self._output
@@ -44,30 +76,58 @@ class ProblemSorter(with_metaclass(abc.ABCMeta, object)):
         pass
 
     @abc.abstractmethod
-    def linearize(self):
+    def _linearize(self, feed):
         pass
 
+    def parse(tree, item_cache):
+        obj = parser.try_lookup_obj(tree, item_cache, ProblemSorter, None)
+        if obj is not None:
+            return obj
+        else:
+            raise ArgumentException("The definition of the base problem sorter "
+                                    "can only be used for look up of any "
+                                    "previously defined condition via "
+                                    "'ProblemSorter(id=ID)'")
 
-main_register.append_register(ProblemSorter, "sorter")
+
+main_register.append_register(ProblemSorter, "problemsorter", "sorter")
 pregister = main_register.get_register(ProblemSorter)
+
+ProblemSorter.arguments = parset.ClassArguments('ProblemSorter', None,
+        ('prev_sorter', True, None, pregister),
+        ('id', True, None, str)
+    )
+
 
 
 class LexicographicArraySorter(ProblemSorter):
-    def __init__(self, feed):
-        ProblemSorter.__init__(self, feed)
+
+    arguments = parset.ClassArguments('LexicographicArraySorter',
+                                      ProblemSorter.arguments)
+
+    def __init__(self, prev_sorter=None, id=None):
+        ProblemSorter.__init__(self, prev_sorter, id)
 
     def _sort(self, feed):
         return sorted(feed)
 
-    def linearize(self):
-        return self.get_output()
+    def _linearize(self, feed):
+        return feed
+
+    def parse(tree, item_cache):
+        return parser.try_whole_obj_parse_process(tree, item_cache,
+                                                  LexicographicArraySorter)
 
 
 main_register.append_register(LexicographicArraySorter, "lexicographic_sorter",
-                "lexico")
+                "s_lex")
 
 
 class DifficultySorter(ProblemSorter):
+
+    arguments = parset.ClassArguments('DifficultySorter',
+                                      ProblemSorter.arguments)
+
     patterns_difficulty = [
         (re.compile("difficulty(-)?(\d)+"), 1),
         (re.compile("diff(-)?(\d)+"),1),
@@ -75,8 +135,8 @@ class DifficultySorter(ProblemSorter):
 
     ]
 
-    def __init__(self, feed):
-        ProblemSorter.__init__(self, feed)
+    def __init__(self, prev_sorter=None, id=None):
+        ProblemSorter.__init__(self, prev_sorter, id)
 
     def _sort(self, feed):
         diffs = {}
@@ -84,7 +144,7 @@ class DifficultySorter(ProblemSorter):
             diff = None
             for (pattern, idx) in DifficultySorter.patterns_difficulty:
                 matches = pattern.findall(s)
-                if len(matches) == 2:
+                if len(matches) == 1:
                     diff = int(matches[0][idx])
                     break
             if diff is None:
@@ -98,12 +158,15 @@ class DifficultySorter(ProblemSorter):
 
         return diffs
 
-    def linearize(self):
+    def _linearize(self, feed):
         l = []
-        for key in sorted(self.get_output().keys()):
-            for elem in self.get_output()[key]:
+        for key in sorted(feed):
+            for elem in feed[key]:
                 l.append(elem)
         return l
 
+    def parse(tree, item_cache):
+        return parser.try_whole_obj_parse_process(tree, item_cache,
+                                                  DifficultySorter)
 
-main_register.append_register(DifficultySorter, "dificulty_sorter", "diff")
+main_register.append_register(DifficultySorter, "difficulty_sorter", "s_diff")

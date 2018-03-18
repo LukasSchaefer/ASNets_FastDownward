@@ -55,6 +55,21 @@ def parse_tree(config):
             if cur_node.data[0] != "list":
                 raise ParseError("Mismatched brackets " + config[: idx_c + 1])
             cur_node = cur_node.parent
+        elif c == "{":
+            if buffer != "":
+                raise ParseError("Misplaced opening bracket {"
+                                 + config[:idx_c + 1])
+            cur_node.add_child(TreeNode(("map", key)))
+            key = ""
+            cur_node = cur_node.last_child
+        elif c == "}":
+            if buffer != "":
+                cur_node.add_child(TreeNode((buffer, key)))
+                buffer = ""
+                key = ""
+            if cur_node.data[0] != "map":
+                raise ParseError("Mismatched brackets " + config[: idx_c + 1])
+            cur_node = cur_node.parent
         elif c == ",":
             pass
         elif c == "=":
