@@ -167,7 +167,7 @@ class ItemCache(object):
 
     def add(self, id, item, glob=False):
         if item is None:
-            raise ArgumentException("An item of value None cannot be chached.")
+            raise ArgumentException("An item of value None cannot be cached.")
 
         if glob:
             self._add(id, item, "global", None)
@@ -246,6 +246,12 @@ class ItemCache(object):
                                         "cached variable. This variable cannot "
                                         "be given parameters again.")
         return obj
+
+    def apply_on_all(self, func):
+        for key in self._cache:
+            if key == "global" or key.__base__ == object:
+                for item in self._cache[key]:
+                    func(item)
 
 
 class ClassArguments:

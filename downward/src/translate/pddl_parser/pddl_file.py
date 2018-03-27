@@ -5,7 +5,7 @@ except ImportError:
     # Python 2.x
     from codecs import open as file_open
 
-import options
+#import options
 
 from . import lisp_parser
 from . import parsing_functions

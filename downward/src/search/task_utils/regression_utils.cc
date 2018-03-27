@@ -14,8 +14,9 @@ RegressionCondition::RegressionCondition(int var, int value)
 : data(FactPair(var, value)) { }
 
 bool RegressionCondition::is_satisfied(const PartialAssignment &assignment) const {
-    int current_val = assignment[data.var].get_value();
-    return current_val == PartialAssignment::UNASSIGNED || current_val == data.value;
+    return !assignment.assigned(data.var) || data.value == assignment[data.var].get_value();
+    //int current_val = assignment[data.var].get_value();
+    //return current_val == PartialAssignment::UNASSIGNED || current_val == data.value;
 }
 
 RegressionConditionProxy::RegressionConditionProxy(const AbstractTask& task, const RegressionCondition& condition)

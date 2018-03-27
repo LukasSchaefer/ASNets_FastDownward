@@ -2,6 +2,7 @@ from .parser_tools import ArgumentException, ItemCache
 from .parser import construct
 
 from . import conditions
+from . import environments
 from . import networks
 from . import main_register
 from . import parser
@@ -41,6 +42,7 @@ add_predefinitions(problem_sorter.ProblemSorter, "-sort", "-sorter",
 add_predefinitions(samplers.Sampler, "-sampler", "-samp")
 add_predefinitions(networks.Network, "-network", "-net")
 add_predefinitions(training_schemas.Schema, "-schema")
+add_predefinitions(environments.Environment, "-environment", "-env")
 
 
 def construct_from_cmd(item_cache, key, value):
@@ -68,11 +70,20 @@ def process_buffer(item_cache, buffer):
     buffer.clear()
 
 
+def register_all_default_environment(item_cache, env):
+    def register_default_environment(item):
+        if hasattr(item, "_environment"):
+            if item._environment is None:
+                item._environment = env
+    item_cache.apply_on_all(register_default_environment)
+
 
 def main(argv):
     item_cache = ItemCache()
     templates = {}
     main_schema = None
+    environment = None
+
     buffer = []
     idx_arg = 0
 
@@ -90,6 +101,13 @@ def main(argv):
 
             idx_arg += 1
 
+        elif arg == "-default-environment":
+            if idx_arg + 1 >= len(argv):
+                raise ArgumentException ("After " + arg + " has to follow an"
+                                         "environment definition.")
+            environment = construct_from_cmd(item_cache, "-environment",
+                                             argv[idx_arg + 1])
+            idx_arg += 1
         elif arg in ["-template", "-tpl"]:
             if len(argv) < idx_arg +2:
                 raise ValueError("After " + arg + " has to follow either "
@@ -127,6 +145,11 @@ def main(argv):
             buffer.append(arg)
 
         idx_arg += 1
+
+    #set up environment
+    if environment is None:
+        environment = environments.Environment()
+    register_all_default_environment(item_cache, environment)
 
     if main_schema is None:
         print("No schema defined to run. The last argument given shall be a"

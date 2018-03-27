@@ -13,7 +13,9 @@ from . import parser
 # modules defining the objects for the user
 from .variable import Variable, vregister
 
+from . import bridges
 from . import conditions
+from . import environments
 from . import networks
 from . import problem_sorter
 from . import samplers

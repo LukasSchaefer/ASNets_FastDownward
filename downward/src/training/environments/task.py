@@ -1,0 +1,104 @@
+import subprocess
+
+
+class InvalidMethodCallException(Exception):
+    pass
+
+class Task(object):
+    UNINITIALIZED = -3
+    INITIALIZED   = -2
+    RUNNING       = -1
+
+    def __init__(self, name, alarms=None):
+        self._name = name
+        self._status = Task.UNINITIALIZED
+        self._result = None
+        self.alarms = set() if alarms is None else alarms
+
+    def _get_name(self):
+        return self._name
+
+    def _get_status(self):
+        return self._status
+
+    def _get_result(self):
+        return self._result
+
+    name = property(_get_name)
+    status = property(_get_status)
+    result = property(_get_result)
+
+    def add_alarm(self, event):
+        self.alarms.add(event)
+
+    def del_alarm(self, event):
+        self.alarms.remove(event)
+
+    def reset(self):
+        self._status = Task.UNINITIALIZED
+        self._result = None
+
+    def _change_status(self, new):
+        self._status = new
+        if self._status >= 0:
+            for alarm in self.alarms:
+                alarm.set()
+
+    @abc.abstractmethod
+    def _initialize(self):
+        pass
+
+    def initialize(self):
+        if not self._status == Task.UNINITIALIZED:
+            raise InvalidMethodCallException("Cannot initialize an already initialized task: ", self._name)
+        else:
+            self._initialize()
+            self._change_status(Task.INITIALIZED)
+
+    @abc.abstractmethod
+    def _execute(self):
+        """
+        Should set self._result if it has produced results
+        :return: status code of executed task (0 = OK, 1+ = Error)
+        """
+        pass
+
+    def execute(self):
+        if not self._status == Task.INITIALIZED:
+            raise InvalidMethodCallException("Cannot execute an uninitialized or already executed task: ", self._name)
+        else:
+            self._change_status(Task.RUNNING)
+            self._change_status(self._execute())
+
+    def run(self):
+        if self._status == Task.UNINITIALIZED:
+            self.initialize()
+
+        if self._status == Task.INITIALIZED:
+            self.execute()
+
+
+class DelegationTask(Task):
+    def __init__(self, name, func_initialize, func_execute, alarms=None):
+        Task.__init__(self, name, alarms)
+        self._func_initialize = func_initialize
+        self._func_execute = func_execute
+
+    def _initialize(self):
+        self._func_initialize(self)
+
+    def _execute(self):
+        return self._func_execute(self)
+
+
+class SubprocessTask(Task):
+    def __init__(self, name, command, alarms):
+        Task.__init__(self, name, alarms)
+        self._command = command
+
+    def _initialize(self):
+        pass
+
+    def _execute(self):
+        return subprocess.call(self._command, shell=False)
+

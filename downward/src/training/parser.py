@@ -3,6 +3,16 @@ from . import parse_tree
 from .parser_tools import ArgumentException
 
 
+def convert_int_or_inf(value):
+    try:
+        return int(value)
+    except ValueError as e:
+        if value == "inf":
+            return float("inf")
+        elif value == "-inf":
+            return float("-inf")
+        raise e
+
 def convert_bool(value):
     if value in [True, 1, "t", "T", "1", "true", "True"]:
         return True

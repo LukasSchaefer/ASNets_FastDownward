@@ -1,6 +1,7 @@
 from __future__ import print_function
 
 from . import axioms
+from . import conditions
 from . import predicates
 
 
@@ -21,6 +22,27 @@ class Task(object):
         self.axioms = axioms
         self.axiom_counter = 0
         self.use_min_cost_metric = use_metric
+        self.type_parent = self.build_type_lookup()
+
+    def build_type_lookup(self):
+        # parent type has to defined before child
+        lookup = {}
+        for type in self.types:
+            lookup[type.name] = type.basetype_name
+        return lookup
+
+    def get_object_type_mapping(self):
+        mapping = {}
+        for object in self.objects:
+            type = object.type_name
+            while True:
+                if type not in mapping:
+                    mapping[type] = []
+                mapping[type].append(object)
+                if type not in self.type_parent:
+                    break
+                type = self.type_parent[type]
+        return mapping
 
     def add_axiom(self, parameters, condition):
         name = "new-axiom@%d" % self.axiom_counter
@@ -57,6 +79,27 @@ class Task(object):
             print("Axioms:")
             for axiom in self.axioms:
                 axiom.dump()
+
+    def get_groundings(self, ignore_equal=True):
+        groundings = set()
+        for pred in self.predicates:
+            if pred.name == "=":
+                continue
+            assignments = pred.get_groundings(self.get_object_type_mapping())
+            for assignment in assignments:
+                atom = conditions.Atom(pred, assignment)
+                groundings.add(atom)
+        return groundings
+
+    def str_groundings(self, groundings=None, ignore_equal=True):
+        if groundings is None:
+            groundings = self.get_groundings(ignore_equal=ignore_equal)
+        str_groundings = set()
+        for atom in groundings:
+            str_groundings.add(str(atom))
+        return str_groundings
+
+
 
 class Requirements(object):
     def __init__(self, requirements):

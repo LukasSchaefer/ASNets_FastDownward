@@ -66,6 +66,8 @@ int FFHeuristic::compute_heuristic(const GlobalState &global_state) {
             h_ff += task_proxy.get_operators()[op_no].get_cost();
         }
     }
+    //global_state.dump_pddl();
+    //cout << " HFF: " << h_ff << endl;
     return h_ff;
 }
 

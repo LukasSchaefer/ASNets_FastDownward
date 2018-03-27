@@ -470,7 +470,8 @@ public:
 namespace task_properties {
 inline bool is_applicable(RegressionOperatorProxy op, const PartialAssignment &assignment) {
     for (FactProxy precondition : op.get_preconditions()) {
-        if (assignment[precondition.get_variable()] != precondition)
+        if (assignment.assigned(precondition.get_variable())
+                && assignment[precondition.get_variable()] != precondition)
             return false;
     }
     return true;

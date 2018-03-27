@@ -675,7 +675,6 @@ def main():
     with timers.timing("Parsing", True):
         task = pddl_parser.open(
             domain_filename=options.domain, task_filename=options.task)
-
     with timers.timing("Normalizing task"):
         normalize.normalize(task)
 

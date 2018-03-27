@@ -12,8 +12,14 @@
 ^NeuralFastDownward/nbproject
 ^discussion/Ferber_Msc_Thesis_Src
 ^downward/src/tst.py
-
+^problems*
+^scripts*
+^sample.*
 syntax: glob
+*.sample
+*.meta
+*.pddl
+*.orig
 *.bak
 *.o
 *.pyc

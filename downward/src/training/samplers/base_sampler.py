@@ -98,7 +98,7 @@ main_register.append_register(Sampler, "sampler")
 saregister = main_register.get_register(Sampler)
 
 
-class DirectorySampler(with_metaclass(abc.ABCMeta, Sampler)):
+class DirectorySampler(Sampler):
     arguments = parset.ClassArguments('DirectorySampler', Sampler.arguments,
                                       ('directory', False, None, str),
                                       ('problem_sorter', False, None,
@@ -119,32 +119,47 @@ class DirectorySampler(with_metaclass(abc.ABCMeta, Sampler)):
         problem_sorter.sort(files)
 
         self._linearized_problems = problem_sorter.linearize()
+        self._next_problem = 0
         self._sorted_problems = problem_sorter.get_output()
+
+    def _next(self):
+        if self._next_problem < len(self._linearized_problems):
+            return self._linearized_problems[self._next_problem]
+            self._next_problem += 1
+        return None
 
 
 main_register.append_register(DirectorySampler, "directorysampler")
 
 
-class DirSingleSampler(DirectorySampler):
-    arguments = parset.ClassArguments('DirSingleSampler', DirectorySampler.arguments)
+class BatchDirectorySampler(DirectorySampler):
+    arguments = parset.ClassArguments('BatchDirectorySampler',
+                                      DirectorySampler.arguments,
+                                      ('batch', False, None, parser.convert_int_or_inf),
+                                      order=["batch", "directory",
+                                             "problem_sorter",
+                                             "variables", "id"]
+                                      )
 
-    def __init__(self, directory, problem_sorter, variables={}, id=None):
+    def __init__(self, batch, directory, problem_sorter, variables={}, id=None):
         DirectorySampler.__init__(self, directory, problem_sorter, variables, id)
+        self._batch = batch
 
-    # TODO
     def _initialize(self):
-        print("INIT")
+        pass
 
     def _sample(self, msgs):
-        print("SAMPL")
+        for i in range(self._batch):
+            p = self._next()
+            if p is None:
+                return
 
     def _finalize(self):
-        print("FIN")
+        pass
 
     def parse(tree, item_cache):
         return parser.try_whole_obj_parse_process(tree, item_cache,
                                                   DirSingleSampler)
 
 
-main_register.append_register(DirSingleSampler, "dirsinglesampler")
-
+main_register.append_register(BatchDirectorySampler, "batchdirsampler")
