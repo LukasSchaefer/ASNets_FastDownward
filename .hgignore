@@ -2,15 +2,14 @@
 
 \.pyc$
 ^downward/driver/.cache/v/cache/lastfailed$
-^downward/experiments/issue[0-9]*/data/
-^downward/experiments/issue[0-9]*/.*.-microbenchmark/\.obj/
-^downward/experiments/issue[0-9]*/.*.-microbenchmark/benchmark$
-^downward/experiments/issue[0-9]*/.*.-microbenchmark/Makefile\.depend$
-^downward/misc/autodoc/downward-xmlrpc\.secret$
-^downward/builds/
-^downward/src/CMakeLists.txt.user$
-^NeuralFastDownward/nbproject
-^discussion/Ferber_Msc_Thesis_Src
+^experiments/issue[0-9]*/data/
+^experiments/issue[0-9]*/.*.-microbenchmark/\.obj/
+^experiments/issue[0-9]*/.*.-microbenchmark/benchmark$
+^experiments/issue[0-9]*/.*.-microbenchmark/Makefile\.depend$
+^misc/autodoc/downward-xmlrpc\.secret$
+^builds/
+^src/CMakeLists.txt.user$
+^roadmap/Ferber_Msc_Thesis_Src
 
 syntax: glob
 *.bak
