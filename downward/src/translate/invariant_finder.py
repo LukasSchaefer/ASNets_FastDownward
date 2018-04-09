@@ -4,6 +4,7 @@ from __future__ import print_function
 
 from collections import deque, defaultdict
 import itertools
+import logging
 import time
 
 import invariants
@@ -84,10 +85,10 @@ def get_initial_invariants(task):
             part = invariants.InvariantPart(predicate.name, order, omitted_arg)
             yield invariants.Invariant((part,))
 
-def find_invariants(task, reachable_action_params):
+def find_invariants(task, reachable_action_params, log=logging.root):
     limit = options.invariant_generation_max_candidates
     candidates = deque(itertools.islice(get_initial_invariants(task), 0, limit))
-    print(len(candidates), "initial candidates")
+    log.info(str(len(candidates)) + " initial candidates")
     seen_candidates = set(candidates)
 
     balance_checker = BalanceChecker(task, reachable_action_params)
@@ -138,16 +139,17 @@ if __name__ == "__main__":
     import normalize
     import pddl_parser
 
-    print("Parsing...")
+    log = logging.root
+    log.info("Parsing...")
     task = pddl_parser.open()
-    print("Normalizing...")
+    log.info("Normalizing...")
     normalize.normalize(task)
-    print("Finding invariants...")
-    print("NOTE: not passing in reachable_action_params.")
-    print("This means fewer invariants might be found.")
+    log.info("Finding invariants...")
+    log.info("NOTE: not passing in reachable_action_params.")
+    log.info("This means fewer invariants might be found.")
     for invariant in find_invariants(task, None):
-        print(invariant)
-    print("Finding fact groups...")
+        log.info(invariant)
+    log.info("Finding fact groups...")
     groups = get_groups(task)
     for group in groups:
-        print("[%s]" % ", ".join(map(str, group)))
+        log.info("[%s]" % ", ".join(map(str, group)))

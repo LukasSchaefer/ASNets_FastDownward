@@ -79,19 +79,20 @@ def explore(task):
 
 if __name__ == "__main__":
     import pddl_parser
+    log = logging.root
     task = pddl_parser.open()
     relaxed_reachable, atoms, actions, axioms, _ = explore(task)
-    print("goal relaxed reachable: %s" % relaxed_reachable)
-    print("%d atoms:" % len(atoms))
+    log.info("goal relaxed reachable: %s" % relaxed_reachable)
+    log.info("%d atoms:" % len(atoms))
     for atom in atoms:
-        print(" ", atom)
-    print()
-    print("%d actions:" % len(actions))
+        log.info(" ", atom)
+    log.info()
+    log.info("%d actions:" % len(actions))
     for action in actions:
-        action.dump()
-        print()
-    print()
-    print("%d axioms:" % len(axioms))
+        action.dump(log)
+        log.info()
+    log.info()
+    log.info("%d axioms:" % len(axioms))
     for axiom in axioms:
-        axiom.dump()
-        print()
+        axiom.dump(log)
+        log.info()

@@ -1,12 +1,18 @@
 from __future__ import print_function
 
+import logging
+
 class FunctionalExpression(object):
     def __init__(self, parts):
         self.parts = tuple(parts)
-    def dump(self, indent="  "):
-        print("%s%s" % (indent, self._dump()))
+    def dump(self, indent="  ", disp=True, log=logging.root, log_level=logging.INFO):
+        msg = "%s%s" % (indent, self._dump())
         for part in self.parts:
-            part.dump(indent + "  ")
+            msg += "\n" + part.dump(indent + "  ", disp=False)
+        if disp:
+            log.log(log_level, msg)
+        return msg
+
     def _dump(self):
         return self.__class__.__name__
     def instantiate(self, var_mapping, init_facts):
@@ -40,8 +46,11 @@ class PrimitiveNumericExpression(FunctionalExpression):
                 and self.args == other.args)
     def __str__(self):
         return "%s %s(%s)" % ("PNE", self.symbol, ", ".join(map(str, self.args)))
-    def dump(self, indent="  "):
-        print("%s%s" % (indent, self._dump()))
+    def dump(self, indent="  ", disp=True, log=logging.root, log_level=logging.INFO):
+        msg = "%s%s" % (indent, self._dump())
+        if disp:
+            log.log(log_level, msg)
+        return msg
     def _dump(self):
         return str(self)
     def instantiate(self, var_mapping, init_facts):
@@ -62,10 +71,13 @@ class FunctionAssignment(object):
         self.expression = expression
     def __str__(self):
         return "%s %s %s" % (self.__class__.__name__, self.fluent, self.expression)
-    def dump(self, indent="  "):
-        print("%s%s" % (indent, self._dump()))
-        self.fluent.dump(indent + "  ")
-        self.expression.dump(indent + "  ")
+    def dump(self, indent="  ", disp=True, log=logging.root, log_level=logging.INFO):
+        msg = "%s%s\n" % (indent, self._dump())
+        msg += self.fluent.dump(indent + "  ", disp=False) + "\n"
+        msg += self.expression.dump(indent + "  ", disp=False)
+        if disp:
+            log.log(log_level, msg)
+        return msg
     def _dump(self):
         return self.__class__.__name__
     def instantiate(self, var_mapping, init_facts):

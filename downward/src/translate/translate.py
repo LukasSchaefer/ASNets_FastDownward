@@ -4,6 +4,7 @@
 from __future__ import print_function
 
 import sys
+import logging
 import traceback
 
 def python_version_supported():
@@ -30,6 +31,7 @@ import simplify
 import timers
 import tools
 import variable_order
+
 
 # TODO: The translator may generate trivial derived variables which are always
 # true, for example if there ia a derived predicate in the input that only
@@ -417,11 +419,11 @@ def dump_task(init, goals, actions, axioms, axiom_layer_dict):
         for action in actions:
             print()
             print("Action")
-            action.dump()
+            print(action.dump(disp=False))
         for axiom in axioms:
             print()
             print("Axiom")
-            axiom.dump()
+            print(axiom.dump(disp=False))
         print()
         print("Axiom layers")
         for atom, layer in axiom_layer_dict.items():
@@ -513,21 +515,21 @@ def trivial_task(solvable):
     return sas_tasks.SASTask(variables, mutexes, init, goal,
                              operators, axioms, metric)
 
-def solvable_sas_task(msg):
-    print("%s! Generating solvable task..." % msg)
+def solvable_sas_task(msg, log=logging.root):
+    log.info("%s! Generating solvable task..." % msg)
     return trivial_task(solvable=True)
 
-def unsolvable_sas_task(msg):
-    print("%s! Generating unsolvable task..." % msg)
+def unsolvable_sas_task(msg, log=logging.root):
+    log.info("%s! Generating unsolvable task..." % msg)
     return trivial_task(solvable=False)
 
-def pddl_to_sas(task):
+def pddl_to_sas(task, log=logging.root):
     with timers.timing("Instantiating", block=True):
         (relaxed_reachable, atoms, actions, axioms,
          reachable_action_params) = instantiate.explore(task)
 
     if not relaxed_reachable:
-        return unsolvable_sas_task("No relaxed solution")
+        return unsolvable_sas_task("No relaxed solution", log=log)
 
     # HACK! Goals should be treated differently.
     if isinstance(task.goal, pddl.Conjunction):
@@ -537,48 +539,48 @@ def pddl_to_sas(task):
     for item in goal_list:
         assert isinstance(item, pddl.Literal)
 
-    with timers.timing("Computing fact groups", block=True):
+    with timers.timing("Computing fact groups", block=True, log=log):
         groups, mutex_groups, translation_key = fact_groups.compute_groups(
             task, atoms, reachable_action_params)
 
-    with timers.timing("Building STRIPS to SAS dictionary"):
+    with timers.timing("Building STRIPS to SAS dictionary", log=log):
         ranges, strips_to_sas = strips_to_sas_dictionary(
             groups, assert_partial=options.use_partial_encoding)
 
-    with timers.timing("Building dictionary for full mutex groups"):
+    with timers.timing("Building dictionary for full mutex groups", log=log):
         mutex_ranges, mutex_dict = strips_to_sas_dictionary(
             mutex_groups, assert_partial=False)
 
     if options.add_implied_preconditions:
-        with timers.timing("Building implied facts dictionary..."):
+        with timers.timing("Building implied facts dictionary...", log=log):
             implied_facts = build_implied_facts(strips_to_sas, groups,
                                                 mutex_groups)
     else:
         implied_facts = {}
 
-    with timers.timing("Building mutex information", block=True):
+    with timers.timing("Building mutex information", block=True, log=log):
         mutex_key = build_mutex_key(strips_to_sas, mutex_groups)
 
-    with timers.timing("Translating task", block=True):
+    with timers.timing("Translating task", block=True, log=log):
         sas_task = translate_task(
             strips_to_sas, ranges, translation_key,
             mutex_dict, mutex_ranges, mutex_key,
             task.init, goal_list, actions, axioms, task.use_min_cost_metric,
             implied_facts)
 
-    print("%d effect conditions simplified" %
+    log.info("%d effect conditions simplified" %
           simplified_effect_condition_counter)
-    print("%d implied preconditions added" %
+    log.info("%d implied preconditions added" %
           added_implied_precondition_counter)
 
     if options.filter_unreachable_facts:
-        with timers.timing("Detecting unreachable propositions", block=True):
+        with timers.timing("Detecting unreachable propositions", block=True, log=log):
             try:
                 simplify.filter_unreachable_propositions(sas_task)
             except simplify.Impossible:
-                return unsolvable_sas_task("Simplified to trivially false goal")
+                return unsolvable_sas_task("Simplified to trivially false goal", log=log)
             except simplify.TriviallySolvable:
-                return solvable_sas_task("Simplified to empty goal")
+                return solvable_sas_task("Simplified to empty goal", log=log)
 
     if options.reorder_variables or options.filter_unimportant_vars:
         with timers.timing("Reordering and filtering variables", block=True):
@@ -589,7 +591,7 @@ def pddl_to_sas(task):
     return sas_task
 
 
-def build_mutex_key(strips_to_sas, groups):
+def build_mutex_key(strips_to_sas, groups, log=logging.root):
     group_keys = []
     for group in groups:
         group_key = []
@@ -598,7 +600,7 @@ def build_mutex_key(strips_to_sas, groups):
                 for var, val in strips_to_sas[fact]:
                     group_key.append((var, val))
             else:
-                print("not in strips_to_sas, left out:", fact)
+                log.info("not in strips_to_sas, left out:", fact)
         group_keys.append(group_key)
     return group_keys
 
@@ -649,33 +651,35 @@ def build_implied_facts(strips_to_sas, groups, mutex_groups):
     return implied_facts
 
 
-def dump_statistics(sas_task):
-    print("Translator variables: %d" % len(sas_task.variables.ranges))
-    print(("Translator derived variables: %d" %
-           len([layer for layer in sas_task.variables.axiom_layers
+def dump_statistics(sas_task, log=logging.root, log_level=logging.INFO):
+    log.log(log_level, "Translator variables: %d" % len(sas_task.variables.ranges))
+    log.log(log_level, ("Translator derived variables: %d" %
+            len([layer for layer in sas_task.variables.axiom_layers
                 if layer >= 0])))
-    print("Translator facts: %d" % sum(sas_task.variables.ranges))
-    print("Translator goal facts: %d" % len(sas_task.goal.pairs))
-    print("Translator mutex groups: %d" % len(sas_task.mutexes))
-    print(("Translator total mutex groups size: %d" %
-           sum(mutex.get_encoding_size() for mutex in sas_task.mutexes)))
-    print("Translator operators: %d" % len(sas_task.operators))
-    print("Translator axioms: %d" % len(sas_task.axioms))
-    print("Translator task size: %d" % sas_task.get_encoding_size())
+    log.log(log_level, "Translator facts: %d" % sum(sas_task.variables.ranges))
+    log.log(log_level, "Translator goal facts: %d" % len(sas_task.goal.pairs))
+    log.log(log_level, "Translator mutex groups: %d" % len(sas_task.mutexes))
+    log.log(log_level, ("Translator total mutex groups size: %d" %
+            sum(mutex.get_encoding_size() for mutex in sas_task.mutexes)))
+    log.log(log_level, "Translator operators: %d" % len(sas_task.operators))
+    log.log(log_level, "Translator axioms: %d" % len(sas_task.axioms))
+    log.log(log_level, "Translator task size: %d" % sas_task.get_encoding_size())
     try:
         peak_memory = tools.get_peak_memory_in_kb()
     except Warning as warning:
-        print(warning)
+        log.warning(warning)
     else:
-        print("Translator peak memory: %d KB" % peak_memory)
+        log.log(log_level, "Translator peak memory: %d KB" % peak_memory)
 
 
-def main():
+def main(argv=None, log=None):
+    log = logging.root if log is None else log
+    options.setup(argv, log)
     timer = timers.Timer()
-    with timers.timing("Parsing", True):
+    with timers.timing("Parsing", True, log):
         task = pddl_parser.open(
             domain_filename=options.domain, task_filename=options.task)
-    with timers.timing("Normalizing task"):
+    with timers.timing("Normalizing task", log):
         normalize.normalize(task)
 
     if options.generate_relaxed_task:
@@ -686,20 +690,25 @@ def main():
                     del action.effects[index]
 
     sas_task = pddl_to_sas(task)
-    dump_statistics(sas_task)
+    dump_statistics(sas_task, log)
 
-    with timers.timing("Writing output"):
-        with open("output.sas", "w") as output_file:
-            sas_task.output(output_file)
-    print("Done! %s" % timer)
+    if options.no_sas_file:
+        with timers.timing("Writing output", log):
+            with open(options.sas_file, "w") as output_file:
+                sas_task.output(output_file)
+    else:
+        log.info("Writing no output.")
+    log.info("Done! %s" % timer)
+    return (task, sas_task)
 
 
 if __name__ == "__main__":
+    log = logging.root
     try:
-        main()
+        main(log=log)
     except MemoryError:
-        print("Translator ran out of memory, traceback:")
-        print("=" * 79)
-        traceback.print_exc(file=sys.stdout)
-        print("=" * 79)
+        log.critical("Translator ran out of memory, traceback:")
+        log.critical("=" * 79)
+        log.critical(traceback.format_exc())
+        log.critical("=" * 79)
         sys.exit(EXIT_MEMORY_ERROR)

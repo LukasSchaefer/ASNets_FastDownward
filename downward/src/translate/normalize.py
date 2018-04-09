@@ -1,6 +1,7 @@
 #! /usr/bin/env python
 
 import copy
+import logging
 
 import pddl
 
@@ -324,7 +325,7 @@ def substitute_complicated_goal(task):
 # Combine Steps [1], [2], [3], [4], [5] and do some additional verification
 # that the task makes sense.
 
-def normalize(task):
+def normalize(task, vlevel=0):
     remove_universal_quantifiers(task)
     substitute_complicated_goal(task)
     build_DNF(task)
@@ -392,6 +393,7 @@ def condition_to_rule_body(parameters, condition):
 
 if __name__ == "__main__":
     import pddl_parser
+    log = logging.root
     task = pddl_parser.open()
     normalize(task)
-    task.dump()
+    task.dump(log=log)

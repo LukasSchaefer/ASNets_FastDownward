@@ -2,6 +2,8 @@
 
 from __future__ import print_function
 
+import logging
+
 class Graph:
     def __init__(self, nodes):
         self.nodes = nodes
@@ -39,8 +41,9 @@ def transitive_closure(pairs):
 
 
 if __name__ == "__main__":
+    log = logging.root
     g = Graph([1, 2, 3, 4, 5, 6])
     g.connect(1, 2)
     g.connect(1, 3)
     g.connect(4, 5)
-    print(g.connected_components())
+    log.info(g.connected_components())

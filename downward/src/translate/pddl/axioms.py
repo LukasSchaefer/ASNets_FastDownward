@@ -1,5 +1,7 @@
 from __future__ import print_function
 
+import logging
+
 from . import conditions
 
 
@@ -15,10 +17,13 @@ class Axiom(object):
         self.condition = condition
         self.uniquify_variables()
 
-    def dump(self):
+    def dump(self, disp=True, log = logging.root, log_level=logging.INFO):
         args = map(str, self.parameters[:self.num_external_parameters])
-        print("Axiom %s(%s)" % (self.name, ", ".join(args)))
-        self.condition.dump()
+        msg = "Axiom %s(%s)\n" % (self.name, ", ".join(args))
+        msg += self.condition.dump(disp=False)
+        if disp:
+            log.log(log_level, msg)
+        return msg
 
     def uniquify_variables(self):
         self.type_map = dict([(par.name, par.type_name)
@@ -52,13 +57,17 @@ class PropositionalAxiom:
     def clone(self):
         return PropositionalAxiom(self.name, list(self.condition), self.effect)
 
-    def dump(self):
+    def dump(self, disp=True, log=logging.root, log_level=logging.INFO):
+        msg = ""
         if self.effect.negated:
-            print("not", end=' ')
-        print(self.name)
+            msg += "not "
+        msg += self.name
         for fact in self.condition:
-            print("PRE: %s" % fact)
-        print("EFF: %s" % self.effect)
+            msg += "\nPRE: %s" % fact
+        msg += "\nEFF: %s" % self.effect
+        if disp:
+            log.log(log_level, msg)
+        return msg
 
     @property
     def key(self):

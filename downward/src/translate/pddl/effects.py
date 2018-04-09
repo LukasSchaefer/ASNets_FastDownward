@@ -1,5 +1,7 @@
 from __future__ import print_function
 
+import logging
+
 from . import conditions
 
 def cartesian_product(*sequences):
@@ -23,17 +25,22 @@ class Effect(object):
                 self.parameters == other.parameters and
                 self.condition == other.condition and
                 self.literal == other.literal)
-    def dump(self):
+    def dump(self, disp=True, log=logging.root, log_level=logging.INFO):
         indent = "  "
+        msg = ""
         if self.parameters:
-            print("%sforall %s" % (indent, ", ".join(map(str, self.parameters))))
+            msg += "%sforall %s\n" % (indent, ", ".join(map(str, self.parameters)))
             indent += "  "
         if self.condition != conditions.Truth():
-            print("%sif" % indent)
-            self.condition.dump(indent + "  ")
-            print("%sthen" % indent)
+            msg += "%sif\n" % indent
+            msg += self.condition.dump(indent + "  ", disp=False) + "\n"
+            msg += "%sthen\n" % indent
             indent += "  "
-        print("%s%s" % (indent, self.literal))
+        msg += "%s%s" % (indent, self.literal)
+        if disp:
+            log.log(log_level, msg)
+        return msg
+
     def copy(self):
         return Effect(self.parameters, self.condition, self.literal)
     def uniquify_variables(self, type_map):
@@ -82,11 +89,14 @@ class ConditionalEffect(object):
         else:
             self.condition = condition
             self.effect = effect
-    def dump(self, indent="  "):
-        print("%sif" % (indent))
-        self.condition.dump(indent + "  ")
-        print("%sthen" % (indent))
-        self.effect.dump(indent + "  ")
+    def dump(self, indent="  ", disp=True, log=logging.root, log_level=logging.INFO):
+        msg = "%sif\n" % (indent)
+        msg += self.condition.dump(indent + "  ", disp=False) + "\n"
+        msg += "%sthen\n" % (indent)
+        msg += self.effect.dump(indent + "  ", disp=False)
+        if disp:
+            log.log(log_level, msg)
+        return msg
     def normalize(self):
         norm_effect = self.effect.normalize()
         if isinstance(norm_effect, ConjunctiveEffect):
@@ -112,9 +122,12 @@ class UniversalEffect(object):
         else:
             self.parameters = parameters
             self.effect = effect
-    def dump(self, indent="  "):
-        print("%sforall %s" % (indent, ", ".join(map(str, self.parameters))))
-        self.effect.dump(indent + "  ")
+    def dump(self, indent="  ", disp=True, log=logging.root):
+        msg = "%sforall %s\n" % (indent, ", ".join(map(str, self.parameters)))
+        msg += self.effect.dump(indent + "  ", disp=False)
+        if disp:
+            log.info(msg)
+        return msg
     def normalize(self):
         norm_effect = self.effect.normalize()
         if isinstance(norm_effect, ConjunctiveEffect):
@@ -138,10 +151,13 @@ class ConjunctiveEffect(object):
             else:
                 flattened_effects.append(effect)
         self.effects = flattened_effects
-    def dump(self, indent="  "):
-        print("%sand" % (indent))
+    def dump(self, indent="  ", disp=True, log=logging.root, log_level=logging.INFO):
+        msg = "%sand" % (indent)
         for eff in self.effects:
-            eff.dump(indent + "  ")
+            msg += "\n" + eff.dump(indent + "  ", disp=False)
+        if disp:
+            log.log(log_level, msg)
+        return msg
     def normalize(self):
         new_effects = []
         for effect in self.effects:
@@ -160,8 +176,11 @@ class ConjunctiveEffect(object):
 class SimpleEffect(object):
     def __init__(self, effect):
         self.effect = effect
-    def dump(self, indent="  "):
-        print("%s%s" % (indent, self.effect))
+    def dump(self, indent="  ", disp=True, log=logging.root, log_level=logging.INFO):
+        msg = "%s%s" % (indent, self.effect)
+        if disp:
+            log.log(log_level, msg)
+        return msg
     def normalize(self):
         return self
     def extract_cost(self):
@@ -170,8 +189,11 @@ class SimpleEffect(object):
 class CostEffect(object):
     def __init__(self, effect):
         self.effect = effect
-    def dump(self, indent="  "):
-        print("%s%s" % (indent, self.effect))
+    def dump(self, indent="  ", disp=True, log=logging.root, log_level=logging.INFO):
+        msg = "%s%s" % (indent, self.effect)
+        if disp:
+            log.log(log_level, msg)
+        return msg
     def normalize(self):
         return self
     def extract_cost(self):

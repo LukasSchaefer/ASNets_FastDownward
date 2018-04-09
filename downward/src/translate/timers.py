@@ -4,7 +4,7 @@ from __future__ import print_function
 
 import contextlib
 import os
-import sys
+import logging
 import time
 
 
@@ -24,16 +24,8 @@ class Timer(object):
 
 
 @contextlib.contextmanager
-def timing(text, block=False):
+def timing(text, block=False, log=logging.root):
     timer = Timer()
-    if block:
-        print("%s..." % text)
-    else:
-        print("%s..." % text, end=' ')
-    sys.stdout.flush()
+    log.info("%s..." % text)
     yield
-    if block:
-        print("%s: %s" % (text, timer))
-    else:
-        print(timer)
-    sys.stdout.flush()
+    log.info("%s: %s" % (text, timer))

@@ -13,8 +13,7 @@
 ^discussion/Ferber_Msc_Thesis_Src
 ^downward/src/tst.py
 ^problems*
-^scripts*
-^sample.*
+
 syntax: glob
 *.sample
 *.meta

@@ -1,10 +1,12 @@
 # -*- coding: utf-8 -*-
-
 import argparse
+import logging
 import sys
 
+import tools
 
-def parse_args():
+
+def parse_args(argv):
     argparser = argparse.ArgumentParser()
     argparser.add_argument(
         "domain", help="path to domain pddl file")
@@ -27,6 +29,12 @@ def parse_args():
         "generation and obtain only binary variables. The limit is "
         "needed for grounded input files that would otherwise produce "
         "too many candidates.")
+    argparser.add_argument(
+        "--sas-file", default="output.sas",
+        help = "path to the SAS output file (default: %(default)s)")
+    argparser.add_argument(
+        "--no-sas-file", action="store_false",
+        help="prevent storing output in a file")
     argparser.add_argument(
         "--invariant-generation-max-time", default=300, type=int,
         help="max time for invariant generation (default: %(default)ds)")
@@ -51,7 +59,11 @@ def parse_args():
     argparser.add_argument(
         "--dump-task", action="store_true",
         help="dump human-readable SAS+ representation of the task")
-    return argparser.parse_args()
+    argparser.add_argument(
+        "--log-verbosity", default="INFO",
+        choices=["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"],
+        help="specify the verbosity of the output logger")
+    return argparser.parse_args(argv)
 
 
 def copy_args_to_module(args):
@@ -60,9 +72,7 @@ def copy_args_to_module(args):
         module_dict[key] = value
 
 
-def setup():
-    args = parse_args()
+def setup(argv=None, log=None):
+    args = parse_args(argv)
     copy_args_to_module(args)
-
-
-setup()
+    tools.setup_logger(log=log, level=getattr(logging, args.log_verbosity))
