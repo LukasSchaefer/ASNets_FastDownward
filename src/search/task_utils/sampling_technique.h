@@ -52,6 +52,8 @@ public:
     static std::vector<int> extractInitialState(const State& state);
     static std::vector<FactPair> extractGoalFacts(
             const GoalsProxy &goals_proxy);
+    static std::vector<FactPair> extractGoalFacts(
+            const State &state);
 };
 
 class TechniqueNull : public SamplingTechnique {
@@ -80,22 +82,23 @@ public:
     const static std::string name;
 };
 
-class TechniqueForwardNone : public SamplingTechnique {
+class TechniqueIForwardIForward : public SamplingTechnique {
 protected:
-    std::shared_ptr<utils::DiscreteDistribution> steps;
+    std::shared_ptr<utils::DiscreteDistribution> isteps;
+    std::shared_ptr<utils::DiscreteDistribution> gsteps;
 
     virtual const std::shared_ptr<AbstractTask> create_next(
             const std::shared_ptr<AbstractTask> seed_task) const override;
 
 public:
-    TechniqueForwardNone(const options::Options &opts);
-    virtual ~TechniqueForwardNone() override;
+    TechniqueIForwardIForward(const options::Options &opts);
+    virtual ~TechniqueIForwardIForward() override;
 
     virtual const std::string &get_name() const override;
     const static std::string name;
 };
 
-class TechniqueNoneBackward : public SamplingTechnique {
+class TechniqueIForwardNone : public SamplingTechnique {
 protected:
     std::shared_ptr<utils::DiscreteDistribution> steps;
 
@@ -103,8 +106,23 @@ protected:
             const std::shared_ptr<AbstractTask> seed_task) const override;
 
 public:
-    TechniqueNoneBackward(const options::Options &opts);
-    virtual ~TechniqueNoneBackward() override;
+    TechniqueIForwardNone(const options::Options &opts);
+    virtual ~TechniqueIForwardNone() override;
+
+    virtual const std::string &get_name() const override;
+    const static std::string name;
+};
+
+class TechniqueNoneGBackward : public SamplingTechnique {
+protected:
+    std::shared_ptr<utils::DiscreteDistribution> steps;
+
+    virtual const std::shared_ptr<AbstractTask> create_next(
+            const std::shared_ptr<AbstractTask> seed_task) const override;
+
+public:
+    TechniqueNoneGBackward(const options::Options &opts);
+    virtual ~TechniqueNoneGBackward() override;
 
     virtual const std::string &get_name() const override;
     const static std::string name;

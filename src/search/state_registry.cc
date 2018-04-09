@@ -7,7 +7,7 @@ using namespace std;
 
 StateRegistry::StateRegistry(
     const AbstractTask &task, const int_packer::IntPacker &state_packer,
-    AxiomEvaluator &axiom_evaluator, const vector<int> &initial_state_data)
+    AxiomEvaluator &axiom_evaluator, const vector<int> initial_state_data)
     : task(task),
       state_packer(state_packer),
       axiom_evaluator(axiom_evaluator),
@@ -57,6 +57,7 @@ const GlobalState &StateRegistry::get_initial_state() {
         // Avoid garbage values in half-full bins.
         fill_n(buffer, get_bins_per_state(), 0);
         for (size_t i = 0; i < initial_state_data.size(); ++i) {
+            cout << " IS " << i << " : " <<initial_state_data[i] << "-"<<(unsigned int) initial_state_data[i] << endl;
             state_packer.set(buffer, i, initial_state_data[i]);
         }
         axiom_evaluator.evaluate(buffer, state_packer);

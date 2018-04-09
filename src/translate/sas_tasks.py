@@ -1,5 +1,7 @@
 from __future__ import print_function
 
+import logging
+
 SAS_FILE_VERSION = 3
 
 DEBUG = False
@@ -58,24 +60,29 @@ class SASTask:
             axiom.validate(self.variables, self.init)
         assert self.metric is False or self.metric is True, self.metric
 
-    def dump(self):
-        print("variables:")
-        self.variables.dump()
-        print("%d mutex groups:" % len(self.mutexes))
+    def dump(self, disp=True, log=logging.root, log_level=logging.INFO):
+        msg = "variables:\n"
+        msg += self.variables.dump(disp=False) + "\n"
+        msg += "%d mutex groups:\n" % len(self.mutexes)
         for mutex in self.mutexes:
-            print("group:")
-            mutex.dump()
-        print("init:")
-        self.init.dump()
-        print("goal:")
-        self.goal.dump()
-        print("%d operators:" % len(self.operators))
+            msg += "group:\n"
+            msg += mutex.dump(disp=False) + "\n"
+        msg += "init:\n"
+        msg += self.init.dump(disp=False) + "\n"
+        msg += "goal:\n"
+        msg += self.goal.dump(disp=False) + "\n"
+        msg += "%d operators:\n" % len(self.operators)
         for operator in self.operators:
-            operator.dump()
-        print("%d axioms:" % len(self.axioms))
+            msg += operator.dump(disp=False) + "\n"
+            msg += "%d axioms:\n" % len(self.axioms)
         for axiom in self.axioms:
-            axiom.dump()
-        print("metric: %s" % self.metric)
+            msg += axiom.dump(disp=False) + "\n"
+        msg += "metric: %s" % self.metric
+
+        if disp:
+            log.log(log_level, msg)
+        return msg
+
 
     def output(self, stream):
         print("begin_version", file=stream)
@@ -148,14 +155,19 @@ class SASVariables:
             assert var > last_var
             last_var = var
 
-    def dump(self):
+    def dump(self, disp=True, log=logging.root, log_level=logging.INFO):
+        msg = ""
         for var, (rang, axiom_layer) in enumerate(
                 zip(self.ranges, self.axiom_layers)):
             if axiom_layer != -1:
                 axiom_str = " [axiom layer %d]" % axiom_layer
             else:
                 axiom_str = ""
-            print("v%d in {%s}%s" % (var, list(range(rang)), axiom_str))
+            msg += "v%d in {%s}%s\n" % (var, list(range(rang)), axiom_str)
+        msg = msg if msg == "" else msg[:-1]
+        if disp:
+            log.log(log_level, msg)
+        return msg
 
     def output(self, stream):
         print(len(self.ranges), file=stream)
@@ -187,9 +199,14 @@ class SASMutexGroup:
             variables.validate_fact(fact)
         assert self.facts == sorted(set(self.facts))
 
-    def dump(self):
+    def dump(self, disp=True, log=logging.root, log_level=logging.INFO):
+        msg = ""
         for var, val in self.facts:
-            print("v%d: %d" % (var, val))
+            msg += "v%d: %d\n" % (var, val)
+        msg = msg if msg == "" else msg[:-1]
+        if disp:
+            log.log(log_level, msg)
+        return msg
 
     def output(self, stream):
         print("begin_mutex_group", file=stream)
@@ -217,9 +234,14 @@ class SASInit:
         for fact in enumerate(self.values):
             variables.validate_fact(fact)
 
-    def dump(self):
+    def dump(self, disp=True, log=logging.root, log_level=logging.INFO):
+        msg = ""
         for var, val in enumerate(self.values):
-            print("v%d: %d" % (var, val))
+            msg += "v%d: %d\n" % (var, val)
+        msg = msg if msg == "" else msg[:-1]
+        if disp:
+            log.log(log_level, msg)
+        return msg
 
     def output(self, stream):
         print("begin_state", file=stream)
@@ -237,9 +259,14 @@ class SASGoal:
         assert self.pairs
         variables.validate_condition(self.pairs)
 
-    def dump(self):
+    def dump(self, disp=True, log=logging.root, log_level=logging.INFO):
+        msg = ""
         for var, val in self.pairs:
-            print("v%d: %d" % (var, val))
+            msg +="v%d: %d\n" % (var, val)
+        msg = msg if msg == "" else msg[:-1]
+        if disp:
+            log.log(log_level, msg)
+        return msg
 
     def output(self, stream):
         print("begin_goal", file=stream)
@@ -344,19 +371,22 @@ class SASOperator:
         assert self.pre_post
         assert self.cost >= 0 and self.cost == int(self.cost)
 
-    def dump(self):
-        print(self.name)
-        print("Prevail:")
+    def dump(self, disp=True, log=logging.root, log_level=logging.INFO):
+        msg = self.name + "\n"
+        msg += "Prevail:"
         for var, val in self.prevail:
-            print("  v%d: %d" % (var, val))
-        print("Pre/Post:")
+            msg += "\n  v%d: %d" % (var, val)
+        msg += "\nPre/Post:"
         for var, pre, post, cond in self.pre_post:
             if cond:
                 cond_str = " [%s]" % ", ".join(
                     ["%d: %d" % tuple(c) for c in cond])
             else:
                 cond_str = ""
-            print("  v%d: %d -> %d%s" % (var, pre, post, cond_str))
+                msg += "  \nv%d: %d -> %d%s" % (var, pre, post, cond_str)
+        if disp:
+            log.log(log_level, msg)
+        return msg
 
     def output(self, stream):
         print("begin_operator", file=stream)
@@ -458,13 +488,16 @@ class SASAxiom:
                     else:
                         assert cond_value == cond_init_value
 
-    def dump(self):
-        print("Condition:")
+    def dump(self, disp=True, log=logging.root, log_level=logging.INFO):
+        msg = "Condition:\n"
         for var, val in self.condition:
-            print("  v%d: %d" % (var, val))
-        print("Effect:")
+            msg += "  v%d: %d\n" % (var, val)
+        msg += "Effect:\n"
         var, val = self.effect
-        print("  v%d: %d" % (var, val))
+        msg += "  v%d: %d" % (var, val)
+        if disp:
+            log.log(log_level, msg)
+        return msg
 
     def output(self, stream):
         print("begin_rule", file=stream)

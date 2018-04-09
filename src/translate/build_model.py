@@ -3,6 +3,7 @@
 
 from __future__ import print_function
 
+import logging
 import sys
 import itertools
 
@@ -198,13 +199,16 @@ class Unifier:
             if not isinstance(arg, int) and arg[0] != "?"]
         newroot = root._insert(constant_arguments, (rule, cond_index))
         self.predicate_to_rule_generator[condition.predicate] = newroot
-    def dump(self):
+    def dump(self, disp=True, log=logging.root, log_level=logging.INFO):
         predicates = sorted(self.predicate_to_rule_generator)
-        print("Unifier:")
+        msg = "Unifier:"
         for pred in predicates:
-            print("    %s:" % pred)
+            msg += "\n    %s:" % pred
             rule_gen = self.predicate_to_rule_generator[pred]
-            rule_gen.dump("    " * 2)
+            msg += "\n" + rule_gen.dump("    " * 2, disp=False)
+        if disp:
+            log.log(log_level, msg)
+        return msg
 
 class LeafGenerator:
     index = sys.maxsize
@@ -227,9 +231,14 @@ class LeafGenerator:
                 root = new_root
             root.matches = self.matches # can be swapped in C++
             return root
-    def dump(self, indent):
+    def dump(self, indent, disp=True, log=logging.root, log_level=logging.INFO):
+        msg = ""
         for match in self.matches:
-            print("%s%s" % (indent, match))
+            msg += "%s%s\n" % (indent, match)
+        msg = msg if msg == "" else msg[:-1]
+        if disp:
+            log.log(log_level, msg)
+        return msg
 
 class MatchGenerator:
     def __init__(self, index, next):
@@ -266,16 +275,22 @@ class MatchGenerator:
                 self.match_generator[arg] = branch_generator._insert(
                     args[1:], value)
                 return self
-    def dump(self, indent):
+    def dump(self, indent, disp=True, log=logging.root, log_level=logging.INFO):
+        msg = ""
         for match in self.matches:
-            print("%s%s" % (indent, match))
+            msg += "%s%s\n" % (indent, match)
         for key in sorted(self.match_generator.keys()):
-            print("%sargs[%s] == %s:" % (indent, self.index, key))
-            self.match_generator[key].dump(indent + "    ")
+            msg += "%sargs[%s] == %s:\n" % (indent, self.index, key)
+            msg += self.match_generator[key].dump(indent + "    ", disp=False) + "\n"
         if not self.next.empty():
             assert isinstance(self.next, MatchGenerator)
-            print("%s[*]" % indent)
-            self.next.dump(indent + "    ")
+            msg += "%s[*]\n" % indent
+            msg += self.next.dump(indent + "    ", disp=False) + "\n"
+        msg = msg if msg == "" else msg[:-1]
+        if disp:
+            log.log(log_level, msg)
+        return msg
+
 
 class Queue:
     def __init__(self, atoms):
@@ -298,16 +313,16 @@ class Queue:
         self.queue_pos += 1
         return result
 
-def compute_model(prog):
-    with timers.timing("Preparing model"):
+def compute_model(prog, log=logging.root):
+    with timers.timing("Preparing model", log=log):
         rules = convert_rules(prog)
         unifier = Unifier(rules)
         # unifier.dump()
         fact_atoms = sorted(fact.atom for fact in prog.facts)
         queue = Queue(fact_atoms)
 
-    print("Generated %d rules." % len(rules))
-    with timers.timing("Computing model"):
+    log.info("Generated %d rules." % len(rules))
+    with timers.timing("Computing model", log=log):
         relevant_atoms = 0
         auxiliary_atoms = 0
         while queue:
@@ -321,25 +336,26 @@ def compute_model(prog):
             for rule, cond_index in matches:
                 rule.update_index(next_atom, cond_index)
                 rule.fire(next_atom, cond_index, queue.push)
-    print("%d relevant atoms" % relevant_atoms)
-    print("%d auxiliary atoms" % auxiliary_atoms)
-    print("%d final queue length" % len(queue.queue))
-    print("%d total queue pushes" % queue.num_pushes)
+    log.info("%d relevant atoms" % relevant_atoms)
+    log.info("%d auxiliary atoms" % auxiliary_atoms)
+    log.info("%d final queue length" % len(queue.queue))
+    log.info("%d total queue pushes" % queue.num_pushes)
     return queue.queue
 
 if __name__ == "__main__":
     import pddl_parser
     import normalize
     import pddl_to_prolog
+    log = logging.root
 
-    print("Parsing...")
+    log.info("Parsing...")
     task = pddl_parser.open()
-    print("Normalizing...")
+    log.info("Normalizing...")
     normalize.normalize(task)
-    print("Writing rules...")
+    log.info("Writing rules...")
     prog = pddl_to_prolog.translate(task)
 
     model = compute_model(prog)
     for atom in model:
-        print(atom)
-    print("%d atoms" % len(model))
+        log.info(atom)
+    log.info("%d atoms" % len(model))

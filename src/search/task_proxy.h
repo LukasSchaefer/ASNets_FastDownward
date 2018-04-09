@@ -632,11 +632,11 @@ public:
 
     bool assigned(std::size_t var_id) const {
         assert(var_id < size());
-        return (values[var_id] != -1);
+        return (values[var_id] != PartialAssignment::UNASSIGNED);
     }
 
     bool assigned(VariableProxy var) const {
-        return (values[var.get_id()] != -1);
+        return (values[var.get_id()] != PartialAssignment::UNASSIGNED);
     }
 
     std::size_t size() const {
@@ -655,7 +655,7 @@ public:
 
     FactProxy operator[](std::size_t var_id) const {
         assert(var_id < size());
-        assert(values[var_id] != -1);
+        assert(values[var_id] != PartialAssignment::UNASSIGNED);
         return FactProxy(*task, var_id, values[var_id]);
     }
 

@@ -31,6 +31,8 @@ from __future__ import print_function
 from collections import defaultdict
 from itertools import count
 
+import logging
+
 import sas_tasks
 
 DEBUG = False
@@ -82,14 +84,17 @@ class DomainTransitionGraph(object):
             queue.extend(new_neighbors)
         return reachable
 
-    def dump(self):
+    def dump(self, disp=True, log=logging.root, log_level=logging.INFO):
         """Dump the DTG."""
-        print("DTG size:", self.size)
-        print("DTG init value:", self.init)
-        print("DTG arcs:")
+        msg = "DTG size: %s\n" % self.size
+        msg += "DTG init value: %s\n" % self.init
+        msg += "DTG arcs:"
         for source, destinations in sorted(self.arcs.items()):
             for destination in sorted(destinations):
-                print("  %d => %d" % (source, destination))
+                msg +="\n  %d => %d" % (source, destination)
+        if disp:
+            log.log(log_level, msg)
+        return msg
 
 
 def build_dtgs(task):
@@ -178,28 +183,31 @@ class VarValueRenaming(object):
         self.new_var_count = 0
         self.num_removed_values = 0
 
-    def dump(self):
+    def dump(self, disp=True, log=logging.root, log_level=logging.INFO):
         old_var_count = len(self.new_var_nos)
-        print("variable count: %d => %d" % (
-            old_var_count, self.new_var_count))
-        print("number of removed values: %d" % self.num_removed_values)
-        print("variable conversions:")
+        msg = "variable count: %d => %d\n" % (
+            old_var_count, self.new_var_count)
+        msg += "number of removed values: %d\n" % self.num_removed_values
+        msg += "variable conversions:"
         for old_var_no, (new_var_no, new_values) in enumerate(
                 zip(self.new_var_nos, self.new_values)):
             old_size = len(new_values)
             if new_var_no is None:
-                print("variable %d [size %d] => removed" % (
-                    old_var_no, old_size))
+                msg += "\nvariable %d [size %d] => removed" % (
+                    old_var_no, old_size)
             else:
                 new_size = self.new_sizes[new_var_no]
-                print("variable %d [size %d] => %d [size %d]" % (
-                    old_var_no, old_size, new_var_no, new_size))
+                msg += "\nvariable %d [size %d] => %d [size %d]" % (
+                    old_var_no, old_size, new_var_no, new_size)
             for old_value, new_value in enumerate(new_values):
                 if new_value is always_false:
                     new_value = "always false"
                 elif new_value is always_true:
                     new_value = "always true"
-                print("    value %d => %s" % (old_value, new_value))
+                msg += "\n    value %d => %s" % (old_value, new_value)
+        if disp:
+            log.log(log_level, msg)
+        return msg
 
     def register_variable(self, old_domain_size, init_value, new_domain):
         assert 1 <= len(new_domain) <= old_domain_size
@@ -228,9 +236,9 @@ class VarValueRenaming(object):
             self.new_sizes.append(new_size)
             self.new_var_count += 1
 
-    def apply_to_task(self, task):
+    def apply_to_task(self, task, log=logging.root):
         if DEBUG:
-            self.dump()
+            log.debug(self.dump(disp=False))
         self.apply_to_variables(task.variables)
         self.apply_to_mutexes(task.mutexes)
         self.apply_to_init(task.init)
@@ -248,17 +256,17 @@ class VarValueRenaming(object):
         variables.axiom_layers = new_axiom_layers
         self.apply_to_value_names(variables.value_names)
 
-    def apply_to_value_names(self, value_names):
+    def apply_to_value_names(self, value_names, log=logging.root):
         new_value_names = [[None] * size for size in self.new_sizes]
         for var_no, values in enumerate(value_names):
             for value, value_name in enumerate(values):
                 new_var_no, new_value = self.translate_pair((var_no, value))
                 if new_value is always_true:
                     if DEBUG:
-                        print("Removed true proposition: %s" % value_name)
+                        log.debug("Removed true proposition: %s" % value_name)
                 elif new_value is always_false:
                     if DEBUG:
-                        print("Removed false proposition: %s" % value_name)
+                        log.debug("Removed false proposition: %s" % value_name)
                 else:
                     new_value_names[new_var_no][new_value] = value_name
         assert all((None not in value_names) for value_names in new_value_names)
@@ -300,7 +308,7 @@ class VarValueRenaming(object):
             # trivially solvable task.
             raise TriviallySolvable
 
-    def apply_to_operators(self, operators):
+    def apply_to_operators(self, operators, log=logging.root):
         new_operators = []
         num_removed = 0
         for op in operators:
@@ -308,13 +316,13 @@ class VarValueRenaming(object):
             if new_op is None:
                 num_removed += 1
                 if DEBUG:
-                    print("Removed operator: %s" % op.name)
+                    log.debug("Removed operator: %s" % op.name)
             else:
                 new_operators.append(new_op)
-        print("%d operators removed" % num_removed)
+        log.info("%d operators removed" % num_removed)
         operators[:] = new_operators
 
-    def apply_to_axioms(self, axioms):
+    def apply_to_axioms(self, axioms, log=logging.root):
         new_axioms = []
         num_removed = 0
         for axiom in axioms:
@@ -323,11 +331,10 @@ class VarValueRenaming(object):
             except (Impossible, DoesNothing):
                 num_removed += 1
                 if DEBUG:
-                    print("Removed axiom:")
-                    axiom.dump()
+                    log.debug("Removed axiom:\n" + axiom.dump(disp=False))
             else:
                 new_axioms.append(axiom)
-        print("%d axioms removed" % num_removed)
+        log.info("%d axioms removed" % num_removed)
         axioms[:] = new_axioms
 
     def translate_operator(self, op):
@@ -488,7 +495,7 @@ def build_renaming(dtgs):
     return renaming
 
 
-def filter_unreachable_propositions(sas_task):
+def filter_unreachable_propositions(sas_task, log=logging.root):
     """We remove unreachable propositions and then prune variables
     with only one value.
 
@@ -520,6 +527,6 @@ def filter_unreachable_propositions(sas_task):
     # unreachable or TriviallySolvable if it has no goal. We let the
     # exceptions propagate to the caller.
     renaming.apply_to_task(sas_task)
-    print("%d propositions removed" % renaming.num_removed_values)
+    log.info("%d propositions removed" % renaming.num_removed_values)
     if DEBUG:
         sas_task.validate()

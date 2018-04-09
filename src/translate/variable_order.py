@@ -3,6 +3,7 @@
 from collections import defaultdict, deque
 from itertools import chain
 import heapq
+import logging
 
 DEBUG = False
 
@@ -290,7 +291,7 @@ class VariableOrder(object):
                             for var, val in goal.pairs
                             if var in self.new_var)
 
-    def _apply_to_mutexes(self, mutexes):
+    def _apply_to_mutexes(self, mutexes, log=logging.root):
         new_mutexes = []
         for group in mutexes:
             facts = [(self.new_var[var], val) for var, val in group.facts
@@ -298,11 +299,11 @@ class VariableOrder(object):
             if facts and len(set(var for var, _ in facts)) > 1:
                 group.facts = facts
                 new_mutexes.append(group)
-        print("%s of %s mutex groups necessary." % (len(new_mutexes),
+        log.info("%s of %s mutex groups necessary." % (len(new_mutexes),
                                                     len(mutexes)))
         mutexes[:] = new_mutexes
 
-    def _apply_to_operators(self, operators):
+    def _apply_to_operators(self, operators, log=logging.root):
         new_ops = []
         for op in operators:
             pre_post = []
@@ -319,11 +320,11 @@ class VariableOrder(object):
                               for var, val in op.prevail
                               if var in self.new_var]
                 new_ops.append(op)
-        print("%s of %s operators necessary." % (len(new_ops),
+        log.info("%s of %s operators necessary." % (len(new_ops),
                                                  len(operators)))
         operators[:] = new_ops
 
-    def _apply_to_axioms(self, axioms):
+    def _apply_to_axioms(self, axioms, log=logging.root):
         new_axioms = []
         for ax in axioms:
             eff_var, eff_val = ax.effect
@@ -333,13 +334,14 @@ class VariableOrder(object):
                                 if var in self.new_var]
                 ax.effect = (self.new_var[eff_var], eff_val)
                 new_axioms.append(ax)
-        print("%s of %s axiom rules necessary." % (len(new_axioms),
+        log.info("%s of %s axiom rules necessary." % (len(new_axioms),
                                                    len(axioms)))
         axioms[:] = new_axioms
 
 
 def find_and_apply_variable_order(sas_task, reorder_vars=True,
-                                  filter_unimportant_vars=True):
+                                  filter_unimportant_vars=True,
+                                  log=logging.root):
     if reorder_vars or filter_unimportant_vars:
         cg = CausalGraph(sas_task)
         if reorder_vars:
@@ -348,7 +350,7 @@ def find_and_apply_variable_order(sas_task, reorder_vars=True,
             order = list(range(len(sas_task.variables.ranges)))
         if filter_unimportant_vars:
             necessary = cg.calculate_important_vars(sas_task.goal)
-            print("%s of %s variables necessary." % (len(necessary),
+            log.info("%s of %s variables necessary." % (len(necessary),
                                                      len(order)))
             order = [var for var in order if necessary[var]]
         VariableOrder(order).apply_to_task(sas_task)

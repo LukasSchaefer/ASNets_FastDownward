@@ -68,6 +68,17 @@ vector<FactPair> SamplingTechnique::extractGoalFacts(
     return goals;
 }
 
+vector<FactPair> SamplingTechnique::extractGoalFacts(const State& state) {
+    vector<FactPair> goals;
+    goals.reserve(state.size());
+    int var = 0;
+    for (int val : state.get_values()) {
+        goals.emplace_back(var, val);
+        var++;
+    }
+    return goals;
+}
+
 /* START DEFINITION TECHNIQUE_NULL */
 const std::string TechniqueNull::name = "null";
 
@@ -131,20 +142,20 @@ const shared_ptr<AbstractTask> TechniqueNoneNone::create_next(
 }
 
 
-/* START DEFINITION TECHNIQUE_FORWARD_NONE */
-const std::string TechniqueForwardNone::name = "forward_none";
+/* START DEFINITION TECHNIQUE_iFORWARD_NONE */
+const std::string TechniqueIForwardNone::name = "iforward_none";
 
-const string &TechniqueForwardNone::get_name() const {
+const string &TechniqueIForwardNone::get_name() const {
     return name;
 }
 
-TechniqueForwardNone::TechniqueForwardNone(const options::Options& opts)
+TechniqueIForwardNone::TechniqueIForwardNone(const options::Options& opts)
 : SamplingTechnique(opts),
 steps(opts.get<shared_ptr<utils::DiscreteDistribution>>("distribution")){ }
 
-TechniqueForwardNone::~TechniqueForwardNone() { }
+TechniqueIForwardNone::~TechniqueIForwardNone() { }
 
-const shared_ptr<AbstractTask> TechniqueForwardNone::create_next(
+const shared_ptr<AbstractTask> TechniqueIForwardNone::create_next(
     const shared_ptr<AbstractTask> seed_task) const {
 
     TaskProxy task_proxy(*seed_task);
@@ -156,20 +167,51 @@ const shared_ptr<AbstractTask> TechniqueForwardNone::create_next(
         extractInitialState(new_init),
         extractGoalFacts(task_proxy.get_goals()));
 }
-/* START DEFINITION TECHNIQUE_NONE_BACKWARDS */
-const std::string TechniqueNoneBackward::name = "none_backward";
 
-const string &TechniqueNoneBackward::get_name() const {
+/* START DEFINITION TECHNIQUE_IFORWARD_IFORWARD */
+const std::string TechniqueIForwardIForward::name = "iforward_iforward";
+
+const string &TechniqueIForwardIForward::get_name() const {
     return name;
 }
 
-TechniqueNoneBackward::TechniqueNoneBackward(const options::Options& opts)
+TechniqueIForwardIForward::TechniqueIForwardIForward(const options::Options& opts)
+: SamplingTechnique(opts),
+isteps(opts.get<shared_ptr<utils::DiscreteDistribution>>("dist_init")),
+gsteps(opts.get<shared_ptr<utils::DiscreteDistribution>>("dist_goal")) { }
+
+TechniqueIForwardIForward::~TechniqueIForwardIForward() { }
+
+const shared_ptr<AbstractTask> TechniqueIForwardIForward::create_next(
+    const shared_ptr<AbstractTask> seed_task) const {
+
+    TaskProxy task_proxy(*seed_task);
+    const successor_generator::SuccessorGenerator successor_generator(task_proxy);
+    State new_init = sampling::sample_state_with_random_forward_walk(task_proxy,
+        successor_generator, task_proxy.get_initial_state(), isteps->next(), *rng);
+
+    State new_goal = sampling::sample_state_with_random_forward_walk(task_proxy,
+        successor_generator, task_proxy.get_initial_state(), gsteps->next(), *rng);
+    
+    return make_shared<extra_tasks::ModifiedInitGoalsTask>(seed_task,
+        extractInitialState(new_init),
+        extractGoalFacts(new_goal));
+}
+
+/* START DEFINITION TECHNIQUE_NONE_GBACKWARDS */
+const std::string TechniqueNoneGBackward::name = "none_gbackward";
+
+const string &TechniqueNoneGBackward::get_name() const {
+    return name;
+}
+
+TechniqueNoneGBackward::TechniqueNoneGBackward(const options::Options& opts)
 : SamplingTechnique(opts),
 steps(opts.get<shared_ptr<utils::DiscreteDistribution>>("distribution")){ }
 
-TechniqueNoneBackward::~TechniqueNoneBackward() { }
+TechniqueNoneGBackward::~TechniqueNoneGBackward() { }
 
-const shared_ptr<AbstractTask> TechniqueNoneBackward::create_next(
+const shared_ptr<AbstractTask> TechniqueNoneGBackward::create_next(
     const shared_ptr<AbstractTask> seed_task) const {
 
     RegressionTaskProxy task_proxy(*seed_task);
@@ -197,7 +239,8 @@ static shared_ptr<SamplingTechnique> _parse_technique_none_none(
 static PluginShared<SamplingTechnique> _plugin_technique_none_none(
     TechniqueNoneNone::name, _parse_technique_none_none);
 
-static shared_ptr<SamplingTechnique> _parse_technique_forward_none(
+
+static shared_ptr<SamplingTechnique> _parse_technique_iforward_none(
     OptionParser &parser) {
     SamplingTechnique::add_options_to_parser(parser);
     parser.add_option<shared_ptr<utils::DiscreteDistribution>>("distribution",
@@ -207,18 +250,41 @@ static shared_ptr<SamplingTechnique> _parse_technique_forward_none(
         
     Options opts = parser.parse();
 
-    shared_ptr<TechniqueForwardNone> technique;
+    shared_ptr<TechniqueIForwardNone> technique;
     if (!parser.dry_run()) {
-        technique = make_shared<TechniqueForwardNone>(opts);
+        technique = make_shared<TechniqueIForwardNone>(opts);
     }
     return technique;
 }
 
-static PluginShared<SamplingTechnique> _plugin_technique_forward_none(
-    TechniqueForwardNone::name, _parse_technique_forward_none);
+static PluginShared<SamplingTechnique> _plugin_technique_iforward_none(
+    TechniqueIForwardNone::name, _parse_technique_iforward_none);
 
 
-static shared_ptr<SamplingTechnique> _parse_technique_none_backward(
+static shared_ptr<SamplingTechnique> _parse_technique_iforward_iforward(
+    OptionParser &parser) {
+    SamplingTechnique::add_options_to_parser(parser);
+    parser.add_option<shared_ptr<utils::DiscreteDistribution>>("dist_init",
+        "Discrete random distribution to determine the random walk length used"
+        " by this technique for the initial state.");
+    parser.add_option<shared_ptr<utils::DiscreteDistribution>>("dist_goal",
+        "Discrete random distribution to determine the random walk length used"
+        " by this technique for the goal state.");
+        
+    Options opts = parser.parse();
+
+    shared_ptr<TechniqueIForwardIForward> technique;
+    if (!parser.dry_run()) {
+        technique = make_shared<TechniqueIForwardIForward>(opts);
+    }
+    return technique;
+}
+
+static PluginShared<SamplingTechnique> _plugin_technique_iforward_iforward(
+    TechniqueIForwardIForward::name, _parse_technique_iforward_iforward);
+
+
+static shared_ptr<SamplingTechnique> _parse_technique_none_gbackward(
     OptionParser &parser) {
     SamplingTechnique::add_options_to_parser(parser);
     parser.add_option<shared_ptr<utils::DiscreteDistribution>>("distribution",
@@ -227,14 +293,14 @@ static shared_ptr<SamplingTechnique> _parse_technique_none_backward(
         
     Options opts = parser.parse();
 
-    shared_ptr<TechniqueNoneBackward> technique;
+    shared_ptr<TechniqueNoneGBackward> technique;
     if (!parser.dry_run()) {
-        technique = make_shared<TechniqueNoneBackward>(opts);
+        technique = make_shared<TechniqueNoneGBackward>(opts);
     }
     return technique;
 }
 
-static PluginShared<SamplingTechnique> _plugin_technique_none_backward(
-    TechniqueNoneBackward::name, _parse_technique_none_backward);
+static PluginShared<SamplingTechnique> _plugin_technique_none_gbackward(
+    TechniqueNoneGBackward::name, _parse_technique_none_gbackward);
 
 }

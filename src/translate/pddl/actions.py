@@ -1,6 +1,7 @@
 from __future__ import print_function
 
 import copy
+import logging
 
 from . import conditions
 
@@ -25,18 +26,21 @@ class Action(object):
     def __repr__(self):
         return "<Action %r at %#x>" % (self.name, id(self))
 
-    def dump(self):
-        print("%s(%s)" % (self.name, ", ".join(map(str, self.parameters))))
-        print("Precondition:")
-        self.precondition.dump()
-        print("Effects:")
+    def dump(self, disp=True, log=logging.root, log_level=logging.INFO):
+        msg = "%s(%s)\n" % (self.name, ", ".join(map(str, self.parameters)))
+        msg += "Precondition:\n"
+        msg += self.precondition.dump(disp=False) + "\n"
+        msg += "Effects:\n"
         for eff in self.effects:
-            eff.dump()
-        print("Cost:")
+            msg += eff.dump(disp=False) + "\n"
+        msg += "Cost:\n"
         if(self.cost):
-            self.cost.dump()
+            msg += self.cost.dump(disp=False)
         else:
-            print("  None")
+            msg += "  None"
+        if disp:
+            log.log(log_level, msg)
+        return msg
 
     def uniquify_variables(self):
         self.type_map = dict([(par.name, par.type_name)
@@ -123,12 +127,15 @@ class PropositionalAction:
     def __repr__(self):
         return "<PropositionalAction %r at %#x>" % (self.name, id(self))
 
-    def dump(self):
-        print(self.name)
+    def dump(self, disp=True, log=logging.root, log_level=logging.INFO):
+        msg = self.name
         for fact in self.precondition:
-            print("PRE: %s" % fact)
+            msg += "\nPRE: %s" % fact
         for cond, fact in self.add_effects:
-            print("ADD: %s -> %s" % (", ".join(map(str, cond)), fact))
+            msg += "\nADD: %s -> %s" % (", ".join(map(str, cond)), fact)
         for cond, fact in self.del_effects:
-            print("DEL: %s -> %s" % (", ".join(map(str, cond)), fact))
-        print("cost:", self.cost)
+            msg += "\nDEL: %s -> %s" % (", ".join(map(str, cond)), fact)
+        msg += "\ncost: %" % self.cost
+        if disp:
+            log.log(log_level, msg)
+        return msg

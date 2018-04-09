@@ -1,5 +1,6 @@
 from __future__ import print_function
 
+import logging
 
 # Conditions (of any type) are immutable, because they need to
 # be hashed occasionally. Immutability also allows more efficient comparison
@@ -19,10 +20,13 @@ class Condition(object):
         return self.hash < other.hash
     def __le__(self, other):
         return self.hash <= other.hash
-    def dump(self, indent="  "):
-        print("%s%s" % (indent, self._dump()))
+    def dump(self, indent="  ", disp=True, log=logging.root, log_level=logging.INFO):
+        msg = "%s%s" % (indent, self._dump())
         for part in self.parts:
-            part.dump(indent + "  ")
+            msg += "\n" + part.dump(indent + "  ", disp=False)
+        if disp:
+            log.log(log_level, msg)
+        return msg
     def _dump(self):
         return self.__class__.__name__
     def _postorder_visit(self, method_name, *args):

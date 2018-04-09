@@ -18,6 +18,9 @@
 #include "../task_utils/sampling.h"
 #include "../utils/rng.h"
 
+#include "../task_utils/regression_utils.h"
+#include "../task_utils/predecessor_generator.h"
+
 #include <algorithm>
 #include <cassert>
 #include <cstdlib>
@@ -25,10 +28,6 @@
 #include <iostream>
 #include <set>
 #include <stdlib.h>
-
-
-#include "../task_utils/regression_utils.h"
-#include "../task_utils/predecessor_generator.h"
 
 using namespace std;
 
@@ -88,7 +87,7 @@ void SamplingSearch::extract_sample_entries_add_heuristics(
         EvaluationContext eval_context(state);
 
         stream << field_separator
-            << g_registered_heuristics[heuristic]
+            << heuristic << "=" << g_registered_heuristics[heuristic]
             ->compute_result(eval_context).get_h_value();
     }
 }
@@ -226,8 +225,7 @@ std::string SamplingSearch::extract_sample_entries() {
             this field is empty.
      <Heuristics>* := List of heuristic values estimated for the current state
      */
-
-    const GlobalState goal_state = engine->get_goal_state();
+    
     const StateRegistry &sr = engine->get_state_registry();
     const SearchSpace &ss = engine->get_search_space();
     const TaskProxy &tp = engine->get_task_proxy();
@@ -242,6 +240,7 @@ std::string SamplingSearch::extract_sample_entries() {
     ostringstream new_entries;
 
     if (store_solution_trajectories && engine->found_solution()) {
+        const GlobalState goal_state = engine->get_goal_state();
         Plan plan = engine->get_plan();
         Trajectory trajectory;
         ss.trace_path(goal_state, trajectory);
@@ -286,8 +285,8 @@ std::string SamplingSearch::extract_sample_entries() {
 
 void SamplingSearch::initialize() {
 
-    cout << "Sampling Manager...";
-
+    cout << "Initializing Sampling Manager...";
+    add_header_samples(samples);
 
     cout << "done." << endl;
 }
@@ -297,14 +296,14 @@ SearchStatus SamplingSearch::step() {
     if ((*current_technique)->empty()) {
         current_technique++;
         if (current_technique == sampling_techniques.end()) {
+            save_plan_intermediate();
             return SOLVED;
         }
     }
 
-    modified_task = (*current_technique)->next(g_root_task());
+    modified_task = (*current_technique)->next(task);
     next_engine();
     engine->search();
-
     samples << extract_sample_entries();
 
     if (samples_for_disk > threshold_samples_for_disk) {
@@ -336,16 +335,34 @@ void SamplingSearch::print_statistics() const {
     }
 }
 
+void SamplingSearch::add_header_samples(ostream &stream) const {
+    stream << "# Everything in a line after '#' is a comment" << endl;
+    stream << "# Entry format: <T>; <ProblemHash>; <ModificationHash>; <CurrentState>; <GoalPredicates>; <Operator>; <OtherState>; <HeuristicViaTrajectory>; <Heuristics>*" << endl;
+    stream << "# <T> := * if on solution trajectory, + if on a trajectory selected by the search algorithm, - belongs to arbitrary state" << endl;
+    stream << "# <Operator> :=  if <T> in {*,+}: operator chosen in the current state. if <T> in {-}: operator used to reach current state" << endl;
+    stream << "# <OtherState> := if <T> in {*,+}: state resulting from applying operator. if <T> in {-}: parent state using operator to reach current" << endl;
+}
+
 void SamplingSearch::save_plan_intermediate() {
     if (samples.str().compare("")) {
         string s = samples.str();
 
         ofstream outfile(g_plan_filename, ios::app);
         outfile << s;
+        //number of entries is a bit more complicated, because we filter
+        //comments out.
+        bool comment = false;
+        int line_length = 0;
         for (unsigned int i = 0; i <= s.size(); i++) {
             if (s[i] == '\n') {
-
-                generated_samples++;
+                if (line_length > 0)
+                    generated_samples++;
+                comment = false;
+                line_length = 0;
+            } else if (s[i] == '#') {
+                comment = true;
+            } else if (!comment) {
+                line_length++;
             }
         }
         samples.str("");
@@ -354,13 +371,6 @@ void SamplingSearch::save_plan_intermediate() {
 }
 
 void SamplingSearch::save_plan_if_necessary() const {
-    if (samples.str().compare("")) {
-
-        string s = samples.str();
-
-        ofstream outfile(g_plan_filename, ios::app);
-        outfile << s;
-    }
 }
 
 void SamplingSearch::add_sampling_options(OptionParser &parser) {
@@ -376,7 +386,7 @@ void SamplingSearch::add_sampling_options(OptionParser &parser) {
     parser.add_option<bool> ("store_solution_trajectory",
         "Stores for every state on the solution path which operator was chosen"
         "next to reach the goal, the next state reached, and the heuristic "
-        "values estimated for the state.", "false");
+        "values estimated for the state.", "true");
     parser.add_option<bool> ("expand_solution_trajectory",
         "Stores for every state on the solution path which operator was chosen"
         "next to reach the goal, the next state reached, and the heuristic "
@@ -385,15 +395,16 @@ void SamplingSearch::add_sampling_options(OptionParser &parser) {
         "Stores for every state on the other trajectories (has only an effect,"
         "if the used search engine stores other trajectories) which operator "
         "was chosen next to reach the goal, the next state reached, and the "
-        "heuristic values estimated for the state.", "false");
+        "heuristic values estimated for the state.", "true");
     parser.add_option<bool> ("store_all_states",
         "Stores for every state visited the operator chosen to reach it,"
         ", its parent state, and the heuristic "
-        "values estimated for the state.", "true");
+        "values estimated for the state.", "false");
     parser.add_option<int> ("sample_cache_size",
         "If more than sample_cache_size samples are cached, then the entries"
         " are written to disk and the cache is emptied. When sampling "
-        "finishes, all remaining cached samples are written to disk.", "5000");
+        "finishes, all remaining cached samples are written to disk. If running"
+    "out of memory, the current cache is lost.", "5000");
     parser.add_list_option<std::string> ("use_registered_heuristics",
         "Stores for every state visited the operator chosen to reach it,"
         ", its parent state, and the heuristic "

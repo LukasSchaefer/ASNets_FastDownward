@@ -3,6 +3,7 @@
 from __future__ import print_function
 
 import itertools
+import logging
 
 class NegativeClause(object):
     # disjunction of inequalities
@@ -143,13 +144,13 @@ class ConstraintSystem(object):
         other.neg_clauses = list(self.neg_clauses)
         return other
 
-    def dump(self):
-        print("AssignmentSystem:")
+    def dump(self, disp=True, log=logging.root, log_level=logging.INFO):
+        msg = "AssignmentSystem:\n"
         for comb_assignment in self.combinatorial_assignments:
             disj = " or ".join([str(assig) for assig in comb_assignment])
-            print("  ASS: ", disj)
+            msg += "  ASS: %s" % disj
         for neg_clause in self.neg_clauses:
-            print("  NEG: ", str(neg_clause))
+            msg += "\n  NEG: %s" % str(neg_clause)
 
     def is_solvable(self):
         """Check whether the combinatorial assignments include at least

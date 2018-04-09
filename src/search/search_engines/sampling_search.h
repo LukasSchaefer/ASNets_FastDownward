@@ -8,6 +8,7 @@
 
 #include <functional>
 #include <memory>
+#include <ostream>
 #include <sstream>
 #include <tree.hh>
 #include <vector>
@@ -80,6 +81,7 @@ namespace sampling_search {
                 const StateRegistry &sr, const SearchSpace &ss, OperatorsProxy &ops,
                 const std::string& modification_hash,
                 std::ostream &stream) const;
+        void add_header_samples(std::ostream &stream) const;
         void save_plan_intermediate();
 
 

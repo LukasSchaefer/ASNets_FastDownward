@@ -1,7 +1,7 @@
 # Add any directories, files, or patterns you don't want to be tracked by version control
 
 \.pyc$
-^downward/driver/.cache/v/cache/lastfailed$
+^driver/.cache/v/cache/lastfailed$
 ^experiments/issue[0-9]*/data/
 ^experiments/issue[0-9]*/.*.-microbenchmark/\.obj/
 ^experiments/issue[0-9]*/.*.-microbenchmark/benchmark$
@@ -10,8 +10,14 @@
 ^builds/
 ^src/CMakeLists.txt.user$
 ^roadmap/Ferber_Msc_Thesis_Src
+^src/tst.py
+^problems*
 
 syntax: glob
+*.sample
+*.meta
+*.pddl
+*.orig
 *.bak
 *.o
 *.pyc

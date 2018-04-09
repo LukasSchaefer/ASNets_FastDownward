@@ -1,5 +1,7 @@
 from __future__ import print_function
 
+import logging
+
 import invariant_finder
 import options
 import pddl
@@ -68,7 +70,7 @@ class GroupCoverQueue:
                 self.groups_by_size[len(candidate)].append(candidate)
             self.max_size -= 1
 
-def choose_groups(groups, reachable_facts):
+def choose_groups(groups, reachable_facts, log=logging.root):
     queue = GroupCoverQueue(groups)
     uncovered_facts = reachable_facts.copy()
     result = []
@@ -76,7 +78,7 @@ def choose_groups(groups, reachable_facts):
         group = queue.pop()
         uncovered_facts.difference_update(group)
         result.append(group)
-    print(len(uncovered_facts), "uncovered facts")
+    log.info(str(len(uncovered_facts)) + " uncovered facts")
     result += [[fact] for fact in uncovered_facts]
     return result
 
@@ -106,7 +108,7 @@ def collect_all_mutex_groups(groups, atoms):
 def sort_groups(groups):
     return sorted(sorted(group) for group in groups)
 
-def compute_groups(task, atoms, reachable_action_params):
+def compute_groups(task, atoms, reachable_action_params, log=logging.root):
     groups = invariant_finder.get_groups(task, reachable_action_params)
 
     with timers.timing("Instantiating groups"):
@@ -117,17 +119,17 @@ def compute_groups(task, atoms, reachable_action_params):
     # TODO: I think that collect_all_mutex_groups should do the same thing
     #       as choose_groups with partial_encoding=False, so these two should
     #       be unified.
-    with timers.timing("Collecting mutex groups"):
+    with timers.timing("Collecting mutex groups", log=log):
         mutex_groups = collect_all_mutex_groups(groups, atoms)
-    with timers.timing("Choosing groups", block=True):
+    with timers.timing("Choosing groups", block=True, log=log):
         groups = choose_groups(groups, atoms)
     groups = sort_groups(groups)
-    with timers.timing("Building translation key"):
+    with timers.timing("Building translation key", log=log):
         translation_key = build_translation_key(groups)
 
     if DEBUG:
         for group in groups:
             if len(group) >= 2:
-                print("{%s}" % ", ".join(map(str, group)))
+                log.info("{%s}" % ", ".join(map(str, group)))
 
     return groups, mutex_groups, translation_key
