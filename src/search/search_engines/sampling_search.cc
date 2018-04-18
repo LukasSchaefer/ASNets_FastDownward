@@ -95,23 +95,11 @@ void SamplingSearch::extract_sample_entries_add_heuristics(
 int SamplingSearch::extract_sample_entries_trajectory(
     const Plan &plan, const Trajectory &trajectory, bool expand,
     const StateRegistry &sr, OperatorsProxy &ops,
-    const string& modification_hash, SampleType trajectory_type,
+    const string& meta,
     ostream &stream) const {
 
     int counter = 0;
-    string type_sign = "NA";
-    switch (trajectory_type) {
-        case SampleType::TRAJECTORY_SOLUTION:
-            type_sign = "*";
-            break;
-        case SampleType::TRAJECTORY_OTHER:
-            type_sign = "+";
-            break;
-        default:
-            exit(1);
-            cerr << "Sampling search unable to store entry for unkown "
-                << "sample type " << trajectory_type << endl;
-    }
+    
     int min_idx_goal = (expand) ? (1) : (trajectory.size() - 1);
     for (int idx_goal = trajectory.size() - 1; idx_goal >= min_idx_goal;
         idx_goal--) {
@@ -131,9 +119,7 @@ int SamplingSearch::extract_sample_entries_trajectory(
 
             GlobalState init_state = sr.lookup_state(trajectory[idx_init]);
 
-            stream << type_sign << field_separator
-                << problem_hash << field_separator
-                << modification_hash << field_separator;
+            stream << meta;
             init_state.dump_pddl(stream);
             stream << field_separator
                 << pddl_goal.str() << field_separator
@@ -155,30 +141,16 @@ int SamplingSearch::extract_sample_entries_trajectory(
 }
 
 void SamplingSearch::extract_sample_entries_state(
-    StateID &sid, SampleType type, const string &goal_description,
+    StateID &sid, const string &goal_description,
     const StateRegistry &sr, const SearchSpace &ss, OperatorsProxy &ops,
-    const string& modification_hash,
+    const string& meta,
     ostream &stream) const {
-
-    string type_sign = "NA";
-    switch (type) {
-        case SampleType::STATE_OTHER:
-            type_sign = "-";
-            break;
-
-        default:
-            exit(1);
-            cerr << "Sampling search unable to store entry for unkown "
-                << "sample type " << type << endl;
-    }
 
     const GlobalState state = sr.lookup_state(sid);
     OperatorID oid = ss.get_creating_operator(state);
     StateID pid = ss.get_parent_id(state);
 
-    stream << type_sign << field_separator
-        << problem_hash << field_separator
-        << modification_hash << field_separator;
+    stream << meta;
     state.dump_pddl(stream);
     stream << field_separator
         << goal_description << field_separator;
@@ -225,7 +197,6 @@ std::string SamplingSearch::extract_sample_entries() {
             this field is empty.
      <Heuristics>* := List of heuristic values estimated for the current state
      */
-    
     const StateRegistry &sr = engine->get_state_registry();
     const SearchSpace &ss = engine->get_search_space();
     const TaskProxy &tp = engine->get_task_proxy();
@@ -233,34 +204,37 @@ std::string SamplingSearch::extract_sample_entries() {
     const GoalsProxy gps = tp.get_goals();
 
     int count = 0;
-
-    std::string modification_hash = extract_modification_hash(
-        tp.get_initial_state(), tp.get_goals());
-
+    ostringstream meta_info;
+    meta_info << "<Meta problem_hash=\"" << this->problem_hash 
+              << "\" modification_hash=\"" 
+              << extract_modification_hash(tp.get_initial_state(), tp.get_goals())
+              << "\" format=\"FD\" type=\"";
     ostringstream new_entries;
 
     if (store_solution_trajectories && engine->found_solution()) {
+        const string meta_info_opt_traj = meta_info.str() + "O\">";
         const GlobalState goal_state = engine->get_goal_state();
         Plan plan = engine->get_plan();
         Trajectory trajectory;
         ss.trace_path(goal_state, trajectory);
 
         count += extract_sample_entries_trajectory(plan, trajectory,
-            expand_solution_trajectory, sr, ops, modification_hash,
-            SampleType::TRAJECTORY_SOLUTION,
+            expand_solution_trajectory, sr, ops, meta_info_opt_traj,
             new_entries);
     }
 
     if (store_other_trajectories) {
+        const string meta_info_traj = meta_info.str() + "T\">";
         for (const Path& path : sampling_search::paths) {
             count += extract_sample_entries_trajectory(
                 path.get_plan(), path.get_trajectory(),
-                false, sr, ops, modification_hash, SampleType::TRAJECTORY_OTHER,
+                false, sr, ops, meta_info_traj,
                 new_entries);
         }
     }
 
     if (store_all_states) {
+        const string meta_info_traj = meta_info.str() + "S\">";
         ostringstream pddl_goal;
         // TODO: Replace by partial assignments via Regression from Goal
         gps.dump_pddl(pddl_goal);
@@ -268,9 +242,8 @@ std::string SamplingSearch::extract_sample_entries() {
         for (StateRegistry::const_iterator iter = sr.begin();
             iter != sr.end(); ++iter) {
             StateID state = *iter;
-            extract_sample_entries_state(state, SampleType::STATE_OTHER,
-                pddl_goal.str(),
-                sr, ss, ops, modification_hash, new_entries);
+            extract_sample_entries_state(state, pddl_goal.str(),
+                sr, ss, ops, meta_info_traj, new_entries);
             count++;
         }
     }
@@ -337,8 +310,10 @@ void SamplingSearch::print_statistics() const {
 
 void SamplingSearch::add_header_samples(ostream &stream) const {
     stream << "# Everything in a line after '#' is a comment" << endl;
-    stream << "# Entry format: <T>; <ProblemHash>; <ModificationHash>; <CurrentState>; <GoalPredicates>; <Operator>; <OtherState>; <HeuristicViaTrajectory>; <Heuristics>*" << endl;
-    stream << "# <T> := * if on solution trajectory, + if on a trajectory selected by the search algorithm, - belongs to arbitrary state" << endl;
+    stream << "# Entry format:<Meta problem_hash=\"<HASH>\" modification_hash=\"<HASH>\" format=\"<FORMAT>\" type=\"<TYPE>\">; <CurrentState>; <GoalPredicates>; <Operator>; <OtherState>; <HeuristicViaTrajectory>; <Heuristics>*" << endl;
+    stream << "# <HASH> := hash value to identify where the sample comes from" << endl;
+    stream << "# <FORMAT> := format of the sample predicates. FD is the format FastDownward produces (only speaking about present not pruned atoms)." << endl;
+    stream << "# <TYPE> := tells which type of entry this is (state of optimal(O)/any trajectory(T), arbitrary state of search space(S))" << endl;
     stream << "# <Operator> :=  if <T> in {*,+}: operator chosen in the current state. if <T> in {-}: operator used to reach current state" << endl;
     stream << "# <OtherState> := if <T> in {*,+}: state resulting from applying operator. if <T> in {-}: parent state using operator to reach current" << endl;
 }

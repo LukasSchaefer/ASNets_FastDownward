@@ -1,5 +1,6 @@
 # Add any directories, files, or patterns you don't want to be tracked by version control
 
+^sas_plan$
 \.pyc$
 ^driver/.cache/v/cache/lastfailed$
 ^experiments/issue[0-9]*/data/
@@ -12,6 +13,7 @@
 ^roadmap/Ferber_Msc_Thesis_Src
 ^src/tst.py
 ^problems*
+
 
 syntax: glob
 *.sample

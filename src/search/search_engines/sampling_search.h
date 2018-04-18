@@ -73,13 +73,13 @@ namespace sampling_search {
         int extract_sample_entries_trajectory(
                 const Plan &plan, const Trajectory &trajectory, bool expand,
                 const StateRegistry &sr, OperatorsProxy &ops,
-                const std::string& modification_hash, SampleType trajectory_type,
+                const std::string& meta,
                 std::ostream &stream) const;
         void extract_sample_entries_state(
-                StateID &sid, SampleType type,
+                StateID &sid,
                 const std::string &goal_description,
                 const StateRegistry &sr, const SearchSpace &ss, OperatorsProxy &ops,
-                const std::string& modification_hash,
+                const std::string& meta,
                 std::ostream &stream) const;
         void add_header_samples(std::ostream &stream) const;
         void save_plan_intermediate();
