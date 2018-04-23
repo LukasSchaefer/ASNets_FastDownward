@@ -12,38 +12,40 @@ ProtobufNetwork::ProtobufNetwork(const Options &opts)
       path(opts.get<string>("path")),
       input_layer_name(opts.get<string>("input_layer")),
       output_layer_name(opts.get<string>("output_layer")) {
-
-        // Initialize a tensorflow session
-        Status status = NewSession(SessionOptions(), &session);
-        if (!status.ok()) {
-            std::cout << "Tensorflow session error: " 
-                      << status.ToString() << "\n";
-            utils::exit_with(utils::ExitCode::CRITICAL_ERROR);
-        }
-
-        GraphDef graph_def;
-        status = ReadBinaryProto(Env::Default(), path, &graph_def);
-        if (!status.ok()) {
-            std::cout << "Protobuf loading error: "
-                      << status.ToString() << "\n";
-            utils::exit_with(utils::ExitCode::CRITICAL_ERROR);
-        }
-
-        // Add the graph to the session
-        status = session->Create(graph_def);
-        if (!status.ok()) {
-            std::cout << "Session graph creation error: " 
-                      << status.ToString() << "\n";
-            utils::exit_with(utils::ExitCode::CRITICAL_ERROR);
-        }
-        
-        initialize_inputs();
-    }
+}
 
 ProtobufNetwork::~ProtobufNetwork(){
     session->Close();
 }
 
+void ProtobufNetwork::initialize() {
+    AbstractNetwork::initialize();
+    // Initialize a tensorflow session
+    Status status = NewSession(SessionOptions(), &session);
+    if (!status.ok()) {
+        std::cerr << "Tensorflow session error: " 
+                  << status.ToString() << "\n";
+        utils::exit_with(utils::ExitCode::CRITICAL_ERROR);
+    }
+
+    GraphDef graph_def;
+    status = ReadBinaryProto(Env::Default(), path, &graph_def);
+    if (!status.ok()) {
+        std::cerr << "Protobuf loading error: "
+                  << status.ToString() << "\n";
+        utils::exit_with(utils::ExitCode::CRITICAL_ERROR);
+    }
+
+    // Add the graph to the session
+    status = session->Create(graph_def);
+    if (!status.ok()) {
+        std::cerr << "Session graph creation error: " 
+                  << status.ToString() << "\n";
+        utils::exit_with(utils::ExitCode::CRITICAL_ERROR);
+    }
+
+    initialize_inputs();
+}
 
 void ProtobufNetwork::evaluate(const State& state){
     fill_input(state);
@@ -54,7 +56,7 @@ void ProtobufNetwork::evaluate(const State& state){
 
 
     if (!status.ok()) {
-        std::cout << "Network evaluation error: " << status.ToString() << "\n";
+        std::cerr << "Network evaluation error: " << status.ToString() << "\n";
         utils::exit_with(utils::ExitCode::CRITICAL_ERROR);
     }
 

@@ -12,9 +12,10 @@
 #
 # This code defines the following variables:
 #
-#  TENSORFLOW_FOUND          - TRUE if all components are found.
-#  TENSORFLOW_INCLUDE_DIRS   - Full paths to all include dirs.
-#  TENSORFLOW_LIBRARIES      - Full paths to all libraries.
+#  TENSORFLOW_FOUND             - TRUE if all components are found.
+#  TENSORFLOW_INCLUDE_DIRS      - Full paths to all include dirs.
+#  TENSORFLOW_LIBRARIES         - Full paths to all libraries.
+#  TENSORFLOW_SUPPRESS_WARNINGS - Flag to ignore compiler warnings
 #
 # Example Usages:
 #  find_package(TENSORFLOW)
@@ -34,6 +35,8 @@
 #
 # Note that the standard FIND_PACKAGE features are supported
 # (QUIET, REQUIRED, etc.).
+
+set(TENSORFLOW_SUPPRESS_WARNINGS "FLAG_SUPPRESS_WARNINGS")
 
 foreach(BITWIDTH 32 64)
     foreach(BUILDMODE "RELEASE" "DEBUG")
@@ -82,11 +85,10 @@ find_path(TENSORFLOW_NSYNC
 
 set(TENSORFLOW_INCLUDE_DIRS ${TENSORFLOW_INCLUDE} ${TENSORFLOW_NSYNC})
 
-# Find tensorflow_{cc, framework} libraries.
 # 1. HACK: Currently TF only allows shared library compilations. We have
 # to add .so to the library search suffixes and remove afterwards
-set(TMP_LIB_SUFFIXES ${CMAKE_FIND_LIBRARY_SUFFIXES})
-set(CMAKE_FIND_LIBRARY_SUFFIXES ${CMAKE_FIND_LIBRARY_SUFFIXES} ".so")
+#set(TMP_LIB_SUFFIXES ${CMAKE_FIND_LIBRARY_SUFFIXES})
+#set(CMAKE_FIND_LIBRARY_SUFFIXES ${CMAKE_FIND_LIBRARY_SUFFIXES} ".so")
 
 find_library(TENSORFLOW_CC_LIBRARY_RELEASE
     NAMES tensorflow_cc
@@ -113,7 +115,7 @@ find_library(TENSORFLOW_FRAMEWORK_LIBRARY_DEBUG
 )
 
 
-# 1. HACK: If the framework library is missing skip it, because older TF
+# 2. HACK: If the framework library is missing skip it, because older TF
 # versions do not have it.
 set(TENSORFLOW_LIBRARIES
     optimized ${TENSORFLOW_CC_LIBRARY_RELEASE}
@@ -128,7 +130,7 @@ endif()
 
 
 # 1. HACK: undo added lib search suffixes
-set(CMAKE_FIND_LIBRARY_SUFFIXES ${TMP_LIB_SUFFIXES})
+#set(CMAKE_FIND_LIBRARY_SUFFIXES ${TMP_LIB_SUFFIXES})
 
 
 # Check for consistency and handle arguments like QUIET, REQUIRED, etc.

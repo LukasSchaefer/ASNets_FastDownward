@@ -26,6 +26,8 @@
 # Note that the standard FIND_PACKAGE features are supported
 # (QUIET, REQUIRED, etc.).
 
+set(PROTOBUF_SUPPRESS_WARNINGS "FLAG_SUPPRESS_WARNINGS")
+
 foreach(BITWIDTH 32 64)
     foreach(BUILDMODE "RELEASE" "DEBUG")
         set(PROTOBUF_HINT_PATHS_${BUILDMODE}${BITWIDTH}

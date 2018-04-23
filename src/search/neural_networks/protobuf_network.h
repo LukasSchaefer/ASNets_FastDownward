@@ -12,7 +12,7 @@
 #include <string>
 
 namespace neural_networks {
-class ProtobufNetwork :  AbstractNetwork{
+class ProtobufNetwork :  public AbstractNetwork{
 protected:
     const std::shared_ptr<AbstractTask> task;
     TaskProxy task_proxy;
@@ -29,14 +29,13 @@ protected:
     virtual void fill_input(const State &state) = 0;
     virtual void extract_output() = 0;
     
+    virtual void initialize() override;
     virtual void evaluate(const State& state) override;
-    
-    
 
 public:
     explicit ProtobufNetwork(const Options &opts);
     ProtobufNetwork(const ProtobufNetwork& orig) = delete;
-    virtual ~ProtobufNetwork() = default;
+    virtual ~ProtobufNetwork() override;
     
     static void add_options_to_parser(options::OptionParser &parser);
 private:

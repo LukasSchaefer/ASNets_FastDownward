@@ -26,6 +26,8 @@
 # Note that the standard FIND_PACKAGE features are supported
 # (QUIET, REQUIRED, etc.).
 
+set(EIGEN_SUPPRESS_WARNINGS "FLAG_SUPPRESS_WARNINGS")
+
 foreach(BITWIDTH 32 64)
     foreach(BUILDMODE "RELEASE" "DEBUG")
         set(EIGEN_HINT_PATHS_${BUILDMODE}${BITWIDTH}

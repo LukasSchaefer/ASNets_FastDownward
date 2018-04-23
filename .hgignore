@@ -13,7 +13,8 @@
 ^roadmap/Ferber_Msc_Thesis_Src
 ^src/tst.py
 ^problems*
-
+^examples/.*.sas
+^examples/.*sas_plan*
 
 syntax: glob
 *.sample

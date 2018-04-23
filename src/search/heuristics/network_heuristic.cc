@@ -17,6 +17,8 @@ NetworkHeuristic::NetworkHeuristic(const Options &opts)
       network(opts.get<shared_ptr<neural_networks::AbstractNetwork>>("network")) {
     cout << "Initializing network heuristic..." << endl;
     network->verify_heuristic();
+    network->initialize();
+    
     
 }
 

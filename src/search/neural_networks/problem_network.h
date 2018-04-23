@@ -7,7 +7,7 @@
 #include "../option_parser.h"
 
 namespace neural_networks {
-class ProblemNetwork : ProtobufNetwork {
+class ProblemNetwork : public ProtobufNetwork {
 protected:
     const std::vector<int> domain_sizes;
     const OutputType output_type;
@@ -21,6 +21,7 @@ public:
     virtual bool is_heuristic() override;
     virtual int get_heuristic() override;
     
+    virtual void initialize() override;
     virtual void initialize_inputs() override;
     virtual void fill_input(const State &state) override;
     virtual void extract_output() override;

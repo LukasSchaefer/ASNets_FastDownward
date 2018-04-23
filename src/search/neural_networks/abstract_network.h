@@ -11,16 +11,8 @@ namespace neural_networks {
 enum OutputType {
     Classification, Regression, Undefined
 };
-OutputType get_output_type(std::string type) {
-    if (type == "regression"){
-        return OutputType::Regression;
-    } else if (type == "classification") {
-        return OutputType::Classification;
-    } else {
-        std::cerr << "Invalid network output type: " << type << std::endl;
-        utils::exit_with(utils::ExitCode::UNSUPPORTED);
-    }
-}
+
+extern OutputType get_output_type(std::string type);
     
 class AbstractNetwork {
 public:
@@ -28,6 +20,7 @@ public:
     AbstractNetwork(const AbstractNetwork& orig) = delete;
     virtual ~AbstractNetwork() = default;
     
+    virtual void initialize() {};
     virtual void evaluate(const State & state) = 0;
     
     virtual bool is_heuristic();

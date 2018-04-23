@@ -109,9 +109,9 @@ macro(fast_downward_set_linker_flags)
 
             # Set linker flags to link statically.
             if(CMAKE_COMPILER_IS_GNUCXX)
-                set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Bstatic -static-libgcc")
+                set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -static -static-libgcc")
             elseif(${CMAKE_CXX_COMPILER_ID} STREQUAL "Clang")
-                set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Bstatic -static-libstdc++")
+                set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -static -static-libstdc++")
 
                 # CMake automatically adds the -rdynamic flag to the
                 # following two variables, which causes an error in our

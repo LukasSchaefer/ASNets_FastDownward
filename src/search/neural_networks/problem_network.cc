@@ -36,6 +36,11 @@ int ProblemNetwork::get_heuristic(){
     return last_h;
 }
 
+void ProblemNetwork::initialize() {
+    ProtobufNetwork::initialize();
+}
+
+
 void ProblemNetwork::initialize_inputs() {
     int input_size = 0;
     for (unsigned int i = 0; i < task_proxy.get_variables().size(); ++i) {
@@ -47,11 +52,12 @@ void ProblemNetwork::initialize_inputs() {
 
 
 void ProblemNetwork::fill_input(const State& state){
+    const vector<int> values = state.get_values();
     auto t_matrix = inputs[0].second.matrix<float>();
     int idx = 0;
     for (unsigned int i = 0; i < domain_sizes.size(); i++) {
         for (int j = 0; j < domain_sizes[i]; j++) {
-            if (j == state[i]) {
+            if (j == values[i]) {
                 t_matrix(0, idx) = 1;
             } else {
 
@@ -66,11 +72,10 @@ void ProblemNetwork::extract_output(){
     auto output_c = outputs[0].flat<float>();
     if (output_type == OutputType::Regression) {
         last_h = round(output_c(0));
-    } else (output_type == OutputType::Classification) {
+    } else if (output_type == OutputType::Classification) {
         int maxIdx = 0;
         float maxVal = output_c(0);
         for (int i = 0; i < output_c.size(); i++) {
-            //std::cout << i << "\t" << output_c(i) << std::endl;
             if (output_c(i) > maxVal) {
                 maxIdx = i;
                 maxVal = output_c(i);
@@ -83,7 +88,7 @@ void ProblemNetwork::extract_output(){
 }
 
 static shared_ptr<neural_networks::AbstractNetwork> _parse(OptionParser &parser) {
-    neural_networks::ProtobufNetwork::add_options_to_parser(parser)
+    neural_networks::ProtobufNetwork::add_options_to_parser(parser);
     parser.add_option<string>("type",
         "Type of network output (regression or classification)");
     Options opts = parser.parse();
@@ -97,4 +102,4 @@ static shared_ptr<neural_networks::AbstractNetwork> _parse(OptionParser &parser)
 }
 
 static PluginShared<neural_networks::AbstractNetwork> _plugin("probnet", _parse);
-}
+
