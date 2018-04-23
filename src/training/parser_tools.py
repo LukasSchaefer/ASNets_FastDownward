@@ -256,7 +256,7 @@ class ItemCache(object):
 
 class ClassArguments:
     def __init__(self, class_name, base_class_arguments, *args, variables = {},
-                 order=None):
+                 order=None, description=""):
         """
         List of arguments which a class needs to be constructe. Each entry is
         of the form (name, optional, default, register_or_converter) with:
@@ -278,7 +278,7 @@ class ClassArguments:
 
         :param class_name: name of the class associated with this object
         :param args: sequence of (name, optional, default,
-                        register_or_converter) tuple
+                        register_or_converter, [optional] description) tuple
                         register_or_converter can be:
                             None => the received value is not further processed
                             [Register.ClassRegister, ...]
@@ -303,7 +303,7 @@ class ClassArguments:
         :param order: defines a new order for the args order.
         """
         self.class_name = class_name
-
+        self.description = description
         self.order = []
         self.parameters = {}
         if base_class_arguments is not None:
@@ -317,7 +317,9 @@ class ClassArguments:
                 self.order.append(arg[0])
 
             if isinstance(arg[3], Register.ClassRegister):
-                arg = (arg[0], arg[1], arg[2], [arg[3]])
+                arg = list(arg)
+                arg[3] = [arg[3]]
+                arg = tuple(arg)
 
             self.parameters[arg[0]] = arg
 

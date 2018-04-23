@@ -17,8 +17,22 @@ fast_downward_set_linker_flags()
 
 # Collect source files needed for the active plugins.
 include("${CMAKE_CURRENT_SOURCE_DIR}/DownwardFiles.cmake")
-add_executable(downward ${PLANNER_SOURCES})
 
+## == Required Packages ==
+# HACK TODO ASK FLORIAN: Tensorflow only as shared how to load some
+# via dynamic (best case per library, otherwise per packages)
+add_executable(downward ${PLANNER_SOURCES})
+set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Bdynamic")
+foreach(PACKAGE ${PLANNER_REQ_PACKAGES})
+        find_package(${PACKAGE} REQUIRED)
+        if(${PACKAGE}_INCLUDE_DIRS)
+            include_directories(SYSTEM ${${PACKAGE}_INCLUDE_DIRS})
+        endif()
+        if(${PACKAGE}_LIBRARIES)
+            target_link_libraries(downward ${${PACKAGE}_LIBRARIES})
+        endif()
+endforeach()
+set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Bstatic")
 ## == Includes ==
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/ext)

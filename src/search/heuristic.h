@@ -63,7 +63,10 @@ protected:
     const std::string register_name;
     const bool registered;
 
+public:
     enum {DEAD_END = -1, NO_VALUE = -2};
+   
+protected:
 
     // TODO: Call with State directly once all heuristics support it.
     virtual int compute_heuristic(const GlobalState &state) = 0;
@@ -74,6 +77,7 @@ protected:
       operators for this heuristic.
     */
     void set_preferred(const OperatorProxy &op);
+    void set_preferred(const OperatorID &oid);
 
     /* TODO: Make private and use State instead of GlobalState once all
        heuristics use the TaskProxy class. */

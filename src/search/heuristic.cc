@@ -35,6 +35,10 @@ void Heuristic::set_preferred(const OperatorProxy &op) {
     preferred_operators.insert(op.get_global_operator_id());
 }
 
+void Heuristic::set_preferred(const OperatorID &oid) {
+    preferred_operators.insert(oid);
+}
+
 bool Heuristic::notify_state_transition(
     const GlobalState & /*parent_state*/,
     OperatorID /*op_id*/,

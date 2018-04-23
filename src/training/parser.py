@@ -3,6 +3,17 @@ from . import parse_tree
 from .parser_tools import ArgumentException
 
 
+def is_problem_file(path):
+    if not os.path.isfile(path):
+        return False
+    file = os.path.basename(path)
+    if not file.endswith(".pddl"):
+        return False
+    if file.find("domain") != -1:
+        return False
+    return True
+
+
 def convert_int_or_inf(value):
     try:
         return int(value)

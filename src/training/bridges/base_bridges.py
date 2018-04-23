@@ -24,7 +24,7 @@ class Bridge(with_metaclass(abc.ABCMeta, object)):
     fast downward) is then set via an argument of the sampler.
 
     Thus, the direct subclasses of Bridge shall describe their use case
-    (e.g. SamplingBridge) and they have subclasses which implement the
+    (e.g. SamplerBridge) and they have subclasses which implement the
     functionality. (A C++ private/protected inheritance would be better here)
     """
 
@@ -55,7 +55,7 @@ class SamplerBridge(Bridge):
     the sampler classes.
     """
     arguments = parset.ClassArguments('SamplerBridge', Bridge.arguments,
-                                      ("environment", True, None, main_register(Environment)),
+                                      ("environment", True, None, main_register.get_register(Environment)),
                                       order=["environment", "id"])
 
     def __init__(self, environment=None, id=None):
@@ -105,8 +105,8 @@ class FileSamplerBridge(SamplerBridge):
     arguments = parset.ClassArguments('FileSamplerBridge',
                                       SamplerBridge.arguments)
 
-    def __init__(self, id=None):
-        SamplerBridge.__init__(self, id)
+    def __init__(self, environment=None, id=None):
+        SamplerBridge.__init__(self, environment, id)
 
 
     def sample(self, problem, prefix=""):

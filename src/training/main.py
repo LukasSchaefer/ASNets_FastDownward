@@ -17,6 +17,7 @@ import sys
 # settings to construct them. {cmd arg : clazz}
 predefinition_construction_settings = {}
 
+
 def add_predefinitions(clazz, *args):
     """
     Adds settings to predefinition_construction_settings
@@ -87,6 +88,7 @@ def main(argv):
     buffer = []
     idx_arg = 0
 
+    # Parse Arguments
     while idx_arg < len(argv):
         arg = argv[idx_arg]
         print(templates)
@@ -134,7 +136,7 @@ def main(argv):
                 parser.load_csv_templates(arg3, templates)
                 idx_arg += 2
             else:
-                raise ValueError("Unkown template file type " + arg2)
+                raise ValueError("Unknown template file type " + arg2)
 
         # is last entry and has no '-'
         elif idx_arg == len(argv) - 1 and not arg.startswith("-"):
@@ -146,14 +148,14 @@ def main(argv):
 
         idx_arg += 1
 
-    #set up environment
+    # Set up environment
     if environment is None:
         environment = environments.Environment()
     register_all_default_environment(item_cache, environment)
 
     if main_schema is None:
         print("No schema defined to run. The last argument given shall be a"
-              "schema argument (without defining '-schema').")
+              "schema argument (without using '-schema' in front of it).")
     else:
         main_schema.run()
 

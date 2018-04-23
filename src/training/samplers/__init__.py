@@ -1,4 +1,1 @@
-register = {}
-
-
-from .base_sampler import Sampler, DirectorySampler
+from .base_sampler import saregister, Sampler

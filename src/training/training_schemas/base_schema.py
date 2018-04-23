@@ -11,6 +11,11 @@ from future.utils import with_metaclass
 
 
 class Schema(with_metaclass(abc.ABCMeta, object)):
+    """
+    Base class for Schemas. Schemas describe what shall be how run.
+    E.g. A training schema calls the necessary methods to obtain data and train
+    a network.
+    """
 
     arguments = parset.ClassArguments('Schema', None,
                                       ('variables', True, {},

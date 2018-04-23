@@ -1,3 +1,4 @@
+import abc
 import subprocess
 
 
@@ -9,11 +10,13 @@ class Task(object):
     INITIALIZED   = -2
     RUNNING       = -1
 
-    def __init__(self, name, alarms=None):
+    def __init__(self, name, *alarms, alarm_set=None):
         self._name = name
         self._status = Task.UNINITIALIZED
         self._result = None
-        self.alarms = set() if alarms is None else alarms
+        self.alarms = set() if alarm_set is None else alarm_set
+        for alarm in alarms:
+            self.add_alarm(alarm)
 
     def _get_name(self):
         return self._name
@@ -79,8 +82,8 @@ class Task(object):
 
 
 class DelegationTask(Task):
-    def __init__(self, name, func_initialize, func_execute, alarms=None):
-        Task.__init__(self, name, alarms)
+    def __init__(self, name, func_initialize, func_execute, *alarms, alarm_set=None):
+        Task.__init__(self, name, *alarms, alarm_set=alarm_set)
         self._func_initialize = func_initialize
         self._func_execute = func_execute
 
@@ -92,13 +95,15 @@ class DelegationTask(Task):
 
 
 class SubprocessTask(Task):
-    def __init__(self, name, command, alarms):
-        Task.__init__(self, name, alarms)
+    def __init__(self, name, command, *alarms, alarm_set=None):
+        Task.__init__(self, name, *alarms, alarm_set=alarm_set)
         self._command = command
 
     def _initialize(self):
         pass
 
     def _execute(self):
-        return subprocess.call(self._command, shell=False)
+        x =  subprocess.call(self._command, shell=False)
+        print(self._command)
+        return x
 
