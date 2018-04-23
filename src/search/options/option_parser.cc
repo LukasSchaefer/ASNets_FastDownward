@@ -144,15 +144,83 @@ void OptionParser::check_bounds<double>(
     _check_bounds(*this, key, value, lower_bound, upper_bound);
 }
 
+void expand_arg_char(ostringstream &new_arg, ostringstream &cmd_buffer,
+    bool &mode_command, int &mode_case, char c) {
+    if (mode_command) {
+        // Current command has ended
+        if (c == ' ' || c == '\\') {
+            const string cmd = cmd_buffer.str();
+            if (cmd == "") {
+                if (c == '\\') {
+                    new_arg << '\\';
+                } else {
+                    cerr << "Empty argument" << endl;
+                    exit(99);
+                }
+            } else if (cmd == "lower_case") {
+                mode_case = -1;
+            } else if (cmd == "real_case") {
+                mode_case = 0;
+            } else if (cmd == "upper_case") {
+                mode_case = 1;
+            } else if (cmd == "default") {
+                mode_case = -1;
+            } else {
+                cerr << "Unkown argument command: " << cmd << endl;
+                exit(99);
+            }
+            cmd_buffer.str("");
+            cmd_buffer.clear();
+            mode_command = false;
+
+            // Command still continues
+        } else {
+            cmd_buffer << c;
+        }
+        // Not command mode
+    } else {
+        if (c == '\\') {
+            mode_command = true;
+        } else {
+            switch (mode_case) {
+                case -1:
+                    c = tolower(c);
+                    break;
+                case 1:
+                    c = toupper(c);
+                    break;
+            }
+            new_arg << c;
+        }
+    }
+}
+
+string expand_arg(const string& arg) {
+    ostringstream new_arg, buffer;
+    bool mode_command = false;
+    int mode_case = -1;
+
+    for (char c : arg) {
+        expand_arg_char(new_arg, buffer, mode_command, mode_case, c);
+    }
+    if (mode_command) {
+        expand_arg_char(new_arg, buffer, mode_command, mode_case, ' ');    }
+    return new_arg.str();
+}
+
 shared_ptr<SearchEngine> OptionParser::parse_cmd_line(
     int argc, const char **argv, bool dry_run, bool is_unit_cost) {
     vector<string> args;
     bool active = true;
     for (int i = 1; i < argc; ++i) {
-        string arg = argv[i];
 
         // Ignore case.
-        transform(arg.begin(), arg.end(), arg.begin(), ::tolower);
+        //string arg = argv[i];
+        //transform(arg.begin(), arg.end(), arg.begin(), ::tolower);
+        //HACK: I need some arguments to be not converted to lower case, now
+        //there is a mechanism which allows to insert commands in the arguments.
+        //Three commands are 
+        string arg = expand_arg(argv[i]);
 
         // Sanitize argument by removing newlines.
         arg.erase(remove(arg.begin(), arg.end(), '\n'), arg.end());
@@ -253,7 +321,10 @@ shared_ptr<SearchEngine> OptionParser::parse_cmd_line_aux(
 string OptionParser::usage(const string &progname) {
     return "usage: \n" +
            progname + " [OPTIONS] --search SEARCH < OUTPUT\n\n"
-           "* SEARCH (SearchEngine): configuration of the search algorithm\n"
+           "* SEARCH (SearchEngine): configuration of the search algorithm. This\n"
+           "                         string can contain commands via \\command\\\n"
+           "                         which change the parsing or configuration. E.g.\n"
+           "                         \\lower_case\\, \\real_case\\, \\upper_case\\.\n"
            "* OUTPUT (filename): translator output\n\n"
            "Options:\n"
            "--help [NAME]\n"

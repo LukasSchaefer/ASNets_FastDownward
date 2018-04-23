@@ -28,6 +28,7 @@ this program. If not, see <http://www.gnu.org/licenses/>.
 This version is an adaption by Patrick Ferber (patrick.ferber@unibas.ch) for experiments 
 with neural networks and Fast-Downward. This version is still in a very early development phase.
 
+== Setup ==
 Setup steps (TODO extend)
 
 0. Install bazel (this is the recommended compiler), and the requirements for Fast-Downward
@@ -72,6 +73,98 @@ REMARK: The last time, I did this, Tensorflow could only be compiled with 64 bit
 4.1 If your compilation was successful, you can run some of the examples (currently only one) in the
     'examples' directory to test if it is working.
     REMARK: Actually, the example is currently not running, because of issue 1.1.
+
+
+== Usage ==
+The command line usage of this fork is nearly the same as for the Fast-Downward master.
+
+1.  Commandline Argument Cases:
+    In Fast-Downward the search engine configuration is converted to lower case which makes
+    providing case sensitive string difficult or impossible.
+    The new parsing allows inserting commands via FIRST_PART\COMMANDNAME\SECOND_PART. Commands
+    can modify the further parsing or the configuration. Currently implemented are:
+      \lower_case\	= parses the following chars of the configuration as lower case (DEFAULT)
+      \real_case\	= parses the following chars of the configuration in their original case
+      \lower_case\	= parses the following chars of the configuration as upper case
+      \default\		= resets all parsing modifications to their default value
+    
+    An example use-case is providing a file path. This could look like:
+      ./fast-downward.py PROBLEM --search "eager_greedy(nh(network=mynetwork(path=\real_case\pathToMyTrainedNetwork\default\)))"
+
+
+2.  SearchEngine Transform Task
+    SearchEngines can now also receive a task transformation (like previously heuristics) to run on a
+    modified task. To use this provide the additional parameter 'transform', e.g.
+      ./fast-downward.py PROBLEM --search "eager_greedy(ff(), transform=adapt_costs())"
+
+
+3.  Register Heuristics
+    Defined heuristics can be registered (happens on construction if the argument is provided and 
+    automatically unregister on destruction or when manually unregistered or register is resetted) globally.
+    This does not mean, they are invoked for every state, but this allows different components to
+    access the heuristic without passing the reference everywhere around (this is used in the sampling
+    search)
+
+
+== Currently implemented Features ==
+1.  Structure for Networks
+    The base class for networks is AbstractNetwork. Networks can produce arbitrary output.
+    This makes is quite difficult how to design the inheritance structures such that a
+    network which outputs data of type A and B has functions to access its A and B data
+    AND let other classes use the network on possible A, B or A&B.
+    Example:
+       Let's say we have a base network class B and interaces HEURISTIC_VALUE, PREFERRED_ACTIONS
+       (aka abstract classes with multiple inheritance) provide the getters for our 
+       network class N subclass of B. Now a network heuristic could accept an object of type
+       HEURISTIC_VALUE, evaluate it and access its heuristic value, but it could not access its
+       preferred actions (and vice versa), because it is not possible to define objects which
+       are of multiple class types (here interfaces HEURISTIC_VALUE and PREFERRED_ACTIONS).
+    
+    Therefore, the current approach says, every network (which shall be used by some arbitrary
+    components) is a decendant of AbstractNetwork. For every type of output ANY IMPLEMENTED
+    network can produce AbstractNetwork has the following methods:
+       bool is_OUTPUTTYPE()	- tells if the network produces output for this type
+       void verify_OUTPUTTYPE() - checks if network produces output for this type and stops
+                                  execution if not. This shall be used by code which uses
+                                  some networks in their initialization to check that the
+                                  given network supports the needed outputs (e.g. the
+                                  network heuristic checks that the given network produces a
+                                  heuristic value)
+      TYPE get_OUTPUTTYPE()     - provides access to the last output of the given type the
+                                  network has produced if able. If the network is not able
+                                  to produce this kind of output, stop execution.
+
+    Now components working with networks can simply accept AbstractNetwork objects and then
+    use the verify method to check that all needed outputs can be produced by the given
+    network. If you write a network which will only ever be used by ONE component, then
+    you might ignore this and give this component directly an object of your network class.
+    
+
+2.  Sampling Search
+    This is a search which samples states for a problem. The base problem is the one given
+    to Fast-Downward. For each SamplingTechnique defined (as argument for the SamplingSearch)
+    it samples a new derived problem of the base problem (or the base problem directly, if
+    the SamplingTechnique does not perform any modifications). Then it starts for every
+    derived problem a new search (what is run can be configured). The results of the search
+    are sampled. There are currently three different kind of samplings which can be
+    performed for a sampling run:
+
+       - solution path		: sample the states and actions on the goal trajectory
+       - other paths		: the search performed can add more paths to the variable
+				  paths in sampling_search.h (global variable) to store
+       - all states		: samples all encountered states
+
+    The format for every state in a path is as follows:
+       state; action; successor state; heuristic value of state; (registered_heuristic = VALUE)*
+
+    The format for states (from all states) is:
+       state; parent action; predecessor state; heuristic value of state; (registered_heuristic = VALUE)*
+
+    Additionally has every entry some Meta information <Meta ....> in the beginning of each line.
+    The most important is the format which tells in which format the state is represented.
+    After sampling the format is "FD" and means the format used by FD when dumping a state
+    with its PDDL predicates. Here it should be noted that FD prunes unreachable and constant predicates.
+
 
 
 

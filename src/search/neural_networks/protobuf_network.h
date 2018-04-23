@@ -12,17 +12,25 @@
 #include <string>
 
 namespace neural_networks {
+/*Base class for all networks using tensorflow and are loaded from a protobuf file.*/
 class ProtobufNetwork :  public AbstractNetwork{
 protected:
+    /*Task for which to use the network*/
     const std::shared_ptr<AbstractTask> task;
     TaskProxy task_proxy;
     
+    /*Path to the trained network file*/
     const std::string path;
+    /*Name of the variable in the compution graph to insert the network input*/
     const std::string input_layer_name;
+    /*Name of the variables in the computation graph from which to extract the output*/
     const std::string output_layer_name;
     
+    /*Tensorflow session which is used to perform the evaluation within*/
     tensorflow::Session* session;
+    /*At each evaluation fill in here the input. This variable is feed to the network*/
     std::vector<std::pair<std::string, tensorflow::Tensor>> inputs;
+    /*After each evaluation the network output is stored here waiting for further processing.*/
     std::vector<tensorflow::Tensor> outputs;
 
     virtual void initialize_inputs() = 0;

@@ -7,6 +7,9 @@
 #include "../option_parser.h"
 
 namespace neural_networks {
+/*A simple example network. This network takes a trained computation graph and
+ loads it. At every state, it feeds the state into the network as sequence of
+ 0s and 1s and extract a heuristic estimate for the state.*/
 class ProblemNetwork : public ProtobufNetwork {
 protected:
     const std::vector<int> domain_sizes;

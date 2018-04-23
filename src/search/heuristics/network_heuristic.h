@@ -8,7 +8,9 @@
 #include <memory>
 
 namespace network_heuristic {
-
+/*Heuristic given state to a network and using its estimate as heuristic value.
+ If the network also provides preferred operators, then they are also copied
+ in this heuristic.*/
 class NetworkHeuristic : public Heuristic {
     
 protected:
