@@ -33,7 +33,7 @@ from itertools import count
 
 import logging
 
-import sas_tasks
+from . import sas_tasks
 
 DEBUG = False
 

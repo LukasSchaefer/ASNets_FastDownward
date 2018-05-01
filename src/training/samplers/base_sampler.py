@@ -34,7 +34,9 @@ class Sampler(with_metaclass(abc.ABCMeta, object)):
         if not isinstance(variables, dict):
             raise ArgumentException("The provided variables have to be a map. "
                                     "Please define them as {name=VARIABLE,...}.")
-        self.sbridge = sampler_bridge
+        if not isinstance(sampler_bridge, list):
+            sampler_bridge = [sampler_bridge]
+        self.sbridges = sampler_bridge
         self.variables = variables
         self.id = id
 
@@ -49,12 +51,17 @@ class Sampler(with_metaclass(abc.ABCMeta, object)):
         if not self.initialized:
             self.in_logs = in_logs
             self.out_log = out_log
-            self.sbridge.initialize()
+            for sb in self.sbridges:
+                sb.initialize()
             self._initialize()
             self.initialized = True
         else:
             raise InvalidMethodCallException("Multiple initializations of"
                                              "sampler.")
+
+    def _call_bridge_sample(self, problem):
+        for sb in self.sbridges:
+            sb.sample(problem)
 
     def sample(self):
         if not self.initialized:
@@ -69,7 +76,8 @@ class Sampler(with_metaclass(abc.ABCMeta, object)):
             raise InvalidMethodCallException("Cannot call finalize the sampler"
                                              " without initializing first.")
         if not self.finalized:
-            self.sbridge.finalize()
+            for sb in self.sbridges:
+                sb.finalize()
             self._finalize()
             self.finalized = True
         else:
@@ -81,13 +89,14 @@ class Sampler(with_metaclass(abc.ABCMeta, object)):
         pass
 
     @abc.abstractmethod
-    def _sample(self):
+    def _sample(self, sbridge):
         pass
 
     @abc.abstractmethod
     def _finalize(self):
         pass
 
+    @staticmethod
     def parse(tree, item_cache):
         obj = parser.try_lookup_obj(tree, item_cache, Sampler, None)
         if obj is not None:

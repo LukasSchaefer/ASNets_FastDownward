@@ -3,7 +3,7 @@ import argparse
 import logging
 import sys
 
-import tools
+from . import tools
 
 
 def parse_args(argv):

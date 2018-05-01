@@ -10,11 +10,22 @@ class Task(object):
     INITIALIZED   = -2
     RUNNING       = -1
 
-    def __init__(self, name, *alarms, alarm_set=None):
+    def __init__(self, name, *alarms, **kwargs):
+        """
+        Base Task
+        :param name: name of the task
+        :param alarms: SEQUENCE of threading events to wake up on status changes
+        :param alarm_set: KWARGUMENT. OPTIONAL
+                          set of threading events to wake up on status changes
+                          (similar to alarms, but this time a set is expected)
+        """
+        self.alarms = kwargs.pop("alarm_set", set())
+        if len(kwargs) > 0:
+            raise ValueError("Unknown arguments:" + str(kwargs))
+
         self._name = name
         self._status = Task.UNINITIALIZED
         self._result = None
-        self.alarms = set() if alarm_set is None else alarm_set
         for alarm in alarms:
             self.add_alarm(alarm)
 
@@ -82,8 +93,16 @@ class Task(object):
 
 
 class DelegationTask(Task):
-    def __init__(self, name, func_initialize, func_execute, *alarms, alarm_set=None):
-        Task.__init__(self, name, *alarms, alarm_set=alarm_set)
+    def __init__(self, name, func_initialize, func_execute, *alarms, **kwargs):
+        """
+        DelegationTask.
+        :param name:
+        :param alarms: SEQUENCE of threading events to wake up on status changes
+        :param alarm_set: KWARGUMENT. OPTIONAL
+                          set of threading events to wake up on status changes
+                          (similar to alarms, but this time a set is expected)
+        """
+        Task.__init__(self, name, *alarms, **kwargs)
         self._func_initialize = func_initialize
         self._func_execute = func_execute
 
@@ -95,8 +114,18 @@ class DelegationTask(Task):
 
 
 class SubprocessTask(Task):
-    def __init__(self, name, command, *alarms, alarm_set=None):
-        Task.__init__(self, name, *alarms, alarm_set=alarm_set)
+    """
+    DelegationTask.
+    :param name:
+    :param alarms: SEQUENCE of threading events to wake up on status changes
+    :param alarm_set: KWARGUMENT. OPTIONAL
+                      set of threading events to wake up on status changes
+                      (similar to alarms, but this time a set is expected)
+    """
+
+    def __init__(self, name, command, *alarms, **kwargs):
+
+        Task.__init__(self, name, *alarms, **kwargs)
         self._command = command
 
     def _initialize(self):

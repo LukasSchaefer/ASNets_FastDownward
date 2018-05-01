@@ -7,8 +7,8 @@ import logging
 import sys
 import itertools
 
-import pddl
-import timers
+from . import pddl
+from . import timers
 from functools import reduce
 
 def convert_rules(prog):
@@ -343,9 +343,9 @@ def compute_model(prog, log=logging.root):
     return queue.queue
 
 if __name__ == "__main__":
-    import pddl_parser
-    import normalize
-    import pddl_to_prolog
+    from . import pddl_parser
+    from . import normalize
+    from . import pddl_to_prolog
     log = logging.root
 
     log.info("Parsing...")

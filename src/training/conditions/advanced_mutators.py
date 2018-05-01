@@ -35,6 +35,7 @@ class MGroup(Mutator):
         for m in self._mutators():
             m._reset()
 
+    @staticmethod
     def parse(tree, item_cache):
         return parser.try_whole_obj_parse_process(tree, item_cache,
                                                   MGroup)
@@ -72,6 +73,7 @@ class MRoundRobin(Mutator):
         for m in self._mutators:
             m._reset()
 
+    @staticmethod
     def parse(tree, item_cache):
         return parser.try_whole_obj_parse_process(tree, item_cache,
                                                   MRoundRobin)
@@ -111,6 +113,7 @@ class MLeft2Right(Mutator):
         for m in self._mutators:
             m._reset()
 
+    @staticmethod
     def parse(tree, item_cache):
         return parser.try_whole_obj_parse_process(tree, item_cache,
                                                   MLeft2Right)

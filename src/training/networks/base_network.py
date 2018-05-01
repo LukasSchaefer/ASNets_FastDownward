@@ -86,6 +86,7 @@ class Network(with_metaclass(abc.ABCMeta, object)):
         """
         pass
 
+    @staticmethod
     def parse(tree, item_cache):
         obj = parser.try_lookup_obj(tree, item_cache, Network, None)
         if obj is not None:

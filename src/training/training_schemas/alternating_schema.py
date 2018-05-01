@@ -49,6 +49,7 @@ class AlternatingSchema(SamplerNetworkSchema):
             self.network.finalize()
             self.network.store()
 
+    @staticmethod
     def parse(tree, item_cache):
         return parser.try_whole_obj_parse_process(tree, item_cache,
                                                   AlternatingSchema)

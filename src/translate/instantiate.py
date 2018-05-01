@@ -4,10 +4,10 @@ from __future__ import print_function
 
 from collections import defaultdict
 
-import build_model
-import pddl_to_prolog
-import pddl
-import timers
+from . import build_model
+from . import pddl_to_prolog
+from . import pddl
+from . import timers
 
 def get_fluent_facts(task, model):
     fluent_predicates = set()
@@ -78,7 +78,7 @@ def explore(task):
         return instantiate(task, model)
 
 if __name__ == "__main__":
-    import pddl_parser
+    from . import pddl_parser
     log = logging.root
     task = pddl_parser.open()
     relaxed_reachable, atoms, actions, axioms, _ = explore(task)

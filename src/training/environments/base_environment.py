@@ -143,6 +143,7 @@ class Environment(object):
 
     # TODO def stop(self, wait=False):
 
+    @staticmethod
     def parse(tree, item_cache):
         return parser.try_whole_obj_parse_process(tree, item_cache, Environment)
 
@@ -161,6 +162,7 @@ class NbCoresEnvironment(Environment):
         Environment.__init__(max_active=multiprocessing.cpu_count(),
                              id=id, clock=clock)
 
+    @staticmethod
     def parse(tree, item_cache):
         return parser.try_whole_obj_parse_process(tree, item_cache,
                                                   NbCoresEnvironment)

@@ -15,6 +15,9 @@
 ^problems*
 ^examples/.*.sas
 ^examples/.*sas_plan*
+^profile.sh
+^tmp/*
+
 
 syntax: glob
 *.sample

@@ -283,6 +283,19 @@ class Atom(Literal):
     def positive(self):
         return self
 
+    def from_string(s):
+        if s.startswith("Atom"):
+            s = s[4:]
+        s = s.strip()
+        bracket = s.find("(")
+        name = s[:bracket]
+        args = s[bracket + 1: -1]
+        args = args.split(",")
+        for i in range(len(args)):
+            args[i] = args[i].strip()
+        return Atom(name, args)
+
+
 class NegatedAtom(Literal):
     negated = True
     def _relaxed(self, parts):

@@ -40,6 +40,7 @@ class Schema(with_metaclass(abc.ABCMeta, object)):
     def run(self):
         pass
 
+    @staticmethod
     def parse(tree, item_cache):
         obj = parser.try_lookup_obj(tree, item_cache, Schema, None)
         if obj is not None:
@@ -67,6 +68,7 @@ class SamplerNetworkSchema(Schema):
         self.sampler = sampler
         self.network = network
 
+    @staticmethod
     def parse(tree, item_cache):
         obj = parser.try_lookup_obj(tree, item_cache, SamplerNetworkSchema, None)
         if obj is not None:

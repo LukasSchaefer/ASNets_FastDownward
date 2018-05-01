@@ -172,23 +172,24 @@ void SamplingSearch::extract_sample_entries_state(
 std::string SamplingSearch::extract_sample_entries() {
     /* 
      Data set format (; represents the field separator which can be changed):
-     <T>;<ProblemHash>;<ModificationHash>;<CurrentState>;<GoalPredicates>;
+     <Meta problem_hash=<ProblemHash> modification_hash=<ModificationHash>
+     type={O,T,S}, format=FD> <CurrentState>;<GoalPredicates>;
         <Operator>;<OtherState>;<HeuristicViaTrajectory>;<Heuristics>*
      
      All files exists in every sampling entry, although some might be empty.
-     <T> := * if entry belongs to solution path, 
-            + if entry belongs to a trajectory stored by the search algorithm,
-            - if the entry belongs to an arbitrary visited state
+     <T> := O if entry belongs to solution path, 
+            T if entry belongs to a trajectory stored by the search algorithm,
+            S if the entry belongs to an arbitrary visited state
      <ModificationHash> := md5 hash of input problem file (or 'NA' if missing)
      <ModificationHash> := hash of the modified states initial state + goals
      <CurrentState> := State of this entry
      <GoalPredicates> := goal predicates of the problem to solve
      
      The next two are either both filled or both empty:
-     <Operator> :=  if <T> in {*,+}: operator chosen in the current state
-                    if <T> in {-}: operator used to reach current state
-     <OtherState> := if <T> in {*,+}: state resulting from applying operator
-                     if <T> in {-}: parent state using operator to reach current
+     <Operator> :=  if <T> in {O, T}: operator chosen in the current state
+                    if <T> in {S}: operator used to reach current state
+     <OtherState> := if <T> in {O, T}: state resulting from applying operator
+                     if <T> in {S}: parent state using operator to reach current
      
      <HeuristicViaTrajectory> := cost from the current state to the end of the
             trajectory. If the trajectory is the solution path, then this is

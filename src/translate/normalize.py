@@ -3,7 +3,7 @@
 import copy
 import logging
 
-import pddl
+from . import pddl
 
 class ConditionProxy(object):
     def clone_owner(self):
@@ -392,7 +392,7 @@ def condition_to_rule_body(parameters, condition):
     return result
 
 if __name__ == "__main__":
-    import pddl_parser
+    from . import pddl_parser
     log = logging.root
     task = pddl_parser.open()
     normalize(task)

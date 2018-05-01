@@ -2,6 +2,8 @@ from __future__ import print_function
 
 import logging
 
+from .pddl import Atom
+
 SAS_FILE_VERSION = 3
 
 DEBUG = False
@@ -128,7 +130,7 @@ class SASVariables:
 
         All variables must have range at least 2, and derived
         variables must have range exactly 2. See comment on derived
-        variables in the docstring of SASTask.validate.
+        vpddl_taskariables in the docstring of SASTask.validate.
         """
         assert len(self.ranges) == len(self.axiom_layers) == len(
             self.value_names)
@@ -187,6 +189,17 @@ class SASVariables:
         # variable itself some weight.
         return len(self.ranges) + sum(self.ranges)
 
+    def str_grounded_predicates(self, sort=False):
+        gp = []
+        for var_names in self.value_names:
+            gp.extend(var_names)
+        if sort:
+            gp = sorted(gp)
+        return gp
+
+    def get_grounded_predicates(self, sort=False):
+        gp = self.str_grounded_predicates(sort=sorted)
+        return [Atom.from_string(x) for x in gp]
 
 class SASMutexGroup:
     def __init__(self, facts):

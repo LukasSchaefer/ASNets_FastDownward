@@ -79,6 +79,7 @@ class ProblemSorter(with_metaclass(abc.ABCMeta, object)):
     def _linearize(self, feed):
         pass
 
+    @staticmethod
     def parse(tree, item_cache):
         obj = parser.try_lookup_obj(tree, item_cache, ProblemSorter, None)
         if obj is not None:
@@ -100,9 +101,9 @@ ProblemSorter.arguments = parset.ClassArguments('ProblemSorter', None,
 
 
 
-class LexicographicArraySorter(ProblemSorter):
+class LexicographicIterableSorter(ProblemSorter):
 
-    arguments = parset.ClassArguments('LexicographicArraySorter',
+    arguments = parset.ClassArguments('LexicographicIterableSorter',
                                       ProblemSorter.arguments)
 
     def __init__(self, prev_sorter=None, id=None):
@@ -114,12 +115,13 @@ class LexicographicArraySorter(ProblemSorter):
     def _linearize(self, feed):
         return feed
 
+    @staticmethod
     def parse(tree, item_cache):
         return parser.try_whole_obj_parse_process(tree, item_cache,
-                                                  LexicographicArraySorter)
+                                                  LexicographicIterableSorter)
 
 
-main_register.append_register(LexicographicArraySorter, "lexicographic_sorter",
+main_register.append_register(LexicographicIterableSorter, "lexicographic_sorter",
                 "s_lex")
 
 
@@ -165,6 +167,7 @@ class DifficultySorter(ProblemSorter):
                 l.append(elem)
         return l
 
+    @staticmethod
     def parse(tree, item_cache):
         return parser.try_whole_obj_parse_process(tree, item_cache,
                                                   DifficultySorter)

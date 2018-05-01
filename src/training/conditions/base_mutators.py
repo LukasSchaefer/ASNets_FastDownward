@@ -56,6 +56,7 @@ class Mutator(Condition):
     def _satisfied(self):
         return self.fired_signal()
 
+    @staticmethod
     def parse(tree, item_cache):
         obj = parser.try_lookup_obj(tree, item_cache, Mutator, None)
         if obj is not None:
@@ -99,6 +100,7 @@ class MAdd(Mutator):
     def _reset(self):
         self._variable.value = self._reset_value
 
+    @staticmethod
     def parse(tree, item_cache):
         return parser.try_whole_obj_parse_process(tree, item_cache,
                                                   MAdd)
@@ -120,6 +122,7 @@ class MThreshold(MAdd):
         MAdd.__init__(self, variable, None, CThreshold(variable, threshold),
                       CThreshold(variable, threshold), step, reset_value, id)
 
+    @staticmethod
     def parse(tree, item_cache):
         return parser.try_whole_obj_parse_process(tree, item_cache,
                                                   MThreshold)
@@ -141,6 +144,7 @@ class MModulo(MAdd):
         MAdd.__init__(self, variable, None, CModulo(variable, modulo),
                       CModulo(variable, modulo), step, reset_value, id)
 
+    @staticmethod
     def parse(tree, item_cache):
         return parser.try_whole_obj_parse_process(tree, item_cache,
                                                   MModulo)

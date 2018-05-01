@@ -31,6 +31,7 @@ class CFlip(Condition):
             self.counter = 0
         return self.value
 
+    @staticmethod
     def parse(tree, item_cache):
         return parser.try_whole_obj_parse_process(tree, item_cache,
                                                   CFlip)
@@ -53,6 +54,7 @@ class CThreshold(Condition):
     def _satisfied(self):
         return self.variable.value >= self.threshold
 
+    @staticmethod
     def parse(tree, item_cache):
         return parser.try_whole_obj_parse_process(tree, item_cache,
                                                   CThreshold)
@@ -75,6 +77,7 @@ class CModulo(Condition):
     def _satisfied(self):
         return self.variable.value % self.modulo == 0
 
+    @staticmethod
     def parse(tree, item_cache):
         return parser.try_whole_obj_parse_process(tree, item_cache,
                                                   CModulo)
@@ -111,6 +114,7 @@ class CHistory(Condition):
         cnd = self.condition_class(self.history)
         return cnd.satisfied()
 
+    @staticmethod
     def parse(tree, item_cache):
         return parser.try_whole_obj_parse_process(tree, item_cache,
                                                   CHistory)
@@ -155,6 +159,7 @@ class CHistories(Condition):
         cnd = self.history_condition_class(self.history)
         return cnd.satisfied()
 
+    @staticmethod
     def parse(tree, item_cache):
         return parser.try_whole_obj_parse_process(tree, item_cache,
                                                   CHistories)

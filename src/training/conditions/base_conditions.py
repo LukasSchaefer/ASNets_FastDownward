@@ -69,6 +69,7 @@ class Condition(with_metaclass(abc.ABCMeta, object)):
         """
         pass
 
+    @staticmethod
     def parse(tree, item_cache):
         obj = parser.try_lookup_obj(tree, item_cache, Condition, None)
         if obj is not None:
@@ -93,6 +94,7 @@ class CTrue(Condition):
     def _satisfied(self):
         return True
 
+    @staticmethod
     def parse(tree, item_cache):
         return parser.try_whole_obj_parse_process(tree, item_cache,
                                                   CTrue)
@@ -111,6 +113,7 @@ class CFalse(Condition):
     def _satisfied(self):
         return False
 
+    @staticmethod
     def parse(tree, item_cache):
         return parser.try_whole_obj_parse_process(tree, item_cache,
                                                   CFalse)
@@ -131,6 +134,7 @@ class CNot(Condition):
     def _satisfied(self):
         return not self.condition.satisfied()
 
+    @staticmethod
     def parse(tree, item_cache):
         return parser.try_whole_obj_parse_process(tree, item_cache,
                                                   CNot)
@@ -158,6 +162,7 @@ class CAnd(Condition):
                 sat = False
         return sat
 
+    @staticmethod
     def parse(tree, item_cache):
         return parser.try_whole_obj_parse_process(tree, item_cache,
                                                   CAnd)
@@ -185,6 +190,7 @@ class COr(Condition):
                 sat = True
         return sat
 
+    @staticmethod
     def parse(tree, item_cache):
         return parser.try_whole_obj_parse_process(tree, item_cache,
                                                   COr)
@@ -207,6 +213,7 @@ class CXor(Condition):
     def _satisfied(self):
         return self.condition1.satisfied() ^ self.condition2.satisfied()
 
+    @staticmethod
     def parse(tree, item_cache):
         return parser.try_whole_obj_parse_process(tree, item_cache,
                                                   CXor)

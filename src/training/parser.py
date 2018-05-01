@@ -2,6 +2,25 @@ from . import parse_tree
 
 from .parser_tools import ArgumentException
 
+import os
+try:
+    FileNotFoundError
+except NameError:
+    FileNotFoundError = IOError
+
+
+def find_domain(path_problem):
+    techniques = [lambda x: os.path.join(os.path.dirname(x), "domain.pddl"),
+                  lambda x: os.path.splitext(x)[0] + "-domain.pddl",
+                  lambda x: os.path.join(os.path.split(x)[0], "domain_" + os.path.split(x)[1])]
+
+    for technique in techniques:
+        path_domain = technique(path_problem)
+        if os.path.isfile(path_domain):
+            return path_domain
+
+    raise FileNotFoundError("Unable to locate domain file.")
+
 
 def is_problem_file(path):
     if not os.path.isfile(path):

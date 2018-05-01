@@ -51,9 +51,10 @@ REMARK: The last time, I did this, Tensorflow could only be compiled with 64 bit
 
 2.  Tell CMake where to find Tensorflow, Protobuf, Eigen3.
 2.1 Fast-Downward is structured in a list of plugins. Every plugin defines on which other plugins
-    it depends, which source code belongs to it, ONE WHICH PACKAGES IT DEPENDS, and other stuff.
+    it depends, which source code belongs to it, ON WHICH PACKAGES IT DEPENDS, and other stuff.
     The packages can be external dependencies, like Tensorflow, Protobuf, Eigen3. CMake will search
-    in the default directories for those dependencies and additionally takes hints from environment
+    in the default directories for those dependencies (their include files and their library
+    files) and additionally takes hints from environment
     variables.
     For a Package PACKAGE, define one or up to all environment variables of:
 	-   PATH_PACKAGE32		= path where the include/ and lib/ dirs for the 32 bit build are stored
@@ -62,6 +63,12 @@ REMARK: The last time, I did this, Tensorflow could only be compiled with 64 bit
 	-   PATH_PACKAGE_RELEASE64	= path where the include/ and lib/ dirs for the 64 bit release build are stored
 	-   PATH_PACKAGE_DEBUG32	= path where the include/ and lib/ dirs for the 32 bit debug build are stored
 	-   PATH_PACKAGE_DEBUG64	= path where the include/ and lib/ dirs for the 64 bit debug build are stored
+	
+	On building configuration <TYPE><BITS> it will look into the variables in the following order:
+		 - PATH_PACKAGE_<TYPE><BITS>
+		 - PATH_PACKAGE_<BIT>
+		 - PATH_PACKAGE
+	
     
 3.  Compile Neural Fast-Downward
 3.1 Compile with a build version which works for you. If Tensorflow could only be build with 64bit,
@@ -161,10 +168,13 @@ The command line usage of this fork is nearly the same as for the Fast-Downward 
        state; parent action; predecessor state; heuristic value of state; (registered_heuristic = VALUE)*
 
     Additionally has every entry some Meta information <Meta ....> in the beginning of each line.
-    The most important is the format which tells in which format the state is represented.
-    After sampling the format is "FD" and means the format used by FD when dumping a state
-    with its PDDL predicates. Here it should be noted that FD prunes unreachable and constant predicates.
-
+    The meta tag may contain:
+       problem_hash		= a hash of the base problem description(original pddl file)
+       modification_hash	= a hash of the modification done to obtain the derived problem
+       type			= O:entry from an optimal path, T:entry from other path,
+				  S: entry for some state
+       format			= format of the entry:
+		FD		= Format used by FD (unchangable predicates are pruned)
 
 
 

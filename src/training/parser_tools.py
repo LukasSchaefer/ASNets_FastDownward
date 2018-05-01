@@ -90,7 +90,6 @@ class Register(object):
         :param args: names under which the clazz shall be found
         :return: None
         """
-        print(clazz)
         ancestor = clazz
         while ancestor is not None:
             if not self.has_class(ancestor):
@@ -255,11 +254,13 @@ class ItemCache(object):
 
 
 class ClassArguments:
-    def __init__(self, class_name, base_class_arguments, *args, variables = {},
-                 order=None, description=""):
+    def __init__(self, class_name, base_class_arguments, *args, **kwargs):
         """
-        List of arguments which a class needs to be constructe. Each entry is
-        of the form (name, optional, default, register_or_converter) with:
+        Describes how to construct a class.
+
+        *args is a ist of arguments which a class needs to be constructed.
+        Each entry is of the form
+                         (name, optional, default, register_or_converter) with:
         name = name of the argument
         optional = if not optional, then the user has to define this field else
                     if the field is missing, the default value is used.
@@ -277,7 +278,7 @@ class ClassArguments:
                                 them)
 
         :param class_name: name of the class associated with this object
-        :param args: sequence of (name, optional, default,
+        :param args: SEQUENCE of (name, optional, default,
                         register_or_converter, [optional] description) tuple
                         register_or_converter can be:
                             None => the received value is not further processed
@@ -290,7 +291,8 @@ class ClassArguments:
                                 internally converted to the previous case
                             Callable => calls the callable with the received
                                         data.
-        :param variables: Optional. Describes the variables which the associated
+        :param variables: KW ARGUMENT. OPTIONAL.
+                            Describes the variables which the associated
                             class may use to provide other objects access to
                             some data. The format is
                             [(name, initial value, value type)].
@@ -300,10 +302,20 @@ class ClassArguments:
                             Some variable description has the same name
                             as a previous one, then it modifies the previous one
                             and does not appear again in the order.
-        :param order: defines a new order for the args order.
+        :param order: KW ARGUMENT. OPTIONAL.
+                            defines a new order for the args order.
+        :param variables: KW ARGUMENT. OPTIONAL.
+                            describes which variables this objects provides for
+                            other components to connect to (e.g. counter for
+                            some statistics)
         """
+        variables = kwargs.pop("variables", {})
+        order = kwargs.pop("order", None)
+        self.description = kwargs.pop("description", "")
+        if len(kwargs) > 0:
+            raise ValueError("Unknown arguments: " + str(kwargs))
+
         self.class_name = class_name
-        self.description = description
         self.order = []
         self.parameters = {}
         if base_class_arguments is not None:

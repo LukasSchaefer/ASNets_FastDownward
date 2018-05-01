@@ -5,6 +5,52 @@ from . import conditions
 from . import predicates
 
 
+class Domain(object):
+    def __init__(self, domain_name, requirements,
+                 types, constants, predicates, functions,
+                 actions, axioms):
+        self.domain_name = domain_name
+        self.requirements = requirements
+        self.types = types
+        self.__type_hierarchy = None
+        self.__inv_type_hierarchy = None
+        self.constants = constants
+        self.predicates = predicates
+        self.__predicates_dict = None
+        self.functions = functions
+        self.actions = actions
+        self.axioms = axioms
+        self.axiom_counter = 0
+
+    def _type_hierarchy(self):
+        if self.__type_hierarchy is None:
+            lookup = {}
+            for type in self.types:
+                lookup[type.name] = type.basetype_name
+            self.__type_hierarchy = lookup
+        return self.__type_hierarchy
+    type_hierarchy = property(_type_hierarchy)
+
+    def _inv_type_hierarchy(self):
+        if self.__inv_type_hierarchy is None:
+            lookup = {}
+            for type in self.types:
+                if type.basetype_name not in lookup:
+                    lookup[type.basetype_name] = set()
+                lookup[type.basetype_name].add(type.name)
+            self.__inv_type_hierarchy = lookup
+        return self.__inv_type_hierarchy
+    inv_type_hierarchy = property(_inv_type_hierarchy)
+
+    def _predicate_dict(self):
+        if self.__predicates_dict is None:
+            pd = {}
+            for predicate in self.predicates:
+                pd[predicate.name] = predicate
+            self.__predicates_dict = pd
+        return self.__predicates_dict
+    predicate_dict = property(_predicate_dict)
+
 class Task(object):
     def __init__(self, domain_name, task_name, requirements,
                  types, objects, predicates, functions, init, goal,
@@ -13,8 +59,13 @@ class Task(object):
         self.task_name = task_name
         self.requirements = requirements
         self.types = types
+        self.__type_hierarchy = None
+        self.__inv_type_hierarchy = None
         self.objects = objects
+        self.__objects_dict_typed = None
+        self.__objects_dict_untyped = None
         self.predicates = predicates
+        self.__predicates_dict = None
         self.functions = functions
         self.init = init
         self.goal = goal
@@ -22,29 +73,71 @@ class Task(object):
         self.axioms = axioms
         self.axiom_counter = 0
         self.use_min_cost_metric = use_metric
-        self.type_parent = self.build_type_lookup()
 
-    def build_type_lookup(self):
-        # parent type has to defined before child
-        lookup = {}
-        for type in self.types:
-            lookup[type.name] = type.basetype_name
-        return lookup
+    def _type_hierarchy(self):
+        if self.__type_hierarchy is None:
+            lookup = {}
+            for type in self.types:
+                lookup[type.name] = type.basetype_name
+            self.__type_hierarchy = lookup
+        return self.__type_hierarchy
+    type_hierarchy = property(_type_hierarchy)
 
-    def get_object_type_mapping(self, as_typed_objects=True):
+    def _inv_type_hierarchy(self):
+        if self.__inv_type_hierarchy is None:
+            lookup = {}
+            for type in self.types:
+                if type.basetype_name not in lookup:
+                    lookup[type.basetype_name] = set()
+                lookup[type.basetype_name].add(type.name)
+            self.__inv_type_hierarchy = lookup
+        return self.__inv_type_hierarchy
+    inv_type_hierarchy = property(_inv_type_hierarchy)
+
+    def _predicate_dict(self):
+        if self.__predicates_dict is None:
+            pd = {}
+            for predicate in self.predicates:
+                pd[predicate.name] = predicate
+            self.__predicates_dict = pd
+        return self.__predicates_dict
+    predicate_dict = property(_predicate_dict)
+
+    def _objects_dict_typed(self):
+        if self.__objects_dict_typed is None:
+            self.__objects_dict_typed = self._get_object_dict(typed=True)
+        return self.__objects_dict_typed
+    objects_dict_typed = property(_objects_dict_typed)
+
+    def _objects_dict_untyped(self):
+        if self.__objects_dict_untyped is None:
+            self.__objects_dict_untyped = self._get_object_dict(typed=False)
+        return self.__objects_dict_untyped
+    objects_dict_untyped = property(_objects_dict_untyped)
+    objects_dict = property(_objects_dict_untyped)
+
+    def _get_object_dict(self, typed=True):
+        """
+        Assigns the objects of the problem in a dictionary to their type
+        AND the super types of them!
+        The dictionary has the layout: {type_name : object}
+        :param typed: if True, then TypedObjects are stored in the dictionary,
+                      else the object names are stored
+        :return: mapping of object types to objects of this type
+        """
         mapping = {}
         for object in self.objects:
             type = object.type_name
             while True:
                 if type not in mapping:
                     mapping[type] = []
-                if as_typed_objects:
+                if typed:
                     mapping[type].append(object)
                 else:
                     mapping[type].append(object.name)
-                if type not in self.type_parent:
+                if type not in self.type_hierarchy:
                     break
-                type = self.type_parent[type]
+                type = self.type_hierarchy[type]
         return mapping
 
     def add_axiom(self, parameters, condition):
@@ -86,25 +179,24 @@ class Task(object):
             log.log(log_level, msg)
         return msg
 
-
-    def get_groundings(self):
-        groundings = set()
-        for pred in self.predicates:
-            if pred.name == "=":
+    def get_grounded_predicates(self, sort=False):
+        groundings = []
+        for predicate in self.predicates:
+            if predicate.name == "=":
                 continue
-            assignments = pred.get_groundings(self.get_object_type_mapping(as_typed_objects=False))
-            for assignment in assignments:
-                atom = conditions.Atom(pred.name, assignment)
-                groundings.add(atom)
+            groundings.extend(predicate.get_groundings(
+                self.objects_dict, typed=False))
+        if sort:
+            groundings = sorted(groundings, key=lambda x: str(x))
         return groundings
 
-    def str_groundings(self, groundings=None):
-        if groundings is None:
-            groundings = self.get_groundings()
-        str_groundings = set()
-        for atom in groundings:
-            str_groundings.add(str(atom))
-        return str_groundings
+    def str_grounded_predicates(self, grounded_predicates=None, sort=False):
+        if grounded_predicates is None:
+            grounded_predicates = self.get_grounded_predicates(sort=sorted)
+        elif sort:
+            grounded_predicates = sorted(grounded_predicates, key=lambda x: str(x))
+        return [str(atom) for atom in grounded_predicates]
+
 
 
 

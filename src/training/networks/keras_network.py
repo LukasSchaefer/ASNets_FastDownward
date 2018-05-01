@@ -34,6 +34,7 @@ class KerasNetwork(Network):
         pass
 
 
+    @staticmethod
     def parse(tree, item_cache):
         return parser.try_whole_obj_parse_process(tree, item_cache,
                                                   KerasNetwork)

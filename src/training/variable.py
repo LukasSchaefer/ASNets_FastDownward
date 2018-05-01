@@ -51,6 +51,8 @@ class Variable(object):
         return ("Variable(" + str(self.value) + ", " + str(self.vtype) + ", "
                 + str(self.id) + ")")
 
+    @staticmethod
+    @staticmethod
     def parse(tree, item_cache):
         return parser.try_whole_obj_parse_process(tree, item_cache,
                                                   Variable, True)
