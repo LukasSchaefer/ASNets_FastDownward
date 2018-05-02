@@ -7,6 +7,8 @@
 
 using namespace std;
 
+const int PartialAssignment::UNASSIGNED = -1;
+
 void PartialAssignment::dump_pddl(std::ostream& out) const {
     for (unsigned int var = 0; var < (*this).size(); ++var) {
         if ((*this).assigned(var)) {

@@ -19,7 +19,7 @@ class PruningMethod;
 
 namespace options {
     class Options;
-    class ParseNode;
+    struct ParseNode;
     using ParseTree = tree<ParseNode>;
 }
 

@@ -13,6 +13,7 @@
 
 class State;
 class TaskProxy;
+class PartialAssignment;
 
 namespace successor_generator {
     class SuccessorGenerator;

@@ -15,7 +15,12 @@ ProtobufNetwork::ProtobufNetwork(const Options &opts)
 }
 
 ProtobufNetwork::~ProtobufNetwork(){
-    session->Close();
+    Status status = session->Close();
+    if (!status.ok()) {
+        std::cerr << "Session close error: " 
+                  << status.ToString() << "\n";
+        utils::exit_with(utils::ExitCode::CRITICAL_ERROR);
+    }
 }
 
 void ProtobufNetwork::initialize() {

@@ -590,7 +590,7 @@ class PartialAssignment {
     std::vector<int> values;
 public:
     using ItemType = FactProxy;
-    static const int UNASSIGNED = -1;
+    static const int UNASSIGNED;
 
     PartialAssignment(const AbstractTask &task, std::vector<int> &&values)
     : task(&task), values(std::move(values)) {

@@ -19,6 +19,7 @@
 #include <memory>
 #include <random>
 
+class PartialAssignment;
 
 namespace sampling_technique {
 
