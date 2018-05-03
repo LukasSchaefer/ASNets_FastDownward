@@ -16,7 +16,7 @@ class Predicate(object):
     def get_arity(self):
         return len(self.arguments)
 
-    def get_grounding(self, objects, typed=True):
+def get_grounding(self, objects, typed=True, type_hierarchy=None):
         """
         Get grounding of this predicate using the given objects.
         :param objects: objects for the grounding in their correct order.
@@ -28,17 +28,29 @@ class Predicate(object):
             "Invalid number of objects given for grounding: %d" % len(objects)
         if typed:
             for i in range(self.get_arity()):
-                if objects[i].type_name != self.arguments[i].type_name:
-                    raise ValueError("Invalid typed object for grounding. "
-                                     "Expected %s, got %s"
-                                     % (str(objects[i]), str(self.arguments[i]))
-                                     )
+                if type_hierarchy is None:
+                    if objects[i].type_name != self.arguments[i].type_name:
+                        raise ValueError("Invalid typed object for grounding. "
+                                         "Expected %s, got %s"
+                                         % (str(self.arguments[i]), str(objects[i]))
+                                         )
+                else:
+                    type = objects[i].type_name
+                    while True:
+                        if type == self.arguments[i].type_name:
+                            break
+                        if type not in type_hierarchy:
+                            raise ValueError("Invalid typed object for grounding. "
+                                             "Expected %s, got %s"
+                                             % (str(self.arguments[i]), str(objects[i]))
+                                             )
+                        type = type_hierarchy[type]
                 objects[i] = objects[i].name
         return Atom(self.name, objects)
 
 
 
-    def get_groundings(self, object_dict, typed=True):
+    def get_groundings(self, object_dict, typed=True, type_hierarchy=None):
         """
         Generate all groundings for this predicate possible with the given
         objects.
@@ -67,7 +79,7 @@ class Predicate(object):
                     if index_per_argument[a] == len(objects_per_argument[a]):
                         index_per_argument[a] = 0
                         carry = True
-            groundings.add(self.get_grounding(grounding, typed=typed))
+            groundings.add(self.get_grounding(grounding, typed=typed, type_hierarchy=type_hierarchy))
             if carry:
                 break
         return groundings
