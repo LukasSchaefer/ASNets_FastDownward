@@ -7,6 +7,7 @@ from ..variable import Variable
 
 import abc
 
+
 class InvalidMethodCallException(Exception):
     pass
 

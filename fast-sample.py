@@ -30,7 +30,7 @@ DEFAULT_MAX_TIME_PER_SAMPLING = "10m"
 DEFAULT_SEARCH = ("sampling(astar(lmcut(transform=sampling_transform(), "
                   "register=ff), transform=sampling_transform(), max_time=%s), "
                   "techniques=[%s], use_registered_heuristics=[ff], "
-                  "transform=adapt_costs(ONE))"
+                  "transform=adapt_costs(ONE), max_time=120m)"
                   % (DEFAULT_MAX_TIME_PER_SAMPLING, DEFAULT_STR_TRANSFORMATIONS))
 
 CHOICES_FORMAT = []
