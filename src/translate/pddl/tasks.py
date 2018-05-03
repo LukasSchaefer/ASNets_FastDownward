@@ -179,13 +179,13 @@ class Task(object):
             log.log(log_level, msg)
         return msg
 
-    def get_grounded_predicates(self, sort=False):
+    def get_grounded_predicates(self, sort=False, typed=False):
         groundings = []
         for predicate in self.predicates:
             if predicate.name == "=":
                 continue
             groundings.extend(predicate.get_groundings(
-                self.objects_dict, typed=False))
+                self._get_object_dict(), typed, self.type_hierarchy))
         if sort:
             groundings = sorted(groundings, key=lambda x: str(x))
         return groundings
@@ -198,6 +198,15 @@ class Task(object):
         return [str(atom) for atom in grounded_predicates]
 
 
+    def get_propositional_actions(self, sort=False):
+        propositional_actions = []
+        for action in self.actions:
+            # is fixed metric = False and all propositions for fluent_facts okay?
+            propositional_actions.extend(action.get_instantiations(self._get_object_dict(),
+                self.init, self.get_grounded_predicates(typed=True), False))
+        if sort:
+            propositional_actions = sorted(propositional_actions, key=lambda x: str(x))
+        return propositional_actions
 
 
 class Requirements(object):
