@@ -10,12 +10,12 @@ from ..variable import Variable
 class KerasNetwork(Network):
     arguments = parset.ClassArguments('KerasNetwork', Network.arguments,
                                       ('path', False, None, str),
-                                      order=["path", "do_store",
+                                      order=["path", "store",
                                              "variables", "id"]
                                       )
 
-    def __init__(self, path, do_store=False, variables={}, id=None):
-        Network.__init__(self, do_store, variables, id)
+    def __init__(self, load=None, store=None, variables={}, id=None):
+        Network.__init__(self, store, variables, id)
         self.path = path
 
     def _initialize(self):

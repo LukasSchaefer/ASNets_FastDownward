@@ -12,6 +12,44 @@ class InvalidMethodCallException(Exception):
     pass
 
 
+
+class NetworkFormat(object):
+    name2obj = {}
+    suffix2obj = {}
+
+    def __init__(self, name, suffix, description):
+        self.name = name
+        self.suffix = suffix
+        self.description = description
+        self._add_to_enum()
+
+    def _add_to_enum(self):
+        setattr(NetworkFormat, self.name, self)
+        NetworkFormat.name2obj[self.name] = self
+        NetworkFormat.suffix[self.suffix] = self
+
+    @staticmethod
+    def _get(name, map):
+        if name not in map:
+            raise ValueError("Unknown key: " + str(name))
+        return map[name]
+
+    @staticmethod
+    def by_suffix(suffix):
+        return NetworkFormat._get(suffix, NetworkFormat.suffix2obj)
+
+    @staticmethod
+    def by_name(name):
+        return NetworkFormat._get(name, NetworkFormat.name2obj)
+
+    def __str__(self):
+        return self.name
+
+
+NetworkFormat("Protobuf", "pb", "Protobuf Format")
+NetworkFormat("hdf5", "h5", "hdf5 format (e.g. used by Keras)")
+
+
 class Network(with_metaclass(abc.ABCMeta, object)):
     """
     Base class for all neural networks.
@@ -20,17 +58,17 @@ class Network(with_metaclass(abc.ABCMeta, object)):
     """
 
     arguments = parset.ClassArguments("Network", None,
-                                      ('do_store', True, False, parser.convert_bool),
+                                      ('store', True, None, str),
                                       ('variables', True, {},
                                        main_register.get_register(Variable)),
                                       ('id', True, None, str),
                                       )
 
-    def __init__(self, do_store=False, variables={}, id=None):
+    def __init__(self, store=None, variables={}, id=None):
         if not isinstance(variables, dict):
             raise ArgumentException("The provided variables have to be a map. "
                                     "Please define them as {name=VARIABLE,...}.")
-        self.do_store = do_store
+        self.path_store = store
         self.variables = variables
         self.id = id
 
@@ -49,13 +87,15 @@ class Network(with_metaclass(abc.ABCMeta, object)):
     def finalize(self):
         if not self.finalized:
             self._finalize()
+            if self.path_store is not None:
+                self.store()
             self.finalized = True
         else:
-            raise InvalidMethodCallException("Mutliple finalization calls of"
+            raise InvalidMethodCallException("Multiple finalization calls of"
                                              "network.")
 
     def store(self):
-        if self.do_store:
+        if self.path_store is not None:
             self._store()
 
     @abc.abstractmethod
@@ -63,7 +103,7 @@ class Network(with_metaclass(abc.ABCMeta, object)):
         pass
 
     @abc.abstractmethod
-    def train(self, msgs, data):
+    def train(self, msgs, format, data):
         pass
 
     @abc.abstractmethod

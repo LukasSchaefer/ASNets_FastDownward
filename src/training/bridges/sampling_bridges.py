@@ -84,7 +84,7 @@ class SampleFormat(object):
     @staticmethod
     def get(name):
         if name not in SampleFormat.name2obj:
-            raise ValueError("Unkown key for SampleFormat: " + str(name))
+            raise ValueError("Unknown key for SampleFormat: " + str(name))
         return SampleFormat.name2obj[name]
 
     @staticmethod
