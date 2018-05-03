@@ -347,6 +347,13 @@ void SamplingSearch::save_plan_intermediate() {
 }
 
 void SamplingSearch::save_plan_if_necessary() const {
+    //happens only if search stopped by time out
+    if (samples.str().compare("")) {
+        string s = samples.str();
+        ofstream outfile(g_plan_filename, ios::app);
+        outfile << s;
+        //does not update statistic for sampled states, because method is const
+    }
 }
 
 void SamplingSearch::add_sampling_options(OptionParser &parser) {
