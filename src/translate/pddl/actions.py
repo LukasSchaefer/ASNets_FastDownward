@@ -105,6 +105,42 @@ class Action(object):
         else:
             return None
 
+    def get_instantiations(self, objects_by_type, init_facts, fluent_facts, metric):
+        """
+        Generate all groundings for this action possible with the given objects.
+        :param objects_by_type: dictionary of the form {object type : [object, ...]}
+        :param init_facts: facts from the initial state (?)
+        :param fluent_facts: ? (all propositions not included here are ignored in
+            preconditions (?))
+        :param metric: boolean value that defines cost (False -> unit cost)
+        :return: set of propositional actions
+        """
+        if len(self.parameters) == 0:
+            return set([self.instantiate({}, init_facts, fluent_facts, objects_by_type, metric)])
+        propositional_actions = set()
+        objects_per_parameter = []
+        index_per_parameter = []
+        for param in self.parameters:
+            objects_per_parameter.append(objects_by_type[param.type_name])
+            index_per_parameter.append(0)
+
+        while True:
+            var_mapping = {}
+            carry = False
+            for index, par in enumerate(self.parameters):
+                var_mapping[par.name] = objects_per_parameter[index][index_per_parameter[index]].name
+                if index == 0 or carry:
+                    carry = False
+                    index_per_parameter[index] += 1
+                    if index_per_parameter[index] == len(objects_per_parameter[index]):
+                        index_per_parameter[index] = 0
+                        carry = True
+            propositional_actions.add(self.instantiate(var_mapping, init_facts, fluent_facts, objects_by_type, metric))
+            if carry:
+                break
+        return propositional_actions
+        
+
 
 class PropositionalAction:
     def __init__(self, name, precondition, effects, cost):
@@ -135,7 +171,7 @@ class PropositionalAction:
             msg += "\nADD: %s -> %s" % (", ".join(map(str, cond)), fact)
         for cond, fact in self.del_effects:
             msg += "\nDEL: %s -> %s" % (", ".join(map(str, cond)), fact)
-        msg += "\ncost: %" % self.cost
+        msg += "\ncost: %s" % self.cost
         if disp:
             log.log(log_level, msg)
         return msg
