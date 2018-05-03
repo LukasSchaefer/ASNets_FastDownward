@@ -16,7 +16,7 @@ class Predicate(object):
     def get_arity(self):
         return len(self.arguments)
 
-def get_grounding(self, objects, typed=True, type_hierarchy=None):
+    def get_grounding(self, objects, typed=True, type_hierarchy=None):
         """
         Get grounding of this predicate using the given objects.
         :param objects: objects for the grounding in their correct order.
