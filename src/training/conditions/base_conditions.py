@@ -1,14 +1,13 @@
 from .. import main_register
 from .. import parser
 from .. import parser_tools as parset
+from .. import ABC
 
 from ..parser_tools import ArgumentException
 
 import abc
-from future.utils import with_metaclass
 
-
-class Condition(with_metaclass(abc.ABCMeta, object)):
+class Condition(ABC):
     """
     Base class for all conditions.
     Remember to register your concrete subclasses via one (or multiple) names

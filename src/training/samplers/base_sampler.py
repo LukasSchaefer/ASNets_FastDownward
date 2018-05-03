@@ -1,20 +1,20 @@
 from .. import parser
 from .. import parser_tools as parset
+from .. import ABC
 
 from ..bridges import SamplerBridge
 from ..parser_tools import main_register, ArgumentException
 from ..variable import Variable
 
 import abc
-from future.utils import with_metaclass
-import os
+
 
 
 class InvalidMethodCallException(Exception):
     pass
 
 
-class Sampler(with_metaclass(abc.ABCMeta, object)):
+class Sampler(ABC):
     """
     Base class for all sampler.
     Do not forget to register your network subclass in this packages 'register'

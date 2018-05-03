@@ -1,6 +1,3 @@
-from builtins import ValueError
-from locale import format
-
 from . import SamplerBridge
 
 from .. import main_register
@@ -234,7 +231,7 @@ def convert_from_X_to_Y(state, in_format, out_format,
                                   "are not supported.")
 
 
-def convert_data_entry(format, compress,
+def convert_data_entry(format, compress, prune,
                        path_final_samples, path_tmp_samples,
                        append=False,
                        path_problem=None, path_domain=None,
@@ -278,6 +275,7 @@ def convert_data_entry(format, compress,
     outopen = gzip.open if compress else open
     write_mode = ("a" if append else "w") + ("b" if compress else "")
 
+    old_hashs = set()
     with open(path_tmp_samples, 'r') as source:
         with outopen(path_final_samples, write_mode) as target:
             # Process line after line
@@ -285,6 +283,13 @@ def convert_data_entry(format, compress,
                 line = line.strip()
                 if line.startswith("#"):
                     continue
+
+                if prune:
+                    h_line = hash(line)
+                    if h_line in old_hashs:
+                        continue
+                    else:
+                        old_hashs.add(h_line)
 
                 meta = None
                 new_meta = None
@@ -347,17 +352,19 @@ class FastDownwardSamplerBridge(SamplerBridge):
                                       ("build", True, "debug64dynamic", str),
                                       ("fd_path", True, "None", str),
                                       ("compress", True, True, parser.convert_bool),
+                                      ("prune", True, True, parser.convert_bool),
                                       order=["search", "format", "build",
                                              "tmp_dir", "target_file",
                                              "target_dir", "append", "domain",
                                              "makedir", "fd_path",
-                                             "compress", "environment", "id"]
+                                             "compress", "prune",
+                                             "environment", "id"]
                                       )
 
     def __init__(self, search, format=SampleFormat.FD, build="debug64dynamic",
                  tmp_dir=None, target_file=None, target_dir=None,
                  append=False, domain=None,
-                 makedir=False, fd_path=None, compress=True,
+                 makedir=False, fd_path=None, compress=True, prune=True,
                  environment=None, id=None):
         SamplerBridge.__init__(self,tmp_dir, target_file, target_dir,
                                append, domain, makedir, environment, id)
@@ -366,6 +373,7 @@ class FastDownwardSamplerBridge(SamplerBridge):
         self._format = format
         self._build = build
         self._compress = compress
+        self._prune = prune
 
         if fd_path is None or fd_path == "None":
             fd_path = "."
@@ -406,8 +414,8 @@ class FastDownwardSamplerBridge(SamplerBridge):
         #event.wait()
         spt.run()
 
-        if self._format != SampleFormat.FD or self._compress:
-            convert_data_entry(self._format, self._compress,
+        if self._format != SampleFormat.FD or self._compress or self._prune:
+            convert_data_entry(self._format, self._compress, self._prune,
                                path_samples, path_tmp_samples,
                                append, path_problem)
         else:

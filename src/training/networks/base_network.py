@@ -1,18 +1,17 @@
 from .. import parser
 from .. import parser_tools as parset
+from .. import ABC
 
 from ..parser_tools import main_register, ArgumentException
 from ..variable import Variable
 
 import abc
-from future.utils import with_metaclass
-
 
 class InvalidMethodCallException(Exception):
     pass
 
 
-class Network(with_metaclass(abc.ABCMeta, object)):
+class Network(ABC):
     """
     Base class for all neural networks.
     Do not forget to register your network subclass in this packages 'register'

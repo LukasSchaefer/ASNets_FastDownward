@@ -1,15 +1,15 @@
 from .. import main_register
 from .. import parser
 from .. import parser_tools as parset
+from .. import ABC
 
 from ..parser_tools import ArgumentException
 from ..environments import Environment
 
 import abc
-from future.utils import with_metaclass
 import os
 
-class Bridge(with_metaclass(abc.ABCMeta, object)):
+class Bridge(ABC):
     """
     Base class for all bridges.
     Remember to register your concrete subclasses via one (or multiple) names

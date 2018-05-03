@@ -22,8 +22,8 @@ log = logging.getLogger()
 # DEFAULT SEARCH CONFIGURATION
 DEFAULT_TRANSFORMATIONS = [
     "none_none(1)"
-    #"iforward_none(5, distribution=uniform_int_dist(5,15))",
-    #"iforward_iforward(5, dist_init=uniform_int_dist(5,15),dist_goal=uniform_int_dist(25,45))"
+    "iforward_none(25, distribution=uniform_int_dist(5,15))",
+    "iforward_iforward(15, dist_init=uniform_int_dist(5,15),dist_goal=uniform_int_dist(1,5))"
 ]
 DEFAULT_STR_TRANSFORMATIONS = ", ".join(DEFAULT_TRANSFORMATIONS)
 DEFAULT_MAX_TIME_PER_SAMPLING = "10m"
@@ -92,7 +92,9 @@ psample.add_argument("-f", "--format", choices=CHOICES_FORMAT,
 psample.add_argument("-fd", "--fast-downward", type=str,
                      action="store", default="./fast-downward.py",
                      help="Path to the fast-downward script (Default"
-                         "assumes in current directory fast-downward.py).")
+                          "assumes in current directory fast-downward.py).")
+psample.add_argument("-p", "--prune", action="store_true",
+                     help="Prune duplicate entries")
 psample.add_argument("-s", "--search", type=str,
                      action="store", default=DEFAULT_SEARCH,
                      help="Search for sampling to start in Fast-Downward (the"
@@ -131,7 +133,7 @@ def parse_sample_args(argv):
                                     options.target_file, options.target_folder,
                                     options.append, options.domain, True,
                                     options.fast_downward,
-                                    options.compress)
+                                    options.compress, options.prune)
     return fdb, options.problem
 
 
@@ -159,6 +161,11 @@ ptraverse.add_argument("-a", "--args", type=str,
                           "before the list of problems and can be used for "
                           "passing arguments to an external script which "
                           "performs the sampling.")
+ptraverse.add_argument("-b", "--batch", type=int,
+                     action="store", default=None,
+                     help="WORKS ONLY WITH --execute TOGETHER. Submit the"
+                          "problems found during traversal in batches to the"
+                          "script to execute.")
 ptraverse.add_argument("-d", "--directory-filter", type=str,
                      action="append", default=[],
                      help="A subdirectory name has to match the regex otherwise"
@@ -195,9 +202,7 @@ ptraverse.add_argument("--dry", action="store_true",
 
 
 def traverse_directories(argv, sample_settings):
-    print("IN")
     options = ptraverse.parse_args(argv)
-    print(options)
 
     options.args = [] if options.args is None else shlex.split(options.args)
     for idx in range(len(sample_settings)):
@@ -225,9 +230,16 @@ def traverse_directories(argv, sample_settings):
     else:
         ins_idx = len(options.args) + 1
         for setting in sample_settings:
+            local_settings = list(setting)
+            start = 0
+            step = len(ds._iterable) if options.batch is None else options.batch
+            while start < len(ds._iterable):
+                end = start + step
+                local_settings[ins_idx:ins_idx] = ds._iterable[start:end]
+                start = end
 
-            setting[ins_idx:ins_idx] = ds._iterable
-            subprocess.call(setting)
+
+                subprocess.call(local_settings)
 
 
 if __name__ == '__main__':

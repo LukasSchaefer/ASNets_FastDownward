@@ -1,5 +1,6 @@
 # independent modules
 from .message import Message
+from .misc import ABC
 
 # parsing related modules
 from .tree import TreeNode

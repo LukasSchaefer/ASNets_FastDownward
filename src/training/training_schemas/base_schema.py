@@ -1,5 +1,6 @@
 from .. import parser
 from .. import parser_tools as parset
+from .. import ABC
 
 from ..networks import Network
 from ..parser_tools import main_register, ArgumentException
@@ -7,10 +8,8 @@ from ..samplers import Sampler
 from ..variable import Variable
 
 import abc
-from future.utils import with_metaclass
 
-
-class Schema(with_metaclass(abc.ABCMeta, object)):
+class Schema(ABC):
     """
     Base class for Schemas. Schemas describe what shall be how run.
     E.g. A training schema calls the necessary methods to obtain data and train
