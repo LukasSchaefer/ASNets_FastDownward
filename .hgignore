@@ -17,7 +17,7 @@
 ^examples/.*sas_plan*
 ^profile.sh
 ^tmp/*
-
+^output.sas.*
 
 syntax: glob
 *.sample
