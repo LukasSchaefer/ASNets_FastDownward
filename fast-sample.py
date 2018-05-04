@@ -95,6 +95,13 @@ psample.add_argument("-fd", "--fast-downward", type=str,
                           "assumes in current directory fast-downward.py).")
 psample.add_argument("-p", "--prune", action="store_true",
                      help="Prune duplicate entries")
+psample.add_argument("-r", "--reuse", action="store_true",
+                     help="Tells sampler to reuse instead of resample data, if"
+                          "for the given problem data already exists. Remark:"
+                          "In this context it means, we simply skip sampling for"
+                          "a problem if data was previously sampled. It does NOT"
+                          "check with which parameters the present data was"
+                          "sampled")
 psample.add_argument("-s", "--search", type=str,
                      action="store", default=DEFAULT_SEARCH,
                      help="Search for sampling to start in Fast-Downward (the"

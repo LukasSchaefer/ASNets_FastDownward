@@ -355,7 +355,7 @@ class FastDownwardSamplerBridge(SamplerBridge):
                                       ("prune", True, True, parser.convert_bool),
                                       order=["search", "format", "build",
                                              "tmp_dir", "target_file",
-                                             "target_dir", "append", "domain",
+                                             "target_dir", "append", "reuse", "domain",
                                              "makedir", "fd_path",
                                              "compress", "prune",
                                              "environment", "id"]
@@ -363,11 +363,11 @@ class FastDownwardSamplerBridge(SamplerBridge):
 
     def __init__(self, search, format=SampleFormat.FD, build="debug64dynamic",
                  tmp_dir=None, target_file=None, target_dir=None,
-                 append=False, domain=None,
+                 append=False, reuse=False, domain=None,
                  makedir=False, fd_path=None, compress=True, prune=True,
                  environment=None, id=None):
-        SamplerBridge.__init__(self,tmp_dir, target_file, target_dir,
-                               append, domain, makedir, environment, id)
+        SamplerBridge.__init__(self, tmp_dir, target_file, target_dir,
+                               append, reuse, domain, makedir, environment, id)
 
         self._search = search
         self._format = format
@@ -409,21 +409,24 @@ class FastDownwardSamplerBridge(SamplerBridge):
         spt = SubprocessTask("Sampling of " + path_problem + "with in "
                              + path_samples, cmd)
 
-        # TODO Add environment again
-        #self._environment.queue_push(spt)
-        #event.wait()
-        spt.run()
+        if not self._reuse or not os.path.exists(path_samples):
+            # TODO Add environment again
+            #self._environment.queue_push(spt)
+            #event.wait()
+            spt.run()
 
-        if self._format != SampleFormat.FD or self._compress or self._prune:
-            convert_data_entry(self._format, self._compress, self._prune,
-                               path_samples, path_tmp_samples,
-                               append, path_problem)
-        else:
-            with open(path_tmp_samples, "r") as src:
-                with open(path_samples, "a" if append else "w") as trg:
-                    for line in src:
-                        trg.write(line)
-            os.remove(path_tmp_samples)
+            if self._format != SampleFormat.FD or self._compress or self._prune:
+                convert_data_entry(self._format, self._compress, self._prune,
+                                   path_samples, path_tmp_samples,
+                                   append, path_problem)
+            else:
+                with open(path_tmp_samples, "r") as src:
+                    with open(path_samples, "a" if append else "w") as trg:
+                        for line in src:
+                            trg.write(line)
+                os.remove(path_tmp_samples)
+
+            # TODO Pass back data (also in reuse case)
 
 
 
