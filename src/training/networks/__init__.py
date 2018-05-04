@@ -1,2 +1,5 @@
+from .. import DEPENDENCIES
 from .base_network import Network, nregister
-from .keras_network import KerasNetwork
+
+if DEPENDENCIES.keras and DEPENDENCIES.tensorflow:
+    from .keras_network import KerasNetwork

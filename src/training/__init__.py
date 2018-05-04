@@ -1,3 +1,5 @@
+from .dependencies import DEPENDENCIES
+
 # independent modules
 from .message import Message
 

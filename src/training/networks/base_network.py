@@ -31,7 +31,7 @@ class NetworkFormat(object):
     @staticmethod
     def _get(name, map):
         if name not in map:
-            raise ValueError("Unknown key: " + str(name))
+            raise ValueError("Unknown key for NetworkFormat: " + str(name))
         return map[name]
 
     @staticmethod
@@ -41,6 +41,15 @@ class NetworkFormat(object):
     @staticmethod
     def by_name(name):
         return NetworkFormat._get(name, NetworkFormat.name2obj)
+
+    @staticmethod
+    def by_any(key):
+        if key in NetworkFormat.name2obj:
+            return NetworkFormat.name2obj[key]
+        if key in NetworkFormat.suffix2obj:
+            return NetworkFormat.suffix2obj[key]
+        raise KeyError("Unknown key to identify NetworkFormat: " + key)
+
 
     def __str__(self):
         return self.name
@@ -58,24 +67,38 @@ class Network(with_metaclass(abc.ABCMeta, object)):
     """
 
     arguments = parset.ClassArguments("Network", None,
+                                      ('load', True, None, str)
                                       ('store', True, None, str),
-                                      ('variables', True, {},
+                                      ('formats', True, None, NetworkFormat.by_any),
+                                      ('variables', True, None,
                                        main_register.get_register(Variable)),
                                       ('id', True, None, str),
                                       )
 
-    def __init__(self, store=None, variables={}, id=None):
+    def __init__(self, load=None, store=None, formats=None, variables=None, id=None):
         if not isinstance(variables, dict):
             raise ArgumentException("The provided variables have to be a map. "
                                     "Please define them as {name=VARIABLE,...}.")
+        self.path_load = load
         self.path_store = store
-        self.variables = variables
+        self.formats = [] if formats is None else formats
+        if not isinstance(self.formats, list):
+            self.formats = [self.formats]
+
+        self.msgs = None
+        self.variables = {} if variables is None else variables
         self.id = id
 
         self.initialized = False
         self.finalized = False
 
-    def initialize(self):
+    def initialize(self, msgs=None):
+        """
+        Build network object and prepare
+        :param msgs: Message object for communication between objects (if given)
+        :return:
+        """
+        self.msgs = msgs
         if not self.initialized:
             self._initialize()
             self.initialized = True
@@ -94,20 +117,37 @@ class Network(with_metaclass(abc.ABCMeta, object)):
             raise InvalidMethodCallException("Multiple finalization calls of"
                                              "network.")
 
-    def store(self):
+    def store(self, path=None, formats=None):
+        """
+        Stores the network in the specified formats.
+        :param path: Path without suffix where to store the network
+        :param formats: List of NetworkFormats in which to store the network.
+                        If None is given, then the default format (the same
+                        format which would be used for loading) is used for
+                        storing.
+        :return:
+        """
+        path = self.path_store if path is None else path
+        formats = self.formats if self.formats is None else formats
         if self.path_store is not None:
-            self._store()
+            self._store(path, formats)
 
     @abc.abstractmethod
     def _initialize(self):
         pass
 
     @abc.abstractmethod
-    def train(self, msgs, format, data):
+    def train(self, format, data):
+        """
+
+        :param format:
+        :param data:
+        :return:
+        """
         pass
 
     @abc.abstractmethod
-    def evaluate(self):
+    def evaluate(self, format, data):
         pass
 
     @abc.abstractmethod
@@ -115,7 +155,7 @@ class Network(with_metaclass(abc.ABCMeta, object)):
         pass
 
     @abc.abstractmethod
-    def _store(self):
+    def _store(self, path, formats):
         """
         Please notice _store can be used before the network is finalized and
         after. The intension is that if the network is not finalized, then

@@ -22,22 +22,25 @@ class Sampler(with_metaclass(abc.ABCMeta, object)):
     """
 
     arguments = parset.ClassArguments("Sampler", None,
-                                      ("sampler_bridge", False, None,
-                                       main_register.get_register(SamplerBridge)),
-                                      ('variables', True, {},
-                                       main_register.get_register(Variable)),
-                                      ('id', True, None, str),
-                                      variables=[('sample_calls', 0, int)],
-                                      )
+        ("sampler_bridge", False, None,
+        main_register.get_register(SamplerBridge)),
+        ('reuse', True, False, parser.convert_bool,
+        "If a data set is found where the new data shall be sampled, this "
+        "allows to load the present data instead of sampling new one.")
+        ('variables', True, None,
+        main_register.get_register(Variable)),
+        ('id', True, None, str),
+        variables=[('sample_calls', 0, int)],
+)
 
-    def __init__(self, sampler_bridge, variables={}, id=None):
+    def __init__(self, sampler_bridge, variables=None, id=None):
         if not isinstance(variables, dict):
             raise ArgumentException("The provided variables have to be a map. "
                                     "Please define them as {name=VARIABLE,...}.")
         if not isinstance(sampler_bridge, list):
             sampler_bridge = [sampler_bridge]
         self.sbridges = sampler_bridge
-        self.variables = variables
+        self.variables = {} if variables is None else variables
         self.id = id
 
         self.var_sample_calls, = Sampler.arguments.validate_and_return_variables(variables)
