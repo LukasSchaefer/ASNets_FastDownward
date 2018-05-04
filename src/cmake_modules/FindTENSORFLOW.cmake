@@ -71,7 +71,7 @@ endif()
 
 
 find_path(TENSORFLOW_INCLUDE
-    NAMES core
+    NAMES tensorflow
     HINTS ${TENSORFLOW_HINT_PATHS_RELEASE} ${TENSORFLOW_HINT_PATHS_DEBUG}
     PATH_SUFFIXES include
 )
