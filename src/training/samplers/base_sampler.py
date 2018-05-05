@@ -60,8 +60,10 @@ class Sampler(ABC):
                                              "sampler.")
 
     def _call_bridge_sample(self, problem):
+        datas = []
         for sb in self.sbridges:
-            sb.sample(problem)
+            datas.append(sb.sample(problem))
+        return datas
 
     def sample(self):
         if not self.initialized:
@@ -69,7 +71,7 @@ class Sampler(ABC):
                                              "initializing the sampler.")
         if self.var_sample_calls is not None:
             self.var_sample_calls.value += 1
-        self._sample()
+        return self._sample()
 
     def finalize(self):
         if not self.initialized:

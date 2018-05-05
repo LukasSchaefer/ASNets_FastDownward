@@ -147,8 +147,8 @@ class SamplerBridge(Bridge):
         path_dir_tmp = self._get_tmp_dir(path_dir_tmp, path_problem)
         path_samples = self._get_path_sample(path_samples, path_problem)
 
-        self._sample(path_problem, path_samples, path_dir_tmp, path_domain,
-                     append)
+        return self._sample(path_problem, path_samples, path_dir_tmp,
+                            path_domain, append)
 
     @abc.abstractmethod
     def _sample(self, path_problem, path_samples, path_dir_tmp,
