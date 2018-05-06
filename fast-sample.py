@@ -5,7 +5,7 @@ from __future__ import print_function
 from src.training.bridges import FastDownwardSamplerBridge
 from src.training.samplers import IterableFileSampler
 from src.training.samplers import DirectorySampler
-from src.training.bridges.sampling_bridges import SampleFormat
+from src.training.bridges.sampling_bridges import StateFormat
 
 from src.training import parser as training_parser
 import argparse
@@ -34,7 +34,7 @@ DEFAULT_SEARCH = ("sampling(astar(lmcut(transform=sampling_transform(), "
                   % (DEFAULT_MAX_TIME_PER_SAMPLING, DEFAULT_STR_TRANSFORMATIONS))
 
 CHOICES_FORMAT = []
-for name in SampleFormat.name2obj:
+for name in StateFormat.name2obj:
     CHOICES_FORMAT.append(name)
 
 # Argparser Configurations
@@ -87,7 +87,7 @@ psample.add_argument("-d", "--domain",
                          "given, then the domain file is automatically searched"
                          "for every problem individually).")
 psample.add_argument("-f", "--format", choices=CHOICES_FORMAT,
-                     action="store", default=SampleFormat.Full.name,
+                     action="store", default=StateFormat.Full.name,
                      help="State format in the sampled file.")
 psample.add_argument("-fd", "--fast-downward", type=str,
                      action="store", default="./fast-downward.py",
@@ -95,6 +95,13 @@ psample.add_argument("-fd", "--fast-downward", type=str,
                           "assumes in current directory fast-downward.py).")
 psample.add_argument("-p", "--prune", action="store_true",
                      help="Prune duplicate entries")
+psample.add_argument("-r", "--reuse", action="store_true",
+                     help="Tells sampler to reuse instead of resample data, if"
+                          "for the given problem data already exists. Remark:"
+                          "In this context it means, we simply skip sampling for"
+                          "a problem if data was previously sampled. It does NOT"
+                          "check with which parameters the present data was"
+                          "sampled")
 psample.add_argument("-s", "--search", type=str,
                      action="store", default=DEFAULT_SEARCH,
                      help="Search for sampling to start in Fast-Downward (the"
@@ -119,7 +126,7 @@ psample.add_argument("-tmp", "--temporary-folder", type=str,
 
 def parse_sample_args(argv):
     options = psample.parse_args(argv)
-    options.format = SampleFormat.get(options.format)
+    options.format = StateFormat.get(options.format)
     if options.target_file is not None and options.target_folder is not None:
         raise argparse.ArgumentError("\"--target-folder\" and \"--target-file\""
                                      " are two mutually exclusive options."
@@ -131,9 +138,11 @@ def parse_sample_args(argv):
     fdb = FastDownwardSamplerBridge(options.search, options.format,
                                     options.build, options.temporary_folder,
                                     options.target_file, options.target_folder,
-                                    options.append, options.domain, True,
+                                    options.append, options.reuse,
+                                    options.domain, True,
                                     options.fast_downward,
-                                    options.compress, options.prune)
+                                    options.prune, False, True,
+                                    options.compress)
     return fdb, options.problem
 
 
@@ -143,7 +152,7 @@ def sample(argv):
         log.warning("No problems defined for sampling.")
     ifs = IterableFileSampler(fdb, problems)
     ifs.initialize()
-    ifs.sample()
+    DATA = ifs.sample()
     ifs.finalize()
 
 

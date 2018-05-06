@@ -22,13 +22,13 @@ class Sampler(ABC):
     """
 
     arguments = parset.ClassArguments("Sampler", None,
-                                      ("sampler_bridge", False, None,
-                                       main_register.get_register(SamplerBridge)),
-                                      ('variables', True, {},
-                                       main_register.get_register(Variable)),
-                                      ('id', True, None, str),
-                                      variables=[('sample_calls', 0, int)],
-                                      )
+        ("sampler_bridge", False, None,
+        main_register.get_register(SamplerBridge)),
+        ('variables', True, {},
+        main_register.get_register(Variable)),
+        ('id', True, None, str),
+        variables=[('sample_calls', 0, int)],
+        )
 
     def __init__(self, sampler_bridge, variables={}, id=None):
         if not isinstance(variables, dict):
@@ -60,8 +60,10 @@ class Sampler(ABC):
                                              "sampler.")
 
     def _call_bridge_sample(self, problem):
+        datas = []
         for sb in self.sbridges:
-            sb.sample(problem)
+            datas.append(sb.sample(problem))
+        return datas
 
     def sample(self):
         if not self.initialized:
@@ -69,7 +71,7 @@ class Sampler(ABC):
                                              "initializing the sampler.")
         if self.var_sample_calls is not None:
             self.var_sample_calls.value += 1
-        self._sample()
+        return self._sample()
 
     def finalize(self):
         if not self.initialized:
