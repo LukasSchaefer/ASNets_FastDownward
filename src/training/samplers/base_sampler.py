@@ -26,7 +26,7 @@ class Sampler(with_metaclass(abc.ABCMeta, object)):
         main_register.get_register(SamplerBridge)),
         ('reuse', True, False, parser.convert_bool,
         "If a data set is found where the new data shall be sampled, this "
-        "allows to load the present data instead of sampling new one.")
+        "allows to load the present data instead of sampling new one."),
         ('variables', True, None,
         main_register.get_register(Variable)),
         ('id', True, None, str),

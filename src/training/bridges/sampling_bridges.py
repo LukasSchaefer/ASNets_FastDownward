@@ -366,9 +366,82 @@ def convert_data_entries(format, compress, prune, data_container,
                 if compress:
                     entry = gzip_input_converter(entry)
                 target.write(entry)
+
+                if data_container is not None:
+                    data[4] = int(data[4])
+                    data_container.add(data, type=entry_type)
+
     os.remove(path_tmp_samples)
 
 
+def load_sample_line(line, data_container, format, pddl_task, sas_task):
+    line = line.strip()
+    if line.startswith("#") or line == "":
+        return
+
+    data = None
+    meta = None
+    new_meta = None
+
+    entry_type = None
+    entry_format = None
+    if line.startswith("<"):
+        meta_end = line.find(">")
+        if meta_end == -1:
+            raise DataCorruptedError("Entry has an opening, but not"
+                                     "closing tag: " + line)
+        meta = line[: meta_end + 1]
+        data = line[meta_end + 1:]
+
+        entry_type, _, _ = extract_from_meta(meta, "type")
+        entry_format, _, _ = extract_from_meta(meta, "format")
+        entry_format = StateFormat.get(entry_format)
+
+    else:
+        raise ValueError("Missing meta tag. Cannot infere state format.")
+
+    if data is None or data == "":
+        raise DataCorruptedError("Invalid data set entry: " + line)
+
+    data = [x.strip() for x in data.split(";")]
+    if len(data) < 5:
+        raise DataCorruptedError("Too few fields in data entry: "
+                                 + str(len(data)))
+
+    # Main state, goal state, other state
+    idxs_states = [0, 1, 3]
+
+    for idx_state in idxs_states:
+        data[idx_state] = convert_from_X_to_Y(
+            data[idx_state], entry_format, format,
+            pddl_task, sas_task)
+    data[4] = int(data[4])
+
+    data_container.add(data, type=entry_type)
+
+
+def load_sample_file(path, data_container, format, path_problem):
+    path_domain = parser.find_domain(path_problem)
+    (pddl_task, sas_task) = translate.translator.main(
+        [path_domain, path_problem, "--no-sas-file", "--log-verbosity",
+         "ERROR"])
+
+    right = False
+    techniques = [(open, lambda x: x), (gzip.open, gzip_output_converter)]
+    for (read, conv) in techniques:
+        with read(path, "r") as src:
+            first = True
+            for line in src:
+                line = conv(line)
+                if first:
+                    first = False
+                    right = line == MAGIC_WORD
+                    if not right:
+                        break
+                else:
+                    load_sample_line(line, data_container, format, pddl_task, sas_task)
+            if right:
+                break
 
 class FastDownwardSamplerBridge(SamplerBridge):
     arguments = parset.ClassArguments('FastDownwardSamplerBridge',

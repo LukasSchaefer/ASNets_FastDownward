@@ -26,7 +26,7 @@ class NetworkFormat(object):
     def _add_to_enum(self):
         setattr(NetworkFormat, self.name, self)
         NetworkFormat.name2obj[self.name] = self
-        NetworkFormat.suffix[self.suffix] = self
+        NetworkFormat.suffix2obj[self.suffix] = self
 
     @staticmethod
     def _get(name, map):
@@ -67,7 +67,7 @@ class Network(ABC):
     """
 
     arguments = parset.ClassArguments("Network", None,
-                                      ('load', True, None, str)
+                                      ('load', True, None, str),
                                       ('store', True, None, str),
                                       ('formats', True, None, NetworkFormat.by_any),
                                       ('variables', True, None,

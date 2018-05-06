@@ -1,5 +1,3 @@
-from .dependencies import DEPENDENCIES
-
 # independent modules
 from .data import SizeBatchData, SampleBatchData
 from .message import Message

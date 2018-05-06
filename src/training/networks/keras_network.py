@@ -2,21 +2,21 @@ from . import Network
 
 from .. import parser_tools as parset
 from .. import parser
+from .. import main_register
 
-from .. parser_tools import main_register, ArgumentException
 from ..variable import Variable
 
 
 class KerasNetwork(Network):
     arguments = parset.ClassArguments('KerasNetwork', Network.arguments,
-                                      ('model', False, None, str),
-                                      order=["model", "load", "store",
-                                             "formats", "variables", "id"]
+                                      ('path', False, None, str),
+                                      order=["path", "do_store",
+                                             "variables", "id"]
                                       )
-    def __init__(self, model, load=None, store=None, formats=None,
-                 variables={}, id=None):
-        Network.__init__(self, load, store, formats, variables, id)
-        self.model = model
+
+    def __init__(self, path, do_store=False, variables={}, id=None):
+        Network.__init__(self, do_store, variables, id)
+        self.path = path
 
     def _initialize(self):
         pass
@@ -24,45 +24,19 @@ class KerasNetwork(Network):
     def _finalize(self):
         pass
 
-    def _store(self, path, formats):
+    def _store(self):
         pass
 
-    def train(self, format, data, epochs=1):
+    def train(self, msgs, data):
         pass
 
-    def evaluate(self, format, data):
+    def evaluate(self):
         pass
+
 
     @staticmethod
     def parse(tree, item_cache):
-        obj = parser.try_lookup_obj(tree, item_cache, Network, None)
-        if obj is not None:
-            return obj
-        else:
-            raise ArgumentException("The definition of the keras network can "
-                                    "only be used for look up of any previously"
-                                    " defined schema via 'Sampler(id=ID)'")
-
-
-main_register.append_register(KerasNetwork, "keras_network")
-
-
-class MLPKeras(KerasNetwork):
-    arguments = parset.ClassArguments('MLPKeras', KerasNetwork.arguments)
-
-    def __init__(self, model, load=None, store=None, formats=None,
-                 variables={}, id=None):
-        KerasNetwork.__init__(self,model, load, store, formats, variables, id)
-
-    @staticmethod
-    def parse(tree, item_cache):
-        obj = parser.try_lookup_obj(tree, item_cache, Network, None)
-        if obj is not None:
-            return obj
-        else:
-            raise ArgumentException("The definition of the MLPKeras network can "
-                                    "only be used for look up of any previously"
-                                    " defined schema via 'Sampler(id=ID)'")
-
+        return parser.try_whole_obj_parse_process(tree, item_cache,
+                                                  KerasNetwork)
 
 main_register.append_register(KerasNetwork, "keras")
