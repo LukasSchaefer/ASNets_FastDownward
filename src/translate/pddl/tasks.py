@@ -73,6 +73,8 @@ class Task(object):
         self.axioms = axioms
         self.axiom_counter = 0
         self.use_min_cost_metric = use_metric
+        self.__predicate_name_to_grounded_predicates = {}
+        self.__action_name_to_propositional_actions = {}
 
     def _type_hierarchy(self):
         if self.__type_hierarchy is None:
@@ -184,8 +186,13 @@ class Task(object):
         for predicate in self.predicates:
             if predicate.name == "=":
                 continue
-            groundings.extend(predicate.get_groundings(
-                self._get_object_dict(), typed, self.type_hierarchy))
+            if predicate.name in self.__predicate_name_to_grounded_predicates.keys():
+                groundings.extend(self.__predicate_name_to_grounded_predicates[predicate.name])
+            else:
+                grounded_predicates = predicate.get_groundings(
+                    self._get_object_dict(), typed, self.type_hierarchy)
+                self.__predicate_name_to_grounded_predicates[predicate.name] = grounded_predicates
+                groundings.extend(grounded_predicates)
         if sort:
             groundings = sorted(groundings, key=lambda x: str(x))
         return groundings
@@ -197,16 +204,61 @@ class Task(object):
             grounded_predicates = sorted(grounded_predicates, key=lambda x: str(x))
         return [str(atom) for atom in grounded_predicates]
 
+    def get_grounded_predicates_from_predicate(self, predicate):
+        if predicate.name in self.__predicate_name_to_grounded_predicates.keys():
+            return self.__predicate_name_to_grounded_predicates[predicate.name]
+        else:
+            grounded_predicates = predicate.get_groundings(self._get_object_dict(),
+                typed, self.type_hierarchy)
+            self.__predicate_name_to_grounded_predicates[predicate.name] = grounded_predicates
+            return grounded_predicates
+
+    def get_predicate_to_grounded_predicates_dict(self):
+        # compute all groundings
+        for predicate in self.predicates:
+            if predicate.name == "=":
+                continue
+            if predicate.name not in self.__predicate_name_to_grounded_predicates.keys():
+                self.__predicate_name_to_grounded_predicates[predicate.name] = predicate.get_groundings(
+                    self._get_object_dict(), typed, self.type_hierarchy)
+
+        # return filled dict
+        return self.__predicate_name_to_grounded_predicates
 
     def get_propositional_actions(self, sort=False):
         propositional_actions = []
         for action in self.actions:
-            # is fixed metric = False and all propositions for fluent_facts okay?
-            propositional_actions.extend(action.get_instantiations(self._get_object_dict(),
-                self.init, self.get_grounded_predicates(typed=True), False))
+            if action.name in self.__action_name_to_propositional_actions.keys():
+                propositional_actions.extend(self.__action_name_to_propositional_actions[action.name])
+            else:
+                # is fixed metric = False and all propositions for fluent_facts okay?
+                actions = action.get_instantiations(self._get_object_dict(),
+                    self.init, self.get_grounded_predicates(typed=True), False)
+                self.__action_name_to_propositional_actions[action.name] = actions
+                propositional_actions.extend(actions)
         if sort:
             propositional_actions = sorted(propositional_actions, key=lambda x: str(x))
         return propositional_actions
+
+    def get_propositional_actions_from_action(self, action):
+        if action.name in __action_name_to_propositional_actions.keys():
+            return self.__action_name_to_propositional_actions[action.name]
+        else:
+            # is fixed metric = False and all propositions for fluent_facts okay?
+            actions = action.get_instantiations(self._get_object_dict(),
+                self.init, self.get_grounded_predicates(typed=True), False)
+            self.__action_name_to_propositional_actions[action.name] = actions
+            return actions
+
+    def get_action_to_propositional_actions_dict(self):
+        # compute propositional actions
+        for action in self.actions:
+            if action.name not in self.__action_name_to_propositional_actions.keys():
+                self.__action_name_to_propositional_actions[predicate.name] = action.get_instantiations(
+                    self._get_object_dict(), self.init, self.get_grounded_predicates(typed=True), False)
+
+        # return filled dict
+        return self.__action_name_to_propositional_actions
 
 
 class Requirements(object):
