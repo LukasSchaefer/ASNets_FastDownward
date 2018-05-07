@@ -46,9 +46,11 @@ class IterableFileSampler(Sampler):
 
     def _sample(self):
         nb = len(self._iterable) if self._batch is None else self._batch
+        datas = []
         for i in range(nb):
             problem = self._next()
-            self._call_bridge_sample(problem)
+            datas.extend(self._call_bridge_sample(problem))
+        return datas
 
     def _finalize(self):
         pass

@@ -1,12 +1,9 @@
-from builtins import ValueError
-from locale import format
-
 from . import SamplerBridge
 
 from .. import main_register
 from .. import parser
 from .. import parser_tools as parset
-
+from .. import SampleBatchData
 
 from ..environments import Environment, SubprocessTask
 
@@ -18,12 +15,17 @@ import os
 import random
 import sys
 
+# Python 2/3 compatibility
 gzip_input_converter = lambda x: x.encode()
-
+gzip_output_converter = lambda x: x.decode()
 if sys.version_info[0] == 2:
     gzip_input_converter = lambda x: x
+    gzip_output_converter = lambda x: x
 
+# Globals
+MAGIC_WORD = "# MAGIC FIRST LINE\n"
 
+# Caching
 CACHE_STR_GROUNDINGS = {}
 def get_cached_groundings(groundable):
     if groundable not in CACHE_STR_GROUNDINGS:
@@ -65,11 +67,26 @@ def get_cached_type_obj_pddl(pddl):
     return CACHE_STR_TYPE_OBJECTS_PDDL[pddl]
 
 
+# Dummy Context manager
+class DummyContext(object):
+    def __init__(self, *args, **kwargs):
+        pass
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        pass
+
+    def write(self, *args, **kwargs):
+        pass
+
+
 class DataCorruptedError(Exception):
     pass
 
 
-class SampleFormat(object):
+class StateFormat(object):
     name2obj = {}
 
     def __init__(self, name, description):
@@ -78,77 +95,82 @@ class SampleFormat(object):
         self._add_to_enum()
 
     def _add_to_enum(self):
-        setattr(SampleFormat, self.name, self)
-        SampleFormat.name2obj[self.name] = self
+        setattr(StateFormat, self.name, self)
+        StateFormat.name2obj[self.name] = self
 
     @staticmethod
     def get(name):
-        if name not in SampleFormat.name2obj:
-            raise ValueError("Unkown key for SampleFormat: " + str(name))
-        return SampleFormat.name2obj[name]
-
-    @staticmethod
-    def extract_from_meta(meta, default, new_format=None):
-        if not meta[0] == "<":
-            raise ValueError("Given meta is no meta tag: " + meta)
-        key_format = "format="
-        idx = meta.find(key_format)
-        if idx == -1:
-            if default is None:
-                raise ValueError(
-                    "Unable to determine format for entry: " + meta)
-            else:
-                return default
-        else:
-            start_idx = idx + len(key_format)
-            end_idx = None
-            if meta[start_idx] == "\"":
-                start_idx += 1
-                end_idx = meta.find("\"", start_idx)
-                if end_idx == -1:
-                    raise ValueError("Unable to determine end of entry format "
-                                     "description: " + meta)
-            else:
-                end_idx = meta.find(" ", start_idx)
-                if end_idx == -1:
-                    if meta[-1] != ">":
-                        raise ValueError(
-                            "Unable to determine end of entry format "
-                            "description: " + meta)
-
-            format_name = meta[start_idx:end_idx]
-
-            if format_name not in SampleFormat.name2obj:
-                raise ValueError("Extracted format is not existing: ",
-                                 format_name)
-            else:
-                if new_format is not None:
-                    meta = meta[:start_idx] + new_format.name + meta[end_idx :]
-                    return (SampleFormat.name2obj[format_name], meta)
-                return SampleFormat.name2obj[format_name]
+        if name not in StateFormat.name2obj:
+            raise ValueError("Unknown key for StateFormat: " + str(name))
+        return StateFormat.name2obj[name]
 
     def __str__(self):
         return self.name
 
 
-SampleFormat("FD", "Only reachable and not static predicates (determined by "
+StateFormat("FD", "Only reachable and not static predicates (determined by "
                    "translator module) which are true are"
                    "stored (like FastDownwards PDDL format). Atoms are "
                    "alphabetically sorted.")
-SampleFormat("FDFull", "Only reachable and not static predicates (determined by"
+StateFormat("FDFull", "Only reachable and not static predicates (determined by"
                       "translator module) are stored. If an atom is true, then"
                       "its name is suffixed with \"+\" otherwise with \"-\"."
                       " Atoms are alphabetically sorted.")
-SampleFormat("FDFullShort", "Like FDAll, but the atom names are skipped. As their"
+StateFormat("FDFullShort", "Like FDAll, but the atom names are skipped. As their"
                         "order is alphabetical you can retain it.")
 
-SampleFormat("Full", "All atoms are given in alphabetical order annotated with"
+StateFormat("Full", "All atoms are given in alphabetical order annotated with"
                      "\"+\" if true in the state and \"-\" otherwise.")
-SampleFormat("FullShort", "Like Full, but the atom names are skipped. As their"
+StateFormat("FullShort", "Like Full, but the atom names are skipped. As their"
                           "order is alphabetical you can retain it.")
-SampleFormat("Objects", "Adds of the problem to the meta tag and then provides"
+StateFormat("Objects", "Adds of the problem to the meta tag and then provides"
                         "only the present grounded predicates.")
 
+
+def extract_from_meta(meta, key):
+    if not meta[0] == "<":
+        raise ValueError("Given meta is no meta tag: " + meta)
+    idx = meta.find(key + "=")
+    if idx == -1:
+        return None, None, None
+    else:
+        start_idx = idx + len(key) + 1
+        end_idx = None
+        if meta[start_idx] == "\"":
+            start_idx += 1
+            end_idx = meta.find("\"", start_idx)
+            if end_idx == -1:
+                raise ValueError("Unable to determine end of meta entry "
+                                 "description: " + meta)
+        else:
+            end_idx = meta.find(" ", start_idx)
+            if end_idx == -1:
+                if meta[-1] != ">":
+                    raise ValueError(
+                        "Unable to determine end of meta entry "
+                        "description: " + meta)
+
+        value = meta[start_idx:end_idx]
+        return value, start_idx, end_idx
+
+
+def extract_and_replace_from_meta(meta, key, default, new_format=None):
+    value, start_idx, end_idx = extract_from_meta(meta, key)
+    if value is None:
+        if default is None:
+            raise ValueError("Unable to determine value for key " + str(key))
+        else:
+            value = str(default)
+            start_idx = meta.find(">")
+            if start_idx == -1:
+                raise ValueError("No valid meta tag")
+            end_idx = start_idx
+            if new_format is not None:
+                new_format = " " + str(key) + "=\"" + str(new_format) + "\""
+
+    if new_format is not None:
+        meta = meta[:start_idx] + str(new_format) + meta[end_idx :]
+    return value, meta
 
 def parse_state_present_atoms(state, as_string=False):
     """
@@ -198,20 +220,20 @@ def parse_state_positive_negative_atoms(state, atoms=None, make_atom=False):
 
 
 def convert_from_fd(state, format, pddl_task, sas_task):
-    if format == SampleFormat.FD:
+    if format == StateFormat.FD:
         return state
     state = parse_state_present_atoms(state, as_string=True)
     new_state = ""
-    if format in [SampleFormat.Full, SampleFormat.FullShort]:
+    if format in [StateFormat.Full, StateFormat.FullShort]:
         for atom in get_cached_groundings(pddl_task):
-            new_state += atom if format == SampleFormat.Full else ""
+            new_state += atom if format == StateFormat.Full else ""
             new_state += ("+" if atom in state else "-") + "\t"
         new_state = new_state[:-1]
-    elif format in [SampleFormat.FDFull, SampleFormat.FDFullShort]:
+    elif format in [StateFormat.FDFull, StateFormat.FDFullShort]:
         for atom in get_cached_groundings(sas_task.variables):
-            new_state += atom if format == SampleFormat.FDFull else ""
+            new_state += atom if format == StateFormat.FDFull else ""
             new_state += ("+" if atom in state else "-") + "\t"
-    elif format == SampleFormat.Objects:
+    elif format == StateFormat.Objects:
         new_state += get_cached_type_obj_pddl(pddl_task) + "\t"
         init = get_cached_no_sas_inits(pddl_task, sas_task) | state
         for atom in init:
@@ -227,19 +249,21 @@ def convert_from_fd(state, format, pddl_task, sas_task):
 
 def convert_from_X_to_Y(state, in_format, out_format,
                         pddl_task=None, sas_task=None):
-    if in_format == SampleFormat.FD:
+    if in_format == StateFormat.FD:
         return convert_from_fd(state, out_format, pddl_task, sas_task)
 
+    if in_format == out_format:
+        return state
     raise NotImplementedError("Conversions from other formats as \"FD\""
                                   "are not supported.")
 
 
-def convert_data_entry(format, compress,
-                       path_final_samples, path_tmp_samples,
-                       append=False,
-                       path_problem=None, path_domain=None,
-                       pddl_task=None, sas_task=None,
-                       input_formats=None, default_format=None):
+def convert_data_entries(format, compress, prune, data_container,
+                         path_final_samples, path_tmp_samples,
+                         append=False,
+                         path_problem=None, path_domain=None,
+                         pddl_task=None, sas_task=None,
+                         input_formats=None, default_format=None):
 
     """
 
@@ -276,28 +300,47 @@ def convert_data_entry(format, compress,
         (pddl_task, sas_task) = translate.translator.main([path_domain, path_problem, "--no-sas-file", "--log-verbosity", "ERROR"])
 
     outopen = gzip.open if compress else open
+    outopen = DummyContext if path_final_samples is None else outopen
     write_mode = ("a" if append else "w") + ("b" if compress else "")
 
+    old_hashs = set()
     with open(path_tmp_samples, 'r') as source:
         with outopen(path_final_samples, write_mode) as target:
+            target.write(gzip_input_converter(MAGIC_WORD) if compress else MAGIC_WORD)
+
             # Process line after line
             for line in source:
                 line = line.strip()
                 if line.startswith("#"):
                     continue
 
+                if prune:
+                    h_line = hash(line)
+                    if h_line in old_hashs:
+                        continue
+                    else:
+                        old_hashs.add(h_line)
+
+                data = None
                 meta = None
                 new_meta = None
-                data = None
                 entry_format = default_format
+                entry_type = None
                 if line.startswith("<"):
                     meta_end = line.find(">")
                     if meta_end == -1:
                         raise DataCorruptedError("Entry has an opening, but not"
                                                  "closing tag: " + line)
                     meta = line[: meta_end + 1]
-                    entry_format, new_meta = SampleFormat.extract_from_meta(meta, default_format, format)
                     data = line[meta_end + 1:]
+
+                    entry_type, _, _ = extract_from_meta(meta, "type")
+                    entry_format, new_meta = extract_and_replace_from_meta(meta,
+                        "format",
+                        None if default_format is None else default_format.name,
+                        format.name)
+                    entry_format = StateFormat.get(entry_format)
+
                 else:
                     new_meta = "<Meta format=\"" + format.name + "\">"
 
@@ -319,52 +362,125 @@ def convert_data_entry(format, compress,
                     data[idx_state] = convert_from_X_to_Y(
                         data[idx_state], entry_format, format,
                         pddl_task, sas_task)
-
-                # Actually, we do not need to parse the stuff below and can
-                # simply copy it.
-                # Operator between the main and other state
-                #operator = data[2]
-                # heuristic value for main state if given
-                #heuristic = None if data[4] == "" else  int(data[4])
-                # other heeuristic values given as NAME=VALUE
-                #other_heuristics = {name.strip(): int(value.strip())
-                #                    for (name, value)
-                #                    in [other.split("=") for other in data[5:]]}
-
                 entry = new_meta + ";".join(data) + "\n"
                 if compress:
                     entry = gzip_input_converter(entry)
                 target.write(entry)
+
+                if data_container is not None:
+                    data[4] = int(data[4])
+                    data_container.add(data, type=entry_type)
+
     os.remove(path_tmp_samples)
 
 
+def load_sample_line(line, data_container, format, pddl_task, sas_task):
+    line = line.strip()
+    if line.startswith("#") or line == "":
+        return
+
+    data = None
+    meta = None
+    new_meta = None
+
+    entry_type = None
+    entry_format = None
+    if line.startswith("<"):
+        meta_end = line.find(">")
+        if meta_end == -1:
+            raise DataCorruptedError("Entry has an opening, but not"
+                                     "closing tag: " + line)
+        meta = line[: meta_end + 1]
+        data = line[meta_end + 1:]
+
+        entry_type, _, _ = extract_from_meta(meta, "type")
+        entry_format, _, _ = extract_from_meta(meta, "format")
+        entry_format = StateFormat.get(entry_format)
+
+    else:
+        raise ValueError("Missing meta tag. Cannot infere state format.")
+
+    if data is None or data == "":
+        raise DataCorruptedError("Invalid data set entry: " + line)
+
+    data = [x.strip() for x in data.split(";")]
+    if len(data) < 5:
+        raise DataCorruptedError("Too few fields in data entry: "
+                                 + str(len(data)))
+
+    # Main state, goal state, other state
+    idxs_states = [0, 1, 3]
+
+    for idx_state in idxs_states:
+        data[idx_state] = convert_from_X_to_Y(
+            data[idx_state], entry_format, format,
+            pddl_task, sas_task)
+    data[4] = int(data[4])
+
+    data_container.add(data, type=entry_type)
+
+
+def load_sample_file(path, data_container, format, path_problem):
+    path_domain = parser.find_domain(path_problem)
+    (pddl_task, sas_task) = translate.translator.main(
+        [path_domain, path_problem, "--no-sas-file", "--log-verbosity",
+         "ERROR"])
+
+    right = False
+    techniques = [(open, lambda x: x), (gzip.open, gzip_output_converter)]
+    for (read, conv) in techniques:
+        with read(path, "r") as src:
+            first = True
+            for line in src:
+                line = conv(line)
+                if first:
+                    first = False
+                    right = line == MAGIC_WORD
+                    if not right:
+                        break
+                else:
+                    load_sample_line(line, data_container, format, pddl_task, sas_task)
+            if right:
+                break
 
 class FastDownwardSamplerBridge(SamplerBridge):
     arguments = parset.ClassArguments('FastDownwardSamplerBridge',
-                                      SamplerBridge.arguments,
-                                      ("search", False, None, str),
-                                      ("format", True, SampleFormat.FD, SampleFormat.get),
-                                      ("build", True, "debug64dynamic", str),
-                                      ("fd_path", True, "None", str),
-                                      ("compress", True, True, parser.convert_bool),
-                                      order=["search", "format", "build",
-                                             "tmp_dir", "target_file",
-                                             "target_dir", "append", "domain",
-                                             "makedir", "fd_path",
-                                             "compress", "environment", "id"]
-                                      )
+        SamplerBridge.arguments,
+        ("search", False, None, str, "Search argument for Fast-Downward"),
+        ("format", True, StateFormat.FD, StateFormat.get,
+         "Format to represent the sampled state"),
+        ("build", True, "debug64dynamic", str, "Build of Fast-Downward to use"),
+        ("fd_path", True, "None", str, "Path to the fast-downward.py script"),
+        ("prune", True, True, parser.convert_bool, "Prune duplicate samples"),
+        ("provide", True, True, parser.convert_bool,
+        "Pass the sampled data in a SampleBatchData object to the invoking"
+        "context"),
+        ("store", True, True, parser.convert_bool, "Store the samples in on disk"),
+        ("compress", True, True, parser.convert_bool, "Store the files compressed"),
 
-    def __init__(self, search, format=SampleFormat.FD, build="debug64dynamic",
+        order=["search", "format", "build",
+             "tmp_dir", "target_file",
+             "target_dir", "append", "reuse", "domain",
+             "makedir", "fd_path", "prune", "provide", "store",
+             "compress",
+             "environment", "id"]
+)
+
+    def __init__(self, search, format=StateFormat.FD, build="debug64dynamic",
                  tmp_dir=None, target_file=None, target_dir=None,
-                 append=False, domain=None,
-                 makedir=False, fd_path=None, compress=True,
+                 append=False, reuse=False, domain=None,
+                 makedir=False, fd_path=None, prune=True,
+                 provide=True, store=True, compress=True,
                  environment=None, id=None):
-        SamplerBridge.__init__(self,tmp_dir, target_file, target_dir,
-                               append, domain, makedir, environment, id)
+        SamplerBridge.__init__(self, tmp_dir, target_file, target_dir,
+                               append, reuse, domain, makedir, environment, id)
 
         self._search = search
         self._format = format
         self._build = build
+        self._prune = prune
+        self._provide = provide
+        self._store = store
         self._compress = compress
 
         if fd_path is None or fd_path == "None":
@@ -390,33 +506,36 @@ class FastDownwardSamplerBridge(SamplerBridge):
                                         + "." + str(random.randint(0,9999))
                                         + ".tmp")
 
-        cmd = [self._fd_path,
-               "--plan-file", "\\real_case\\" + path_tmp_samples + "\\lower_case\\",
-               "--build", self._build,
-               path_problem, "--search", self._search]
-        if path_domain is not None:
-            cmd.insert(6, path_domain)
+        data = (SampleBatchData(5, [self._format, self._format, str,
+                                    self._format, int], 0, 1, 3, 2, 4)
+                if self._provide else None)
 
+        if not self._reuse or not os.path.exists(path_samples):
+            path_samples = path_samples if self._store else None
 
-        spt = SubprocessTask("Sampling of " + path_problem + "with in "
-                             + path_samples, cmd)
+            cmd = [self._fd_path,
+                   "--plan-file", "\\real_case\\" + path_tmp_samples + "\\lower_case\\",
+                   "--build", self._build,
+                   path_problem, "--search", self._search]
+            if path_domain is not None:
+                cmd.insert(6, path_domain)
+            spt = SubprocessTask("Sampling of " + path_problem + " in "
+                                 + str(path_samples), cmd)
 
-        # TODO Add environment again
-        #self._environment.queue_push(spt)
-        #event.wait()
-        spt.run()
+            # TODO Add environment again
+            #self._environment.queue_push(spt)
+            #event.wait()
+            spt.run()
+            convert_data_entries(self._format, self._compress, self._prune,
+                                 data,
+                                 path_samples, path_tmp_samples,
+                                 append, path_problem)
 
-        if self._format != SampleFormat.FD or self._compress:
-            convert_data_entry(self._format, self._compress,
-                               path_samples, path_tmp_samples,
-                               append, path_problem)
         else:
-            with open(path_tmp_samples, "r") as src:
-                with open(path_samples, "a" if append else "w") as trg:
-                    for line in src:
-                        trg.write(line)
-            os.remove(path_tmp_samples)
+            if self._provide:
+                load_sample_file(path_samples, data, self._format, path_problem)
 
+        return data
 
 
     def _finalize(self):

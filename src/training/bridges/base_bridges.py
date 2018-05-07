@@ -1,15 +1,15 @@
 from .. import main_register
 from .. import parser
 from .. import parser_tools as parset
+from .. import ABC
 
 from ..parser_tools import ArgumentException
 from ..environments import Environment
 
 import abc
-from future.utils import with_metaclass
 import os
 
-class Bridge(with_metaclass(abc.ABCMeta, object)):
+class Bridge(ABC):
     """
     Base class for all bridges.
     Remember to register your concrete subclasses via one (or multiple) names
@@ -58,19 +58,21 @@ class SamplerBridge(Bridge):
     the sampler classes.
     """
     arguments = parset.ClassArguments('SamplerBridge', Bridge.arguments,
-                                      ("tmp_dir", True, None, str),
-                                      ('target_file', True, None, str),
-                                      ('target_dir', True, None, str),
-                                      ('append', True, False, parser.convert_bool),
-                                      ('domain', True, None, str),
-                                      ("makedir", True, False, parser.convert_bool),
-                                      ("environment", True, None, main_register.get_register(Environment)),
-                                      order=["tmp_dir", "target_file",
-                                             "target_dir", "append", "domain",
-                                             "makedir", "environment", "id"])
+        ("tmp_dir", True, None, str),
+        ('target_file', True, None, str),
+        ('target_dir', True, None, str),
+        ('append', True, False, parser.convert_bool),
+        ('reuse', True, False, parser.convert_bool,
+        "If sampled data is present allows to load it instead of sampling anew."),
+        ('domain', True, None, str),
+        ("makedir", True, False, parser.convert_bool),
+        ("environment", True, None, main_register.get_register(Environment)),
+        order=["tmp_dir", "target_file",
+               "target_dir", "append", "domain",
+               "makedir", "reuse", "environment", "id"])
 
     def __init__(self, tmp_dir=None, target_file=None, target_dir=None,
-                 append=False, domain=None, makedir=False,
+                 append=False, reuse=False, domain=None, makedir=False,
                  environment=None, id=None):
         Bridge.__init__(self, id)
         self._tmp_dir = tmp_dir
@@ -79,6 +81,7 @@ class SamplerBridge(Bridge):
         self._append = append
         self._domain = domain
         self._makedir = makedir
+        self._reuse = reuse
         self._environment = environment
 
         if self._target_dir is not None and self._target_file is not None:
@@ -144,8 +147,8 @@ class SamplerBridge(Bridge):
         path_dir_tmp = self._get_tmp_dir(path_dir_tmp, path_problem)
         path_samples = self._get_path_sample(path_samples, path_problem)
 
-        self._sample(path_problem, path_samples, path_dir_tmp, path_domain,
-                     append)
+        return self._sample(path_problem, path_samples, path_dir_tmp,
+                            path_domain, append)
 
     @abc.abstractmethod
     def _sample(self, path_problem, path_samples, path_dir_tmp,

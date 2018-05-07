@@ -1,11 +1,11 @@
 from .. import main_register
 from .. import parser
 from .. import parser_tools as parset
+from .. import ABC
 
 from ..parser_tools import ArgumentException
 
 import abc
-from future.utils import with_metaclass
 import re
 
 
@@ -13,7 +13,7 @@ class InvalidSorterInput(Exception):
     pass
 
 
-class ProblemSorter(with_metaclass(abc.ABCMeta, object)):
+class ProblemSorter(ABC):
     """
     Base class for all problem sorter.
     Do not forget to register your problem sorter subclass.
