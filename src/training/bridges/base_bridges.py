@@ -1,7 +1,7 @@
 from .. import main_register
 from .. import parser
 from .. import parser_tools as parset
-from .. import ABC
+from .. import AbstractBaseClass
 
 from ..parser_tools import ArgumentException
 from ..environments import Environment
@@ -9,7 +9,7 @@ from ..environments import Environment
 import abc
 import os
 
-class Bridge(ABC):
+class Bridge(AbstractBaseClass):
     """
     Base class for all bridges.
     Remember to register your concrete subclasses via one (or multiple) names
@@ -68,8 +68,8 @@ class SamplerBridge(Bridge):
         ("makedir", True, False, parser.convert_bool),
         ("environment", True, None, main_register.get_register(Environment)),
         order=["tmp_dir", "target_file",
-               "target_dir", "append", "domain",
-               "makedir", "reuse", "environment", "id"])
+               "target_dir", "append", "reuse", "domain",
+               "makedir", "environment", "id"])
 
     def __init__(self, tmp_dir=None, target_file=None, target_dir=None,
                  append=False, reuse=False, domain=None, makedir=False,

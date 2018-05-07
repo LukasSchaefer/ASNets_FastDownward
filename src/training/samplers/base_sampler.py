@@ -1,20 +1,19 @@
 from .. import parser
 from .. import parser_tools as parset
+from .. import AbstractBaseClass
 
 from ..bridges import SamplerBridge
 from ..parser_tools import main_register, ArgumentException
 from ..variable import Variable
 
 import abc
-from future.utils import with_metaclass
-import os
 
 
 class InvalidMethodCallException(Exception):
     pass
 
 
-class Sampler(with_metaclass(abc.ABCMeta, object)):
+class Sampler(AbstractBaseClass):
     """
     Base class for all sampler.
     Do not forget to register your network subclass in this packages 'register'
@@ -24,9 +23,6 @@ class Sampler(with_metaclass(abc.ABCMeta, object)):
     arguments = parset.ClassArguments("Sampler", None,
         ("sampler_bridge", False, None,
         main_register.get_register(SamplerBridge)),
-        ('reuse', True, False, parser.convert_bool,
-        "If a data set is found where the new data shall be sampled, this "
-        "allows to load the present data instead of sampling new one."),
         ('variables', True, None,
         main_register.get_register(Variable)),
         ('id', True, None, str),
@@ -34,6 +30,7 @@ class Sampler(with_metaclass(abc.ABCMeta, object)):
 )
 
     def __init__(self, sampler_bridge, variables=None, id=None):
+        variables = {} if variables is None else variables
         if not isinstance(variables, dict):
             raise ArgumentException("The provided variables have to be a map. "
                                     "Please define them as {name=VARIABLE,...}.")
@@ -74,7 +71,15 @@ class Sampler(with_metaclass(abc.ABCMeta, object)):
                                              "initializing the sampler.")
         if self.var_sample_calls is not None:
             self.var_sample_calls.value += 1
-        return self._sample()
+        datas = self._sample()
+        i = len(datas) - 1
+        while i >= 0:
+            if datas[i] is None or datas[i].empty():
+                del datas[i]
+            i -= 1
+        return datas
+
+
 
     def finalize(self):
         if not self.initialized:

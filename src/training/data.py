@@ -12,12 +12,13 @@ class SizeBatchData(object):
     and Theano do not allow to receive batches of data where the data is of
     different dimensions within a batch)
     """
-    def __init__(self, nb_fields, field_descriptions=None):
+    def __init__(self, nb_fields, field_descriptions=None, meta=None):
 
         self.nb_fields = nb_fields
         self.field_descriptions = [] if field_descriptions is None else field_descriptions
         self.data = {}
         self.batches = {}
+        self.meta = {} if meta is None else meta
 
         self.is_finalized = False
 
@@ -26,17 +27,23 @@ class SizeBatchData(object):
             raise TypeError("SizeBatchData does not support modifications after"
                             "it was finalized.")
 
-    def _for_all(self, func):
+    def _modify_all(self, func):
         for type in self.data:
             for idx_batch in range(len(self.data[type])):
                 for idx_entry in range(len(self.data[type][idx_batch])):
                     self.data[type][idx_batch][idx_entry] = func(
                         self.data[type][idx_batch][idx_entry])
 
+    def _over_all(self, func):
+        for type in self.data:
+            for idx_batch in range(len(self.data[type])):
+                for idx_entry in range(len(self.data[type][idx_batch])):
+                    func(self.data[type][idx_batch][idx_entry])
+
     def convert_field(self, field, converter):
         def func(entry):
             entry[field] = converter(entry[field])
-        self._for_all(func)
+        self._modify_all(func)
 
     def get_desc(self, field):
         if field >= self.nb_fields:
@@ -72,13 +79,35 @@ class SizeBatchData(object):
         self.batches[t].append(entry)
 
 
+    def empty(self):
+        for type in self.data:
+            for idx_batch in range(len(self.data[type])):
+                for idx_entry in range(len(self.data[type][idx_batch])):
+                    return False
+        return True
+
+    def size(self):
+        def count(entry):
+            count.c += 1
+        count.c = 0
+        self._over_all(count)
+        return count.c
+
+    def set_meta(self, name, value):
+        self.meta[name] = value
+
+    def has_meta(self, name):
+        return name in self.meta
+
+    def get_meta(self, name):
+        return self.meta[name]
 
 
     def finalize(self):
         self._check_not_finalized()
         for type in self.data:
             for idx_batch in range(len(self.data[type])):
-                self.data[type][idx_batch] = np.array(self.data[type][idx_batch])
+                self.data[type][idx_batch] = np.array(self.data[type][idx_batch], dtype=object)
 
         self.is_finalized = True
 
@@ -93,13 +122,22 @@ class SampleBatchData(SizeBatchData):
     def __init__(self, nb_fields, field_descriptions=None,
                  field_current_state=None, field_goal_state=None,
                  field_other_state=None,
-                 field_action=None, field_heuristic=None):
+                 field_action=None, field_heuristic=None,
+                 file=None):
         SizeBatchData.__init__(self, nb_fields, field_descriptions)
         self.field_current_state = field_current_state
         self.field_goal_state = field_goal_state
         self.field_other_state = field_other_state
         self.field_action = field_action
         self.field_heuristic = field_heuristic
+
+        self.set_meta("file", file)
+
+    def get_file(self):
+        if self.has_meta("file"):
+            return self.get_meta("file")
+        return None
+
 
 
 """

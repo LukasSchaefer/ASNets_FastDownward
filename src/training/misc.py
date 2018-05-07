@@ -1,8 +1,7 @@
-
-import abc
 import sys
+import abc
 
 if sys.version_info >= (3, 4):
-    ABC = abc.ABC
+    AbstractBaseClass = abc.ABC
 else:
-    ABC = abc.ABCMeta('ABC', (object,), {'__slots__': ()})
+    AbstractBaseClass = abc.ABCMeta('ABC', (object,), {'__slots__': ()})

@@ -1,6 +1,6 @@
 from .. import parser
 from .. import parser_tools as parset
-from .. import ABC
+from .. import AbstractBaseClass
 
 from ..parser_tools import main_register, ArgumentException
 from ..variable import Variable
@@ -59,7 +59,7 @@ NetworkFormat("Protobuf", "pb", "Protobuf Format")
 NetworkFormat("hdf5", "h5", "hdf5 format (e.g. used by Keras)")
 
 
-class Network(ABC):
+class Network(AbstractBaseClass):
     """
     Base class for all neural networks.
     Do not forget to register your network subclass in this packages 'register'
@@ -67,15 +67,16 @@ class Network(ABC):
     """
 
     arguments = parset.ClassArguments("Network", None,
-                                      ('load', True, None, str),
-                                      ('store', True, None, str),
-                                      ('formats', True, None, NetworkFormat.by_any),
+                                      ('load', True, None, str, "File to load network from"),
+                                      ('store', True, None, str, "Path (w/o suffix) where to store network"),
+                                      ('formats', True, None, NetworkFormat.by_any, "Single or list of formats in which to save network"),
                                       ('variables', True, None,
                                        main_register.get_register(Variable)),
                                       ('id', True, None, str),
                                       )
 
     def __init__(self, load=None, store=None, formats=None, variables=None, id=None):
+        variables = {} if variables is None else variables
         if not isinstance(variables, dict):
             raise ArgumentException("The provided variables have to be a map. "
                                     "Please define them as {name=VARIABLE,...}.")
@@ -92,7 +93,7 @@ class Network(ABC):
         self.initialized = False
         self.finalized = False
 
-    def initialize(self, msgs=None):
+    def initialize(self, msgs, **kwargs):
         """
         Build network object and prepare
         :param msgs: Message object for communication between objects (if given)
@@ -100,7 +101,7 @@ class Network(ABC):
         """
         self.msgs = msgs
         if not self.initialized:
-            self._initialize()
+            self._initialize(**kwargs)
             self.initialized = True
         else:
             raise InvalidMethodCallException("Multiple initializations of"
@@ -133,21 +134,25 @@ class Network(ABC):
             self._store(path, formats)
 
     @abc.abstractmethod
-    def _initialize(self):
+    def _initialize(self, **kwargs):
         pass
 
     @abc.abstractmethod
-    def train(self, format, data):
+    def train(self, data):
         """
 
-        :param format:
-        :param data:
+        :param data: Single or list of SampleBatchData
         :return:
         """
         pass
 
     @abc.abstractmethod
-    def evaluate(self, format, data):
+    def evaluate(self, data):
+        """
+
+        :param data: Single or list of SampleBatchData
+        :return:
+        """
         pass
 
     @abc.abstractmethod

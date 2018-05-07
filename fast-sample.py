@@ -152,7 +152,7 @@ def sample(argv):
         log.warning("No problems defined for sampling.")
     ifs = IterableFileSampler(fdb, problems)
     ifs.initialize()
-    DATA = ifs.sample()
+    ifs.sample()
     ifs.finalize()
 
 

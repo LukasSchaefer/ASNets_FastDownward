@@ -1,7 +1,8 @@
 # independent modules
+from .dependencies import DEPENDENCIES
 from .data import SizeBatchData, SampleBatchData
 from .message import Message
-from .misc import ABC
+from .misc import AbstractBaseClass
 
 # parsing related modules
 from .tree import TreeNode

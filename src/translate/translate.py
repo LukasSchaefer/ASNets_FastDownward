@@ -13,6 +13,7 @@ from translate import translator
 
 def main(argv=None, log=None):
     translator.main(argv=argv, log=log)
+
 if __name__ == "__main__":
     log = logging.root
     try:

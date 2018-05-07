@@ -88,6 +88,8 @@ class DirectorySampler(IterableFileSampler):
         IterableFileSampler.__init__(self, sampler_bridge, iterable, batch, problem_sorter,
                          variables, id)
 
+        if not isinstance(root, list):
+            root = [root]
         self._root = root
         self._filter_dir = DirectorySampler.compile_regexes(filter_dir)
         self._filter_file = DirectorySampler.compile_regexes(filter_file)

@@ -22,6 +22,12 @@ if sys.version_info[0] == 2:
     gzip_input_converter = lambda x: x
     gzip_output_converter = lambda x: x
 
+try:
+    FileNotFoundError
+except NameError:
+    FileNotFoundError = IOError
+
+
 # Globals
 MAGIC_WORD = "# MAGIC FIRST LINE\n"
 
@@ -398,7 +404,7 @@ def load_sample_line(line, data_container, format, pddl_task, sas_task):
         entry_format = StateFormat.get(entry_format)
 
     else:
-        raise ValueError("Missing meta tag. Cannot infere state format.")
+        raise ValueError("Missing meta tag. Cannot infer state format.")
 
     if data is None or data == "":
         raise DataCorruptedError("Invalid data set entry: " + line)
@@ -416,7 +422,6 @@ def load_sample_line(line, data_container, format, pddl_task, sas_task):
             data[idx_state], entry_format, format,
             pddl_task, sas_task)
     data[4] = int(data[4])
-
     data_container.add(data, type=entry_type)
 
 
@@ -429,20 +434,114 @@ def load_sample_file(path, data_container, format, path_problem):
     right = False
     techniques = [(open, lambda x: x), (gzip.open, gzip_output_converter)]
     for (read, conv) in techniques:
-        with read(path, "r") as src:
-            first = True
-            for line in src:
-                line = conv(line)
-                if first:
-                    first = False
-                    right = line == MAGIC_WORD
-                    if not right:
-                        break
-                else:
-                    load_sample_line(line, data_container, format, pddl_task, sas_task)
-            if right:
-                break
+        try:
+            with read(path, "r") as src:
+                first = True
+                for line in src:
+                    line = conv(line)
+                    if first:
+                        first = False
+                        right = line == MAGIC_WORD
+                        if not right:
+                            break
+                    else:
+                        load_sample_line(line, data_container, format, pddl_task, sas_task)
+                if right:
+                    break
+        except UnicodeDecodeError:
+            pass
+    if not right:
+        raise ValueError("the given file could not be correctly opened with one "
+                         "of the known techniques.")
+    print("LOADED", path)
 
+def TMP_load_sample_file(path, data_container, format, path_problem):
+    print("Loading", path)
+    path_domain = parser.find_domain(path_problem)
+    (pddl_task, sas_task) = translate.translator.main(
+        [path_domain, path_problem, "--no-sas-file", "--log-verbosity",
+         "ERROR"])
+
+    right = False
+    techniques = [(gzip.open, gzip_output_converter)]
+    for (read, conv) in techniques:
+        try:
+            with read(path, "r") as src:
+                for line in src:
+                    line = conv(line)
+                    load_sample_line(line, data_container, format, pddl_task, sas_task)
+                if right:
+                    break
+        except UnicodeDecodeError:
+            pass
+    print("LOADED", path)
+
+
+"""######################### LoadSampleBride ################################"""
+
+
+class LoadSampleBridge(SamplerBridge):
+    arguments = parset.ClassArguments('LoadSampleBridge',
+        SamplerBridge.arguments,
+        ("format", True, StateFormat.FD, StateFormat.get,
+         "Format to represent the sampled state"),
+        ("prune", True, True, parser.convert_bool, "Prune duplicate samples"),
+        ("skip", True, True, parser.convert_bool, "Skip problem if no samples exists, else raise error"),
+        order=["format", "prune", "skip",
+             "tmp_dir", "target_file",
+             "target_dir", "append", "reuse", "domain",
+             "makedir",
+             "environment", "id"]
+)
+
+    def __init__(self, format=StateFormat.FD, prune=True, skip=True,
+                 tmp_dir=None, target_file=None, target_dir=None,
+                 append=False, reuse=False, domain=None,
+                 makedir=False, environment=None, id=None):
+        SamplerBridge.__init__(self, tmp_dir, target_file, target_dir,
+                               append, reuse, domain, makedir, environment, id)
+
+        self._format = format
+        self._prune = prune
+        self._skip = skip
+
+    def _initialize(self):
+        pass
+
+
+    def _sample(self, path_problem, path_samples, path_dir_tmp, path_domain,
+                append):
+
+
+        data = SampleBatchData(5, [self._format, self._format, str,
+                                    self._format, int], 0, 1, 3, 2, 4,
+                               path_problem)
+
+        if not os.path.exists(path_samples):
+            if self._skip:
+                return data
+            else:
+                raise FileNotFoundError("Requested sample files does not exist:"
+                                        + str(path_samples))
+        TMP_load_sample_file(path_samples, data, self._format, path_problem)
+        return data
+
+
+    def _finalize(self):
+        pass
+
+    @staticmethod
+    def parse(tree, item_cache):
+        return parser.try_whole_obj_parse_process(tree, item_cache,
+                                                  LoadSampleBridge)
+
+
+main_register.append_register(LoadSampleBridge, "loadbridge")
+
+
+
+
+"""#################### FastDownwardSamplerBridge ###########################"""
 class FastDownwardSamplerBridge(SamplerBridge):
     arguments = parset.ClassArguments('FastDownwardSamplerBridge',
         SamplerBridge.arguments,
@@ -507,7 +606,8 @@ class FastDownwardSamplerBridge(SamplerBridge):
                                         + ".tmp")
 
         data = (SampleBatchData(5, [self._format, self._format, str,
-                                    self._format, int], 0, 1, 3, 2, 4)
+                                    self._format, int], 0, 1, 3, 2, 4,
+                                path_problem)
                 if self._provide else None)
 
         if not self._reuse or not os.path.exists(path_samples):
