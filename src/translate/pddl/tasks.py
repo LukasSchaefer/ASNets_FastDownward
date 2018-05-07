@@ -182,6 +182,13 @@ class Task(object):
         return msg
 
     def get_grounded_predicates(self, sort=False, typed=False):
+        """
+        Computes (or collects already computed) all groundings of abstract all predicates
+        :param sort: if True, then the output will be sorted by predicate name
+        :param typed: if True, then grounding considers/ checks argument
+                      types
+        :return: set of grounded predicates
+        """
         groundings = []
         for predicate in self.predicates:
             if predicate.name == "=":
@@ -205,6 +212,11 @@ class Task(object):
         return [str(atom) for atom in grounded_predicates]
 
     def get_grounded_predicates_from_predicate(self, predicate):
+        """
+        Computes (or collects already computed) all groundings of specific predicate
+        :param predicate: predicate to compute groundings of
+        :return: set of grounded predicates
+        """
         if predicate.name in self.__predicate_name_to_grounded_predicates.keys():
             return self.__predicate_name_to_grounded_predicates[predicate.name]
         else:
@@ -214,6 +226,11 @@ class Task(object):
             return grounded_predicates
 
     def get_predicate_to_grounded_predicates_dict(self):
+        """
+        Computes (or collects already computed) all groundings of all predicates and
+        saves these in a dict
+        :return: dict mapping from predicate names to grounded predicates
+        """
         # compute all groundings
         for predicate in self.predicates:
             if predicate.name == "=":
@@ -226,6 +243,11 @@ class Task(object):
         return self.__predicate_name_to_grounded_predicates
 
     def get_propositional_actions(self, sort=False):
+        """
+        Computes (or collects already computed) all groundings of all abstract actions
+        :param sort: if True, then the output will be sorted by action name
+        :return: set of grounded propositional actions
+        """
         propositional_actions = []
         for action in self.actions:
             if action.name in self.__action_name_to_propositional_actions.keys():
@@ -241,6 +263,11 @@ class Task(object):
         return propositional_actions
 
     def get_propositional_actions_from_action(self, action):
+        """
+        Computes (or collects already computed) all groundings of specific action
+        :param action: action to compute groundings of
+        :return: set of grounded propositional actions
+        """
         if action.name in __action_name_to_propositional_actions.keys():
             return self.__action_name_to_propositional_actions[action.name]
         else:
@@ -251,6 +278,11 @@ class Task(object):
             return actions
 
     def get_action_to_propositional_actions_dict(self):
+        """
+        Computes (or collects already computed) all groundings of all actions and
+        saves these in a dict
+        :return: dict mapping from action names to grounded propositional actions
+        """
         # compute propositional actions
         for action in self.actions:
             if action.name not in self.__action_name_to_propositional_actions.keys():
