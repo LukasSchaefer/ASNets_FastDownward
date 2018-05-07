@@ -143,13 +143,12 @@ For the usage I refer you to the documentation of [Fast Downward](http://www.fas
 
 1. Case Sensitive Command Line
 
-   Fast Downward converts the whole commandline input into lower case. This can be problematic when providing paths to your stored networks, node names in a computation graph or other case sensitive input. The new parsing allows inserting commands via FIRST_PART\COMMANDNAME\SECOND_PART into the commandline strings. Commands
-   can modify the further parsing or the configuration. Currently implemented are:
+    Fast Downward converts the whole commandline input into lower case. This can be problematic when providing paths to your stored networks, node names in a computation graph or other case sensitive input. The new parsing allows inserting commands via FIRST_PART\COMMANDNAME\SECOND_PART into the commandline strings. Commands can modify the further parsing or the configuration. Currently implemented are:
    
-   - \lower_case\	= parses the following chars of the configuration as lower case (DEFAULT)
-   - \real_case\	= parses the following chars of the configuration in their original case
-   - \lower_case\	= parses the following chars of the configuration as upper case
-   - \default\		= resets all parsing modifications to their default value
+    - \lower_case\	= parses the following chars of the configuration as lower case (DEFAULT)
+    - \real_case\	= parses the following chars of the configuration in their original case
+    - \lower_case\	= parses the following chars of the configuration as upper case
+    - \default\		= resets all parsing modifications to their default value
     
     An example use-case is providing a file path. This could look like:
     
@@ -235,12 +234,11 @@ For the usage I refer you to the documentation of [Fast Downward](http://www.fas
     Additionally has every entry some Meta information <Meta ....> in the beginning of each line.
     The meta tag may contain:
     
-       problem_hash		= a hash of the base problem description(original pddl file)
-       modification_hash	= a hash of the modification done to obtain the derived problem
-       type			= O:entry from an optimal path, T:entry from other path,
-				  S: entry for some state
-       format			= format of the entry:
-		FD		= Format used by FD (unchangable predicates are pruned)
+       - problem_hash		= a hash of the base problem description(original pddl file)
+       - modification_hash	= a hash of the modification done to obtain the derived problem
+       - type				= 	O:entry from an optimal path, T:entry from other path, S: entry for some state
+       - format				= format of the entry:
+	   - FD					= Format used by FD (unchangable predicates are pruned)
 
 
 
