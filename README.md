@@ -41,13 +41,13 @@ sudo apt-get install python3-numpy python3-dev python3-wheel curl cmake
     
     2. Install bazel (this is the recommended compiler)
     
-~~~
+```
 echo "deb [arch=amd64] http://storage.googleapis.com/bazel-apt stable jdk1.8" | sudo tee /etc/apt/sources.list.d/bazel.list
 curl https://bazel.build/bazel-release.pub.gpg | sudo apt-key add -
 sudo apt-get update
 sudo apt-get install bazel -y
 sudo apt-get upgrade bazel -y
-~~~
+```
     
 1. Obtain Tensorflow, Protobuf, and Eigen3
     1. Download the current Tensorflow source code and compile it
