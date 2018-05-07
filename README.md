@@ -145,10 +145,11 @@ For the usage I refer you to the documentation of [Fast Downward](http://www.fas
 
    Fast Downward converts the whole commandline input into lower case. This can be problematic when providing paths to your stored networks, node names in a computation graph or other case sensitive input. The new parsing allows inserting commands via FIRST_PART\COMMANDNAME\SECOND_PART into the commandline strings. Commands
    can modify the further parsing or the configuration. Currently implemented are:
-      	\lower_case\	= parses the following chars of the configuration as lower case (DEFAULT)
-   	    \real_case\		= parses the following chars of the configuration in their original case
-        \lower_case\	= parses the following chars of the configuration as upper case
-        \default\		= resets all parsing modifications to their default value
+   
+   - \lower_case\	= parses the following chars of the configuration as lower case (DEFAULT)
+   - \real_case\	= parses the following chars of the configuration in their original case
+   - \lower_case\	= parses the following chars of the configuration as upper case
+   - \default\		= resets all parsing modifications to their default value
     
     An example use-case is providing a file path. This could look like:
     
@@ -191,14 +192,15 @@ For the usage I refer you to the documentation of [Fast Downward](http://www.fas
     Therefore, the current approach says, every network (which shall be used by some arbitrary
     components) is a decendant of AbstractNetwork. For every type of output ANY IMPLEMENTED
     network can produce AbstractNetwork has the following methods:
-       * bool is_OUTPUTTYPE()	- tells if the network produces output for this type
-       * void verify_OUTPUTTYPE() - checks if network produces output for this type and stops
+    
+    - bool is_OUTPUTTYPE()	- tells if the network produces output for this type
+    - void verify_OUTPUTTYPE() - checks if network produces output for this type and stops
                                   execution if not. This shall be used by code which uses
                                   some networks in their initialization to check that the
                                   given network supports the needed outputs (e.g. the
                                   network heuristic checks that the given network produces a
                                   heuristic value)
-       * TYPE get_OUTPUTTYPE()  - provides access to the last output of the given type the
+    - TYPE get_OUTPUTTYPE()  - provides access to the last output of the given type the
                                   network has produced if able. If the network is not able
                                   to produce this kind of output, stop execution.
 
