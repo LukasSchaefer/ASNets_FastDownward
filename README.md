@@ -113,17 +113,19 @@ Those steps describe how you can set up the framework. Those steps may not be th
     variables.
     
     For a Package PACKAGE, define one or up to all environment variables of:
-	-   PATH_PACKAGE32		= path where the include/ and lib/ dirs for the 32 bit build are stored
-	-   PATH_PACKAGE64		= path where the include/ and lib/ dirs for the 64 bit build are stored
-	-   PATH_PACKAGE_RELEASE32	= path where the include/ and lib/ dirs for the 32 bit release build are stored
-	-   PATH_PACKAGE_RELEASE64	= path where the include/ and lib/ dirs for the 64 bit release build are stored
-	-   PATH_PACKAGE_DEBUG32	= path where the include/ and lib/ dirs for the 32 bit debug build are stored
-	-   PATH_PACKAGE_DEBUG64	= path where the include/ and lib/ dirs for the 64 bit debug build are stored
+    
+	- PATH_PACKAGE32			= path where the include/ and lib/ dirs for the 32 bit build are stored
+	- PATH_PACKAGE64			= path where the include/ and lib/ dirs for the 64 bit build are stored
+	- PATH_PACKAGE_RELEASE32	= path where the include/ and lib/ dirs for the 32 bit release build are stored
+	- PATH_PACKAGE_RELEASE64	= path where the include/ and lib/ dirs for the 64 bit release build are stored
+	- PATH_PACKAGE_DEBUG32		= path where the include/ and lib/ dirs for the 32 bit debug build are stored
+	- PATH_PACKAGE_DEBUG64		= path where the include/ and lib/ dirs for the 64 bit debug build are stored
 	
 	On building configuration <TYPE><BITS> it will check the variables in the following order:
-		 - PATH_PACKAGE_<TYPE><BITS>
-		 - PATH_PACKAGE_<BIT>
-		 - PATH_PACKAGE
+	
+    - PATH_PACKAGE_<TYPE><BITS>
+	- PATH_PACKAGE_<BIT>
+	- PATH_PACKAGE
 
 	
 2.  Compile Neural Fast Downward
