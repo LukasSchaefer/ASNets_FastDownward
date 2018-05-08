@@ -135,7 +135,9 @@ class Action(object):
                     if index_per_parameter[index] == len(objects_per_parameter[index]):
                         index_per_parameter[index] = 0
                         carry = True
-            propositional_actions.add(self.instantiate(var_mapping, init_facts, fluent_facts, objects_by_type, metric))
+            propositional_action = self.instantiate(var_mapping, init_facts, fluent_facts, objects_by_type, metric)
+            if propositional_action is not None:
+                propositional_actions.add(propositional_action)
             if carry:
                 break
         return propositional_actions

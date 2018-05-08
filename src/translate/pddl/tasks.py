@@ -242,9 +242,10 @@ class Task(object):
         # return filled dict
         return self.__predicate_name_to_grounded_predicates
 
-    def get_propositional_actions(self, sort=False):
+    def get_propositional_actions(self, fluent_facts, sort=False):
         """
         Computes (or collects already computed) all groundings of all abstract actions
+        :param fluent_facts: fluent facts (can be computed by translate/instantiate
         :param sort: if True, then the output will be sorted by action name
         :return: set of grounded propositional actions
         """
@@ -253,18 +254,19 @@ class Task(object):
             if action.name in self.__action_name_to_propositional_actions.keys():
                 propositional_actions.extend(self.__action_name_to_propositional_actions[action.name])
             else:
-                # is fixed metric = False and all propositions for fluent_facts okay?
+                # is fixed metric = False?
                 actions = action.get_instantiations(self._get_object_dict(),
-                    self.init, self.get_grounded_predicates(typed=True), False)
+                    set(self.init), fluent_facts, False)
                 self.__action_name_to_propositional_actions[action.name] = actions
                 propositional_actions.extend(actions)
         if sort:
             propositional_actions = sorted(propositional_actions, key=lambda x: str(x))
         return propositional_actions
 
-    def get_propositional_actions_from_action(self, action):
+    def get_propositional_actions_from_action(self, action, fluent_facts):
         """
         Computes (or collects already computed) all groundings of specific action
+        :param fluent_facts: fluent facts (can be computed by translate/instantiate
         :param action: action to compute groundings of
         :return: set of grounded propositional actions
         """
@@ -273,7 +275,7 @@ class Task(object):
         else:
             # is fixed metric = False and all propositions for fluent_facts okay?
             actions = action.get_instantiations(self._get_object_dict(),
-                self.init, self.get_grounded_predicates(typed=True), False)
+                set(self.init), fluent_facts, False)
             self.__action_name_to_propositional_actions[action.name] = actions
             return actions
 
@@ -287,7 +289,7 @@ class Task(object):
         for action in self.actions:
             if action.name not in self.__action_name_to_propositional_actions.keys():
                 self.__action_name_to_propositional_actions[predicate.name] = action.get_instantiations(
-                    self._get_object_dict(), self.init, self.get_grounded_predicates(typed=True), False)
+                    self._get_object_dict(), set(self.init), fluent_facts, False)
 
         # return filled dict
         return self.__action_name_to_propositional_actions
