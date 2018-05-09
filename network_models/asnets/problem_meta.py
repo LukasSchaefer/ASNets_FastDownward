@@ -1,32 +1,127 @@
-class ProblemRelationsMeta:
+class ProblemMeta:
     """Contains additional information about relations of actions
     and propositions in a pddl-task used for ASNets"""
 
     def __init__(self,
                  name,
+                 actions,
+                 predicates,
                  propositional_actions,
                  grounded_predicates):
         self.name = name
 
-        # Dict of type propositional_action.name -> list(grounded_predicate)
-        self.prop_action_name_to_related_props_name = {}
-        # Dict of type grounded_predicate.name -> list(propositional_actions)
-        self.prop_name_to_related_prop_action_name = {}
+        # setup dicts to access propositional_actions and grounded predicates by name
+        # {prop_act.name: prop_act} and {gr_pred.__str__(): gr_pred}
+        self.propositional_actions_by_name = \
+                self.__compute_propositional_actions_by_name_dict(propositional_actions)
+        self.grounded_predicates_by_name = \
+                self.__compute_grounded_predicates_by_name_dict(grounded_predicates)
+
+        # set dicts mapping from abstract actions/ predicates to grounding names
+        self.action_name_to_prop_actions_names = \
+                self.__compute_act_to_prop_act_names_dict(actions, propositional_actions)
+        self.predicate_name_to_propositions_names = \
+                self.__compute_pred_to_grounding_names_dict(predicates, grounded_predicates) 
+
+        self.__compute_and_set_relations(propositional_actions, grounded_predicates)
+        
+
+    def __compute_propositional_actions_by_name_dict(self, propositional_actions):
+        """
+        Computes dict {prop_act.name: prop_act}
+        :param propositional_actions: all propositional actions (to include)
+        :return: dict {prop_act.name: prop_act}
+        """
+        propositional_actions_by_name = {}
+        for act in propositional_actions:
+            propositional_actions_by_name[act.name] = act
+        return propositional_actions_by_name
+
+
+    def __compute_grounded_predicates_by_name_dict(self, grounded_predicates):
+        """
+        Computes dict {gr_pred.__str__(): gr_pred}
+        :param grounded_predicates: all grounded predicates (to include)
+        :return: dict {gr_pred.__str__(): gr_pred}
+        """
+        grounded_predicates_by_name = {}
+        for gr_pred in grounded_predicates:
+            grounded_predicates_by_name[gr_pred.__str__()] = gr_pred
+        return grounded_predicates_by_name
+
+
+    def __compute_act_to_prop_act_names_dict(self, actions, propositional_actions):
+        """
+        Computes dict of form {action_name: [corresponding propositional_actions.name]
+        :param actions: abstract actions
+        :param propositional_actions: all instantiated propositional actions
+        :return: dict mapping from action names to list of corresponding propositional
+        action names
+        """
+        action_name_to_prop_actions = {}
+        # init all act-entries with empty list
+        for act in actions:
+            action_name_to_prop_actions[act.name] = []
+
+        # fill all lists with corresponding propositional actions
+        for prop_action in propositional_actions:
+            action_name_to_prop_actions[prop_action.get_underlying_action_name()] \
+                    .append(prop_action.name)
+        return action_name_to_prop_actions
+
+
+    def __compute_pred_to_grounding_names_dict(self, predicates, grounded_predicates):
+        """
+        Computes dict of form {predicate_name: [corresponding grounded_predicates.__str__()]
+        :param predicates: abstract predicates
+        :param grounded_predicates: all instantiated grounded predicates
+        :return: dict mapping from predicate names to list of corresponding grounded
+        predicate names
+        """
+        predicate_name_to_propositions = {}
+        # init all pred-entries with empty list
+        for pred in predicates:
+            predicate_name_to_propositions[pred.name] = []
+
+        # fill all lists with corresponding propositions
+        for prop in grounded_predicates:
+            predicate_name_to_propositions[prop.predicate].append(prop.__str__())
+        return predicate_name_to_propositions
+
+
+    def __compute_and_set_relations(self, propositional_actions, grounded_predicates):
+        """
+        Computes relations among grounded propositional actions and predicates
+        (action and prop are related iff prop appears in pre, add or delete list
+        of action) and sets these in corresponding dicts in both directions
+        dicts:
+            - prop_to_related_prop_action_names:
+                {gr_pred: related prop_actions.name}
+            - prop_action_to_related_prop_names:
+                {prop_action: related gr_preds.__str__()}
+        :param propositional_actions: propositional actions to use
+        :param grounded_predicates: set of predicates to use
+        :return: None
+        """
+        # Dict of type propositional_action -> list(grounded_predicate)
+        self.prop_action_to_related_prop_names = {}
+        # Dict of type grounded_predicate -> list(propositional_actions)
+        self.prop_to_related_prop_action_names = {}
+
         # initialize dict entries for grounded predicates all with empty list
         # -> if no related actions than value is already correct and no in dict.keys()
         # check necessary in self.__compute_and_set... function below
-        for proposition in grounded_predicates:
-            self.prop_name_to_related_prop_action_name[proposition.__str__()] = []
+        for gr_pred in grounded_predicates:
+            self.prop_to_related_prop_action_names[gr_pred] = []
 
         # IMPORTANT: ordered data structure (like list) so that all related-lists
         # of grounded actions with same underlying action schema have corresponding
         # propositions at the same index (necessary for weight sharing in ASNets)
-
         for propositional_action in propositional_actions:
             self.__compute_and_set_relations_involving_action(propositional_action)
 
 
-    def __compute_and_set_relations_involving_action(self, action):
+    def __compute_and_set_relations_involving_action(self, propositional_action):
         """
         Computes related grounded predicates (propositions) for grounded
         propositional action (= propositions that either appear in action's
@@ -37,16 +132,21 @@ class ProblemRelationsMeta:
         :return: None
         """
         related_propositions = []
-        for proposition in action.precondition:
-                related_propositions.append(proposition)
-                self.prop_name_to_related_prop_action_name[proposition.__str__()].append(action)
-        for _, proposition in action.add_effects:
-            if not proposition in related_propositions:
-                related_propositions.append(proposition)
-                self.prop_name_to_related_prop_action_name[proposition.__str__()].append(action)
-        for _, proposition in action.del_effects:
-            if not proposition in related_propositions:
-                related_propositions.append(proposition)
-                self.prop_name_to_related_prop_action_name[proposition.__str__()].append(action)
+        for proposition in propositional_action.precondition:
+                related_propositions.append(proposition.__str__())
+                self.prop_to_related_prop_action_names[proposition].append(propositional_action.name)
+        for _, proposition in propositional_action.add_effects:
+            if proposition.__str__() not in related_propositions:
+                related_propositions.append(proposition.__str__())
+                self.prop_to_related_prop_action_names[proposition].append(propositional_action.name)
+        for _, proposition in propositional_action.del_effects:
+            if proposition.__str__() not in related_propositions:
+                related_propositions.append(proposition.__str__())
+                self.prop_to_related_prop_action_names[proposition].append(propositional_action.name)
 
-        self.prop_action_name_to_related_props_name[action.name] = related_propositions
+        self.prop_action_to_related_prop_names[propositional_action] = related_propositions
+
+
+    def get_grounded_predicates(self):
+        pass
+        # return self.grounded_predicates_by_name.

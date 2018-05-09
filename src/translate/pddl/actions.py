@@ -165,6 +165,9 @@ class PropositionalAction:
     def __repr__(self):
         return "<PropositionalAction %r at %#x>" % (self.name, id(self))
 
+    def get_underlying_action_name(self):
+        return self.name.strip('(').split()[0]
+
     def dump(self, disp=True, log=logging.root, log_level=logging.INFO):
         msg = self.name
         for fact in self.precondition:

@@ -66,6 +66,7 @@ class Task(object):
         self.__objects_dict_untyped = None
         self.predicates = predicates
         self.__predicates_dict = None
+        self.__actions_dict = None
         self.functions = functions
         self.init = init
         self.goal = goal
@@ -104,6 +105,14 @@ class Task(object):
             self.__predicates_dict = pd
         return self.__predicates_dict
     predicate_dict = property(_predicate_dict)
+
+    def __action_dict(self):
+        if self.__actions_dict is None:
+            ad = {}
+            for action in self.actions:
+                ad[action.name] = action
+            self.__actions_dict = ad
+        return self.__actions_dict
 
     def _objects_dict_typed(self):
         if self.__objects_dict_typed is None:
@@ -181,6 +190,9 @@ class Task(object):
             log.log(log_level, msg)
         return msg
 
+    # Should probably not be used/ instantiation by instantiate.explore is to be preferred
+    # because it makes use of normalization etc. saving a lot of unnecessary/ unachievable
+    # propositions etc.
     def get_grounded_predicates(self, sort=False, typed=False):
         """
         Computes (or collects already computed) all groundings of abstract all predicates
@@ -204,6 +216,9 @@ class Task(object):
             groundings = sorted(groundings, key=lambda x: str(x))
         return groundings
 
+    # Should probably not be used/ instantiation by instantiate.explore is to be preferred
+    # because it makes use of normalization etc. saving a lot of unnecessary/ unachievable
+    # propositions etc.
     def str_grounded_predicates(self, grounded_predicates=None, sort=False):
         if grounded_predicates is None:
             grounded_predicates = self.get_grounded_predicates(sort=sorted)
@@ -211,6 +226,9 @@ class Task(object):
             grounded_predicates = sorted(grounded_predicates, key=lambda x: str(x))
         return [str(atom) for atom in grounded_predicates]
 
+    # Should probably not be used/ instantiation by instantiate.explore is to be preferred
+    # because it makes use of normalization etc. saving a lot of unnecessary/ unachievable
+    # propositions etc.
     def get_grounded_predicates_from_predicate(self, predicate):
         """
         Computes (or collects already computed) all groundings of specific predicate
@@ -225,6 +243,9 @@ class Task(object):
             self.__predicate_name_to_grounded_predicates[predicate.name] = grounded_predicates
             return grounded_predicates
 
+    # Should probably not be used/ instantiation by instantiate.explore is to be preferred
+    # because it makes use of normalization etc. saving a lot of unnecessary/ unachievable
+    # propositions etc.
     def get_predicate_to_grounded_predicates_dict(self):
         """
         Computes (or collects already computed) all groundings of all predicates and
@@ -242,6 +263,9 @@ class Task(object):
         # return filled dict
         return self.__predicate_name_to_grounded_predicates
 
+    # Should probably not be used/ instantiation by instantiate.explore is to be preferred
+    # because it makes use of normalization etc. saving a lot of unnecessary/ unachievable
+    # propositions etc.
     def get_propositional_actions(self, fluent_facts, sort=False):
         """
         Computes (or collects already computed) all groundings of all abstract actions
@@ -263,6 +287,9 @@ class Task(object):
             propositional_actions = sorted(propositional_actions, key=lambda x: str(x))
         return propositional_actions
 
+    # Should probably not be used/ instantiation by instantiate.explore is to be preferred
+    # because it makes use of normalization etc. saving a lot of unnecessary/ unachievable
+    # propositions etc.
     def get_propositional_actions_from_action(self, action, fluent_facts):
         """
         Computes (or collects already computed) all groundings of specific action
@@ -279,6 +306,9 @@ class Task(object):
             self.__action_name_to_propositional_actions[action.name] = actions
             return actions
 
+    # Should probably not be used/ instantiation by instantiate.explore is to be preferred
+    # because it makes use of normalization etc. saving a lot of unnecessary/ unachievable
+    # propositions etc.
     def get_action_to_propositional_actions_dict(self):
         """
         Computes (or collects already computed) all groundings of all actions and
