@@ -9,6 +9,8 @@ class ProblemMeta:
                  propositional_actions,
                  grounded_predicates):
         self.name = name
+        self.propositional_actions = propositional_actions
+        self.grounded_predicates = grounded_predicates
 
         # setup dicts to access propositional_actions and grounded predicates by name
         # {prop_act.name: prop_act} and {gr_pred.__str__(): gr_pred}

@@ -66,11 +66,11 @@ class Task(object):
         self.__objects_dict_untyped = None
         self.predicates = predicates
         self.__predicates_dict = None
-        self.__actions_dict = None
         self.functions = functions
         self.init = init
         self.goal = goal
         self.actions = actions
+        self.__actions_dict = None
         self.axioms = axioms
         self.axiom_counter = 0
         self.use_min_cost_metric = use_metric
@@ -106,7 +106,7 @@ class Task(object):
         return self.__predicates_dict
     predicate_dict = property(_predicate_dict)
 
-    def __action_dict(self):
+    def _action_dict(self):
         if self.__actions_dict is None:
             ad = {}
             for action in self.actions:
@@ -189,6 +189,52 @@ class Task(object):
         if disp:
             log.log(log_level, msg)
         return msg
+
+
+    def simplify(self, fluent_predicates):
+        """
+        Remove all predicates in init, predicates, action- condition and effects
+        which are not included in fluent_predicates
+        :param fluent_predicates: predicates which are reachable/ meaningful in
+        simplified task
+        """
+        # simplify predicates
+        simplified_predicates = []
+        for pred in self.predicates:
+            if pred.name in fluent_predicates:
+                simplified_predicates.append(pred)
+        self.predicates = simplified_predicates
+
+        # simplify predicate_dict
+        self.__predicates_dict = None
+        self._predicate_dict()
+
+        # simplify actions
+        for action in self.actions:
+            action.simplify(fluent_predicates)
+
+        # simplify actions_dict
+        self.__actions_dict = None
+        self._action_dict()
+
+        # simplify init
+        simplified_init = []
+        for fact in self.init:
+            if isinstance(fact, conditions.Condition):
+                simplified_fact = fact.simplify(fluent_predicates)
+                if simplified_fact is not None:
+                    simplified_init.append(simplified_fact)
+            else:
+                simplified_init.append(fact)
+        self.init = simplified_init
+
+        # simplify goal
+        simplified_goal = self.goal.simplify(fluent_predicates)
+        if simplified_goal is not None:
+            self.goal = simplified_goal
+        else:
+            self.goal = conditions.Truth()
+
 
     # Should probably not be used/ instantiation by instantiate.explore is to be preferred
     # because it makes use of normalization etc. saving a lot of unnecessary/ unachievable

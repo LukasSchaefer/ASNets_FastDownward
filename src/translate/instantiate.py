@@ -19,6 +19,15 @@ def get_fluent_facts(task, model):
     return set([fact for fact in model
                 if fact.predicate in fluent_predicates])
 
+def get_fluent_predicates(task, model):
+    fluent_predicates = set()
+    for action in task.actions:
+        for effect in action.effects:
+            fluent_predicates.add(effect.literal.predicate)
+    for axiom in task.axioms:
+        fluent_predicates.add(axiom.name)
+    return fluent_predicates
+
 def get_objects_by_type(typed_objects, types):
     result = defaultdict(list)
     supertypes = {}

@@ -70,6 +70,22 @@ class Action(object):
         result.effects = [eff.untyped() for eff in self.effects]
         return result
 
+    def simplify(self, fluent_predicates):
+        """
+        Remove all predicates which are not in fluent_predicates
+        :param fluent_predicates: necessary/ useful predicates needed
+        """
+        self.precondition = self.precondition.simplify(fluent_predicates)
+        if self.precondition is None:
+            self.precondition = conditions.Truth()
+            
+        simplified_effects = []
+        for eff in self.effects:
+            if eff.literal.predicate in fluent_predicates:
+                simplified_effects.append(eff)
+        self.effects = simplified_effects
+
+
     def instantiate(self, var_mapping, init_facts, fluent_facts,
         objects_by_type, metric):
         """Return a PropositionalAction which corresponds to the instantiation of

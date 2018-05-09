@@ -86,6 +86,12 @@ class ConstantCondition(Condition):
         return self
     def __eq__(self, other):
         return self.__class__ is other.__class__
+    def simplify(self, fluent_predicates):
+        """
+        Remove all predicates which are not in fluent_predicates
+        :param fluent_predicates: necessary/ useful predicates needed
+        """
+        return self
 
 class Impossible(Exception):
     pass
@@ -141,6 +147,18 @@ class Conjunction(JunctorCondition):
             part.instantiate(var_mapping, init_facts, fluent_facts, result)
     def negate(self):
         return Disjunction([p.negate() for p in self.parts])
+    def simplify(self, fluent_predicates):
+        """
+        Remove all predicates which are not in fluent_predicates
+        :param fluent_predicates: necessary/ useful predicates needed
+        """
+        simplified_parts = []
+        for part in self.parts:
+            simplified_part = part.simplify(fluent_predicates)
+            if simplified_part is not None:
+                simplified_parts.append(simplified_part)
+        return Conjunction(simplified_parts)
+
 
 class Disjunction(JunctorCondition):
     def _simplified(self, parts):
@@ -161,6 +179,18 @@ class Disjunction(JunctorCondition):
         return Conjunction([p.negate() for p in self.parts])
     def has_disjunction(self):
         return True
+    def simplify(self, fluent_predicates):
+        """
+        Remove all predicates which are not in fluent_predicates
+        :param fluent_predicates: necessary/ useful predicates needed
+        """
+        simplified_parts = []
+        for part in self.parts:
+            simplified_part = part.simplify(fluent_predicates)
+            if simplified_part is not None:
+                simplified_parts.append(simplified_part)
+        return Conjunction(simplified_parts)
+
 
 class QuantifiedCondition(Condition):
     # Defining __eq__ blocks inheritance of __hash__, so must set it explicitly.
@@ -208,6 +238,18 @@ class UniversalCondition(QuantifiedCondition):
         return ExistentialCondition(self.parameters, [p.negate() for p in self.parts])
     def has_universal_part(self):
         return True
+    def simplify(self, fluent_predicates):
+        """
+        Remove all predicates which are not in fluent_predicates
+        :param fluent_predicates: necessary/ useful predicates needed
+        """
+        simplified_parts = []
+        for part in self.parts:
+            simplified_part = part.simplify(fluent_predicates)
+            if simplified_part is not None:
+                simplified_parts.append(simplified_part)
+        return UniversalCondition(simplified_parts)
+
 
 class ExistentialCondition(QuantifiedCondition):
     def _untyped(self, parts):
@@ -221,6 +263,18 @@ class ExistentialCondition(QuantifiedCondition):
         self.parts[0].instantiate(var_mapping, init_facts, fluent_facts, result)
     def has_existential_part(self):
         return True
+    def simplify(self, fluent_predicates):
+        """
+        Remove all predicates which are not in fluent_predicates
+        :param fluent_predicates: necessary/ useful predicates needed
+        """
+        simplified_parts = []
+        for part in self.parts:
+            simplified_part = part.simplify(fluent_predicates)
+            if simplified_part is not None:
+                simplified_parts.append(simplified_part)
+        return ExistentialCondition(simplified_parts)
+
 
 class Literal(Condition):
     # Defining __eq__ blocks inheritance of __hash__, so must set it explicitly.
@@ -266,6 +320,16 @@ class Literal(Condition):
         return self.__class__(self.predicate, new_args)
     def free_variables(self):
         return set(arg for arg in self.args if arg[0] == "?")
+    def simplify(self, fluent_predicates):
+        """
+        Remove all predicates which are not in fluent_predicates
+        :param fluent_predicates: necessary/ useful predicates needed
+        """
+        if self.predicate in fluent_predicates:
+            return self
+        else:
+            return None
+
 
 class Atom(Literal):
     negated = False
