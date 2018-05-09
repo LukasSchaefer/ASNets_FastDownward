@@ -159,7 +159,7 @@ class ProblemMeta:
         of action) and sets these in corresponding dicts in both directions
         dicts:
             - pred_to_related_action_names:
-                {pred: related actions.name with args}
+                {pred: related actions.name}
             - action_to_related_pred_names:
                 {action: related preds.name with pars}
         :param actions: actions to use
@@ -192,16 +192,17 @@ class ProblemMeta:
         """
         related_predicates = []
         for part in action.precondition.parts:
-                if part.predicate not in related_predicates:
-                    related_predicates.append(part.predicate)
-                    predicate = self.task._predicate_dict()[part.predicate]
-                    if action.name not in self.pred_to_related_action_names[predicate]:
-                        self.pred_to_related_action_names[predicate].append(action.name)
+            related_predicates.append(part)
+            predicate = self.task._predicate_dict()[part.predicate]
+            if action.name not in self.pred_to_related_action_names[predicate]:
+                self.pred_to_related_action_names[predicate].append(action.name)
         for eff in action.effects:
-            pred = eff.literal.predicate
+            pred = eff.literal
+            if pred.negated:
+                pred = pred.negate()
             if pred not in related_predicates:
                 related_predicates.append(pred)
-                predicate = self.task._predicate_dict()[pred]
+                predicate = self.task._predicate_dict()[pred.predicate]
                 if action.name not in self.pred_to_related_action_names[predicate]:
                     self.pred_to_related_action_names[predicate].append(action.name)
 
