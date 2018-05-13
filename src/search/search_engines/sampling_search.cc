@@ -33,6 +33,8 @@ using namespace std;
 
 namespace sampling_search {
 
+const string SAMPLE_FILE_MAGIC_WORD = "# MAGIC FIRST LINE";
+
 SamplingSearch::SamplingSearch(const Options &opts)
 : SearchEngine(opts),
 search_parse_tree(prepare_search_parse_tree(opts.get_unparsed_config())),
@@ -310,6 +312,7 @@ void SamplingSearch::print_statistics() const {
 }
 
 void SamplingSearch::add_header_samples(ostream &stream) const {
+    stream << SAMPLE_FILE_MAGIC_WORD << endl;
     stream << "# Everything in a line after '#' is a comment" << endl;
     stream << "# Entry format:<Meta problem_hash=\"<HASH>\" modification_hash=\"<HASH>\" format=\"<FORMAT>\" type=\"<TYPE>\">; <CurrentState>; <GoalPredicates>; <Operator>; <OtherState>; <HeuristicViaTrajectory>; <Heuristics>*" << endl;
     stream << "# <HASH> := hash value to identify where the sample comes from" << endl;

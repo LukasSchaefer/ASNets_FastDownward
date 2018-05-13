@@ -2,7 +2,7 @@
 from .dependencies import DEPENDENCIES
 from .data import SizeBatchData, SampleBatchData
 from .message import Message
-from .misc import AbstractBaseClass
+from .misc import AbstractBaseClass, InvalidModuleImplementation
 
 # parsing related modules
 from .tree import TreeNode

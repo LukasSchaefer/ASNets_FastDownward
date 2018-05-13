@@ -55,9 +55,7 @@ void ProtobufNetwork::initialize() {
 void ProtobufNetwork::evaluate(const State& state){
     fill_input(state);
     
-    Status status = session->Run(inputs,{output_layer_name},
-    {
-    }, &outputs);
+    Status status = session->Run(inputs,{output_layer_name}, {}, &outputs);
 
 
     if (!status.ok()) {

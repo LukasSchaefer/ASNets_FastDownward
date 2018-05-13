@@ -6,6 +6,7 @@ from ..parser_tools import main_register, ArgumentException
 from ..variable import Variable
 
 import abc
+import os
 
 
 class InvalidMethodCallException(Exception):
@@ -27,6 +28,13 @@ class NetworkFormat(object):
         setattr(NetworkFormat, self.name, self)
         NetworkFormat.name2obj[self.name] = self
         NetworkFormat.suffix2obj[self.suffix] = self
+
+    def __str__(self):
+        s = self.name + "("
+        for suffix in self.suffix:
+            s += suffix + ", "
+        s = s[:-1] + ")"
+        return s
 
     @staticmethod
     def _get(name, map):
@@ -51,11 +59,8 @@ class NetworkFormat(object):
         raise KeyError("Unknown key to identify NetworkFormat: " + key)
 
 
-    def __str__(self):
-        return self.name
 
-
-NetworkFormat("Protobuf", "pb", "Protobuf Format")
+NetworkFormat("protobuf", "pb", "Protobuf Format")
 NetworkFormat("hdf5", "h5", "hdf5 format (e.g. used by Keras)")
 
 
@@ -70,21 +75,23 @@ class Network(AbstractBaseClass):
                                       ('load', True, None, str, "File to load network from"),
                                       ('store', True, None, str, "Path (w/o suffix) where to store network"),
                                       ('formats', True, None, NetworkFormat.by_any, "Single or list of formats in which to save network"),
+                                      ('out', True, '.', str, "Path to directory for network outputs"),
                                       ('variables', True, None,
                                        main_register.get_register(Variable)),
                                       ('id', True, None, str),
                                       )
 
-    def __init__(self, load=None, store=None, formats=None, variables=None, id=None):
+    def __init__(self, load=None, store=None, formats=None, out=".",
+                 variables=None, id=None):
         variables = {} if variables is None else variables
         if not isinstance(variables, dict):
             raise ArgumentException("The provided variables have to be a map. "
                                     "Please define them as {name=VARIABLE,...}.")
         self.path_load = load
         self.path_store = store
-        self.formats = [] if formats is None else formats
-        if not isinstance(self.formats, list):
-            self.formats = [self.formats]
+        self.path_out = out
+        self.formats = formats if isinstance(formats, list) else [formats]
+        self._check_store_formats()
 
         self.msgs = None
         self.variables = {} if variables is None else variables
@@ -93,24 +100,50 @@ class Network(AbstractBaseClass):
         self.initialized = False
         self.finalized = False
 
-    def initialize(self, msgs, **kwargs):
+    @abc.abstractmethod
+    def _get_default_network_format(self):
+        pass
+
+    @abc.abstractmethod
+    def _get_store_formats(self):
+        pass
+
+    @abc.abstractmethod
+    def _get_load_formats(self):
+        pass
+
+    def initialize(self, msgs, *args, **kwargs):
         """
         Build network object and prepare
         :param msgs: Message object for communication between objects (if given)
         :return:
         """
-        self.msgs = msgs
-        if not self.initialized:
-            self._initialize(**kwargs)
-            self.initialized = True
-        else:
+        if self.initialized:
             raise InvalidMethodCallException("Multiple initializations of"
                                              "network.")
+        self.msgs = msgs
 
+        self._initialize_general(*args, **kwargs)
+        if self.path_load is not None:
+            self.load(**kwargs)
+        else:
+            self._initialize_model(*args, **kwargs)
 
-    def finalize(self):
+        self.initialized = True
+
+    @abc.abstractmethod
+    def _initialize_general(self, *args, **kwargs):
+        """Initialization code except for the model initialization"""
+        pass
+
+    @abc.abstractmethod
+    def _initialize_model(self, *args, **kwargs):
+        """Initialization of the network model (if it is not loaded!)"""
+        pass
+
+    def finalize(self, *args, **kwargs):
         if not self.finalized:
-            self._finalize()
+            self._finalize(*args, **kwargs)
             if self.path_store is not None:
                 self.store()
             self.finalized = True
@@ -118,24 +151,71 @@ class Network(AbstractBaseClass):
             raise InvalidMethodCallException("Multiple finalization calls of"
                                              "network.")
 
+    @abc.abstractmethod
+    def _finalize(self):
+        pass
+
+    def load(self, path=None, format=None, **kwargs):
+        """
+        Load network from a file
+        :param path: If given, file to load network from, else the path given
+                     at construction time is used. If this is also not given,
+                     a ValueError is raised.
+        :param format: Network format of the file to load. If not given, it is
+                       infered from the files suffix if possible.
+        :return:
+        """
+        path = self.path_load if path is None else path
+        if path is None:
+            raise ValueError("No path defined for loading of a network")
+        if not os.path.exists(path):
+            raise ValueError("File does not exists to load network form:"
+                             + str(path))
+        if format is None:
+            suffix = os.path.splitext(path)[1][1:]
+            format = NetworkFormat.by_suffix(suffix)
+        if format not in self._get_load_formats():
+            raise ValueError("The network file to load is not of a format"
+                             " supported for loading: " + str(format))
+        self._load(path, format, **kwargs)
+
+    @abc.abstractmethod
+    def _load(self, path, format, *args, **kwargs):
+        pass
+
     def store(self, path=None, formats=None):
         """
         Stores the network in the specified formats.
-        :param path: Path without suffix where to store the network
-        :param formats: List of NetworkFormats in which to store the network.
-                        If None is given, then the default format (the same
-                        format which would be used for loading) is used for
-                        storing.
+        :param path: Path without suffix where to store the network. If None,
+                     the path given at construction is used. If even this is
+                     None, the output directory defined at construction is
+                     used and if this is none './network' is used.
+        :param formats: Iterable of NetworkFormats in which to store the network.
+                        If None is given, then the formats given at construction
+                        are used. If None were given there, then the default
+                        format is used.
         :return:
         """
         path = self.path_store if path is None else path
-        formats = self.formats if self.formats is None else formats
-        if self.path_store is not None:
+        path = os.path.join("." if self.path_out is None else self.path_out, "network") if path is None else path
+        formats = self.formats if formats is None else self.formats
+        self._check_store_formats(formats)
+        if self._model is not None:
             self._store(path, formats)
+        else:
+            raise ValueError("Uninitialized model cannot be saved!")
 
     @abc.abstractmethod
-    def _initialize(self, **kwargs):
+    def _store(self, path, formats):
         pass
+
+    def _check_store_formats(self, formats=None):
+        formats = self.formats if formats is None else formats
+        sf = self._get_store_formats()
+        for f in formats:
+            if not (f is None or f in sf):
+                raise ValueError("The network does not support storing "
+                                 "a desired format: " + str(f))
 
     @abc.abstractmethod
     def train(self, data):
@@ -155,21 +235,25 @@ class Network(AbstractBaseClass):
         """
         pass
 
-    @abc.abstractmethod
-    def _finalize(self):
-        pass
-
-    @abc.abstractmethod
-    def _store(self, path, formats):
+    def analyse(self, directory=None):
         """
-        Please notice _store can be used before the network is finalized and
-        after. The intension is that if the network is not finalized, then
-        _store shall behave as storing intermedate values (or none, if this
-        is not desired) and if the network is finalized, then _store shall do
-        the final storing of the network.
+        Analyse the network performance.
+        This functionality is optional and not every networks supports it.
+        :param directory: Path to directory for storing the analysis results.
+                          If None is given, the output directory given at
+                          construction time is used. If this is also None,
+                          the current working directory is used.
         :return:
         """
+        directory = self.path_out if directory is None else directory
+        directory = "." if directory is None else directory
+        self._analyse(directory)
+
+    def _analyse(self, directory):
         pass
+
+
+
 
     @staticmethod
     def parse(tree, item_cache):

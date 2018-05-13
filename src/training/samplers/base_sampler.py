@@ -59,19 +59,19 @@ class Sampler(AbstractBaseClass):
             raise InvalidMethodCallException("Multiple initializations of"
                                              "sampler.")
 
-    def _call_bridge_sample(self, problem):
+    def _call_bridge_sample(self, problem, **kwargs):
         datas = []
         for sb in self.sbridges:
-            datas.append(sb.sample(problem))
+            datas.append(sb.sample(problem, **kwargs))
         return datas
 
-    def sample(self):
+    def sample(self, **kwargs):
         if not self.initialized:
             raise InvalidMethodCallException("Cannot call sample without "
                                              "initializing the sampler.")
         if self.var_sample_calls is not None:
             self.var_sample_calls.value += 1
-        datas = self._sample()
+        datas = self._sample(**kwargs)
         i = len(datas) - 1
         while i >= 0:
             if datas[i] is None or datas[i].empty():
@@ -99,7 +99,7 @@ class Sampler(AbstractBaseClass):
         pass
 
     @abc.abstractmethod
-    def _sample(self, sbridge):
+    def _sample(self, **kwargs):
         pass
 
     @abc.abstractmethod

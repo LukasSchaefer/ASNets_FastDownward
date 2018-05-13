@@ -12,13 +12,29 @@ class SizeBatchData(object):
     and Theano do not allow to receive batches of data where the data is of
     different dimensions within a batch)
     """
-    def __init__(self, nb_fields, field_descriptions=None, meta=None):
+    def __init__(self, nb_fields, field_descriptions=None, meta=None, pruning=None):
+        """
 
+        :param nb_fields:
+        :param field_descriptions:
+        :param meta:
+        :param pruning: None means no pruning otherwise callable has to be
+                        provided which is used to convert the entries in a
+                        hashable format which is then used for duplicate
+                        checking. The callable should convert two samples to
+                        the same value if and only if they are the same for
+                        you and any of them could be pruned as duplicate
+        """
         self.nb_fields = nb_fields
         self.field_descriptions = [] if field_descriptions is None else field_descriptions
+        for i in range(len(self.field_descriptions), self.nb_fields):
+            self.field_descriptions.append(None)
+
         self.data = {}
         self.batches = {}
         self.meta = {} if meta is None else meta
+        self.pruning = pruning
+        self.pruning_set = set()
 
         self.is_finalized = False
 
@@ -63,6 +79,14 @@ class SizeBatchData(object):
         if len(entry) > self.nb_fields:
             entry = entry[:self.nb_fields]
 
+        if self.pruning is not None:
+            repr_entry = self.pruning(entry)
+            if repr_entry in self.pruning_set:
+                return
+            else:
+                self.pruning_set.add(repr_entry)
+
+
         # Get sizes for correct batch
         key = [type]
         for i in range(self.nb_fields):
@@ -92,6 +116,9 @@ class SizeBatchData(object):
         count.c = 0
         self._over_all(count)
         return count.c
+
+    def __len__(self):
+        return self.size()
 
     def set_meta(self, name, value):
         self.meta[name] = value
@@ -123,8 +150,8 @@ class SampleBatchData(SizeBatchData):
                  field_current_state=None, field_goal_state=None,
                  field_other_state=None,
                  field_action=None, field_heuristic=None,
-                 file=None):
-        SizeBatchData.__init__(self, nb_fields, field_descriptions)
+                 file=None, pruning=False):
+        SizeBatchData.__init__(self, nb_fields, field_descriptions, pruning=pruning)
         self.field_current_state = field_current_state
         self.field_goal_state = field_goal_state
         self.field_other_state = field_other_state

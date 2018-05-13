@@ -1,17 +1,41 @@
 import keras
 import math
 import numpy as np
+import random
 
 
 class KerasDataGenerator(keras.utils.Sequence):
     'Generates data for Keras'
-    def __init__(self, data, y_fields=None, x_fields=None, types=["O"], batch_size=100,
-                 x_converter=None, y_converter=None, y_remember=None):
+    def __init__(self, data, x_fields=None, y_fields=None, types=["O"], batch_size=100,
+                 x_converter=None, y_converter=None, y_remember=None,
+                 shuffle=True, count_diff_samples=False):
+        """
 
-        self.data = data
+        :param data: Single or list of SizeBatchData object(s)
+        :param x_fields: Fields in SizeBatchData entries to use as x data
+                         if not given, uses all fields which are not used
+                         for y values
+        :param y_fields: fields in SizeBatchData entries to use as y data
+                         if not given, uses the last field as y value
+        :param types: types from the SizeBatchData to use
+        :param batch_size:
+        :param x_converter:
+        :param y_converter:
+        :param y_remember: List object. If given, all y values for which data
+                           was generated is appended (in the batches they
+                           are generated, thus, at the end this is a list of
+                           numpy arrays)(any object with an
+                           append method can be used). Example use case is, if
+                           a network evaluation only returns predications, but
+                           not the original values
+        :param shuffle: shuffle data after each epoche
+        :param count_diff_samples:
+        """
+        self.data = data if isinstance(data, list) else [data]
         self.y_fields = (data[0].nb_fields - 1) if y_fields is None else y_fields
         self.x_fields = x_fields
         if self.x_fields is None:
+            # Used to test if integer in y_fields
             y_tester = lambda x: x in self.y_fields
             try:
                 y_tester(3)
@@ -46,6 +70,10 @@ class KerasDataGenerator(keras.utils.Sequence):
                                                      start, start + step))
                         start += step
         self._next = -1
+
+        self.shuffle = shuffle
+        self.count_diff_samples = count_diff_samples
+        self.generated_samples = set()
 
         """
         self.precaching = precaching
@@ -85,12 +113,16 @@ class KerasDataGenerator(keras.utils.Sequence):
     def __getitem__(self, index):
         'Generate one batch of data'
         index = self.batch_order[index]
-
         entries = self.data[index[0]].data[index[1]][index[2]][index[3]:index[4]]
         x = entries[:, self.x_fields]
+        y = entries[:, self.y_fields]
+
+        if self.count_diff_samples:
+            # TODO IMPROVE
+            self.generated_samples.add(str([x, y]))
+
         if self.x_converter is not None:
             x = self.x_converter(x)
-        y = entries[:, self.y_fields]
         if self.y_converter is not None:
             y = self.y_converter(y)
         if self.y_remember is not None:
@@ -99,8 +131,14 @@ class KerasDataGenerator(keras.utils.Sequence):
 
     def on_epoch_end(self):
         'Updates indexes after each epoch'
-        # TODO SHUFFLE
-        pass
+        self.count_diff_samples = False
+        if self.shuffle:
+            for ds in self.data:
+                for type in self.types:
+                    for batch in ds.data[type]:
+                        np.random.shuffle(batch)
+            random.shuffle(self.batch_order)
+
 
     def __data_generation(self, list_IDs_temp):
         'Generates data containing batch_size samples' # X : (n_samples, *dim, n_channels)

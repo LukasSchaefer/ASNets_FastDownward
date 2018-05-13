@@ -1,5 +1,5 @@
 from .. import DEPENDENCIES
-from .base_network import Network, nregister
+from .base_network import Network, nregister, NetworkFormat
 
 
 named_networks = {}

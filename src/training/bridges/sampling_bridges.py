@@ -1,3 +1,5 @@
+from __future__ import print_function
+
 from . import SamplerBridge
 
 from .. import main_register
@@ -16,11 +18,11 @@ import random
 import sys
 
 # Python 2/3 compatibility
-gzip_input_converter = lambda x: x.encode()
-gzip_output_converter = lambda x: x.decode()
+gzip_write_converter = lambda x: x.encode()
+gzip_read_converter = lambda x: x.decode()
 if sys.version_info[0] == 2:
-    gzip_input_converter = lambda x: x
-    gzip_output_converter = lambda x: x
+    gzip_write_converter = lambda x: x
+    gzip_read_converter = lambda x: x
 
 try:
     FileNotFoundError
@@ -133,12 +135,27 @@ StateFormat("Objects", "Adds of the problem to the meta tag and then provides"
                         "only the present grounded predicates.")
 
 
-def extract_from_meta(meta, key):
+def split_meta(line):
+    line = line.strip()
+    if not line.startswith("<"):
+        return None, line
+    else:
+        meta_end = line.find(">")
+        if meta_end == -1:
+            raise DataCorruptedError("Entry has an opening, but not"
+                                     "closing tag: " + line)
+        return line[: meta_end + 1], line[meta_end + 1:]
+
+
+def extract_from_meta(meta, key, default=None, converter=None):
+    if meta is None:
+        return default, None, None
+
     if not meta[0] == "<":
         raise ValueError("Given meta is no meta tag: " + meta)
     idx = meta.find(key + "=")
     if idx == -1:
-        return None, None, None
+        return default, None, None
     else:
         start_idx = idx + len(key) + 1
         end_idx = None
@@ -157,26 +174,77 @@ def extract_from_meta(meta, key):
                         "description: " + meta)
 
         value = meta[start_idx:end_idx]
-        return value, start_idx, end_idx
+        return ((value if converter is None else converter(value)),
+                start_idx, end_idx)
 
 
-def extract_and_replace_from_meta(meta, key, default, new_format=None):
-    value, start_idx, end_idx = extract_from_meta(meta, key)
+def extract_and_replace_from_meta(meta, key, default=None, new_value=None,
+                                  str2val=None):
+    if meta is None:
+        meta = "<Meta>"
+    value, start_idx, end_idx = extract_from_meta(meta, key, converter=str2val)
     if value is None:
         if default is None:
             raise ValueError("Unable to determine value for key " + str(key))
         else:
-            value = str(default)
+            value = default
             start_idx = meta.find(">")
             if start_idx == -1:
                 raise ValueError("No valid meta tag")
             end_idx = start_idx
-            if new_format is not None:
-                new_format = " " + str(key) + "=\"" + str(new_format) + "\""
+            if new_value is not None:
+                new_value = " " + str(key) + "=\"" + str(new_value) + "\""
 
-    if new_format is not None:
-        meta = meta[:start_idx] + str(new_format) + meta[end_idx :]
+    if new_value is not None:
+        meta = meta[:start_idx] + str(new_value) + meta[end_idx :]
     return value, meta
+
+
+def load_sample_line(line, data_container, format, pddl_task, sas_task, pruning_set=None, default_format=None):
+    line = line.strip()
+    if line.startswith("#") or line == "":
+        return None, None, None
+
+    meta, data = split_meta(line)
+    if meta is None and default_format is None:
+        raise ValueError("Missing meta tag. Cannot infer state format.")
+
+    entry_type, _, _ = extract_from_meta(meta, "type")
+    entry_format, meta = extract_and_replace_from_meta(
+        meta, "format", default=default_format, new_value=format.name,
+        str2val=StateFormat.get)
+
+    if pruning_set is not None:
+        h_data = hash((entry_type, data))
+        if h_data in pruning_set:
+            return None, None, None
+        else:
+            pruning_set.add(h_data)
+
+    if entry_format is None:
+        raise ValueError("Unable to determine input format of data "
+                         "set entry: " + line)
+    if data is None or data == "":
+        raise DataCorruptedError("Invalid data set entry: " + line)
+    data = [x.strip() for x in data.split(";")]
+    if len(data) < 5:
+        raise DataCorruptedError("Too few fields in data entry: "
+                                 + str(len(data)))
+
+    # Main state, goal state, other state
+    idxs_states = [0, 1, 3]
+
+    for idx_state in idxs_states:
+        data[idx_state] = convert_from_X_to_Y(
+            data[idx_state], entry_format, format,
+            pddl_task, sas_task)
+
+    entry = meta + ";".join(data) + "\n"
+    if data_container is not None:
+        data[4] = int(data[4])
+        data_container.add(data, type=entry_type)
+    return entry, meta, data
+
 
 def parse_state_present_atoms(state, as_string=False):
     """
@@ -264,36 +332,53 @@ def convert_from_X_to_Y(state, in_format, out_format,
                                   "are not supported.")
 
 
-def convert_data_entries(format, compress, prune, data_container,
-                         path_final_samples, path_tmp_samples,
-                         append=False,
-                         path_problem=None, path_domain=None,
-                         pddl_task=None, sas_task=None,
-                         input_formats=None, default_format=None):
 
+def load_and_convert_data(path_read, format, default_format=None, prune=True,
+                          path_problem=None, path_domain=None,
+                          pddl_task=None, sas_task=None,
+                          data_container=None,
+                          path_write=None, compress=True, append=False, delete=False,
+                          skip_magic_word_check=False):
     """
 
-    :param format:
-    :param compress:
-    :param path_final_samples: Path where to store the samples
-    :param path_tmp_samples: Path where to intermediate samples (before conversion)
-    :param append: True => Append samples to final file,
-                   False => Override final file
-    :param path_problem:
-    :param path_domain:
-    :param pddl_task:
-    :param sas_task:
-    :param input_format: not binding hin list on which formats the data entries
-                         are. This hint is used to check if all necessary data
-                         is there. If an format is encountered which was not
-                         hinted, it tries to convert them, but might fail if
-                         the necessary additional information (e.g. pddl_task
-                         object) is not obtainable). TODO IMPLEMENT CHECKS
-    :param default_format: if the format field is missing for an entry, this
-                           value will be used.
+    :param path_read: Path to the file containing the samples to load
+    :param format: StateFormat into which to convert the samples
+    :param default_format: Input format of the loading samples
+                           (if not specified within sample entry)
+    :param prune: If true prunes duplicate entries (the meta information is
+                  except for the type attribute ignored)
+    :param path_problem: Path to the problem description to which the samples
+                         belong. For converting the samples, the problem has to
+                         be known. Provide at least one of the following
+                         parameter settings:
+                         - pddl_task and sas_task
+                         - path_problem and path_domain
+                         - path_problem and path_domain can be automatically
+                           detected
+                        If multiple settings are given, the first available one
+                        of this list is used.
+    :param path_domain: Path to the domain description of the problem
+                        (for interactions of this parameter see path_problem)
+    :param pddl_task: PDDL Task object of the problem
+                     (for interactions of this parameter see path_problem)
+    :param sas_task: SAS Task object of the problem
+                     (for interactions of this parameter see path_problem)
+    :param data_container: Data gathering object for the loaded entries. Object
+                           requires an add(entry, type) method
+                           (e.g. SizeBatchData). If None is given, the adding
+                           is skipped.
+    :param path_write: Path to the file where to store the converted
+                           samples. If None is given, the samples are not
+                           stored in a file.
+    :param compress: Stores the samples in a gzip compressed archive
+    :param append: Appends the samples to an already existing file
+    :param delete: Deletes path_input at the end of this method
+    :param skip_magic_word_check: Deprecated. Use this to read old sample files.
+                                  The outcome when reading a file with a wrong
+                                  reading technique (e.g. compressed file via
+                                  open) is undetermined.
     :return:
     """
-
     if pddl_task is None or sas_task is None:
         if path_problem is None:
             raise ValueError("Missing needed arguments. Either provide pddl"
@@ -303,136 +388,68 @@ def convert_data_entries(format, compress, prune, data_container,
         if path_domain is None:
             path_domain = parser.find_domain(path_problem)
 
-        (pddl_task, sas_task) = translate.translator.main([path_domain, path_problem, "--no-sas-file", "--log-verbosity", "ERROR"])
+        (pddl_task, sas_task) = translate.translator.main(
+            [path_domain, path_problem,
+             "--no-sas-file", "--log-verbosity", "ERROR"])
 
-    outopen = gzip.open if compress else open
-    outopen = DummyContext if path_final_samples is None else outopen
+    write_open = gzip.open if compress else open
+    write_open = DummyContext if path_write is None else write_open
     write_mode = ("a" if append else "w") + ("b" if compress else "")
+    write_conv = gzip_write_converter if compress else lambda x: x
 
-    old_hashs = set()
-    with open(path_tmp_samples, 'r') as source:
-        with outopen(path_final_samples, write_mode) as target:
-            target.write(gzip_input_converter(MAGIC_WORD) if compress else MAGIC_WORD)
+    old_hashs = set() if prune else None
+    read_format_found=False
+    read_techniques = [(open, lambda x: x), (gzip.open, gzip_read_converter)]
 
-            # Process line after line
-            for line in source:
-                line = line.strip()
-                if line.startswith("#"):
-                    continue
+    for (read_open, read_conv) in read_techniques:
+        try:
+            with read_open(path_read, "r") as src:
+                with write_open(path_write, write_mode) as trg:
 
-                if prune:
-                    h_line = hash(line)
-                    if h_line in old_hashs:
-                        continue
-                    else:
-                        old_hashs.add(h_line)
+                    first = False if skip_magic_word_check else True
+                    for line in src:
+                        line = read_conv(line)
 
-                data = None
-                meta = None
-                new_meta = None
-                entry_format = default_format
-                entry_type = None
-                if line.startswith("<"):
-                    meta_end = line.find(">")
-                    if meta_end == -1:
-                        raise DataCorruptedError("Entry has an opening, but not"
-                                                 "closing tag: " + line)
-                    meta = line[: meta_end + 1]
-                    data = line[meta_end + 1:]
+                        if first:
+                            first = False
+                            read_format_found = line == MAGIC_WORD
+                            if read_format_found:
+                                trg.write(write_conv(MAGIC_WORD))
+                            else:
+                                break
 
-                    entry_type, _, _ = extract_from_meta(meta, "type")
-                    entry_format, new_meta = extract_and_replace_from_meta(meta,
-                        "format",
-                        None if default_format is None else default_format.name,
-                        format.name)
-                    entry_format = StateFormat.get(entry_format)
+                        else:
+                            entry, _, _ = load_sample_line(
+                                line, data_container, format,
+                                pddl_task, sas_task, old_hashs, default_format)
+                            if entry is not None:
+                                trg.write(write_conv(entry))
 
-                else:
-                    new_meta = "<Meta format=\"" + format.name + "\">"
+                    # The first reading now throwing an exception is accepted
+                    if skip_magic_word_check:
+                        read_format_found = True
+                    if delete:
+                        os.remove(path_read)
+                    if read_format_found:
+                        break
 
-                if entry_format is None:
-                    raise ValueError("Unable to determine input format of data "
-                                     "set entry: " + line)
-                if data is None or data == "":
-                    raise DataCorruptedError("Invalid data set entry: " + line)
-                data = [x.strip() for x in data.split(";")]
-                if len(data) < 5:
-                    raise DataCorruptedError("Too few fields in data entry: "
-                                             + str(len(data)))
+        except UnicodeDecodeError:
+            pass
+    if not read_format_found:
+        raise ValueError("the given file could not be correctly opened with one "
+                         "of the known techniques.")
 
 
-                # Main state, goal state, other state
-                idxs_states = [0, 1, 3]
-
-                for idx_state in idxs_states:
-                    data[idx_state] = convert_from_X_to_Y(
-                        data[idx_state], entry_format, format,
-                        pddl_task, sas_task)
-                entry = new_meta + ";".join(data) + "\n"
-                if compress:
-                    entry = gzip_input_converter(entry)
-                target.write(entry)
-
-                if data_container is not None:
-                    data[4] = int(data[4])
-                    data_container.add(data, type=entry_type)
-
-    os.remove(path_tmp_samples)
-
-
-def load_sample_line(line, data_container, format, pddl_task, sas_task):
-    line = line.strip()
-    if line.startswith("#") or line == "":
-        return
-
-    data = None
-    meta = None
-    new_meta = None
-
-    entry_type = None
-    entry_format = None
-    if line.startswith("<"):
-        meta_end = line.find(">")
-        if meta_end == -1:
-            raise DataCorruptedError("Entry has an opening, but not"
-                                     "closing tag: " + line)
-        meta = line[: meta_end + 1]
-        data = line[meta_end + 1:]
-
-        entry_type, _, _ = extract_from_meta(meta, "type")
-        entry_format, _, _ = extract_from_meta(meta, "format")
-        entry_format = StateFormat.get(entry_format)
-
-    else:
-        raise ValueError("Missing meta tag. Cannot infer state format.")
-
-    if data is None or data == "":
-        raise DataCorruptedError("Invalid data set entry: " + line)
-
-    data = [x.strip() for x in data.split(";")]
-    if len(data) < 5:
-        raise DataCorruptedError("Too few fields in data entry: "
-                                 + str(len(data)))
-
-    # Main state, goal state, other state
-    idxs_states = [0, 1, 3]
-
-    for idx_state in idxs_states:
-        data[idx_state] = convert_from_X_to_Y(
-            data[idx_state], entry_format, format,
-            pddl_task, sas_task)
-    data[4] = int(data[4])
-    data_container.add(data, type=entry_type)
-
-
-def load_sample_file(path, data_container, format, path_problem):
+"""
+def load_sample_file(path, data_container, format, path_problem, prune):
     path_domain = parser.find_domain(path_problem)
     (pddl_task, sas_task) = translate.translator.main(
         [path_domain, path_problem, "--no-sas-file", "--log-verbosity",
          "ERROR"])
 
+    old_hashs = set() if prune else None
     right = False
-    techniques = [(open, lambda x: x), (gzip.open, gzip_output_converter)]
+    techniques = [(open, lambda x: x), (gzip.open, gzip_read_converter)]
     for (read, conv) in techniques:
         try:
             with read(path, "r") as src:
@@ -445,7 +462,7 @@ def load_sample_file(path, data_container, format, path_problem):
                         if not right:
                             break
                     else:
-                        load_sample_line(line, data_container, format, pddl_task, sas_task)
+                        load_sample_line(line, data_container, format, pddl_task, sas_task, old_hashs)
                 if right:
                     break
         except UnicodeDecodeError:
@@ -455,27 +472,29 @@ def load_sample_file(path, data_container, format, path_problem):
                          "of the known techniques.")
     print("LOADED", path)
 
-def TMP_load_sample_file(path, data_container, format, path_problem):
+def TMP_load_sample_file(path, data_container, format, path_problem, prune):
     print("Loading", path)
     path_domain = parser.find_domain(path_problem)
     (pddl_task, sas_task) = translate.translator.main(
         [path_domain, path_problem, "--no-sas-file", "--log-verbosity",
          "ERROR"])
 
+    old_hashs = set() if prune else None
+
     right = False
-    techniques = [(gzip.open, gzip_output_converter)]
+    techniques = [(gzip.open, gzip_read_converter)]
     for (read, conv) in techniques:
         try:
             with read(path, "r") as src:
                 for line in src:
                     line = conv(line)
-                    load_sample_line(line, data_container, format, pddl_task, sas_task)
+                    load_sample_line(line, data_container, format, pddl_task, sas_task, old_hashs)
                 if right:
                     break
         except UnicodeDecodeError:
             pass
     print("LOADED", path)
-
+"""
 
 """######################### LoadSampleBride ################################"""
 
@@ -486,45 +505,58 @@ class LoadSampleBridge(SamplerBridge):
         ("format", True, StateFormat.FD, StateFormat.get,
          "Format to represent the sampled state"),
         ("prune", True, True, parser.convert_bool, "Prune duplicate samples"),
-        ("skip", True, True, parser.convert_bool, "Skip problem if no samples exists, else raise error"),
+        ("skip", True, True, parser.convert_bool,"Skip problem if no samples exists, else raise error"),
+        ("skip_magic", True, False, parser.convert_bool,
+         "Skip magic word check (no guarantees on opening the files with the"
+         " right tool (DEPRECATED)"),
+        ("provide", True, False, parser.convert_bool),
         order=["format", "prune", "skip",
              "tmp_dir", "target_file",
-             "target_dir", "append", "reuse", "domain",
-             "makedir",
+             "target_dir", "append", "provide", "reuse", "domain",
+             "makedir", "skip_magic",
              "environment", "id"]
 )
 
     def __init__(self, format=StateFormat.FD, prune=True, skip=True,
                  tmp_dir=None, target_file=None, target_dir=None,
-                 append=False, reuse=False, domain=None,
-                 makedir=False, environment=None, id=None):
+                 append=False, provide=False, reuse=False, domain=None,
+                 makedir=False, skip_magic=False, environment=None, id=None):
         SamplerBridge.__init__(self, tmp_dir, target_file, target_dir,
-                               append, reuse, domain, makedir, environment, id)
+                               append, provide, reuse, domain, makedir, environment, id)
 
         self._format = format
         self._prune = prune
         self._skip = skip
+        self._skip_magic = skip_magic
+        if self._provide:
+            print("The 'provide' parameter has no effect on the LoadSampleBride.", file=sys.stderr)
 
     def _initialize(self):
         pass
 
 
     def _sample(self, path_problem, path_samples, path_dir_tmp, path_domain,
-                append):
+                append, data_container):
 
-
-        data = SampleBatchData(5, [self._format, self._format, str,
-                                    self._format, int], 0, 1, 3, 2, 4,
-                               path_problem)
+        data_container = (SampleBatchData(5, [self._format, self._format, str,
+                                              self._format, int], 0, 1, 3, 2, 4,
+                                          path_problem,
+                                          pruning=(str if self._prune else None))
+                          if data_container is None else data_container)
 
         if not os.path.exists(path_samples):
             if self._skip:
-                return data
+                return data_container
             else:
                 raise FileNotFoundError("Requested sample files does not exist:"
                                         + str(path_samples))
-        TMP_load_sample_file(path_samples, data, self._format, path_problem)
-        return data
+        load_and_convert_data(
+            path_read=path_samples, format=self._format, prune=self._prune,
+            path_problem=path_problem, path_domain=path_domain,
+            data_container=data_container,
+            skip_magic_word_check=self._skip_magic)
+
+        return data_container
 
 
     def _finalize(self):
@@ -539,9 +571,9 @@ class LoadSampleBridge(SamplerBridge):
 main_register.append_register(LoadSampleBridge, "loadbridge")
 
 
-
-
 """#################### FastDownwardSamplerBridge ###########################"""
+
+
 class FastDownwardSamplerBridge(SamplerBridge):
     arguments = parset.ClassArguments('FastDownwardSamplerBridge',
         SamplerBridge.arguments,
@@ -551,34 +583,30 @@ class FastDownwardSamplerBridge(SamplerBridge):
         ("build", True, "debug64dynamic", str, "Build of Fast-Downward to use"),
         ("fd_path", True, "None", str, "Path to the fast-downward.py script"),
         ("prune", True, True, parser.convert_bool, "Prune duplicate samples"),
-        ("provide", True, True, parser.convert_bool,
-        "Pass the sampled data in a SampleBatchData object to the invoking"
-        "context"),
         ("store", True, True, parser.convert_bool, "Store the samples in on disk"),
         ("compress", True, True, parser.convert_bool, "Store the files compressed"),
 
         order=["search", "format", "build",
              "tmp_dir", "target_file",
-             "target_dir", "append", "reuse", "domain",
-             "makedir", "fd_path", "prune", "provide", "store",
+             "target_dir", "append", "provide", "reuse", "domain",
+             "makedir", "fd_path", "prune", "store",
              "compress",
              "environment", "id"]
 )
 
     def __init__(self, search, format=StateFormat.FD, build="debug64dynamic",
                  tmp_dir=None, target_file=None, target_dir=None,
-                 append=False, reuse=False, domain=None,
+                 append=False, provide=True, reuse=False, domain=None,
                  makedir=False, fd_path=None, prune=True,
-                 provide=True, store=True, compress=True,
+                 store=True, compress=True,
                  environment=None, id=None):
         SamplerBridge.__init__(self, tmp_dir, target_file, target_dir,
-                               append, reuse, domain, makedir, environment, id)
+                               append, provide, reuse, domain, makedir, environment, id)
 
         self._search = search
         self._format = format
         self._build = build
         self._prune = prune
-        self._provide = provide
         self._store = store
         self._compress = compress
 
@@ -599,16 +627,18 @@ class FastDownwardSamplerBridge(SamplerBridge):
 
 
     def _sample(self, path_problem, path_samples, path_dir_tmp, path_domain,
-                append):
+                append, data_container):
         path_tmp_samples = os.path.join(path_dir_tmp,
                                         os.path.basename(path_problem)
                                         + "." + str(random.randint(0,9999))
                                         + ".tmp")
 
-        data = (SampleBatchData(5, [self._format, self._format, str,
-                                    self._format, int], 0, 1, 3, 2, 4,
-                                path_problem)
-                if self._provide else None)
+        data_container = (SampleBatchData(5, [self._format, self._format, str,
+                                              self._format, int], 0, 1, 3, 2, 4,
+                                          path_problem,
+                                          pruning=(str if self._prune else None))
+
+                          if data_container is None else data_container)
 
         if not self._reuse or not os.path.exists(path_samples):
             path_samples = path_samples if self._store else None
@@ -626,16 +656,23 @@ class FastDownwardSamplerBridge(SamplerBridge):
             #self._environment.queue_push(spt)
             #event.wait()
             spt.run()
-            convert_data_entries(self._format, self._compress, self._prune,
-                                 data,
-                                 path_samples, path_tmp_samples,
-                                 append, path_problem)
+            load_and_convert_data(
+                path_read=path_tmp_samples,
+                format=self._format, prune=self._prune,
+                path_problem=path_problem, path_domain=path_domain,
+                data_container=data_container,
+                path_write=path_samples, compress=self._compress, append=append,
+                delete=True)
 
         else:
             if self._provide:
-                load_sample_file(path_samples, data, self._format, path_problem)
+                load_and_convert_data(
+                    path_read=path_samples,
+                    format=self._format, prune=self._prune,
+                    path_problem=path_problem, path_domain=path_domain,
+                    data_container=data_container)
 
-        return data
+        return data_container
 
 
     def _finalize(self):
