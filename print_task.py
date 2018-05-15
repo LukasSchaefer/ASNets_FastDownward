@@ -35,6 +35,16 @@ def print_propositional_actions(task_meta):
         print("")
     print("\n")
 
+
+def assert_correct_len_relatedness_of_propositional_actions(task_meta):
+    for action in task_meta.task.actions:
+        number_of_related_predicates = len(task_meta.action_to_related_pred_names[action.name])
+        for prop_act in task_meta.action_name_to_prop_actions[action.name]:
+            assert len(task_meta.prop_action_to_related_gr_pred_names[prop_act]) == number_of_related_predicates,\
+                    "Number of related propositions of %s does not match the one of its underlying action\
+                     schema %s" % (prop_act.name, action.name)
+
+
 def print_predicates(task_meta):
     print("Predicates:")
     for pred in task_meta.task.predicates:
@@ -86,11 +96,12 @@ def main(argv):
         pddl_task.simplify(fluent_predicates)
         
         task_meta = ProblemMeta(pddl_task, propositional_actions, grounded_predicates)
+        assert_correct_len_relatedness_of_propositional_actions
 
         print_propositional_actions(task_meta)
         print_grounded_predicates(task_meta)
 
-        print_predicates(task_meta)
+        # print_predicates(task_meta)
         # print_actions(task_meta)
     
 
