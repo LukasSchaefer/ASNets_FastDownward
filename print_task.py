@@ -17,10 +17,11 @@ def print_grounded_predicates(task_meta):
     for prop in task_meta.grounded_predicates:
         prop.dump()
         print("ID: %d" % task_meta.grounded_predicate_name_to_id[prop.__str__()])
-        print("Related Actions: %d" % len(task_meta.gr_pred_to_related_prop_action_names[prop]))
-        for action in task_meta.gr_pred_to_related_prop_action_names[prop]:
-            print(action)
-        print("Related Action Ids: %s" % str(task_meta.get_related_propositional_action_ids(prop)))
+        action_name_lists = task_meta.gr_pred_to_related_prop_action_names[prop]
+        print("Related Actions: %d" % sum([len(name_list) for name_list in action_name_lists]))
+        for action_name_list in action_name_lists:
+            print(action_name_list)
+        print("Related Action Ids: %s" % str(task_meta.gr_pred_to_related_prop_action_ids[prop]))
         print("")
     print("\n")
 
@@ -31,7 +32,7 @@ def print_propositional_actions(task_meta):
         action.dump()
         print("ID: %d" % task_meta.prop_action_name_to_id[action.name])
         print(task_meta.prop_action_to_related_gr_pred_names[action])
-        print("Related Proposition Ids: %s" % str(task_meta.get_related_grounded_predicate_ids(action)))
+        print("Related Proposition Ids: %s" % str(task_meta.prop_action_to_related_gr_pred_ids[action]))
         print("")
     print("\n")
 

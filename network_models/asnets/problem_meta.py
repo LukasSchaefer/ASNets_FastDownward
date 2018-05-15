@@ -37,15 +37,18 @@ class ProblemMeta:
         self.predicate_name_to_grounded_predicates = \
                 self.__compute_pred_to_groundings_dict() 
 
-        # computes relations between propositional actions and grounded predicates and sets
-        # gr_pred_to_related_prop_action_names {gr_pred: [prop_action.name, ...]} and
-        # prop_action_to_related_gr_pred_names {prop_action: [gr_pred.name, ...]} accordingly
-        self.__compute_and_set_relations_between_groundings()
-
         # computes relations between abstract actions and predicates and sets
         # pred_to_related_action_names {pred: [action.name, ...]} and
         # action_to_related_pred_names {action: [pred.name, ...]} accordingly
         self.__compute_and_set_relations_between_abstracts()
+
+        # computes relations between propositional actions and grounded predicates
+        # gr_pred_to_related_prop_action_names {gr_pred: [prop_action.name, ...]} and
+        # prop_action_to_related_gr_pred_names {prop_action: [gr_pred.name, ...]} accordingly
+        # same fore ..._ids with ids replacing names
+        self.gr_pred_to_related_prop_action_names, self.gr_pred_to_related_prop_action_ids, \
+        self.prop_action_to_related_gr_pred_names, self.prop_action_to_related_gr_pred_ids =\
+            self.__compute_relations_between_groundings()
         
 
     def __compute_propositional_action_name_to_id_dict(self):
@@ -129,114 +132,149 @@ class ProblemMeta:
         return predicate_name_to_propositions
 
 
-    def __compute_and_set_relations_between_groundings(self):
+    def __compute_relations_between_groundings(self):
         """
         Computes relations among grounded propositional actions and predicates
         (action and prop are related iff prop appears in pre, add or delete list
-        of action) and sets these in corresponding dicts in both directions
-        dicts:
+        of action)
             - gr_pred_to_related_prop_action_names:
                 {gr_pred: related prop_actions.name}
+            - gr_pred_to_related_prop_action_ids:
+                {gr_pred: related prop_actions_id}
             - prop_action_to_related_gr_pred_names:
                 {prop_action: related gr_preds.__str__()}
-        :return: None
+            - prop_action_to_related_gr_pred_ids:
+                {prop_action: related gr_preds_id}
+            for gr_pred_to...:
+            related propositional action names/ ids are in sub-lists of format so that
+            propositional actions instantiated from the same action schema are in the
+            same sub-list.
+            E.g. [[act1.id, act2.id], [act3.id, ...], ...] if act1 and act2 are groundings
+            of the same action schemas
+
+        :return: gr_pred_to_related_prop_action_names,  
+                 gr_pred_to_related_prop_action_ids,
+                 prop_action_to_related_gr_pred_names,
+                 prop_action_to_related_gr_pred_ids
+
         """
         # Dict of type propositional_action -> list(grounded_predicate)
-        self.prop_action_to_related_gr_pred_names = {}
+        prop_action_to_related_gr_pred_names = {}
         # Dict of type grounded_predicate -> list(propositional_actions)
-        self.gr_pred_to_related_prop_action_names = {}
+        gr_pred_to_related_prop_action_names = {}
 
         # initialize dict entries for grounded predicates all with empty list
         # -> if no related actions than value is already correct and no in dict.keys()
         # check necessary in self.__compute_and_set... function below
         for gr_pred in self.grounded_predicates:
-            self.gr_pred_to_related_prop_action_names[gr_pred] = []
+            gr_pred_to_related_prop_action_names[gr_pred] = []
 
         # IMPORTANT: ordered data structure (like list) so that all related-lists
         # of grounded actions with same underlying action schema have corresponding
         # propositions at the same index (necessary for weight sharing in ASNets)
         for propositional_action in self.propositional_actions:
-            self.__compute_and_set_relations_involving_propositional_action(propositional_action)
-
-        # sort all action names in lists alphanumerically
-        for gr_pred in self.grounded_predicates:
-            self.gr_pred_to_related_prop_action_names[gr_pred] = self.gr_pred_to_related_prop_action_names[gr_pred]
+            self.__compute_relations_involving_propositional_action(propositional_action,
+                    prop_action_to_related_gr_pred_names,
+                    gr_pred_to_related_prop_action_names)
 
 
-    def __compute_and_set_relations_involving_propositional_action(self, propositional_action):
+        # setup prop_action_to_related_gr_pred_ids
+        prop_action_to_related_gr_pred_ids = {}
+        for propositional_action in self.propositional_actions:
+            related_gr_pred_names = prop_action_to_related_gr_pred_names[propositional_action]
+            related_gr_pred_ids = []
+            for gr_pred_name in related_gr_pred_names:
+                related_gr_pred_ids.append(self.grounded_predicate_name_to_id[gr_pred_name])
+            prop_action_to_related_gr_pred_ids[propositional_action] = related_gr_pred_ids
+
+        # adapt gr_pred_to_related_prop_action_names to match described format grouping
+        # prop action names/ ids of actions sharing the underlying action schema
+        for predicate in self.task.predicates:
+            related_action_schema_names = self.pred_to_related_action_names[predicate]
+            for grounded_predicate in self.predicate_name_to_grounded_predicates[predicate.name]:
+                related_prop_action_names = gr_pred_to_related_prop_action_names[grounded_predicate]
+                gr_pred_to_related_prop_action_names[grounded_predicate] = \
+                        self.__format_related_propositional_action_names(related_action_schema_names,
+                                                                         related_prop_action_names)
+
+        # setup gr_pred_to_related_prop_action_ids
+        gr_pred_to_related_prop_action_ids = {}
+        for grounded_predicate in self.grounded_predicates:
+            related_prop_action_names_lists = gr_pred_to_related_prop_action_names[grounded_predicate]
+            related_prop_action_ids_lists = []
+            for related_prop_action_names in related_prop_action_names_lists:
+                related_prop_action_ids = [self.prop_action_name_to_id[prop_action_name] for\
+                        prop_action_name in related_prop_action_names]
+                related_prop_action_ids_lists.append(related_prop_action_ids)
+            gr_pred_to_related_prop_action_ids[grounded_predicate] = related_prop_action_ids_lists
+
+        return gr_pred_to_related_prop_action_names, gr_pred_to_related_prop_action_ids,\
+               prop_action_to_related_gr_pred_names, prop_action_to_related_gr_pred_ids
+
+
+    def __compute_relations_involving_propositional_action(self,
+                                                           propositional_action,
+                                                           prop_action_to_related_gr_pred_names,
+                                                           gr_pred_to_related_prop_action_names):
         """
         Computes related grounded predicates (propositions) for grounded
         propositional action (= propositions that either appear in action's
-        preconditions, add- or delete-list) and sets these in corresponding
-        dicts in both directions
+        preconditions, add- or delete-list)
         :param propositional_action: propositional action to compute related
             propositions of
+        :param prop_action_to_related_gr_pred_names: dict from propositional actions to
+            related grounded predicate names
+        :param gr_pred_to_related_prop_action_names: dict from grounded predicates to
+            related propositional action names
         :return: None
         """
         related_propositions = []
         for proposition in propositional_action.precondition:
                 related_propositions.append(proposition.__str__())
-                self.gr_pred_to_related_prop_action_names[proposition].append(propositional_action.name)
+                gr_pred_to_related_prop_action_names[proposition].append(propositional_action.name)
         for _, proposition in propositional_action.add_effects:
             if proposition.__str__() not in related_propositions:
                 related_propositions.append(proposition.__str__())
-                self.gr_pred_to_related_prop_action_names[proposition].append(propositional_action.name)
+                gr_pred_to_related_prop_action_names[proposition].append(propositional_action.name)
         for _, proposition in propositional_action.del_effects:
             if proposition.__str__() not in related_propositions:
                 related_propositions.append(proposition.__str__())
-                self.gr_pred_to_related_prop_action_names[proposition].append(propositional_action.name)
+                gr_pred_to_related_prop_action_names[proposition].append(propositional_action.name)
 
-        self.prop_action_to_related_gr_pred_names[propositional_action] = related_propositions
+        prop_action_to_related_gr_pred_names[propositional_action] = related_propositions
 
 
-    def get_related_grounded_predicate_ids(self, propositional_action):
+    def __format_related_propositional_action_names(self, related_action_schema_names, related_prop_action_names):
         """
-        Receive list of related grounded predicate ids for propositonal action
-        :param propositional_action: propositional_action to compute relations of
-        :return: list of related grounded predicate ids
-        """
-        related_proposition_names = self.prop_action_to_related_gr_pred_names[propositional_action]
-        related_proposition_ids = []
-        for prop_name in related_proposition_names:
-            related_proposition_ids.append(self.grounded_predicate_name_to_id[prop_name])
-        return related_proposition_ids
-
-
-    def get_related_propositional_action_ids(self, grounded_predicate):
-        """
-        Receive related propositional actions to grounded predicate and returns
-        list of ids of these related propositional actions in sub-lists of format so that
+        format list of related propositional action names for grounded predicate so that
+        the propositional action names are in sub-lists of format, so that names of
         propositional actions instantiated from the same action schema are in the same sub-list.
-        E.g. [[act1.id, act2.id], [act3.id, ...], ...] if act1 and act2 are groundings
+        E.g. [[act1.name, act2.name], [act3.name, ...], ...] if act1 and act2 are groundings
         of the same action schemas
-        :param grounded_predicate: grounded predicate to compute related propositional
-            action ids of
-        :return: list of lists of related propositional action ids as described
-            above
+        :param related_action_schema_names: list of names of (abstract) actions related to
+            underlying predicate of grounded predicate
+        :param related_prop_action_names: list of names of propositional actions, the grounded
+            predicate is related to
         """
-        related_propositional_action_names = self.gr_pred_to_related_prop_action_names[grounded_predicate]
-        # dict from action_schema_name to list of propositional action ids
-        related_prop_action_id_dict = {}
+        # dict from action_schema_name to list of propositional action names
+        related_prop_action_name_dict = {}
 
         # instantiate according to relations of underlying predicate
-        underlying_predicate = self.task._predicate_dict()[grounded_predicate.predicate]
-        related_action_schema_names = self.pred_to_related_action_names[underlying_predicate]
         for action_schema_name in related_action_schema_names:
-            related_prop_action_id_dict[action_schema_name] = []
+            related_prop_action_name_dict[action_schema_name] = []
 
-        for prop_act_name in related_propositional_action_names:
-            prop_act_id = self.prop_action_name_to_id[prop_act_name]
+        for prop_act_name in related_prop_action_names:
             # extract action schema name out of propositional action name
             action_schema_name = prop_act_name.strip('(').split()[0]
-            related_prop_action_id_dict[action_schema_name].append(prop_act_id)
+            related_prop_action_name_dict[action_schema_name].append(prop_act_name)
 
-        # build related_prop_action_id_list
-        related_prop_action_ids = []
+        # build related_prop_action_name_list
+        related_prop_action_names = []
         for action_schema_name in related_action_schema_names:
-            related_action_ids = related_prop_action_id_dict[action_schema_name]
-            related_prop_action_ids.append(related_action_ids)
-   
-        return related_prop_action_ids
+            related_action_names = related_prop_action_name_dict[action_schema_name]
+            related_prop_action_names.append(related_action_names)
+
+        return related_prop_action_names
 
 
     def __compute_and_set_relations_between_abstracts(self):
@@ -292,3 +330,117 @@ class ProblemMeta:
                     self.pred_to_related_action_names[predicate].append(action.name)
 
         self.action_to_related_pred_names[action] = sorted(related_predicates)
+
+
+    # only computes lists of related names without necessary structure for related
+    # propositional actions of grounded predicates organized by underlying action schemas
+    # for more efficient computation of the correct ordering and ids lists we now use
+    # __compute_relations_between_groundings
+     
+    # def __compute_and_set_relations_between_groundings(self):
+    #     """
+    #     Computes relations among grounded propositional actions and predicates
+    #     (action and prop are related iff prop appears in pre, add or delete list
+    #     of action) and sets these in corresponding dicts in both directions
+    #     dicts:
+    #         - gr_pred_to_related_prop_action_names:
+    #             {gr_pred: related prop_actions.name}
+    #         - prop_action_to_related_gr_pred_names:
+    #             {prop_action: related gr_preds.__str__()}
+    #     :return: None
+    #     """
+    #     # Dict of type propositional_action -> list(grounded_predicate)
+    #     self.prop_action_to_related_gr_pred_names = {}
+    #     # Dict of type grounded_predicate -> list(propositional_actions)
+    #     self.gr_pred_to_related_prop_action_names = {}
+
+    #     # initialize dict entries for grounded predicates all with empty list
+    #     # -> if no related actions than value is already correct and no in dict.keys()
+    #     # check necessary in self.__compute_and_set... function below
+    #     for gr_pred in self.grounded_predicates:
+    #         self.gr_pred_to_related_prop_action_names[gr_pred] = []
+
+    #     # IMPORTANT: ordered data structure (like list) so that all related-lists
+    #     # of grounded actions with same underlying action schema have corresponding
+    #     # propositions at the same index (necessary for weight sharing in ASNets)
+    #     for propositional_action in self.propositional_actions:
+    #         self.__compute_and_set_relations_involving_propositional_action(propositional_action)
+
+
+    # def __compute_and_set_relations_involving_propositional_action(self, propositional_action):
+    #     """
+    #     Computes related grounded predicates (propositions) for grounded
+    #     propositional action (= propositions that either appear in action's
+    #     preconditions, add- or delete-list) and sets these in corresponding
+    #     dicts in both directions
+    #     :param propositional_action: propositional action to compute related
+    #         propositions of
+    #     :return: None
+    #     """
+    #     related_propositions = []
+    #     for proposition in propositional_action.precondition:
+    #             related_propositions.append(proposition.__str__())
+    #             self.gr_pred_to_related_prop_action_names[proposition].append(propositional_action.name)
+    #     for _, proposition in propositional_action.add_effects:
+    #         if proposition.__str__() not in related_propositions:
+    #             related_propositions.append(proposition.__str__())
+    #             self.gr_pred_to_related_prop_action_names[proposition].append(propositional_action.name)
+    #     for _, proposition in propositional_action.del_effects:
+    #         if proposition.__str__() not in related_propositions:
+    #             related_propositions.append(proposition.__str__())
+    #             self.gr_pred_to_related_prop_action_names[proposition].append(propositional_action.name)
+
+    #     self.prop_action_to_related_gr_pred_names[propositional_action] = related_propositions
+
+
+        
+    # based on __compute_and_set_relations_between_groundings
+    # def get_related_grounded_predicate_ids(self, propositional_action):
+    #     """
+    #     Receive list of related grounded predicate ids for propositonal action
+    #     :param propositional_action: propositional_action to compute relations of
+    #     :return: list of related grounded predicate ids
+    #     """
+    #     related_proposition_names = self.prop_action_to_related_gr_pred_names[propositional_action]
+    #     related_proposition_ids = []
+    #     for prop_name in related_proposition_names:
+    #         related_proposition_ids.append(self.grounded_predicate_name_to_id[prop_name])
+    #     return related_proposition_ids
+
+
+    # based on __compute_and_set_relations_between_groundings
+    # def get_related_propositional_action_ids(self, grounded_predicate):
+    #     """
+    #     Receive related propositional actions to grounded predicate and returns
+    #     list of ids of these related propositional actions in sub-lists of format so that
+    #     propositional actions instantiated from the same action schema are in the same sub-list.
+    #     E.g. [[act1.id, act2.id], [act3.id, ...], ...] if act1 and act2 are groundings
+    #     of the same action schemas
+    #     :param grounded_predicate: grounded predicate to compute related propositional
+    #         action ids of
+    #     :return: list of lists of related propositional action ids as described
+    #         above
+    #     """
+    #     related_propositional_action_names = self.gr_pred_to_related_prop_action_names[grounded_predicate]
+    #     # dict from action_schema_name to list of propositional action ids
+    #     related_prop_action_id_dict = {}
+
+    #     # instantiate according to relations of underlying predicate
+    #     underlying_predicate = self.task._predicate_dict()[grounded_predicate.predicate]
+    #     related_action_schema_names = self.pred_to_related_action_names[underlying_predicate]
+    #     for action_schema_name in related_action_schema_names:
+    #         related_prop_action_id_dict[action_schema_name] = []
+
+    #     for prop_act_name in related_propositional_action_names:
+    #         prop_act_id = self.prop_action_name_to_id[prop_act_name]
+    #         # extract action schema name out of propositional action name
+    #         action_schema_name = prop_act_name.strip('(').split()[0]
+    #         related_prop_action_id_dict[action_schema_name].append(prop_act_id)
+
+    #     # build related_prop_action_id_list
+    #     related_prop_action_ids = []
+    #     for action_schema_name in related_action_schema_names:
+    #         related_action_ids = related_prop_action_id_dict[action_schema_name]
+    #         related_prop_action_ids.append(related_action_ids)
+   
+    #     return related_prop_action_ids
