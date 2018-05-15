@@ -160,7 +160,7 @@ class ProblemMeta:
 
         # sort all action names in lists alphanumerically
         for gr_pred in self.grounded_predicates:
-            self.gr_pred_to_related_prop_action_names[gr_pred] = sorted(self.gr_pred_to_related_prop_action_names[gr_pred])
+            self.gr_pred_to_related_prop_action_names[gr_pred] = self.gr_pred_to_related_prop_action_names[gr_pred]
 
 
     def __compute_and_set_relations_involving_propositional_action(self, propositional_action):
@@ -186,7 +186,7 @@ class ProblemMeta:
                 related_propositions.append(proposition.__str__())
                 self.gr_pred_to_related_prop_action_names[proposition].append(propositional_action.name)
 
-        self.prop_action_to_related_gr_pred_names[propositional_action] = sorted(related_propositions)
+        self.prop_action_to_related_gr_pred_names[propositional_action] = related_propositions
 
 
     def get_related_grounded_predicate_ids(self, propositional_action):
@@ -199,7 +199,7 @@ class ProblemMeta:
         related_proposition_ids = []
         for prop_name in related_proposition_names:
             related_proposition_ids.append(self.grounded_predicate_name_to_id[prop_name])
-        return sorted(related_proposition_ids)
+        return related_proposition_ids
 
 
     def get_related_propositional_action_ids(self, grounded_predicate):
