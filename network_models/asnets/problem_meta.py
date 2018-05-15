@@ -7,15 +7,29 @@ class ProblemMeta:
                  propositional_actions,
                  grounded_predicates):
         self.task = task
-        self.propositional_actions = propositional_actions
-        self.grounded_predicates = grounded_predicates
+        self.propositional_actions = sorted(propositional_actions)
+        self.grounded_predicates = sorted(grounded_predicates)
+
+        # setup dict from gr_pred and prop_act to int ids
+        # (simply index in self.grounded_predicates and self.propositional_actions)
+        self.prop_action_to_id = \
+                self.__compute_propositional_action_to_id_dict(self.propositional_actions)
+        self.grounded_predicate_to_id = \
+                self.__compute_grounded_predicate_to_id_dict(self.grounded_predicates)
+
+        # setup dicts to access propositional_actions and grounded predicates by id
+        # {prop_act_id: prop_act} and {gr_pred_id: gr_pred}
+        self.propositional_actions_by_id = \
+                {id: prop_act for prop_act, id in self.prop_action_to_id.items()}
+        self.grounded_predicates_by_id = \
+                {id: gr_pred for gr_pred, id in self.grounded_predicate_to_id.items()}
 
         # setup dicts to access propositional_actions and grounded predicates by name
         # {prop_act.name: prop_act} and {gr_pred.__str__(): gr_pred}
         self.propositional_actions_by_name = \
-                self.__compute_propositional_actions_by_name_dict(propositional_actions)
+                self.__compute_propositional_actions_by_name_dict(self.propositional_actions)
         self.grounded_predicates_by_name = \
-                self.__compute_grounded_predicates_by_name_dict(grounded_predicates)
+                self.__compute_grounded_predicates_by_name_dict(self.grounded_predicates)
 
         # set dicts mapping from abstract actions/ predicates to grounding names
         self.action_name_to_prop_actions_names = \
@@ -23,9 +37,42 @@ class ProblemMeta:
         self.predicate_name_to_propositions_names = \
                 self.__compute_pred_to_grounding_names_dict(task.predicates, grounded_predicates) 
 
+        # computes relations between propositional actions and grounded predicates and sets
+        # prop_to_related_prop_action_names {gr_pred: [prop_action.name, ...]} and
+        # prop_action_to_related_prop_names {prop_action: [gr_pred.name, ...]} accordingly
         self.__compute_and_set_relations_between_groundings(propositional_actions, grounded_predicates)
+
+        # computes relations between abstract actions and predicates and sets
+        # pred_to_related_action_names {pred: [action.name, ...]} and
+        # action_to_related_pred_names {action: [pred.name, ...]} accordingly
         self.__compute_and_set_relations_between_abstracts(task.actions, task.predicates)
         
+
+    def __compute_propositional_action_to_id_dict(self, propositional_actions):
+        """
+        Computes dict {prop_act: id} where id corresponds to index in
+        propositional_actions list (should be sorted)
+        :param propositional_actions: sorted list of propositional actions
+        :return: dict {prop_act: id}
+        """
+        prop_action_to_id_dict = {}
+        for index, prop_act in enumerate(propositional_actions):
+            prop_action_to_id_dict[prop_act] = index
+        return prop_action_to_id_dict
+
+
+    def __compute_grounded_predicate_to_id_dict(self, grounded_predicates):
+        """
+        Computes dict {gr_pred: id} where id corresponds to index in
+        grounded_predicates list (should be sorted)
+        :param grounded_predicates: sorted list of grounded predicates
+        :return: dict {gr_pred: id}
+        """
+        grounded_predicate_to_id_dict = {}
+        for index, gr_pred in enumerate(grounded_predicates):
+            grounded_predicate_to_id_dict[gr_pred] = index
+        return grounded_predicate_to_id_dict
+
 
     def __compute_propositional_actions_by_name_dict(self, propositional_actions):
         """
