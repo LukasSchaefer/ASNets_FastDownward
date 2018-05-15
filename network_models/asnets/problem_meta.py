@@ -215,23 +215,27 @@ class ProblemMeta:
             above
         """
         related_propositional_action_names = self.gr_pred_to_related_prop_action_names[grounded_predicate]
-        underlying_predicate = self.task._predicate_dict()[grounded_predicate.predicate]
-
         # dict from action_schema_name to list of propositional action ids
         related_prop_action_id_dict = {}
+
+        # instantiate according to relations of underlying predicate
+        underlying_predicate = self.task._predicate_dict()[grounded_predicate.predicate]
+        related_action_schema_names = self.pred_to_related_action_names[underlying_predicate]
+        for action_schema_name in related_action_schema_names:
+            related_prop_action_id_dict[action_schema_name] = []
+
         for prop_act_name in related_propositional_action_names:
             prop_act_id = self.prop_action_name_to_id[prop_act_name]
             # extract action schema name out of propositional action name
             action_schema_name = prop_act_name.strip('(').split()[0]
-            if action_schema_name in related_prop_action_id_dict.keys():
-                related_prop_action_id_dict[action_schema_name].append(prop_act_id)
-            else:
-                related_prop_action_id_dict[action_schema_name] = [prop_act_id]
+            related_prop_action_id_dict[action_schema_name].append(prop_act_id)
 
         # build related_prop_action_id_list
         related_prop_action_ids = []
-        for prop_act_id_list in related_prop_action_id_dict.values():
-            related_prop_action_ids.append(sorted(prop_act_id_list))
+        for action_schema_name in related_action_schema_names:
+            related_action_ids = related_prop_action_id_dict[action_schema_name]
+            related_prop_action_ids.append(related_action_ids)
+   
         return related_prop_action_ids
 
 
