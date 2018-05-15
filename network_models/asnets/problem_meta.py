@@ -204,14 +204,14 @@ class ProblemMeta:
 
     def get_related_propositional_action_ids(self, grounded_predicate):
         """
-        Receive related propositional actions to grounded predicate and returns sorted
+        Receive related propositional actions to grounded predicate and returns
         list of ids of these related propositional actions in sub-lists of format so that
         propositional actions instantiated from the same action schema are in the same sub-list.
         E.g. [[act1.id, act2.id], [act3.id, ...], ...] if act1 and act2 are groundings
         of the same action schemas
         :param grounded_predicate: grounded predicate to compute related propositional
             action ids of
-        :return: list of sorted lists of related propositional action ids as described
+        :return: list of lists of related propositional action ids as described
             above
         """
         related_propositional_action_names = self.gr_pred_to_related_prop_action_names[grounded_predicate]
