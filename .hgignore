@@ -39,4 +39,3 @@ syntax: glob
 __pycache__/*
 *.idea/*
 discussion/tmp
-print_task.py
