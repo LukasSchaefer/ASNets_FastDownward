@@ -1,10 +1,10 @@
 from tensorflow.python.keras._impl.keras.models import Model
-from tensorflow.python.keras._impl.keras.layers import Input, Dense, concatenate
+from tensorflow.python.keras._impl.keras.layers import Input, Dense
 from tensorflow.python.keras._impl.keras import backend as K
 from tensorflow.python.framework.ops import convert_to_tensor
 
 import numpy as np
-from . import problem_meta
+import problem_meta
 
 
 class ASNet_Model_Builder():
@@ -254,7 +254,7 @@ class ASNet_Model_Builder():
         for index in related_proposition_ids:
             related_outputs.append(last_layer_proposition_module_outputs[index])
         # concatenate related output tensors to new input tensor
-        input_tensor = concatenate(related_outputs)
+        input_tensor = K.concatenate(related_outputs)
         
         return action_module(input_tensor)
 
