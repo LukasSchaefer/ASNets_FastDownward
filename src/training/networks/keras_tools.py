@@ -8,7 +8,8 @@ class KerasDataGenerator(keras.utils.Sequence):
     'Generates data for Keras'
     def __init__(self, data, x_fields=None, y_fields=None, types=["O"], batch_size=100,
                  x_converter=None, y_converter=None, y_remember=None,
-                 shuffle=True, count_diff_samples=False):
+                 shuffle=True, count_diff_samples=None,
+                 similarity=None):
         """
 
         :param data: Single or list of SizeBatchData object(s)
@@ -29,7 +30,20 @@ class KerasDataGenerator(keras.utils.Sequence):
                            a network evaluation only returns predications, but
                            not the original values
         :param shuffle: shuffle data after each epoche
-        :param count_diff_samples:
+        :param count_diff_samples: If None it does not keep track of the
+                                   different samples generated. Otherwise this
+                                   is a callable which expects two arguments
+                                   (X and Y data of sample) and generates a
+                                   hash for them.
+        :param similarity: If None it does not measure the similarity between an
+                           generated value X and all entries of an iterable of
+                           SizeBatchData (which would be given in similarity).
+                           Otherwise similarity is a triple:
+                               -list to store the similarities in batches,
+                               -iterable of SizeBatchData to compare to,
+                               -method to calculate the similarity with the
+                                interface (sample, iterable of SizeBatchData)
+                           Using this feature will cost a lot of performance!
         """
         self.data = data if isinstance(data, list) else [data]
         self.y_fields = (data[0].nb_fields - 1) if y_fields is None else y_fields
@@ -49,6 +63,7 @@ class KerasDataGenerator(keras.utils.Sequence):
         self.x_converter = x_converter
         self.y_converter = y_converter
         self.y_remember = y_remember
+        self.similarity = similarity
 
         self.types = types
         self.batch_size = batch_size
@@ -73,7 +88,7 @@ class KerasDataGenerator(keras.utils.Sequence):
 
         self.shuffle = shuffle
         self.count_diff_samples = count_diff_samples
-        self.generated_samples = set()
+        self.generated_sample_hashes = set()
 
         """
         self.precaching = precaching
@@ -117,9 +132,15 @@ class KerasDataGenerator(keras.utils.Sequence):
         x = entries[:, self.x_fields]
         y = entries[:, self.y_fields]
 
-        if self.count_diff_samples:
-            # TODO IMPROVE
-            self.generated_samples.add(str([x, y]))
+        if self.count_diff_samples is not None:
+            self.generated_sample_hashes.add(self.count_diff_samples(x, y))
+
+        if self.similarity is not None:
+            (sim_batches, data_sets, measure) = self.similarity
+            ary = np.ndarray(shape=(len(entries),), dtype=float)
+            for i in range(len(x)):
+                ary[i] = measure(entries[i, :], data_sets)
+            sim_batches.append(ary)
 
         if self.x_converter is not None:
             x = self.x_converter(x)
@@ -131,7 +152,7 @@ class KerasDataGenerator(keras.utils.Sequence):
 
     def on_epoch_end(self):
         'Updates indexes after each epoch'
-        self.count_diff_samples = False
+        self.count_diff_samples = None  # All different samples have been seen
         if self.shuffle:
             for ds in self.data:
                 for type in self.types:

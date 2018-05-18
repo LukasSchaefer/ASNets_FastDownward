@@ -1,11 +1,16 @@
 import numpy as np
 
+# TODO:
+"""TODO pruning/duplicate detection is currently too strong. It only checks for
+the hashes. If collisions happen, it does not check if both objects are the same
+or just a collision has occurred. """
+
 class SizeBatchData(object):
     """Every entry (is a list and) hasa fixed number of fields. If it has to
     few, None is added if it has to many, the fields to much are forgotten
     The format is:
-    data = {type: [BATCHES]
-    BATCHES = [ENTRIES]
+    data = {type: [BATCHES*]
+    BATCHES = [ENTRIES*]
     ENTRIES = [field1, field2, ...]
     fieldi can contain any data. If it is a list, then for all entries within
     a batch the length of fieldi is the same (This is done, because Tensorflow
@@ -50,11 +55,13 @@ class SizeBatchData(object):
                     self.data[type][idx_batch][idx_entry] = func(
                         self.data[type][idx_batch][idx_entry])
 
-    def _over_all(self, func):
+    def _over_all(self, func, early_stopping=False):
         for type in self.data:
             for idx_batch in range(len(self.data[type])):
                 for idx_entry in range(len(self.data[type][idx_batch])):
-                    func(self.data[type][idx_batch][idx_entry])
+                    r = func(self.data[type][idx_batch][idx_entry])
+                    if early_stopping and r:
+                        return
 
     def convert_field(self, field, converter):
         def func(entry):
@@ -80,11 +87,11 @@ class SizeBatchData(object):
             entry = entry[:self.nb_fields]
 
         if self.pruning is not None:
-            repr_entry = self.pruning(entry)
-            if repr_entry in self.pruning_set:
+            hash_entry = self.pruning(entry)
+            if hash_entry in self.pruning_set:
                 return
             else:
-                self.pruning_set.add(repr_entry)
+                self.pruning_set.add(hash_entry)
 
 
         # Get sizes for correct batch
@@ -138,6 +145,41 @@ class SizeBatchData(object):
 
         self.is_finalized = True
 
+    def remove_duplicates_from(self, data, hasher=None):
+        """
+        Removes from THIS SizeBatchData all entries which also occur in data.
+        :param data: SizeBatchData object
+        :param hasher
+        :return:
+        """
+        self._check_not_finalized()
+        if hasher is None:
+            if self.pruning == data.pruning:
+                hasher = self.pruning
+        if hasher is None:
+            raise ValueError("No hashing function given to compare the data"
+                             " elements and both objects to not agree on a"
+                             " hashing function.")
+        for batch_key in self.batches:
+            if batch_key in data.batches:
+                other_hashes = set()
+                other_batch = data.batches[batch_key]
+                for idx in range(len(other_batch)):
+                    other_hashes.add(hasher(other_batch[idx]))
+
+                my_batch = self.batches[batch_key]
+                for idx in range(len(my_batch) - 1, -1, -1):
+                    if hasher(my_batch[idx]) in other_hashes:
+                        del my_batch[idx]
+
+
+
+    def remove_duplicates_from_iter(self, datas, hasher=None):
+        for data in datas:
+            self.remove_duplicates_from(data, hasher=hasher)
+
+
+
 
 class SampleBatchData(SizeBatchData):
     """
@@ -150,8 +192,9 @@ class SampleBatchData(SizeBatchData):
                  field_current_state=None, field_goal_state=None,
                  field_other_state=None,
                  field_action=None, field_heuristic=None,
-                 file=None, pruning=False):
-        SizeBatchData.__init__(self, nb_fields, field_descriptions, pruning=pruning)
+                 file=None, meta=None, pruning=None):
+        SizeBatchData.__init__(self, nb_fields, field_descriptions,
+                               meta=meta, pruning=pruning)
         self.field_current_state = field_current_state
         self.field_goal_state = field_goal_state
         self.field_other_state = field_other_state
@@ -164,132 +207,4 @@ class SampleBatchData(SizeBatchData):
         if self.has_meta("file"):
             return self.get_meta("file")
         return None
-
-
-
-"""
-if __name__ == '__main__':
-    print("HELL")
-    d = SizeBatchData(3)
-    d.add([[1,2,3], 4,5])
-    d.add([[1, 2, 4], 4, 5])
-    d.add([[1, 2, 5], 4, 5])
-    d.add([[1, 2, 3, 4], 4, 5])
-    d.add([[1, 2, 3, 5], 4, 5])
-    d.add([[1, 2, 3], 4, [5, 6]])
-    d.add([[1, 2, 3], 4, [5, 7]])
-    d.add([1], "short")
-    d.add([9,8,7,6,5], "long")
-    print(d.data)
-    d.finalize()
-    print(d.data)
-"""
-
-"""
-class Data:
-    def __init__(self, fields=None, data=None):
-        """'''
-
-        :param fields: name of the fields in the data entries. Nobody is checking
-                       the field names on inputting or outputting! They are more
-                       for the users pleasure.
-                       The entries may have more fields than specified here.
-                       On numpyfy multiple things can happen.
-                         - it can be tried to interfere the new field name (only
-                           if for all entries the same name could be interfered)
-                         - ignore the unnamed fields
-        :param data: the initial data to be contained by this object (if the
-                     data is in an different state than the provided format,
-                     fields, or numpyfied variables tell, the behaviour of this
-                     object will be unexpected.
-                     Format:
-                     {entry_type: [entry,...]}
-                     entry = [field1, field2, ..., fieldN]'''
-"""
-self.field_order = [] if fields is None else fields
-self.field_map = {}
-for i in range(len(self.field_order)):
-    self.field_map[i] = self.field_order[i]
-self.data = {} if data is None else data
-
-def add_entry(self, entry_type, entry):
-if entry_type not in self.data:
-    self.data[entry_type] = []
-self.data[entry_type].append(entry)
-
-def _for_entry(self, func):
-for type in self.data:
-    for entry in self.data[type]:
-        func(entry)
-
-def _get_field_idx(self, field_name, field_idx):
-if field_name is not None:
-    field_idx = self.field_map[field_name]
-if field_idx is None:
-    raise ValueError("Either field_name has to be given or field_idx")
-return field_idx
-
-def convert_field(self, field_name=None, field_idx=None, converter=None):
-"""'''
-
-        :param field_name: name of the field to convert (Provide EITHER this OR
-                           field_idx)
-        :param field_idx: idx of the field to convert (Provide EITHER this OR
-                          field_name)
-        :param converter: callable. Gets the field value for every entry and
-                          returns a new value
-        :return:'''
-"""
-field_idx = self._get_field_idx(field_name, field_idx)
-
-def func(entry):
-    if len(entry) > field_idx:
-        entry[field_idx] = converter(entry[field_idx])
-self._for_entry(func)
-
-def rename_field(self, new_name, field_name=None, field_idx=None):
-"""'''
-
-        :param field_name: name of the field to rename (Provide EITHER this OR
-                           field_idx)
-        :param field_idx: idx of the field to rename (Provide EITHER this OR
-                          field_name)
-        :return:'''
-"""
-field_idx = self._get_field_idx(field_name, field_idx)
-field_name = self.field_order[field_idx]
-self.field_order[field_idx] = new_name
-self.field_map[new_name] = field_idx
-del self.field_map[field_name]
-
-
-def remove_field(self, field_name=None, field_idx=None):
-"""'''
-
-        :param field_name: name of the field to remove (Provide EITHER this OR
-                           field_idx)
-        :param field_idx: idx of the field to remove (Provide EITHER this OR
-                          field_name)
-        :return:'''
-"""
-field_idx = self._get_field_idx(field_name, field_idx)
-def func(entry):
-    if len(entry) > field_idx:
-        del entry[field_idx]
-self._for_entry(func)
-
-
-def reorder_field(self, field_name1=None, field_idx1=None,
-              field_name2=None, field_idx2=None):
-
-field_idx1 = self._get_field_idx(field_name1, field_idx1)
-field_idx2 = self._get_field_idx(field_name2, field_idx2)
-def func(entry):
-    if len(entry) > field_idx:
-        del entry[field_idx]
-self._for_entry(func)
-"""
-
-
-
 

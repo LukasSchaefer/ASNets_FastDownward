@@ -8,6 +8,7 @@ from .. import parser_tools as parset
 from .. import SampleBatchData
 
 from ..environments import Environment, SubprocessTask
+from ..misc import hasher
 
 from ... import translate
 from ...translate import pddl
@@ -541,7 +542,7 @@ class LoadSampleBridge(SamplerBridge):
         data_container = (SampleBatchData(5, [self._format, self._format, str,
                                               self._format, int], 0, 1, 3, 2, 4,
                                           path_problem,
-                                          pruning=(str if self._prune else None))
+                                          pruning=(hasher.list_hasher if self._prune else None))
                           if data_container is None else data_container)
 
         if not os.path.exists(path_samples):
@@ -636,7 +637,7 @@ class FastDownwardSamplerBridge(SamplerBridge):
         data_container = (SampleBatchData(5, [self._format, self._format, str,
                                               self._format, int], 0, 1, 3, 2, 4,
                                           path_problem,
-                                          pruning=(str if self._prune else None))
+                                          pruning=(hasher.list_hasher if self._prune else None))
 
                           if data_container is None else data_container)
 

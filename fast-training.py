@@ -16,6 +16,7 @@ import re
 import sys
 import numpy as np
 
+import time
 CHOICE_STATE_FORMATS = []
 for name in StateFormat.name2obj:
     CHOICE_STATE_FORMATS.append(name)
@@ -147,6 +148,8 @@ def load_data(options):
     dir_samp.initialize()
     dtrain = dir_samp.sample()
     dir_samp.finalize()
+    if dtest is not None:
+        dtrain[0].remove_duplicates_from_iter(dtest)
 
     return dtrain, dtest
 
@@ -200,24 +203,33 @@ def train(argv):
     #D = kdg_train[0][0][0]
     #G = kdg_train
 
-
+    start_time = time.time()
     network = MLPDynamicKeras(
         3, -1, out=options.root[0],
         store=None if options.network is None else os.path.join(options.output, options.network),
-        formats=options.network_format)
+        formats=options.network_format,
+        test_similarity="hamming")
 
     network.initialize(None, domain_properties=domprob)
 
     D = network.train(dtrain, dtest)
 
     G = network.evaluate(dtest)
+    print("RuNTiME", time.time()-start_time)
     network.analyse(options.output)
     network.finalize()
 
+
+
 if __name__ == "__main__":
-    #import matplotlib.pyplot as plt
+    import matplotlib.pyplot as plt
+    import matplotlib as mpl
+    import numpy
     #ary = np.arange(18).reshape(3,6)
     #plt.matshow(ary, aspect=)
+
+    #for i in np.linspace(0,1,20):
+    #    plt.plot(np.arange(10), [i]*10, c=mpl.cm.jet(i))
     #plt.savefig("tst.png")
 
     #sys.exit(32)

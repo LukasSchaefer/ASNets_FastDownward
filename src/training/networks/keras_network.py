@@ -4,6 +4,7 @@ from .keras_tools import KerasDataGenerator
 from .. import parser_tools as parset
 from .. import parser
 from .. import main_register
+from ..misc import similarities, InvalidModuleImplementation
 from ..parser_tools import ArgumentException
 
 from ..bridges import StateFormat
@@ -30,21 +31,32 @@ class KerasNetwork(Network):
         ("count_samples", True, False, parser.convert_bool,
          "Counts how many and which samples where used during training"
          " (This increases the runtime)."),
+        ("test_similarity", True, None, similarities.get_similarity,
+         "Estimates for every sample in the evaluation data how close it is"
+         " to the trainings data. For this to work ALL training data is kept in"
+         "memory, this could need a lot of memory"
+         " (provide name of a similarity measure)"),
         order=["load", "store", "formats", "out", "count_samples",
-               "variables", "id"])
+               "test_similarity", "variables", "id"])
 
     def __init__(self, load=None, store=None, formats=None, out=".",
-                 count_samples=False,
+                 count_samples=False, test_similarity=None,
                  variables=None, id=None):
         Network.__init__(self, load, store, formats, out, variables, id)
-        self._epochs = 750
+        self._epochs = 20
         self._model = None
+
+
+        """Analysis data"""
         self._history = None
         self._histories = []
         self._evaluation = None
         self._evaluations = []
-        self._training_samples = set()
         self._count_samples = count_samples
+        self._count_samples_hashes = set()  # Used if _count_samples is True
+        test_similarity = similarities.get_similarity(test_similarity) if isinstance(test_similarity, str) else test_similarity
+        self._test_similarity = test_similarity
+        self._training_data = set()  # If _test_similarity is not None, add training data
 
         """Concrete networks might need to set those values"""
         """For examples of the following values check existing implementations"""
@@ -54,7 +66,32 @@ class KerasNetwork(Network):
         self._x_converter = None  # Callable which converts extracted batch of
                                  # X fields to the format needed by the network
         self._y_converter = None  # Similar to x_converter
+
+        # Needed if _count_samples is True. Defines how to calculate a hash from
+        # a sample given as x and y value (where X and Y are the fields extracted
+        # by the KerasDataGenerator). Example: lambda x,y: str((x,y))
+        self._count_samples_hasher =None
+        # Needed for test_similarity (if test_similarity is never used, this is
+        # never used). Define for every field extracted from _x_fields_extractor
+        # how the this field of two instances shall be compared. Take a look at
+        # misc.data_similarities. E.g. provide for every field a callable or for
+        # example the Hamming Measure has already two comparators defined which
+        # can be used via providing their string name ("equal", "iterable")
+        # Providing here None means the measure uses its default comparator for
+        # all fields
+        self._x_fields_comparators = None
+        # Callback functions for the keras fitting
         self._callbacks = None
+
+    def initialize(self, *args, **kwargs):
+        Network.initialize(self, *args, **kwargs)
+        # Check for a valid initialization of all required fields
+        if self._count_samples:
+            if self._count_samples_hasher is None:
+                raise InvalidModuleImplementation(
+                    "If allowing the 'count_samples' option in a KerasNetwork, "
+                    "the network implementation has to set the parameter"
+                    "'_count_samples_hasher'")
 
     def _compile(self, optimizer, loss, metrics):
         self._model.compile(optimizer=optimizer,
@@ -110,7 +147,8 @@ class KerasNetwork(Network):
             y_fields=None if self._y_fields_extractor is None else self._y_fields_extractor(dtrain[0]),
             x_converter=self._x_converter,
             y_converter=self._y_converter,
-            shuffle=True, count_diff_samples=True)
+            shuffle=True,
+            count_diff_samples=self._count_samples_hasher if self._count_samples else None)
 
         kdg_test = None
         if dtest is not None:
@@ -121,7 +159,7 @@ class KerasNetwork(Network):
                 y_fields=None if self._y_fields_extractor is None else self._y_fields_extractor(dtest[0]),
                 x_converter=self._x_converter,
                 y_converter=self._y_converter,
-                shuffle=True, count_diff_samples=True)
+                shuffle=True)
 
         history = self._model.fit_generator(
             kdg_train,
@@ -137,14 +175,30 @@ class KerasNetwork(Network):
         for ds in dtrain:
             c += ds.size()
         print("SAMPLE COUNT TOTAL", c)
-        self._training_samples.update(kdg_train.generated_samples)
+        self._count_samples_hashes.update(kdg_train.generated_sample_hashes)
+
         self._history = history
         self._histories.append(history)
+        if self._test_similarity is not None:
+            self._training_data.update(set(dtrain))
         return history
 
     def evaluate(self, data):
         data = self._convert_data(data)
+        # List in which the original y values for the predications will be added
         y_labels = []
+        # Triple for comparing the similarities between a sample to predict and
+        # the used training data or None if no similarity shall be measured
+        sample_similarities = None
+        if self._test_similarity is not None:
+            for data_set_example in self._training_data: break
+            wrapped_set_similarity = similarities.get_wrapper_similarity_on_set(
+                self._test_similarity,
+                None if self._x_fields_extractor is None else self._x_fields_extractor(data_set_example),
+                self._x_fields_comparators,
+                merge=max, init_measure_value=0, early_stopping=lambda x: x==1
+            )
+            sample_similarities = ([], self._training_data, wrapped_set_similarity)
 
         kdg_eval = KerasDataGenerator(
             data,
@@ -152,13 +206,16 @@ class KerasNetwork(Network):
             y_fields=None if self._y_fields_extractor is None else self._y_fields_extractor(data[0]),
             x_converter=self._x_converter,
             y_converter=self._y_converter,
-            y_remember=y_labels)
+            y_remember=y_labels,
+            similarity=sample_similarities)
 
         result = self._model.predict_generator(
             kdg_eval, max_queue_size=10, workers=1, use_multiprocessing=False)
-
         y_labels = np.concatenate(y_labels)
-        result = (result.squeeze(axis=1), y_labels)
+        if sample_similarities is not None:
+            sample_similarities = np.concatenate(sample_similarities[0])
+
+        result = (result.squeeze(axis=1), y_labels, sample_similarities)
         self._evaluation = result
         self._evaluations.append(result)
         return result
@@ -231,7 +288,7 @@ class KerasNetwork(Network):
 
         KerasNetwork._analyse_from_predictions_scatter_tiles(
             self._evaluation[0], self._evaluation[1],
-            "Prediction Probabilities with resp.\nto the correct prediction",
+            "Prediction Probabilities with resp. to the correct prediction",
             "original h", "predicted h", "predictions_tiles", directory)
 
         KerasNetwork._analyse_from_predictions_deviation(
@@ -243,13 +300,18 @@ class KerasNetwork(Network):
             "Prediction Deviations depending on original", "deviation",
             "original", "deviations_dep_h", directory)
 
+        KerasNetwork._analyse_from_predictions_deviation_dep_on_similarity(
+            self._evaluation[0], self._evaluation[1], self._evaluation[2],
+            "Prediction Deviations depending on the similarity to training samples",
+            "deviation",
+            "similarity", "deviations_dep_sim", directory)
 
         analysis_data = {"histories": [h.history for h in self._histories],
                          "evaluations": [(e[0].tolist(), e[1].tolist()) for e in self._evaluations]}
 
         with open(os.path.join(directory, "analysis.meta"), "w") as f:
             json.dump(analysis_data, f)
-        print("SEEN SAMPLES", len(self._training_samples))
+        print("SEEN SAMPLES", len(self._count_samples_hashes))
 
     """----------------------ANALYSIS METHODS--------------------------------"""
 
@@ -265,6 +327,7 @@ class KerasNetwork(Network):
         ax.set_ylabel(ylabel)
         ax.set_xlabel(xlabel)
         ax.legend(legend, loc='upper left')
+        fig.tight_layout()
         for format in formats:
             fig.savefig(os.path.join(directory, file + "." + format))
         plt.close(fig)
@@ -276,10 +339,21 @@ class KerasNetwork(Network):
                                           formats=MATPLOTLIB_OUTPUT_FORMATS):
         fig = plt.figure()
         ax = fig.add_subplot(1, 1, 1)
-        ax.scatter(original, predicted, s=80, c='r', alpha=0.2)
+        ax.scatter(original, predicted, s=80, c='maroon', alpha=0.1)
+
+        unique = np.unique(predicted)
+        if len(unique) == 1:
+            yticks = ax.get_yticks().tolist()
+            pivot = int(len(yticks)/2)
+            mid = yticks[pivot]
+            yticks = ["" for _ in yticks]
+            yticks[pivot] = mid
+            ax.set_yticklabels(yticks)
+
         ax.set_xlabel(orig_label)
         ax.set_ylabel(pred_label)
         ax.set_title(title)
+        fig.tight_layout()
         for format in formats:
             fig.savefig(os.path.join(directory, file + "." + format))
         plt.close(fig)
@@ -294,11 +368,6 @@ class KerasNetwork(Network):
         max_p_h = math.ceil(max(predicted))
         min_p_h = math.floor(min(predicted))
 
-        #max_h = max(max_o_h, max_p_h)
-        #min_h = min(min_o_h, min_p_h)
-
-        #range_h = math.ceil(max_h - min_h + 1)
-
         by_h = {}
         for idx in range(len(predicted)):
             h = original[idx]
@@ -307,8 +376,8 @@ class KerasNetwork(Network):
                 by_h[h] = []
             by_h[h].append(p)
 
-        DECIMALS = 1
-        POWER = 10**DECIMALS
+        EXPONENT = 1
+        POWER = 2**EXPONENT
         h_p_bins = []
         for i in range(min_p_h*POWER, max_p_h*POWER + 1):
             h_p_bins.append(float(i)/POWER)
@@ -319,7 +388,7 @@ class KerasNetwork(Network):
                 for idx_p in range(len(h_p_bins)):
                     tiles[h_o - min_o_h, idx_p] = float("NaN")
             else:
-                ary = np.around(np.array(by_h[h_o]), decimals=DECIMALS)
+                ary = np.around(np.array(by_h[h_o]) * POWER) / POWER
                 count = float(len(ary))
                 unique, counts = np.unique(ary, return_counts=True)
                 # Otherwise they are numpy values and do not hash as needed
@@ -341,6 +410,9 @@ class KerasNetwork(Network):
         ax.set_title(title)
         cax = fig.add_axes([0.9, 0.1, 0.02, 0.8])
         fig.colorbar(handle, cax, orientation='vertical')
+        xticks = ax.get_xticks().tolist()
+        ax.set_xticklabels([''] + [h_p_bins[int(i)] for i in xticks[1:-1]] + [''])
+        fig.tight_layout()
         for format in formats:
             fig.savefig(os.path.join(directory, file + "." + format))
         plt.close(fig)
@@ -353,11 +425,22 @@ class KerasNetwork(Network):
         fig = plt.figure()
         ax = fig.add_subplot(1, 1, 1)
         dev = predicted - original
-        bins = math.ceil(max(dev) - min(dev) + 1)
-        ax.hist([dev], bins=bins)
+        dev = np.round(dev.astype(np.float))
+        unique, counts = np.unique(dev, return_counts=True)
+        # Otherwise they are numpy values and do not hash as needed
+        unique = [float(i) for i in unique]
+        occurrences = dict(zip(unique, counts))
+        min_d, max_d = min(unique), max(unique)
+
+        bars = np.arange(min_d, max_d + 1)
+        heights = [0 if not i in occurrences else occurrences[i]
+                   for i in range(math.floor(min_d), math.ceil(max_d) + 1)]
+
+        ax.bar(bars, heights, align='center')
         ax.set_xlabel(orig_label)
         ax.set_ylabel(pred_label)
         ax.set_title(title)
+        fig.tight_layout()
         for format in formats:
             fig.savefig(os.path.join(directory, file + "." + format))
         plt.close(fig)
@@ -394,33 +477,76 @@ class KerasNetwork(Network):
 
         fig = plt.figure()
         ax = fig.add_subplot(1, 1, 1)
-        ax.bar(np.arange(min_h, max_h + 1), std_dev, color="orange")
-        c = 0
-        for i in ax.patches:
-            h = min_h + c
-            c += 1
-            s = "0" if h not in by_h else str(len(by_h[h]))
-            # get_x pulls left or right; get_height pushes up or down
-            ax.text(i.get_x() + i.get_width()*0.25, -0.25, \
-                    s, fontsize=11,
-                    color='dimgrey')
-        c = 0
-        for i in ax.patches:
-            h = min_h + c
-            s = str(round(std_dev[c], 2))
-            c += 1
-            # get_x pulls left or right; get_height pushes up or down
-            ax.text(i.get_x() + i.get_width()*0.25, i.get_height(), \
-                    s, fontsize=11,
-                    color='dimgrey')
-
-
-        ax.plot(np.arange(min_h, max_h + 1), mean_dev, color="blue")
-        ax.scatter(np.arange(min_h, max_h + 1), median_dev, color="blue")
+        new_x_ticks = []
+        data = []
+        for i in range(min_h, max_h + 1):
+            if i in by_h:
+                new_x_ticks.append("%d\n$n=%d$" % (i, len(by_h[i])))
+                data.append(by_h[i])
+            else:
+                new_x_ticks.append("%d" % i)
+                data.append([float('nan')])
+        ax.boxplot(data)
+        ax.set_xticklabels(new_x_ticks)
 
         ax.set_xlabel(orig_label)
         ax.set_ylabel(pred_label)
         ax.set_title(title)
+        fig.tight_layout()
+        for format in formats:
+            fig.savefig(os.path.join(directory, file + "." + format))
+        plt.close(fig)
+
+    @staticmethod
+    def _analyse_from_predictions_deviation_dep_on_similarity(
+            predicted, original, similarity,
+            title, pred_label, orig_label,
+            file, directory=".", formats=MATPLOTLIB_OUTPUT_FORMATS):
+        print("SIMILARITIES", sorted(similarity))
+        return
+        by_h = {}
+        min_h = min(original)
+        max_h = max(original)
+        for idx in range(len(original)):
+            h = original[idx]
+            p = predicted[idx]
+            if h not in by_h:
+                by_h[h] = []
+            by_h[h].append(p - h)
+
+        mean_dev = []
+        median_dev = []
+        std_dev = []
+        for h in range(min_h, max_h + 1):
+            if h in by_h:
+                ary = np.array(by_h[h])
+                by_h[h] = ary
+                mean_dev.append(ary.mean())
+                median_dev.append(np.median(ary))
+                std_dev.append(np.std(ary))
+            else:
+                mean_dev.append(float('NaN'))
+                median_dev.append(float('NaN'))
+                std_dev.append(float('NaN'))
+
+        fig = plt.figure()
+        ax = fig.add_subplot(1, 1, 1)
+        new_x_ticks = []
+        data = []
+        for i in range(min_h, max_h + 1):
+            if i in by_h:
+                new_x_ticks.append("%d\n$n=%d$" % (i, len(by_h[i])))
+                data.append(by_h[i])
+            else:
+                new_x_ticks.append("%d" % i)
+                data.append([float('nan')])
+        ax.boxplot(data)
+        ax.set_xticklabels(new_x_ticks)
+
+        ax.set_xlabel(orig_label)
+        ax.set_ylabel(pred_label)
+        ax.set_title(title)
+        fig.tight_layout()
         for format in formats:
             fig.savefig(os.path.join(directory, file + "." + format))
         plt.close(fig)
@@ -456,9 +582,10 @@ class DomainPropertiesKerasNetwork(KerasNetwork):
                                       KerasNetwork.arguments)
 
     def __init__(self, load=None, store=None, formats=None, out=".",
-                 count_samples=False, variables=None, id=None,
+                 count_samples=False, test_similarity=None, variables=None, id=None,
                  domain_properties=None):
         KerasNetwork.__init__(self, load, store, formats, out, count_samples,
+                              test_similarity,
                               variables, id)
 
         self._domain_properties = None
@@ -530,17 +657,17 @@ class MLPDynamicKeras(DomainPropertiesKerasNetwork):
                                              "activation", "dropout",
                                              "optimizer", "loss",
                                              "load", "store", "formats", "out",
-                                             "count_samples",
+                                             "count_samples", "test_similarity",
                                              "variables", "id"]
                                       )
 
     def __init__(self, hidden, output_units=-1, activation="sigmoid",
                  dropout=None, optimizer="adam", loss="mean_squared_error",
                  load=None, store=None, formats=None, out=".",
-                 count_samples=False, variables=None, id=None,
+                 count_samples=False, test_similarity=None, variables=None, id=None,
                  domain_properties=None):
         DomainPropertiesKerasNetwork.__init__(
-            self, load, store, formats, out, count_samples,
+            self, load, store, formats, out, count_samples, test_similarity,
             variables, id, domain_properties=domain_properties)
         self._hidden = hidden
         self._output_units = output_units
@@ -554,7 +681,11 @@ class MLPDynamicKeras(DomainPropertiesKerasNetwork):
         self._y_fields_extractor = None#lambda ds: ds.field_heuristic
         self._x_converter = lambda x: [np.stack(x[:, 0], axis=0),
                                        np.stack(x[:, 1], axis=0)]
-
+        self._x_fields_comparators = [
+            similarities.hamming_measure_cmp_iterable_equal,
+            similarities.hamming_measure_cmp_iterable_equal
+        ]
+        self._count_samples_hasher = lambda x, y: hash(str((x,y)))
         # Either self._domain_properties will be used to determine the state
         # size or on initialization the state size has to be given
         # If both is given, the DomainProperties will be prefered
