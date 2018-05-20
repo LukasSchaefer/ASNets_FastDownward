@@ -2,14 +2,13 @@ import sys
 
 from src.translate.translator import main as translate
 from src.translate.normalize import normalize
-from src.translate.instantiate import instantiate, get_fluent_facts, get_fluent_predicates
+from src.translate.instantiate import instantiate, get_fluent_predicates
 from src.translate.build_model import compute_model
 from src.translate.pddl_to_prolog import translate as pddl_to_prolog
-from src.translate.pddl.f_expression import *
-from src.translate.pddl.conditions import *
 
 sys.path.append("network_models/asnets")
 from problem_meta import ProblemMeta
+from asnet_keras_model import ASNet_Model_Builder
 
 
 def print_grounded_predicates(task_meta):
@@ -99,11 +98,15 @@ def main(argv):
         task_meta = ProblemMeta(pddl_task, propositional_actions, grounded_predicates)
         assert_correct_len_relatedness_of_propositional_actions
 
-        print_propositional_actions(task_meta)
-        print_grounded_predicates(task_meta)
+        # print_propositional_actions(task_meta)
+        # print_grounded_predicates(task_meta)
 
         # print_predicates(task_meta)
         # print_actions(task_meta)
+
+        asnet_builder = ASNet_Model_Builder(task_meta)
+        asnet_model = asnet_builder.build_asnet_keras_model(1)
+        print(asnet_model.summary())
     
 
 if __name__ == "__main__":
