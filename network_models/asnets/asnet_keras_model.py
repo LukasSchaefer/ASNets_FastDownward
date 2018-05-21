@@ -107,8 +107,10 @@ class ASNet_Model_Builder():
         """
         related_proposition_ids = self.problem_meta.prop_action_to_related_gr_pred_ids[propositional_action]
         number_propositions = len(self.problem_meta.grounded_predicates)
+        module_name = (propositional_action.name.strip('(').strip(')').replace(' ', '_')) + '_inputmod'
         return ActionInputModule(propositional_action, related_proposition_ids,
-            self.hidden_representation_size, input_shape=(number_propositions * self.hidden_representation_size,))
+            self.hidden_representation_size, input_shape=(number_propositions * self.hidden_representation_size,),
+            name=module_name)
 
 
     def __make_proposition_input_module(self, proposition):
@@ -120,8 +122,9 @@ class ASNet_Model_Builder():
         """
         related_action_id_lists = self.problem_meta.gr_pred_to_related_prop_action_ids[proposition]
         number_actions = len(self.problem_meta.propositional_actions)
+        module_name = (proposition.__str__().replace('(', '_').replace(')', '_').replace(',', '_').replace(' ', '_')) + 'inputmod'
         return PropositionInputModule(proposition, related_action_id_lists, self.hidden_representation_size,
-            input_shape=(number_actions * self.hidden_representation_size,))
+            input_shape=(number_actions * self.hidden_representation_size,), name=module_name)
 
     def __make_modules(self):
         """
@@ -200,7 +203,8 @@ class ASNet_Model_Builder():
         """
         # build input list
         input_list = []
-        slice_layer = Lambda(lambda x, start, end: x[:, start: end])
+        slice_layer_name = "slice_layer_%s" % (propositional_action.name.strip('(').strip(')').replace(' ', '_'))
+        slice_layer = Lambda(lambda x, start, end: x[:, start: end], name=slice_layer_name)
         # add truth values of related propositions
         for prop_index in related_proposition_ids:
             slice_layer.arguments = {'start': prop_index, 'end': prop_index + 1}
@@ -225,7 +229,8 @@ class ASNet_Model_Builder():
             additional_input_features = slice_layer(self.additional_input_features)
             input_list.append(additional_input_features)
         # convert input list to tensor
-        input_tensor = concatenate(input_list)
+        concatenate_layer_name = "1st_layer_input_%s_concatenate" % (propositional_action.name.strip('(').strip(')').replace(' ', '_'))
+        input_tensor = concatenate(input_list, name=concatenate_layer_name)
         
         output = action_module(input_tensor)
         if self.dropout:
@@ -367,7 +372,7 @@ class ASNet_Model_Builder():
                     action_layer_outputs.append(self.__get_intermediate_layer_action_module_output(
                         propositional_action, action_index, input_module, action_module, layer_index,
                         proposition_layers_outputs[layer_index - 1]))
-            concatenated_action_layer_outputs = concatenate(action_layer_outputs)
+            concatenated_action_layer_outputs = concatenate(action_layer_outputs, name="action_layer_%d_outputs_concatenation" % layer_index)
             action_layers_outputs.append(concatenated_action_layer_outputs)
 
             # list of outputs of all proposition modules in layer_index layer
@@ -375,13 +380,14 @@ class ASNet_Model_Builder():
             for proposition_index, proposition in enumerate(self.problem_meta.grounded_predicates):
                 # extract corresponding proposition input module
                 input_module = input_proposition_modules[proposition_index]
+
                 # extract corresponding proposition module for layer_index layer
                 proposition_module = proposition_layers_modules[layer_index][proposition.predicate]
                 # compute output of proposition module with pooling and add to the list for current layer
                 proposition_layer_outputs.append(self.__get_proposition_module_output(
                     proposition, proposition_index, input_module, proposition_module, layer_index,
                     action_layers_outputs[layer_index]))
-            concatenated_proposition_layer_outputs = concatenate(proposition_layer_outputs)
+            concatenated_proposition_layer_outputs = concatenate(proposition_layer_outputs, name="prop_layer_%d_outputs_concatenation" % layer_index)
             proposition_layers_outputs.append(concatenated_proposition_layer_outputs)
 
         # last action layer
@@ -394,7 +400,7 @@ class ASNet_Model_Builder():
             outputs.append(self.__get_last_layer_action_module_output(input_module,
                 action_module, proposition_layers_outputs[-1]))
 
-        outputs = concatenate(outputs)
+        outputs = concatenate(outputs, name="final_outputs_concatenation")
         softmax_layer = SoftmaxOutputLayer()
         policy_output = softmax_layer((outputs, self.action_applicable_values))
         if self.extra_input_size:
