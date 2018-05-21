@@ -11,15 +11,15 @@ class PropositionInputModule(Layer):
         
 
     def __init__(self, proposition, related_propoposition_action_ids, hidden_representation_size, **kwargs):
-        super(PropositionInputModule, self).__init__(**kwargs)
         self.proposition = proposition
         self.related_propoposition_action_ids = related_propoposition_action_ids
         self.hidden_representation_size = hidden_representation_size
+        super(PropositionInputModule, self).__init__(**kwargs)
 
     def build(self, input_shape):
         super(PropositionInputModule, self).build(input_shape)
 
-    def call(self, x):
+    def call(self, x, mask=None):
         # collect outputs of related action modules in last layer and pool all outputs together of
         # action modules of the same underlying action schema
         pooled_related_outputs = []

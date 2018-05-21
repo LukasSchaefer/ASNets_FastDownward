@@ -6,7 +6,7 @@ from tensorflow.python.keras._impl.keras.layers import Input, Dense, Dropout, La
 from action_input_module import ActionInputModule
 from proposition_input_module import PropositionInputModule
 import problem_meta
-from utils import masked_softmax
+from softmax_output_layer import SoftmaxOutputLayer
 
 
 class ASNet_Model_Builder():
@@ -395,7 +395,8 @@ class ASNet_Model_Builder():
                 action_module, proposition_layers_outputs[-1]))
 
         outputs = concatenate(outputs)
-        policy_output = masked_softmax(outputs, self.action_applicable_values)
+        softmax_layer = SoftmaxOutputLayer()
+        policy_output = softmax_layer((outputs, self.action_applicable_values))
         if self.extra_input_size:
             asnet_model = Model(inputs=[self.proposition_truth_values, self.proposition_goal_values,
                 self.action_applicable_values, self.additional_input_features], outputs=policy_output,
