@@ -1,12 +1,11 @@
 import os
 import sys
 from tensorflow.python.keras._impl.keras.models import Model
-from tensorflow.python.keras._impl.keras.layers import Input, Dense, Dropout, Lambda, concatenate
+from tensorflow.python.keras._impl.keras.layers import Input, Dense, Dropout, Lambda, concatenate, GlobalMaxPooling1D
+from keras import backend as K
 
-from action_input_module import ActionInputModule
-from proposition_input_module import PropositionInputModule
 import problem_meta
-from softmax_output_layer import SoftmaxOutputLayer
+from utils import masked_softmax
 
 
 class ASNet_Model_Builder():
@@ -98,50 +97,106 @@ class ASNet_Model_Builder():
                      name=mod_name)
 
 
-    def __make_action_input_module(self, propositional_action):
+    def __make_action_module_input(self, propositional_action, last_layer_proposition_module_outputs):
         """
-        creates input module for action module of propositional action
+        computes input for action module of propositional action
 
         :param propositional_action: propositional action the module corresponds to
-        :return: input module for action module of propositional_action
+        :param last_layer_proposition_module_outputs: output tensor of last proposition layer
+        :return: input for action module of propositional_action
         """
         related_proposition_ids = self.problem_meta.prop_action_to_related_gr_pred_ids[propositional_action]
-        number_propositions = len(self.problem_meta.grounded_predicates)
-        module_name = (propositional_action.name.strip('(').strip(')').replace(' ', '_')) + '_inputmod'
-        return ActionInputModule(propositional_action, related_proposition_ids,
-            self.hidden_representation_size, input_shape=(number_propositions * self.hidden_representation_size,),
-            name=module_name)
+        # collect outputs of related proposition modules in last layer
+        get_index_of_tensor_layer = Lambda(lambda x, index: x[:, self.hidden_representation_size * index:\
+            self.hidden_representation_size * (index + 1)])
+        related_outputs = []
+        for index in related_proposition_ids:
+            get_index_of_tensor_layer.arguments = {'index': index}
+            related_outputs.append(get_index_of_tensor_layer(last_layer_proposition_module_outputs))
+        # concatenate related output tensors to new input tensor
+        if len(related_outputs) > 1:
+            return concatenate(related_outputs)
+        else:
+            return related_outputs[0]
 
 
-    def __make_proposition_input_module(self, proposition):
+    def __make_proposition_module_input(self, proposition, last_action_module_outputs):
         """
-        creates input module for proposition module of proposition
+        computes input for proposition module of proposition
 
         :param proposition: proposition the module corresponds to
-        :return: input module for proposition module of proposition
+        :param last_action_module_outputs: output tensor of last action layer
+        :return: input for proposition module of proposition
         """
-        related_action_id_lists = self.problem_meta.gr_pred_to_related_prop_action_ids[proposition]
-        number_actions = len(self.problem_meta.propositional_actions)
-        module_name = (proposition.__str__().replace('(', '_').replace(')', '_').replace(',', '_').replace(' ', '_')) + 'inputmod'
-        return PropositionInputModule(proposition, related_action_id_lists, self.hidden_representation_size,
-            input_shape=(number_actions * self.hidden_representation_size,), name=module_name)
+        # # test
+        # related_shits = []
+        # related_propositional_action_ids = self.problem_meta.gr_pred_to_related_prop_action_ids[proposition]
+        # get_index_of_tensor_layer = Lambda(lambda x, index: x[:, self.hidden_representation_size * index:\
+        #         self.hidden_representation_size * (index + 1)])
+        # for i in range(len(related_propositional_action_ids)):
+        #     get_index_of_tensor_layer.arguments = {'index': i}
+        #     tensor = get_index_of_tensor_layer(last_action_module_outputs)
+        #     related_shits.append(tensor)
+
+
+        # concatenated_outputs = concatenate(related_shits, 0)
+        # output_extra_dim = Lambda(lambda x: K.expand_dims(x, 0))(concatenated_outputs)
+        # return GlobalMaxPooling1D()(output_extra_dim)
+        # # testend
+
+        related_propositional_action_ids = self.problem_meta.gr_pred_to_related_prop_action_ids[proposition]
+
+        # collect outputs of related action modules in last layer and pool all outputs together of
+        # action modules of the same underlying action schema
+        pooled_related_outputs = []
+        for action_schema_list in related_propositional_action_ids:
+            action_schema_outputs = []
+            get_index_of_tensor_layer = Lambda(lambda x, index: x[:, self.hidden_representation_size * index:\
+                self.hidden_representation_size * (index + 1)])
+            for index in action_schema_list:
+                get_index_of_tensor_layer.arguments = {'index': index}
+                action_schema_outputs.append(get_index_of_tensor_layer(last_action_module_outputs))
+            # concatenate outputs
+            if not action_schema_outputs:
+                # There were no related propositional actions of the corresponding action schema
+                # -> create hidden-representation-sized vector of 0s
+
+                # TODO: fix ugly shape like hack (any output of get_index_of_tensor_layer will be correct shape)
+                # (hidden_representation_size,)
+                get_index_of_tensor_layer.arguments = {'index': 0}
+                shape_like_tensor = get_index_of_tensor_layer(last_action_module_outputs)
+
+                zeros = Lambda(lambda x: K.zeros_like(x))(shape_like_tensor)
+                pooled_related_outputs.append(zeros)
+            else:
+                if len(action_schema_outputs) > 1:
+                    concatenated_output = concatenate(action_schema_outputs, 0)
+                else:
+                    concatenated_output = action_schema_outputs[0]
+                # Pool all those output-vectors together to a single output-vector sized vector
+                # (Not sure if this is what I am doing here)
+                # expand dim to 3D is needed for GlobalMaxPooling
+                concatenated_output = Lambda(lambda x: K.expand_dims(x, 1))(concatenated_output)
+                pooled_output = GlobalMaxPooling1D()(concatenated_output)
+                pooled_related_outputs.append(pooled_output)
+
+        # concatenate all pooled related output tensors to new input tensor for module
+        if len(pooled_related_outputs) > 1:
+            return concatenate(pooled_related_outputs)
+        else:
+            return pooled_related_outputs[0]
+
 
     def __make_modules(self):
         """
         builds all action and proposition modules based on the ungrounded
-        abstract actions and predicates and additionally builds the input modules
-        for all grounded propositional actions and grounded predicates (= propositions)
+        abstract actions and predicates
 
-        :returns: action_layers_modules, proposition_layers_modules,
-                  input_action_modules, input_proposition_modules
+        :returns: action_layers_modules, proposition_layers_modules
             with action_layers_modules being a list of dicts where the ith dict corresponds
             to the ith action layer's modules mapping from action schema names to the module.
             Similarly proposition_layers_modules is a list of dicts where the ith dict corresponds
             to the ith proposition layer's modules mapping from predicate names to the module
-
-            input_action_modules is a list of input modules with the ith input module being
-            for the ith propositional action in self.problem_meta.propositional_actions
-            Same for input_action_modules for proposition modules/ propositions
         """
         # list of dicts where the ith dict corresponds to the ith action layer's modules
         # mapping from (abstract) action schema names to the module
@@ -173,17 +228,7 @@ class ASNet_Model_Builder():
             last_action_layer_modules[action.name] = self.__make_final_action_layer_module(action)
         action_layers_modules.append(last_action_layer_modules)
 
-        # create input modules for all groundings (id matches index in self.problem_meta.grounded_predicates/
-        # propositional_actions)
-        input_action_modules = []
-        input_proposition_modules = []
-        for propositional_action in self.problem_meta.propositional_actions:
-            input_action_modules.append(self.__make_action_input_module(propositional_action))
-        for proposition in self.problem_meta.grounded_predicates:
-            input_proposition_modules.append(self.__make_proposition_input_module(proposition))
-
-        return action_layers_modules, proposition_layers_modules,\
-               input_action_modules, input_proposition_modules
+        return action_layers_modules, proposition_layers_modules
 
 
     def __get_first_layer_action_module_output(self,
@@ -244,24 +289,19 @@ class ASNet_Model_Builder():
     def __get_intermediate_layer_action_module_output(self,
                                                       propositional_action,
                                                       action_index,
-                                                      input_module,
+                                                      input_tensor,
                                                       action_module,
-                                                      layer_index,
-                                                      last_layer_proposition_module_outputs):
+                                                      layer_index):
         """
         computes output tensor for action module in intermediate layer
 
         :param propositional_action: propositional action the module corresponds to
         :param action_index: index of the propositional action in problem_meta
-        :param input_module: input module for action module outputting the input tensor for action_module
+        :param input_tensor: input for action module
         :param action_module: action module of underlying action schema in layer_index layer
         :param layer_index: index indicating in which layer this module output is computed
-        :param last_layer_proposition_module_outputs: tensor as concatenation of all output vectors of the
-            proposition modules in the last proposition layer (in order of ids)
         :return: output tensor of module
         """
-        input_tensor = input_module(last_layer_proposition_module_outputs)
-        
         output = action_module(input_tensor)
         if self.dropout:
             dropout_name = ('%d_layer_actmod_' % layer_index) + propositional_action.get_underlying_action_name() +\
@@ -271,45 +311,24 @@ class ASNet_Model_Builder():
             return output
 
 
-    def __get_last_layer_action_module_output(self,
-                                              input_module,
-                                              action_module,
-                                              last_layer_proposition_module_outputs):
-        """
-        computes output for action module in last layer
-
-        :param input_module: input module for action module outputting the input tensor for action_module
-        :param action_module: action module of underlying action schema in layer_index layer
-        :param last_layer_proposition_module_outputs: tensor as concatenation of all output vectors of the
-            proposition modules in the last proposition layer (in order of ids)
-        :return: output tensor of module
-        """
-        input_tensor = input_module(last_layer_proposition_module_outputs)
-        
-        return action_module(input_tensor)
-
-
     def __get_proposition_module_output(self,
                                         proposition,
                                         proposition_index,
-                                        input_module,
+                                        input_tensor,
                                         proposition_module,
-                                        layer_index,
-                                        last_action_module_outputs):
+                                        layer_index):
         """
         computes output for proposition module
 
         :param proposition: proposition the module corresponds to
         :param proposition_index: index of the proposition in problem_meta
-        :param input_module: input module for proposition module delivering its input vector
+        :param input_tensor: input for proposition module
         :param proposition_module: proposition module of underlying predicate in layer_index layer
         :param layer_index: index indicating in which layer this module output is computed
         :param last_action_module_outputs: tensor as concatenation of all output vectors of the action modules
             in the last action layer (in order of ids)
         :return: output tensor of module
         """
-        input_tensor = input_module(last_action_module_outputs)
-
         output = proposition_module(input_tensor)
         if self.dropout:
             dropout_name = ('%d_layer_propmod_' % layer_index) + proposition.predicate + str(proposition_index) + '_dropout'
@@ -320,9 +339,7 @@ class ASNet_Model_Builder():
 
     def __make_network(self,
                        action_layers_modules,
-                       proposition_layers_modules,
-                       input_action_modules,
-                       input_proposition_modules):
+                       proposition_layers_modules):
         """
         build concrete ASNet with all connections with modules
 
@@ -330,10 +347,6 @@ class ASNet_Model_Builder():
             ith action layer's modules mapping from action schema names to the module
         :param proposition_layers_modules: list of dicts where the ith dict corresponds to
             the ith proposition layer's modules mapping from predicate names to the module
-        :param input_action_modules: list of input modules with the ith input module being
-            for the ith propositional action in self.problem_meta.propositional_actions
-        :param input_proposition_modules: list of input modules with the ith input module being
-            for the ith proposition in self.problem_meta.grounded_predicates
 
         :return: action_layers_outputs, proposition_layers_outputs
             with action_layers_outputs being a list of tensors where the ith tensor
@@ -364,45 +377,44 @@ class ASNet_Model_Builder():
                         propositional_action, action_index, related_proposition_ids, action_module))
                 else:
                     # extract corresponding action input module
-                    input_module = input_action_modules[action_index]
+                    input_tensor = self.__make_action_module_input(propositional_action, proposition_layers_outputs[layer_index - 1])
                     # extract corresponding action module for layer_index layer
                     action_module = action_layers_modules[layer_index][
                         propositional_action.get_underlying_action_name()]
                     # compute output of action module and add to the list for current layer
                     action_layer_outputs.append(self.__get_intermediate_layer_action_module_output(
-                        propositional_action, action_index, input_module, action_module, layer_index,
-                        proposition_layers_outputs[layer_index - 1]))
+                        propositional_action, action_index, input_tensor, action_module, layer_index))
             concatenated_action_layer_outputs = concatenate(action_layer_outputs, name="action_layer_%d_outputs_concatenation" % layer_index)
             action_layers_outputs.append(concatenated_action_layer_outputs)
+
 
             # list of outputs of all proposition modules in layer_index layer
             proposition_layer_outputs = []
             for proposition_index, proposition in enumerate(self.problem_meta.grounded_predicates):
                 # extract corresponding proposition input module
-                input_module = input_proposition_modules[proposition_index]
+                input_tensor = self.__make_proposition_module_input(proposition, action_layers_outputs[layer_index])
+
+                # return Model(inputs=[self.proposition_truth_values, self.proposition_goal_values,
+                #         self.action_applicable_values], outputs=input_tensor, name="test")
 
                 # extract corresponding proposition module for layer_index layer
                 proposition_module = proposition_layers_modules[layer_index][proposition.predicate]
                 # compute output of proposition module with pooling and add to the list for current layer
                 proposition_layer_outputs.append(self.__get_proposition_module_output(
-                    proposition, proposition_index, input_module, proposition_module, layer_index,
-                    action_layers_outputs[layer_index]))
+                    proposition, proposition_index, input_tensor, proposition_module, layer_index))
             concatenated_proposition_layer_outputs = concatenate(proposition_layer_outputs, name="prop_layer_%d_outputs_concatenation" % layer_index)
             proposition_layers_outputs.append(concatenated_proposition_layer_outputs)
 
         # last action layer
         outputs = []
         for action_index, propositional_action in enumerate(self.problem_meta.propositional_actions):
-            input_module = input_action_modules[action_index]
-            action_module = action_layers_modules[-1][
-                        propositional_action.get_underlying_action_name()]
+            input_tensor = self.__make_action_module_input(propositional_action, proposition_layers_outputs[-1])
+            action_module = action_layers_modules[-1][propositional_action.get_underlying_action_name()]
             # compute output of action module and add to the list for current layer
-            outputs.append(self.__get_last_layer_action_module_output(input_module,
-                action_module, proposition_layers_outputs[-1]))
+            outputs.append(action_module(input_tensor))
 
         outputs = concatenate(outputs, name="final_outputs_concatenation")
-        softmax_layer = SoftmaxOutputLayer()
-        policy_output = softmax_layer((outputs, self.action_applicable_values))
+        policy_output = masked_softmax(outputs, self.action_applicable_values)
         if self.extra_input_size:
             asnet_model = Model(inputs=[self.proposition_truth_values, self.proposition_goal_values,
                 self.action_applicable_values, self.additional_input_features], outputs=policy_output,
@@ -476,14 +488,8 @@ class ASNet_Model_Builder():
         # to the ith action layer's modules mapping from action schema names to the module.
         # Similarly proposition_layers_modules is a list of dicts where the ith dict corresponds
         # to the ith proposition layer's modules mapping from predicate names to the module
+        action_layers_modules, proposition_layers_modules = self.__make_modules()
 
-        # input_action_modules is a list of input modules with the ith input module being
-        # for the ith propositional action in self.problem_meta.propositional_actions
-        # Same for input_action_modules for proposition modules/ propositions
-        action_layers_modules, proposition_layers_modules, input_action_modules,\
-        input_proposition_modules  = self.__make_modules()
-
-        asnet_model = self.__make_network(action_layers_modules, proposition_layers_modules,
-            input_action_modules, input_proposition_modules)
+        asnet_model = self.__make_network(action_layers_modules, proposition_layers_modules)
 
         return asnet_model
