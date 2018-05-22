@@ -50,6 +50,8 @@ def print_predicates(task_meta):
     for pred in task_meta.task.predicates:
         print(pred)
         print(task_meta.pred_to_related_action_names[pred])
+        groundings = task_meta.predicate_name_to_grounded_predicates[pred.name]
+        print("Number of groundings: %d" % len(groundings))
         print("")
     print("\n")
 
@@ -59,6 +61,8 @@ def print_actions(task_meta):
     for action in task_meta.task.actions:
         print(action)
         print(task_meta.action_to_related_pred_names[action])
+        groundings = task_meta.action_name_to_prop_actions[action.name]
+        print("Number of groundings: %d" % len(groundings))
         print("")
     print("\n")
 
@@ -105,9 +109,9 @@ def main(argv):
         # print_actions(task_meta)
 
         asnet_builder = ASNet_Model_Builder(task_meta)
-        asnet_model = asnet_builder.build_asnet_keras_model(2)
+        asnet_model = asnet_builder.build_asnet_keras_model(1)
         print(asnet_model.summary())
-    
+
 
 if __name__ == "__main__":
     main(sys.argv)

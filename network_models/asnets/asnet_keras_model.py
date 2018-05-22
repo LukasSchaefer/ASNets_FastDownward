@@ -128,22 +128,6 @@ class ASNet_Model_Builder():
         :param last_action_module_outputs: output tensor of last action layer
         :return: input for proposition module of proposition
         """
-        # # test
-        # related_shits = []
-        # related_propositional_action_ids = self.problem_meta.gr_pred_to_related_prop_action_ids[proposition]
-        # get_index_of_tensor_layer = Lambda(lambda x, index: x[:, self.hidden_representation_size * index:\
-        #         self.hidden_representation_size * (index + 1)])
-        # for i in range(len(related_propositional_action_ids)):
-        #     get_index_of_tensor_layer.arguments = {'index': i}
-        #     tensor = get_index_of_tensor_layer(last_action_module_outputs)
-        #     related_shits.append(tensor)
-
-
-        # concatenated_outputs = concatenate(related_shits, 0)
-        # output_extra_dim = Lambda(lambda x: K.expand_dims(x, 0))(concatenated_outputs)
-        # return GlobalMaxPooling1D()(output_extra_dim)
-        # # testend
-
         related_propositional_action_ids = self.problem_meta.gr_pred_to_related_prop_action_ids[proposition]
 
         # collect outputs of related action modules in last layer and pool all outputs together of
@@ -161,8 +145,8 @@ class ASNet_Model_Builder():
                 # There were no related propositional actions of the corresponding action schema
                 # -> create hidden-representation-sized vector of 0s
 
-                # TODO: fix ugly shape like hack (any output of get_index_of_tensor_layer will be correct shape)
-                # (hidden_representation_size,)
+                # TODO: maybe make this more logical/ easier understandable (any output of get_index_of_tensor_layer
+                # will be correct shape (batch_size, hidden_representation_size))
                 get_index_of_tensor_layer.arguments = {'index': 0}
                 shape_like_tensor = get_index_of_tensor_layer(last_action_module_outputs)
 
