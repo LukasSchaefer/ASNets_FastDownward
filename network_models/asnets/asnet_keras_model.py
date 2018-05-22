@@ -159,7 +159,7 @@ class ASNet_Model_Builder():
                     concatenated_output = action_schema_outputs[0]
                 # Pool all those output-vectors together to a single output-vector sized vector
                 # (Not sure if this is what I am doing here)
-                # expand dim to 3D is needed for GlobalMaxPooling
+                # expand dim to 3D is needed for MaxPooling to a single (batch_size, hidden_representation_size) tensor
                 concatenated_output = Lambda(lambda x: K.expand_dims(x, 1))(concatenated_output)
                 pooled_output = GlobalMaxPooling1D()(concatenated_output)
                 pooled_related_outputs.append(pooled_output)
@@ -325,7 +325,7 @@ class ASNet_Model_Builder():
                        action_layers_modules,
                        proposition_layers_modules):
         """
-        build concrete ASNet with all connections with modules
+        build concrete ASNet with all connections and modules
 
         :param action_layers_modules: list of dicts where the ith dict corresponds to the
             ith action layer's modules mapping from action schema names to the module
@@ -350,7 +350,7 @@ class ASNet_Model_Builder():
             action_layer_outputs = []
             for action_index, propositional_action in enumerate(self.problem_meta.propositional_actions):
                 if layer_index == 0:
-                    # list of ids = indeces of related propositions
+                    # list of ids (= indeces) of related propositions
                     related_proposition_ids = self.problem_meta.prop_action_to_related_gr_pred_ids[
                         propositional_action]
 
@@ -360,7 +360,7 @@ class ASNet_Model_Builder():
                     action_layer_outputs.append(self.__get_first_layer_action_module_output(
                         propositional_action, action_index, related_proposition_ids, action_module))
                 else:
-                    # extract corresponding action input module
+                    # compute corresponding action input tensor
                     input_tensor = self.__make_action_module_input(propositional_action, proposition_layers_outputs[layer_index - 1])
                     # extract corresponding action module for layer_index layer
                     action_module = action_layers_modules[layer_index][
@@ -375,11 +375,8 @@ class ASNet_Model_Builder():
             # list of outputs of all proposition modules in layer_index layer
             proposition_layer_outputs = []
             for proposition_index, proposition in enumerate(self.problem_meta.grounded_predicates):
-                # extract corresponding proposition input module
+                # compute corresponding proposition input tensor
                 input_tensor = self.__make_proposition_module_input(proposition, action_layers_outputs[layer_index])
-
-                # return Model(inputs=[self.proposition_truth_values, self.proposition_goal_values,
-                #         self.action_applicable_values], outputs=input_tensor, name="test")
 
                 # extract corresponding proposition module for layer_index layer
                 proposition_module = proposition_layers_modules[layer_index][proposition.predicate]
@@ -394,7 +391,7 @@ class ASNet_Model_Builder():
         for action_index, propositional_action in enumerate(self.problem_meta.propositional_actions):
             input_tensor = self.__make_action_module_input(propositional_action, proposition_layers_outputs[-1])
             action_module = action_layers_modules[-1][propositional_action.get_underlying_action_name()]
-            # compute output of action module and add to the list for current layer
+            # compute output of action module and add to the list for output tensors
             outputs.append(action_module(input_tensor))
 
         outputs = concatenate(outputs, name="final_outputs_concatenation")

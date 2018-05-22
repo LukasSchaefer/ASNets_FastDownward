@@ -109,7 +109,7 @@ def main(argv):
         # print_actions(task_meta)
 
         asnet_builder = ASNet_Model_Builder(task_meta)
-        asnet_model = asnet_builder.build_asnet_keras_model(1)
+        asnet_model = asnet_builder.build_asnet_keras_model(1, dropout=0.25)
         print(asnet_model.summary())
 
 
