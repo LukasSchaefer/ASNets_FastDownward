@@ -1,26 +1,24 @@
-from . import Network, NetworkFormat
-from .keras_tools import KerasDataGenerator
+from . import KerasDataGenerator, store_keras_model_as_protobuf
 
-from .. import parser_tools as parset
-from .. import parser
-from .. import main_register
-from ..misc import similarities, InvalidModuleImplementation
-from ..parser_tools import ArgumentException
+from .. import Network, NetworkFormat
 
-from ..bridges import StateFormat
+from ... import parser_tools as parset
+from ... import parser
+from ... import main_register
+
+from ...bridges import StateFormat
+from ...misc import similarities, InvalidModuleImplementation
+from ...parser_tools import ArgumentException
 
 import json
 import keras
 from keras import layers
-import keras.backend as K
 import matplotlib as mpl
 import math
 mpl.use('agg')
 import matplotlib.pyplot as plt
 import numpy as np
 import os
-from tensorflow.python.framework import graph_util
-from tensorflow.python.framework import graph_io
 
 # List of formats in which the matplotlib figures shall be stored
 MATPLOTLIB_OUTPUT_FORMATS=["png"]
@@ -28,6 +26,7 @@ MATPLOTLIB_OUTPUT_FORMATS=["png"]
 
 class KerasNetwork(Network):
     arguments = parset.ClassArguments('KerasNetwork', Network.arguments,
+        ("epochs", True, 1000, int, "Number of training epochs per training call"),
         ("count_samples", True, False, parser.convert_bool,
          "Counts how many and which samples where used during training"
          " (This increases the runtime)."),
@@ -36,14 +35,18 @@ class KerasNetwork(Network):
          " to the trainings data. For this to work ALL training data is kept in"
          "memory, this could need a lot of memory"
          " (provide name of a similarity measure)"),
-        order=["load", "store", "formats", "out", "count_samples",
-               "test_similarity", "variables", "id"])
+        ("graphdef", "True", None, str,
+         "Name for an ASCII GraphDef file of the stored Protobuf model (only "
+         "applicable if Protobuf model is stored)"),
+        order=["load", "store", "formats", "out", "epochs", "count_samples",
+               "test_similarity", "graphdef", "variables", "id"])
 
     def __init__(self, load=None, store=None, formats=None, out=".",
-                 count_samples=False, test_similarity=None,
+                 epochs=1000, count_samples=False, test_similarity=None,
+                 graphdef=None,
                  variables=None, id=None):
         Network.__init__(self, load, store, formats, out, variables, id)
-        self._epochs = 20
+        self._epochs = epochs
         self._model = None
 
 
@@ -80,8 +83,17 @@ class KerasNetwork(Network):
         # Providing here None means the measure uses its default comparator for
         # all fields
         self._x_fields_comparators = None
-        # Callback functions for the keras fitting
+        # Callback functions for the keras_networks fitting
         self._callbacks = None
+
+        # Variables for storing Protobuf (ignore if you do not support storing
+        # Protobuf files, but in general keras networks can be converted)
+        self._quantize = False  # Tensorflow quantize feature
+        self._theano = False  # The model used theano as backend
+        self._num_outputs = 1  # Number of output PATHS of the network (not output nodes)
+        self._prefix_outputs = ""  # Prefix before every output path
+        self._store_graphdef = graphdef  # Store GraphDef of Tensorflow Graph if file name is given
+
 
     def initialize(self, *args, **kwargs):
         Network.initialize(self, *args, **kwargs)
@@ -107,6 +119,9 @@ class KerasNetwork(Network):
     def _get_load_formats(self):
         return set([NetworkFormat.hdf5])
 
+    def get_preferred_state_formats(self):
+        return [StateFormat.Full]
+
     def _load(self, path, format):
         if format == NetworkFormat.hdf5:
             self._model = keras.models.load_model(path)
@@ -119,13 +134,18 @@ class KerasNetwork(Network):
             if format is None:
                 format = self._get_default_network_format()
 
+            path_format = path + "." + format.suffix
             if format == NetworkFormat.hdf5:
-                print("STPRE HDF5")
-                self._model.save(path + "." + format.suffix)
+                self._model.save(path_format)
             elif format == NetworkFormat.protobuf:
-                print("STORE PB")
-                print("TODO")
-                # TODO
+                #graphdef = (None if self._store_graphdef is None else
+                #            os.path.join(self.path_out, self._store_graphdef))
+                store_keras_model_as_protobuf(
+                    self._model, os.path.dirname(path), os.path.basename(path_format),
+                    quantize=self._quantize, theano=self._theano,
+                    num_outputs=self._num_outputs, prefix_outputs=self._prefix_outputs,
+                    store_graphdef=self._store_graphdef
+                )
 
 
     def train(self, dtrain, dtest=None):
@@ -171,10 +191,6 @@ class KerasNetwork(Network):
             use_multiprocessing=False,
             shuffle=True, initial_epoch=0)
 
-        c = 0
-        for ds in dtrain:
-            c += ds.size()
-        print("SAMPLE COUNT TOTAL", c)
         self._count_samples_hashes.update(kdg_train.generated_sample_hashes)
 
         self._history = history
@@ -248,7 +264,6 @@ class KerasNetwork(Network):
         :param data:
         :return:
         """
-        print("KERAS CONVERT")
         data = data if isinstance(data, list) else [data]
         for data_set in data:
             if data_set.is_finalized:
@@ -293,7 +308,7 @@ class KerasNetwork(Network):
 
         KerasNetwork._analyse_from_predictions_deviation(
             self._evaluation[0], self._evaluation[1], "Prediction Deviations",
-            "deviation", "count", "deviations", directory)
+            "count", "deviation", "deviations", directory)
 
         KerasNetwork._analyse_from_predictions_deviation_dep_on_h(
             self._evaluation[0], self._evaluation[1],
@@ -307,11 +322,17 @@ class KerasNetwork(Network):
             "similarity", "deviations_dep_sim", directory)
 
         analysis_data = {"histories": [h.history for h in self._histories],
-                         "evaluations": [(e[0].tolist(), e[1].tolist()) for e in self._evaluations]}
+                         "evaluations": [(e[0].tolist(), e[1].tolist()) for e in self._evaluations],
+                         "count_samples": len(self._count_samples_hashes) if self._count_samples else "NA"}
+
+        analysis_data["model"] = ""
+        def add_model_summary(x):
+            nonlocal analysis_data
+            analysis_data["model"] += x + "\n"
+        self._model.summary(print_fn=add_model_summary)
 
         with open(os.path.join(directory, "analysis.meta"), "w") as f:
             json.dump(analysis_data, f)
-        print("SEEN SAMPLES", len(self._count_samples_hashes))
 
     """----------------------ANALYSIS METHODS--------------------------------"""
 
@@ -419,7 +440,7 @@ class KerasNetwork(Network):
 
     @staticmethod
     def _analyse_from_predictions_deviation(predicted, original, title,
-                                            pred_label, orig_label, file,
+                                            ylabel, xlabel, file,
                                             directory=".",
                                             formats=MATPLOTLIB_OUTPUT_FORMATS):
         fig = plt.figure()
@@ -437,8 +458,8 @@ class KerasNetwork(Network):
                    for i in range(math.floor(min_d), math.ceil(max_d) + 1)]
 
         ax.bar(bars, heights, align='center')
-        ax.set_xlabel(orig_label)
-        ax.set_ylabel(pred_label)
+        ax.set_xlabel(xlabel)
+        ax.set_ylabel(ylabel)
         ax.set_title(title)
         fig.tight_layout()
         for format in formats:
@@ -459,21 +480,6 @@ class KerasNetwork(Network):
             if h not in by_h:
                 by_h[h] = []
             by_h[h].append(p - h)
-
-        mean_dev = []
-        median_dev = []
-        std_dev = []
-        for h in range(min_h, max_h + 1):
-            if h in by_h:
-                ary = np.array(by_h[h])
-                by_h[h] = ary
-                mean_dev.append(ary.mean())
-                median_dev.append(np.median(ary))
-                std_dev.append(np.std(ary))
-            else:
-                mean_dev.append(float('NaN'))
-                median_dev.append(float('NaN'))
-                std_dev.append(float('NaN'))
 
         fig = plt.figure()
         ax = fig.add_subplot(1, 1, 1)
@@ -501,45 +507,36 @@ class KerasNetwork(Network):
     def _analyse_from_predictions_deviation_dep_on_similarity(
             predicted, original, similarity,
             title, pred_label, orig_label,
-            file, directory=".", formats=MATPLOTLIB_OUTPUT_FORMATS):
-        print("SIMILARITIES", sorted(similarity))
-        return
-        by_h = {}
-        min_h = min(original)
-        max_h = max(original)
-        for idx in range(len(original)):
-            h = original[idx]
-            p = predicted[idx]
-            if h not in by_h:
-                by_h[h] = []
-            by_h[h].append(p - h)
+            file, directory=".", formats=MATPLOTLIB_OUTPUT_FORMATS,
+            steps=10, precision="%.2f"):
 
-        mean_dev = []
-        median_dev = []
-        std_dev = []
-        for h in range(min_h, max_h + 1):
-            if h in by_h:
-                ary = np.array(by_h[h])
-                by_h[h] = ary
-                mean_dev.append(ary.mean())
-                median_dev.append(np.median(ary))
-                std_dev.append(np.std(ary))
-            else:
-                mean_dev.append(float('NaN'))
-                median_dev.append(float('NaN'))
-                std_dev.append(float('NaN'))
+        min_sim, max_sim = min(similarity), max(similarity)
+        step_sim = (max_sim-min_sim)/float(steps)
+        def get_bin(x):
+            return max(0, min(steps - 1, int((x - min_sim) / step_sim)))
+        by_sim = {}
+        for idx in range(len(original)):
+            d = original[idx] - predicted[idx]
+            s = similarity[idx]
+            b = get_bin(s)
+            if b not in by_sim:
+                by_sim[b] = []
+            by_sim[b].append(d)
 
         fig = plt.figure()
         ax = fig.add_subplot(1, 1, 1)
         new_x_ticks = []
         data = []
-        for i in range(min_h, max_h + 1):
-            if i in by_h:
-                new_x_ticks.append("%d\n$n=%d$" % (i, len(by_h[i])))
-                data.append(by_h[i])
-            else:
-                new_x_ticks.append("%d" % i)
-                data.append([float('nan')])
+        for i in range(steps):
+            if i in by_sim:
+                sim_range = ("[%s,%s" % (precision, precision)
+                             + ("]" if i == steps -1 else "["))
+                sim_range = sim_range % (min_sim + i * step_sim,
+                                         min_sim + (i + 1) * step_sim)
+
+                new_x_ticks.append("%s\n$n=%d$" % (sim_range, len(by_sim[i])))
+                data.append(by_sim[i])
+
         ax.boxplot(data)
         ax.set_xticklabels(new_x_ticks)
 
@@ -571,32 +568,39 @@ class KerasNetwork(Network):
             raise ArgumentException("The definition of KerasNetwork can "
                                     "only be used for look up of any previously"
                                     " defined KerasNetwork via "
-                                    "'keras(id=ID)'")
+                                    "'keras_networks(id=ID)'")
 
 
-main_register.append_register(KerasNetwork, "keras")
+main_register.append_register(KerasNetwork, "keras_networks")
 
 
-class DomainPropertiesKerasNetwork(KerasNetwork):
+class KerasDomainPropertiesNetwork(KerasNetwork):
     arguments = parset.ClassArguments('DomainPropertiesKerasNetwork',
                                       KerasNetwork.arguments)
 
-    def __init__(self, load=None, store=None, formats=None, out=".",
-                 count_samples=False, test_similarity=None, variables=None, id=None,
+    def __init__(self, load=None, store=None, formats=None, out=".", epochs=1000,
+                 count_samples=False, test_similarity=None, graphdef=None,
+                 variables=None, id=None,
                  domain_properties=None):
-        KerasNetwork.__init__(self, load, store, formats, out, count_samples,
-                              test_similarity,
+        KerasNetwork.__init__(self, load, store, formats, out, epochs,
+                              count_samples, test_similarity, graphdef,
                               variables, id)
 
         self._domain_properties = None
+        self._gnd_static_str = None
         self._set_domain_properties(domain_properties)
 
     def _set_domain_properties(self, dp):
+        """
+        You might you this method from outside of this object, but pay attention
+        or confusion will arise (e.g. use it before initializing should be safe)
+        :param dp:
+        :return:
+        """
         self._domain_properties = dp
         self._gnd_static_str = (set() if dp is None else
                                 set([str(item) for item in
                                      self._domain_properties.gnd_static]))
-        print(self._gnd_static_str)
 
     def initialize(self, msgs, *args, domain_properties=None, **kwargs):
         if domain_properties is not None:
@@ -606,7 +610,6 @@ class DomainPropertiesKerasNetwork(KerasNetwork):
     def _convert_state(self, state, format):
         """
         TODO: Add conversion for more formats, esp. StateFormat.Objects
-        TODO: Add static pruning
         :param state: state description
         :param format: StateFormat in which the state is given
         :return:
@@ -630,109 +633,14 @@ class DomainPropertiesKerasNetwork(KerasNetwork):
     @staticmethod
     def parse(tree, item_cache):
         obj = parser.try_lookup_obj(tree, item_cache,
-                                    DomainPropertiesKerasNetwork, None)
+                                    KerasDomainPropertiesNetwork, None)
         if obj is not None:
             return obj
         else:
             raise ArgumentException("The definition of "
-                                    "DomainPropertyKerasNetwork can "
+                                    "KerasDomainPropertiesNetwork can "
                                     "only be used for look up of any previously"
                                     " defined KerasNetwork via 'dp_keras(id=ID)'")
 
 
-main_register.append_register(DomainPropertiesKerasNetwork, "dp_keras")
-
-
-class MLPDynamicKeras(DomainPropertiesKerasNetwork):
-    arguments = parset.ClassArguments('MLPDynamicKeras',
-                                      DomainPropertiesKerasNetwork.arguments,
-                                      ("hidden", False, None, int, "Number of hidden layers"),
-                                      ("output_units", False, True, int,
-                                       "Classification network with output_units output units or regression network if -1"),
-                                      ("activation", True, "sigmoid", str, "Activation function of hidden layers"),
-                                      ("dropout", True, None, int, "Dropout probability or None if no dropout"),
-                                      ("optimizer", True, "adam", str, "Optimization algorithm"),
-                                      ("loss", True, "mean_squared_error", str, "Loss function"),
-                                      order=["hidden", "output_units",
-                                             "activation", "dropout",
-                                             "optimizer", "loss",
-                                             "load", "store", "formats", "out",
-                                             "count_samples", "test_similarity",
-                                             "variables", "id"]
-                                      )
-
-    def __init__(self, hidden, output_units=-1, activation="sigmoid",
-                 dropout=None, optimizer="adam", loss="mean_squared_error",
-                 load=None, store=None, formats=None, out=".",
-                 count_samples=False, test_similarity=None, variables=None, id=None,
-                 domain_properties=None):
-        DomainPropertiesKerasNetwork.__init__(
-            self, load, store, formats, out, count_samples, test_similarity,
-            variables, id, domain_properties=domain_properties)
-        self._hidden = hidden
-        self._output_units = output_units
-        self._activation = activation
-        self._dropout = dropout
-        self._optimizer = optimizer
-        self._loss = loss
-
-        self._x_fields_extractor = lambda ds: [ds.field_current_state,
-                                               ds.field_goal_state]
-        self._y_fields_extractor = None#lambda ds: ds.field_heuristic
-        self._x_converter = lambda x: [np.stack(x[:, 0], axis=0),
-                                       np.stack(x[:, 1], axis=0)]
-        self._x_fields_comparators = [
-            similarities.hamming_measure_cmp_iterable_equal,
-            similarities.hamming_measure_cmp_iterable_equal
-        ]
-        self._count_samples_hasher = lambda x, y: hash(str((x,y)))
-        # Either self._domain_properties will be used to determine the state
-        # size or on initialization the state size has to be given
-        # If both is given, the DomainProperties will be prefered
-        self._state_size = None
-
-    def _initialize_general(self, *args, state_size=None, **kwargs):
-        if state_size is not None:
-            self._state_size = state_size
-
-
-    def _initialize_model(self, *args, **kwargs):
-        if self._domain_properties is None and self._state_size is None:
-            raise ValueError("This network either needs the state size "
-                             "information or preferably a DomainProperties"
-                             "object,")
-
-        input_units = (len(self._domain_properties.gnd_flexible)
-                       if self._domain_properties is not None
-                       else self._state_size)
-        regression = self._output_units == -1
-        output_units = 1 if regression else self._output_units
-
-        in_state = layers.Input(shape=(input_units,))
-        in_goal = layers.Input(shape=(input_units,))
-        next = layers.concatenate([in_state, in_goal], axis=-1)
-
-        unit_diff = input_units * 2 - output_units
-        step = int(unit_diff/(self._hidden + 1))
-        units = input_units * 2
-        for i in range(self._hidden):
-            units -= step
-            next = KerasNetwork.next_dense(next, units,
-                                           self._activation, self._dropout)
-        next = KerasNetwork.next_dense(next, output_units,
-                                       "relu" if regression else "softmax", None)
-
-
-        self._model = keras.Model(inputs=[in_state, in_goal], outputs=next)
-        self._compile(self._optimizer, self._loss, ["accuracy",
-                                                    "mean_absolute_error"])
-
-    def _finalize(self):
-        pass
-
-    @staticmethod
-    def parse(tree, item_cache):
-        return parser.try_whole_obj_parse_process(tree, item_cache,
-                                                  KerasNetwork)
-
-main_register.append_register(MLPDynamicKeras, "mlp_dyn_keras")
+main_register.append_register(KerasDomainPropertiesNetwork, "keras_dp")

@@ -2,21 +2,20 @@
 # -*- coding: utf-8 -*-
 from __future__ import print_function
 
+from src.training import parser, parser_tools
+
 from src.training.bridges import StateFormat, LoadSampleBridge
-from src.training.networks import MLPDynamicKeras, NetworkFormat
 from src.training.misc import DomainProperties
+from src.training.networks import Network, NetworkFormat
 from src.training.samplers import DirectorySampler
 
-tr = None
-ts = None
-D = None
 import argparse
 import os
 import re
 import sys
-import numpy as np
-
 import time
+
+
 CHOICE_STATE_FORMATS = []
 for name in StateFormat.name2obj:
     CHOICE_STATE_FORMATS.append(name)
@@ -30,6 +29,9 @@ DESCRIPTIONS = """Train network on previously sampled data."""
 
 ptrain = argparse.ArgumentParser(description=DESCRIPTIONS)
 
+ptrain.add_argument("network", type=str,
+                     action="store", default=None,
+                     help="Definition of the network.")
 ptrain.add_argument("root", type=str, nargs="+", action="store",
                      help="Path to the root directories with the sampled data. "
                           "The data can be in subfolders, the domain file has"
@@ -41,6 +43,10 @@ ptrain.add_argument("-d", "--directory-filter", type=str,
                           "required. This argument can be given any number of"
                           "time to add additional filters (the directory name has"
                           "to match ALL regexes)")
+ptrain.add_argument("-dp", "--domain-properties", action="store_true",
+                    help="If set and the networks supports it, then the network"
+                         " is provided with an analysis of "
+                         "properties of the problems domain")
 ptrain.add_argument("-f", "--format", choices=CHOICE_STATE_FORMATS,
                      action="store", default=None,
                      help=("State format name into which the loaded data shall"
@@ -51,21 +57,14 @@ ptrain.add_argument("-m", "--max-depth", type=int,
                      help="Maximum depth from the root which is traversed ("
                           "default has no maximum, 0 means traversing no"
                           "subfolders, only the content of the root)")
-ptrain.add_argument("-n", "--network", type=str,
+ptrain.add_argument("-n", "--name", type=str,
                      action="store", default=None,
-                     help="Filename under which the trained network shall be "
-                          "stored (the network will be stored in the output "
-                          "directory). If not given, the network will not be"
-                          "stored.")
-ptrain.add_argument("-nf", "--network-format", choices=CHOICE_NETWORK_FORMATS,
-                     action="append", default=None,
-                     help=("List of network formats in which the trained "
-                           "network shall be trained. If not given, the networks"
-                           "default format is used"))
-ptrain.add_argument("-o", "--output", type=str,
-                     action="store", default=None,
-                     help="Path to the output directory. If non is given, the"
-                          "first root directory is used.")
+                     help="Overrides the network store location defined in the "
+                          "network definition by 'output directory/name'")
+ptrain.add_argument("-o", "--output",
+                     action="store_true",
+                     help="Overrides the output directory specified in the"
+                          "network definition with the first root directory.")
 ptrain.add_argument("-p", "--problem-filter", type=str,
                      action="append", default=[],
                      help="A problem file name has to match the regex otherwise"
@@ -98,22 +97,29 @@ ptrain.add_argument("-v", "--verification", type=str,
 def parse_train(argv):
     options = ptrain.parse_args(argv)
 
-    if options.format is None:
-        # TODO Take preferred format of network
-        options.format = StateFormat.Full
-    else:
+    options.network = parser.construct(
+        parser_tools.ItemCache(),
+        parser_tools.main_register.get_register(Network),
+        options.network)
+
+    if options.output:
+        options.network.path_out = options.root[0]
+    if options.name is not None:
+        options.network.path_store = os.path.join(options.network.path_out,
+                                                  options.name)
+
+    if options.format is not None:
         options.format = StateFormat.get(options.format)
-
-    print(options.network_format)
-    if options.network_format is not None:
-        for idx in range(len(options.network_format)):
-            options.network_format[idx] = NetworkFormat.by_name(
-                options.network_format[idx])
-
-    options.output = options.root[0] if options.output is None else options.output
+    else:
+        options.format = options.network.get_preferred_state_formats()[0]
 
     if options.verification is not None:
         options.verification = re.compile(options.verification)
+
+    if (options.domain_properties
+            and hasattr(options.network, "_set_domain_properties")):
+        domprob = DomainProperties.get_property_for(*options.root)
+        options.network._set_domain_properties(domprob)
 
     return options
 
@@ -154,20 +160,41 @@ def load_data(options):
     return dtrain, dtest
 
 
-D = None
-G = None
-K=None
-
+def timing(old_time, msg):
+    new_time = time.time()
+    print(msg % (new_time-old_time))
+    return new_time
 
 def train(argv):
+    start_time = time.time()
     options = parse_train(argv)
-    global D, G, K
-    domprob = DomainProperties.get_property_for(*options.root)
+    start_time = timing(start_time, "Parsing time: %ss")
 
     dtrain, dtest = load_data(options)
     state_size = len(dtrain[0].data["O"][0][0][dtrain[0].field_current_state].split("\t"))
+    start_time = timing(start_time, "Loading data time: %ss")
+
+    options.network.initialize(None)
+    start_time = timing(start_time, "Network initialization time: %ss")
+
+    options.network.train(dtrain, dtest)
+    start_time = timing(start_time, "Network training time: %ss")
+
+    options.network.evaluate(dtest)
+    start_time = timing(start_time, "Network evaluation time: %ss")
+
+    options.network.analyse()
+    start_time = timing(start_time, "Network analysis time: %ss")
+
+    options.network.finalize()
+    _ = timing(start_time, "Network finalization time: %ss")
 
 
+
+if __name__ == "__main__":
+    train(sys.argv[1:])
+
+"""
     def _convert_state(state):
         parts = state.split("\t")
         for idx in range(len(parts)):
@@ -190,7 +217,8 @@ def train(argv):
                                 entry[data_set.field_other_state]))
             data_set.finalize()
         return data
-
+        
+    
     #dtrain = _convert_data(dtrain)
     #dtest = _convert_data(dtest)
     #kdg_train = KerasDataGenerator(dtrain,
@@ -203,39 +231,5 @@ def train(argv):
     #D = kdg_train[0][0][0]
     #G = kdg_train
 
-    start_time = time.time()
-    network = MLPDynamicKeras(
-        3, -1, out=options.root[0],
-        store=None if options.network is None else os.path.join(options.output, options.network),
-        formats=options.network_format,
-        test_similarity="hamming")
 
-    network.initialize(None, domain_properties=domprob)
-
-    D = network.train(dtrain, dtest)
-
-    G = network.evaluate(dtest)
-    print("RuNTiME", time.time()-start_time)
-    network.analyse(options.output)
-    network.finalize()
-
-
-
-if __name__ == "__main__":
-    import matplotlib.pyplot as plt
-    import matplotlib as mpl
-    import numpy
-    #ary = np.arange(18).reshape(3,6)
-    #plt.matshow(ary, aspect=)
-
-    #for i in np.linspace(0,1,20):
-    #    plt.plot(np.arange(10), [i]*10, c=mpl.cm.jet(i))
-    #plt.savefig("tst.png")
-
-    #sys.exit(32)
-    #import sys
-    #from src.training.main import main
-    #main(sys.argc[1:])
-    print("HELLO")
-    train(sys.argv[1:])
-
+        """

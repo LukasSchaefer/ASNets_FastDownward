@@ -102,19 +102,45 @@ class Network(AbstractBaseClass):
 
     @abc.abstractmethod
     def _get_default_network_format(self):
+        """
+        Return default/prefered format to store networks of this class.
+        :return: NetworkFormat
+        """
         pass
 
     @abc.abstractmethod
     def _get_store_formats(self):
+        """
+        Return iterable of all formats in which networks of this class can be
+        stored,
+        :return: iterable (with "in" operator) of NetworkFormat objects
+        """
         pass
 
     @abc.abstractmethod
     def _get_load_formats(self):
+        """
+        Return iterable of all formats from which networks of this class can be
+        loaded
+        :return: iterable (with "in" operator) of NetworkFormat objecs
+        """
         pass
+
+    def get_preferred_state_formats(self):
+        """
+        Most networks work on sampled PDDL states which can be represented in
+        different formats. This method returns the supported StateFormats of
+        the network in order of preference.
+        If your network does not work on those states, let the method raise an
+        exception (like it currently does)
+        :return: list of supported StateFormat objects (see SamplingBridges)
+        """
+        raise InvalidMethodCallException("The network does not support "
+                                                "state formats.")
 
     def initialize(self, msgs, *args, **kwargs):
         """
-        Build network object and prepare
+        Build network object, load model (if requested) and prepare
         :param msgs: Message object for communication between objects (if given)
         :return:
         """
@@ -220,8 +246,8 @@ class Network(AbstractBaseClass):
     @abc.abstractmethod
     def train(self, data):
         """
-
-        :param data: Single or list of SampleBatchData
+        Train the network on the given data
+        :param data:
         :return:
         """
         pass
@@ -230,7 +256,7 @@ class Network(AbstractBaseClass):
     def evaluate(self, data):
         """
 
-        :param data: Single or list of SampleBatchData
+        :param data:
         :return:
         """
         pass

@@ -21,6 +21,8 @@ vector<int> get_domain_sizes(TaskProxy & task_proxy){
 ProblemNetwork::ProblemNetwork(const Options& opts)
     : ProtobufNetwork(opts),
       domain_sizes(get_domain_sizes(task_proxy)),
+      tmp_input_layer_name(opts.get<string>("input_layer")),
+      tmp_output_layer_name(opts.get<string>("output_layer")),
       output_type(get_output_type(opts.get<string>("type"))) {
     if (output_type != OutputType::Classification
         && output_type != OutputType::Regression){
@@ -28,6 +30,7 @@ ProblemNetwork::ProblemNetwork(const Options& opts)
         utils::exit_with(utils::ExitCode::UNSUPPORTED);
     }
 }
+
 
 bool ProblemNetwork::is_heuristic(){
     return true;
@@ -47,7 +50,11 @@ void ProblemNetwork::initialize_inputs() {
             input_size += task_proxy.get_variables()[i].get_domain_size();
     }
     Tensor tensor(DT_FLOAT, TensorShape({1, input_size}));
-    inputs = {{input_layer_name, tensor},};
+    inputs = {{tmp_input_layer_name, tensor},};
+}
+
+void ProblemNetwork::initialize_output_layers() {
+    output_layers.push_back(tmp_output_layer_name);
 }
 
 
@@ -91,6 +98,10 @@ static shared_ptr<neural_networks::AbstractNetwork> _parse(OptionParser &parser)
     neural_networks::ProtobufNetwork::add_options_to_parser(parser);
     parser.add_option<string>("type",
         "Type of network output (regression or classification)");
+    parser.add_option<string>("input_layer", "Name of the input layer in "
+        "the computation graph to insert the current state.");
+    parser.add_option<string>("output_layer", "Name of the output layer "
+        "from which to extract the network output.");
     Options opts = parser.parse();
 
     shared_ptr<neural_networks::ProblemNetwork> network;

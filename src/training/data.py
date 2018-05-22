@@ -1,6 +1,5 @@
 import numpy as np
 
-# TODO:
 """TODO pruning/duplicate detection is currently too strong. It only checks for
 the hashes. If collisions happen, it does not check if both objects are the same
 or just a collision has occurred. """

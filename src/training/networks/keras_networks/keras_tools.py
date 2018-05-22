@@ -176,6 +176,77 @@ class KerasDataGenerator(keras.utils.Sequence):
             # Store class
             y[i] = self.labels[ID]
 
-        return X, keras.utils.to_categorical(y, num_classes=self.n_classes)
+        return X, keras_networks.utils.to_categorical(y, num_classes=self.n_classes)
         """
         raise NotImplementedError("__data_generation not implemented")
+
+import tensorflow as tf
+from keras import backend as K
+from tensorflow.python.framework import graph_util
+from tensorflow.python.framework import graph_io
+from tensorflow.tools.graph_transforms import TransformGraph
+
+
+def store_keras_model_as_protobuf(
+        model, directory=".", file="network.pb",
+        quantize=False, theano=False, num_outputs=1, prefix_outputs="",
+        show_outputs=False, store_graphdef=None):
+    """
+    Copyright (c) 2017, by the Authors: Amir H. Abdi
+    This software is freely available under the MIT Public License.
+
+    Converts a
+    :param model:
+    :param directory:
+    :param file:
+    :param quantize:
+    :param theano:
+    :param num_outputs:
+    :param prefix_outputs:
+    :param show_outputs:
+    :param store_graphdef:
+    :return:
+    """
+    # Prepare variables
+    if directory == "" or directory is None:
+        directory = "."
+
+    previous_learning_phase = K.learning_phase()
+    if isinstance(previous_learning_phase, tf.Tensor):
+        # HACK!!!
+        previous_learning_phase = int(previous_learning_phase.name[-1])
+    K.set_learning_phase(0)
+
+    if theano:
+        K.set_image_data_format('channels_first')
+    else:
+        K.set_image_data_format('channels_last')
+
+    # Set node names in computation graph
+    pred_node_names = [None] * num_outputs
+    pred = [None] * num_outputs
+    for i in range(num_outputs):
+        pred_node_names[i] = prefix_outputs + str(i)
+        pred[i] = tf.identity(model.outputs[i], name=pred_node_names[i])
+    if show_outputs:
+        print('Output nodes names are: ', pred_node_names)
+
+    # Store readable GraphDef
+    sess = K.get_session()
+    if store_graphdef is not None:
+        tf.train.write_graph(sess.graph.as_graph_def(),
+                             directory, store_graphdef, as_text=True)
+
+    # Store Protobuf
+    if quantize:
+        transforms = ["quantize_weights", "quantize_nodes"]
+        transformed_graph_def = TransformGraph(sess.graph.as_graph_def(), [],
+                                               pred_node_names, transforms)
+        constant_graph = graph_util.convert_variables_to_constants(
+            sess, transformed_graph_def, pred_node_names)
+    else:
+        constant_graph = graph_util.convert_variables_to_constants(
+            sess, sess.graph.as_graph_def(), pred_node_names)
+    graph_io.write_graph(constant_graph, directory, file, as_text=False)
+
+    K.set_learning_phase(previous_learning_phase)
