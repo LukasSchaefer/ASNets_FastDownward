@@ -13,6 +13,8 @@ namespace neural_networks {
 class ProblemNetwork : public ProtobufNetwork {
 protected:
     const std::vector<int> domain_sizes;
+    const std::string tmp_input_layer_name;
+    const std::string tmp_output_layer_name;
     const OutputType output_type;
     int last_h = Heuristic::NO_VALUE;
     
@@ -26,6 +28,8 @@ public:
     
     virtual void initialize() override;
     virtual void initialize_inputs() override;
+    virtual void initialize_output_layers() override;
+    
     virtual void fill_input(const State &state) override;
     virtual void extract_output() override;
 

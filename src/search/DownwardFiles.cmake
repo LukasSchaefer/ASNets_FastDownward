@@ -440,6 +440,7 @@ fast_downward_plugin(
     SOURCES
         neural_networks/protobuf_network
         neural_networks/problem_network
+        neural_networks/state_goal_network
     DEPENDS NEURAL_NETWORKS
     PACKAGES TENSORFLOW PROTOBUF EIGEN
 )

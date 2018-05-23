@@ -1,6 +1,6 @@
 from .. import parser
 from .. import parser_tools as parset
-from .. import ABC
+from .. import AbstractBaseClass
 
 from ..bridges import SamplerBridge
 from ..parser_tools import main_register, ArgumentException
@@ -9,12 +9,11 @@ from ..variable import Variable
 import abc
 
 
-
 class InvalidMethodCallException(Exception):
     pass
 
 
-class Sampler(ABC):
+class Sampler(AbstractBaseClass):
     """
     Base class for all sampler.
     Do not forget to register your network subclass in this packages 'register'
@@ -24,20 +23,21 @@ class Sampler(ABC):
     arguments = parset.ClassArguments("Sampler", None,
         ("sampler_bridge", False, None,
         main_register.get_register(SamplerBridge)),
-        ('variables', True, {},
+        ('variables', True, None,
         main_register.get_register(Variable)),
         ('id', True, None, str),
         variables=[('sample_calls', 0, int)],
-        )
+)
 
-    def __init__(self, sampler_bridge, variables={}, id=None):
+    def __init__(self, sampler_bridge, variables=None, id=None):
+        variables = {} if variables is None else variables
         if not isinstance(variables, dict):
             raise ArgumentException("The provided variables have to be a map. "
                                     "Please define them as {name=VARIABLE,...}.")
         if not isinstance(sampler_bridge, list):
             sampler_bridge = [sampler_bridge]
         self.sbridges = sampler_bridge
-        self.variables = variables
+        self.variables = {} if variables is None else variables
         self.id = id
 
         self.var_sample_calls, = Sampler.arguments.validate_and_return_variables(variables)
@@ -59,19 +59,27 @@ class Sampler(ABC):
             raise InvalidMethodCallException("Multiple initializations of"
                                              "sampler.")
 
-    def _call_bridge_sample(self, problem):
+    def _call_bridge_sample(self, problem, **kwargs):
         datas = []
         for sb in self.sbridges:
-            datas.append(sb.sample(problem))
+            datas.append(sb.sample(problem, **kwargs))
         return datas
 
-    def sample(self):
+    def sample(self, **kwargs):
         if not self.initialized:
             raise InvalidMethodCallException("Cannot call sample without "
                                              "initializing the sampler.")
         if self.var_sample_calls is not None:
             self.var_sample_calls.value += 1
-        return self._sample()
+        datas = self._sample(**kwargs)
+        i = len(datas) - 1
+        while i >= 0:
+            if datas[i] is None or datas[i].empty():
+                del datas[i]
+            i -= 1
+        return datas
+
+
 
     def finalize(self):
         if not self.initialized:
@@ -91,7 +99,7 @@ class Sampler(ABC):
         pass
 
     @abc.abstractmethod
-    def _sample(self, sbridge):
+    def _sample(self, **kwargs):
         pass
 
     @abc.abstractmethod

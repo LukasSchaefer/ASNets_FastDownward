@@ -1,6 +1,6 @@
 from .. import parser
 from .. import parser_tools as parset
-from .. import ABC
+from .. import AbstractBaseClass
 
 from ..networks import Network
 from ..parser_tools import main_register, ArgumentException
@@ -9,7 +9,7 @@ from ..variable import Variable
 
 import abc
 
-class Schema(ABC):
+class Schema(AbstractBaseClass):
     """
     Base class for Schemas. Schemas describe what shall be how run.
     E.g. A training schema calls the necessary methods to obtain data and train

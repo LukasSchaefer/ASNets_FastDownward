@@ -138,10 +138,10 @@ def parse_sample_args(argv):
     fdb = FastDownwardSamplerBridge(options.search, options.format,
                                     options.build, options.temporary_folder,
                                     options.target_file, options.target_folder,
-                                    options.append, options.reuse,
+                                    options.append, False, options.reuse,
                                     options.domain, True,
                                     options.fast_downward,
-                                    options.prune, False, True,
+                                    options.prune, True,
                                     options.compress)
     return fdb, options.problem
 
@@ -152,7 +152,7 @@ def sample(argv):
         log.warning("No problems defined for sampling.")
     ifs = IterableFileSampler(fdb, problems)
     ifs.initialize()
-    DATA = ifs.sample()
+    ifs.sample()
     ifs.finalize()
 
 
