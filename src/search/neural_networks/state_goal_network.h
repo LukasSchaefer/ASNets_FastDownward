@@ -25,7 +25,7 @@ protected:
     const std::vector<int> domain_sizes;
     const std::string tmp_state_input_layer_name;
     const std::string tmp_goal_input_layer_name;
-    const std::string tmp_output_layer_name;
+    const std::vector<std::string> tmp_output_layer_names;
     
     const std::vector<std::string> state_atoms;
     const std::vector<int> state_defaults;

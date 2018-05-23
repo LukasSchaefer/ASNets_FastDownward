@@ -86,7 +86,7 @@ StateGoalNetwork::StateGoalNetwork(const Options& opts)
       domain_sizes(get_domain_sizes(task_proxy)),
       tmp_state_input_layer_name(opts.get<string>("state_layer")),
       tmp_goal_input_layer_name(opts.get<string>("goal_layer")),
-      tmp_output_layer_name(opts.get<string>("output_layer")),
+      tmp_output_layer_names(opts.get_list<string>("output_layers")),
       state_atoms(get_atoms_list(opts.get_list<string>("atoms"))),
       state_defaults(get_atoms_defaults(opts.get_list<int>("defaults"))),
       fact_mapping(get_fact_mapping()),
@@ -143,7 +143,7 @@ void StateGoalNetwork::initialize_inputs() {
 }
 
 void StateGoalNetwork::initialize_output_layers() {
-    output_layers.push_back(tmp_output_layer_name);
+    output_layers = tmp_output_layer_names;
 }
 
 void StateGoalNetwork::fill_input(const State& state){
@@ -185,8 +185,8 @@ static shared_ptr<neural_networks::AbstractNetwork> _parse(OptionParser &parser)
         "the computation graph to insert the current state.");
     parser.add_option<string>("goal_layer", "Name of the input layer in"
         "the computation graph to insert the current goal.");
-    parser.add_option<string>("output_layer", "Name of the output layer "
-        "from which to extract the network output.");
+    parser.add_list_option<string>("output_layers", "List of the output layer "
+        "names from which to extract the network output.");
     parser.add_list_option<string>("atoms", "(Optional) Description of the atoms"
         "in the input state of the network. Provide a list of atom names exactly"
         "as they are used by Fast Downward. The order of the list has to fit to"
