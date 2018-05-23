@@ -294,4 +294,3 @@ class Network(AbstractBaseClass):
 
 main_register.append_register(Network, "network")
 nregister = main_register.get_register(Network)
-
