@@ -52,6 +52,10 @@ ptrain.add_argument("-f", "--format", choices=CHOICE_STATE_FORMATS,
                      help=("State format name into which the loaded data shall"
                            "be converted (if not given, the preferred of the"
                            "network is chosen)"))
+ptrain.add_argument("-l", "--load", type=str,
+                     action="store", default=None,
+                     help="Overrides the network load location defined in the "
+                          "network definition by 'output directory/name'")
 ptrain.add_argument("-m", "--max-depth", type=int,
                      action="store", default=None,
                      help="Maximum depth from the root which is traversed ("
@@ -107,6 +111,9 @@ def parse_train(argv):
     if options.name is not None:
         options.network.path_store = os.path.join(options.network.path_out,
                                                   options.name)
+    if options.load is not None:
+        options.network.path_load = os.path.join(options.network.path_out,
+                                                 options.load)
 
     if options.format is not None:
         options.format = StateFormat.get(options.format)
