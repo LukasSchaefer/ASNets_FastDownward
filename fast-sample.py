@@ -1,22 +1,48 @@
 #! /usr/bin/env python
 # -*- coding: utf-8 -*-
 from __future__ import print_function
+import sys
+
+# Load dependency module w/o loading the whole package (otherwise,
+# changing the dependencies will have no effect anymore
+if sys.version_info >= (3, 5):
+    import importlib.util
+    spec = importlib.util.spec_from_file_location("src.training.dependencies", "src/training/dependencies.py")
+    dependencies = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(dependencies)
+elif sys.version_info < (3,):
+    # TODO DOES NOT WORK!
+    import imp
+    dependencies = imp.load_source("src.training.dependencies", "src/training/dependencies.py")
+else:
+    raise NotImplementedError("The module preloading was no timplementd for your python version")
+sys.modules["src.training.dependencies"] = dependencies
+dependencies.setup()
+dependencies.set_external(False, True)
 
 from src.training.bridges import FastDownwardSamplerBridge
 from src.training.samplers import IterableFileSampler
 from src.training.samplers import DirectorySampler
 from src.training.bridges.sampling_bridges import StateFormat
 
-from src.training import parser as training_parser
 import argparse
-import os
-import re
 import shlex
 import subprocess
 import sys
 import logging
 log = logging.getLogger()
+"""
+import importlib
 
+moduleName = input('Enter module name:')
+importlib.import_module(moduleName)
+
+---
+outdated
+pmName = input('Enter module name:')
+pm = __import__(pmName)
+print(dir(pm))
+"""
 
 
 # DEFAULT SEARCH CONFIGURATION

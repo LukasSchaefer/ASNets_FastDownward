@@ -1,5 +1,13 @@
+#import sys
+#prev_dependencies = sys.modules["src.training.dependencies"] if "src.training.dependencies" in sys.modules else None
+#if prev_dependencies is not None:
+#    del sys.modules["src.training.dependencies"]
+#from . import dependencies
+#if prev_dependencies is not None:
+#    print "set prev"
+#    sys.modules["src.training.dependencies"] = prev_dependencies
+
 # independent modules
-from .dependencies import DEPENDENCIES
 from .data import SizeBatchData, SampleBatchData
 from .message import Message
 from .misc import AbstractBaseClass, InvalidModuleImplementation

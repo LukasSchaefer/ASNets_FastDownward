@@ -22,7 +22,9 @@ Every object which wants to use environments has to:
 
 
 """
+from .. import dependencies
 
-from .task import Task, DelegationTask, SubprocessTask
+if dependencies.environments:
+    from .task import Task, DelegationTask, SubprocessTask
 
-from .base_environment import Environment, NbCoresEnvironment
+    from .base_environment import Environment, NbCoresEnvironment
