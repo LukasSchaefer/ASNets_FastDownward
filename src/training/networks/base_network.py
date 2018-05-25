@@ -261,7 +261,7 @@ class Network(AbstractBaseClass):
         """
         pass
 
-    def analyse(self, directory=None):
+    def analyse(self, directory=None, prefix=""):
         """
         Analyse the network performance.
         This functionality is optional and not every networks supports it.
@@ -269,13 +269,16 @@ class Network(AbstractBaseClass):
                           If None is given, the output directory given at
                           construction time is used. If this is also None,
                           the current working directory is used.
+        :param prefix: A prefix which shall be added in front of every file name
+                       which the analysis is producing. If None is given, the
+                       no prefix is used.
         :return:
         """
         directory = self.path_out if directory is None else directory
         directory = "." if directory is None else directory
-        self._analyse(directory)
+        self._analyse(directory, prefix)
 
-    def _analyse(self, directory):
+    def _analyse(self, directory, prefix):
         pass
 
 

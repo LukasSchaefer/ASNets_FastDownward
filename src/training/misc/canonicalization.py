@@ -151,10 +151,19 @@ def canonize_object_lists(objects, input_format=Format.PATTERN,
 
 
 def fill_templates_with_objects(
-        *atoms,
-        object_occurrences,
-        input_format=Format.PATTERN):
+        *atoms, **kwargs):
+    """
 
+    :param atoms: (SEQUENCE)
+    :param object_occurrences: (KEYWORD ARG)
+    :param input_format: (KEYWORD ARG)
+    :return:
+    """
+    object_occurrences = kwargs.pop("object_occurrences", None)
+    input_format = kwargs.pop("input_format", Format.PATTERN)
+    if object_occurrences is None:
+        raise ValueError("cannot fill templates with objects if no object "
+                         "counts are provided.")
     objects = {}
     for type_name in object_occurrences:
         objects[type_name] = []
@@ -228,10 +237,25 @@ def fill_templates_with_objects(
 
 
 def for_canonicalized_atoms_subtyping(
-        *atoms, inv_type_hierarchy,
-        callme,
-        input_format=Format.PATTERN,
-        argument_format=Format.PATTERN):
+        *atoms, **kwargs):
+    """
+
+    :param atoms: (SEQUENCE)
+    :param kwargsinv_type_hierarchy: (KEYWORD ARG)
+    :param callme: (KEYWORD ARG)
+    :param input_format: (KEYWORD ARG)
+    :param argument_format: (KEYWORD ARG)
+    :return:
+    """
+    inv_type_hierarchy = kwargs.pop("inv_type_hierarchy", None)
+    callme = kwargs.pop("callme", None)
+    input_format = kwargs.pop("input_format", Format.PATTERN)
+    argument_format = kwargs.pop("argument_format", Format.PATTERN)
+    if inv_type_hierarchy is None:
+        raise ValueError("Inverted type hierarchy (look up of parents) required.")
+    if callme is None:
+        raise ValueError("callme function required.")
+
     counters = {}
     objects = {}
     def add_object(var_tuple, idx_atom, idx_arg):
@@ -329,9 +353,7 @@ def for_canonicalized_atoms_subtyping(
 
 
 
-def for_canonicalized_groundings(*predicates, type_hierarchy,
-                                 callme,
-                                 argument_format=Format.PATTERN):
+def for_canonicalized_groundings(*predicates, **kwargs):
     """
     Tells which groundings of the given two predicates interact. For grounding
     the predicates placeholder objects are used. The interaction condition
@@ -347,6 +369,15 @@ def for_canonicalized_groundings(*predicates, type_hierarchy,
     :param argument_format: Format for the predicate sequence feeded to 'callme'
     :return: None
     """
+    type_hierarchy = kwargs.pop("type_hierarchy", None)
+    callme = kwargs.pop("callme", None)
+    argument_format = kwargs.pop("argument_format", Format.PATTERN)
+    if type_hierarchy is None:
+        raise ValueError("Type hierarchy (look up of parents) required.")
+    if callme is None:
+        raise ValueError("callme function required.")
+
+
     predicates = sorted(predicates, key=lambda x: x.name)
 
     # Count number of occurrences of types in both predicates argument list
