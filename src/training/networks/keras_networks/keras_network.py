@@ -288,14 +288,14 @@ class KerasNetwork(Network):
 
     """-------------------------ANALYSE PREDICATIONS-------------------------"""
 
-    def _analyse(self, directory):
+    def _analyse(self, directory, prefix):
         KerasNetwork._analyse_from_history_plot(
             self._history, ['acc', 'val_acc'], "Model Accuracy", "accuracy",
-            "epoch", ['train', 'test'], "evolution_accuracy", directory)
+            "epoch", ['train', 'test'], prefix + "evolution_accuracy", directory)
 
         KerasNetwork._analyse_from_history_plot(
             self._history, ['loss', 'val_loss'], "Model Loss", "loss", "epoch",
-            ['train', 'val'], "evolution_loss", directory)
+            ['train', 'val'], prefix + "evolution_loss", directory)
 
         KerasNetwork._analyse_from_predictions_scatter(
             self._evaluation[0],  self._evaluation[1], "Predictions",
@@ -304,22 +304,22 @@ class KerasNetwork(Network):
         KerasNetwork._analyse_from_predictions_scatter_tiles(
             self._evaluation[0], self._evaluation[1],
             "Prediction Probabilities with resp. to the correct prediction",
-            "original h", "predicted h", "predictions_tiles", directory)
+            "original h", "predicted h", prefix + "predictions_tiles", directory)
 
         KerasNetwork._analyse_from_predictions_deviation(
             self._evaluation[0], self._evaluation[1], "Prediction Deviations",
-            "count", "deviation", "deviations", directory)
+            "count", "deviation", prefix + "deviations", directory, True)
 
         KerasNetwork._analyse_from_predictions_deviation_dep_on_h(
             self._evaluation[0], self._evaluation[1],
             "Prediction Deviations depending on original", "deviation",
-            "original", "deviations_dep_h", directory)
+            "original", prefix + "deviations_dep_h", directory)
 
         KerasNetwork._analyse_from_predictions_deviation_dep_on_similarity(
             self._evaluation[0], self._evaluation[1], self._evaluation[2],
             "Prediction Deviations depending on the similarity to training samples",
             "deviation",
-            "similarity", "deviations_dep_sim", directory)
+            "similarity", prefix + "deviations_dep_sim", directory)
 
         analysis_data = {"histories": [h.history for h in self._histories],
                          "evaluations": [(e[0].tolist(), e[1].tolist()) for e in self._evaluations],
@@ -442,10 +442,15 @@ class KerasNetwork(Network):
     def _analyse_from_predictions_deviation(predicted, original, title,
                                             ylabel, xlabel, file,
                                             directory=".",
-                                            formats=MATPLOTLIB_OUTPUT_FORMATS):
+                                            formats=MATPLOTLIB_OUTPUT_FORMATS,
+                                            diff_mean_to_prediction=False):
+        # (Legend, Color, Alpha, Data)
+        deviations = [('','b', 1, predicted - original)]
+        if diff_mean_to_prediction:
+            mean = original.mean()
         fig = plt.figure()
         ax = fig.add_subplot(1, 1, 1)
-        dev = predicted - original
+
         dev = np.round(dev.astype(np.float))
         unique, counts = np.unique(dev, return_counts=True)
         # Otherwise they are numpy values and do not hash as needed

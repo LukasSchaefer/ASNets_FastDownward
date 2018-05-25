@@ -157,7 +157,7 @@ class DomainProperties(object):
         self.analysed = True
 
     @staticmethod
-    def get_property_for(*paths, paths_problems=None, path_domain=None):
+    def get_property_for(*paths, **kwargs):
         """
         Analyses the problems in the given paths and returns a DomainProperty
         containing the analysis. Every given path is interpreter as a directory
@@ -170,6 +170,9 @@ class DomainProperties(object):
                             is searched in the given paths
         :return: DomainProperty containing analysis results
         """
+        paths_problems = kwargs.pop("paths_problems", None)
+        path_domain = kwargs.pop("path_domain", None)
+
         # Find domain file
         if path_domain is None:
             for dir in paths:

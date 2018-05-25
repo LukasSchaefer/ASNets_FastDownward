@@ -181,7 +181,7 @@ def train(argv):
     state_size = len(dtrain[0].data["O"][0][0][dtrain[0].field_current_state].split("\t"))
     start_time = timing(start_time, "Loading data time: %ss")
 
-    options.network.initialize(None)
+    options.network.initialize(None, state_size=91)
     start_time = timing(start_time, "Network initialization time: %ss")
 
     options.network.train(dtrain, dtest)

@@ -1,9 +1,8 @@
-from .. import DEPENDENCIES
-from .base_network import Network, nregister, NetworkFormat
-
+from .. import dependencies
 
 named_networks = {}
-if DEPENDENCIES.keras and DEPENDENCIES.tensorflow:
+
+if dependencies.networks:
+    from .base_network import Network, nregister, NetworkFormat
+
     from . import keras_networks
-    from .keras_networks import KerasDataGenerator, store_keras_model_as_protobuf
-    from .keras_networks import KerasNetwork, KerasDomainPropertiesNetwork, KerasDynamicMLP

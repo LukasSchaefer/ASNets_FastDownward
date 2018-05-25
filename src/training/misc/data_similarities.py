@@ -23,7 +23,7 @@ def get_wrapper_similarity(similarity, fields=None, comparators=None):
         similarity = get_similarity(similarity)
 
     def wrapped(sample1, sample2):
-        nonlocal fields, comparators
+        #nonlocal fields, comparators
         return similarity(sample1, sample2, fields, comparators)
     return wrapped
 
@@ -33,7 +33,7 @@ def get_wrapper_similarity_on_set(similarity, fields=None, comparators=None,
                                   early_stopping=lambda x: x == 1):
 
     def wrapped(sample, datasets):
-        nonlocal similarity, fields, comparators, merge, init_measure_value, early_stopping
+        #nonlocal similarity, fields, comparators, merge, init_measure_value, early_stopping
         return apply_similarity_on_set(similarity, sample, datasets, fields,
                                        comparators, merge, init_measure_value,
                                        early_stopping)
@@ -140,16 +140,16 @@ def apply_similarity_on_set(similarity,
     """
     if isinstance(similarity, str):
         similarity = SIMILARITIES[similarity]
-    value = init_measure_value
+
     def estimate(entry):
-        nonlocal value
-        val = similarity(sample, entry, fields, comparators)
-        value = merge(value, val)
-        return False if early_stopping is None else early_stopping(value)
+        new_value = similarity(sample, entry, fields, comparators)
+        estimate.value = merge(estimate.value, new_value)
+        return False if early_stopping is None else early_stopping(estimate.value)
+    estimate.value = init_measure_value
 
     for data in datasets:
         data._over_all(estimate, early_stopping=True)
-    return value
+    return estimate.value
 
 def max_similarity_on_set(similarity, sample, datasets, fields, comparators=None):
     return apply_similarity_on_set(similarity, sample, datasets, fields,
