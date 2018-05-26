@@ -1,11 +1,12 @@
-#import sys
-#prev_dependencies = sys.modules["src.training.dependencies"] if "src.training.dependencies" in sys.modules else None
-#if prev_dependencies is not None:
-#    del sys.modules["src.training.dependencies"]
-#from . import dependencies
-#if prev_dependencies is not None:
-#    print "set prev"
-#    sys.modules["src.training.dependencies"] = prev_dependencies
+# HACK After preloading dependencies via imp.load_source (Py2), the first
+# conventional loading of dependencies via from . import fails. Whereas,
+# import dependencies works always on python2, on python3 the statement fails,
+# This way, it works for both python versions with and without preloading
+#
+try:
+    from . import dependencies
+except ImportError:
+    import dependencies
 
 # independent modules
 from .data import SizeBatchData, SampleBatchData

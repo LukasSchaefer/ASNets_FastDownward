@@ -10,15 +10,19 @@ if sys.version_info >= (3, 5):
     spec = importlib.util.spec_from_file_location("src.training.dependencies", "src/training/dependencies.py")
     dependencies = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(dependencies)
+    sys.modules["src.training.dependencies"] = dependencies
+    dependencies.setup()
+    dependencies.set_external(False, True)
 elif sys.version_info < (3,):
-    # TODO DOES NOT WORK!
     import imp
     dependencies = imp.load_source("src.training.dependencies", "src/training/dependencies.py")
+    sys.modules["src.training.dependencies"] = dependencies
+    dependencies.setup()
+    dependencies.set_external(False, True)
 else:
-    raise NotImplementedError("The module preloading was no timplementd for your python version")
-sys.modules["src.training.dependencies"] = dependencies
-dependencies.setup()
-dependencies.set_external(False, True)
+    print("Warning: Dependency preloading not supported by this python version."
+          " All dependencies are require.")
+
 
 from src.training.bridges import FastDownwardSamplerBridge
 from src.training.samplers import IterableFileSampler
