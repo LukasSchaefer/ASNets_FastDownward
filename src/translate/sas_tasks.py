@@ -201,6 +201,12 @@ class SASVariables:
         gp = self.str_grounded_predicates(sort=sorted)
         return [Atom.from_string(x) for x in gp]
 
+    def get_state_space_size(self):
+        size = 1
+        for r in self.ranges:
+            size *= r
+        return size
+
 class SASMutexGroup:
     def __init__(self, facts):
         self.facts = sorted(facts)

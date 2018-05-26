@@ -22,11 +22,12 @@ import os
 
 # List of formats in which the matplotlib figures shall be stored
 MATPLOTLIB_OUTPUT_FORMATS=["png"]
-
+COLOR_DATA_MEAN = "g"
+ALPHA_DATA_MEAN = 0.7
 
 class KerasNetwork(Network):
     arguments = parset.ClassArguments('KerasNetwork', Network.arguments,
-        ("epochs", True, 1000, int, "Number of training epochs per training call"),
+        ("epochs", True, 1, int, "Number of training epochs per training call"),
         ("count_samples", True, False, parser.convert_bool,
          "Counts how many and which samples where used during training"
          " (This increases the runtime)."),
@@ -289,9 +290,14 @@ class KerasNetwork(Network):
     """-------------------------ANALYSE PREDICATIONS-------------------------"""
 
     def _analyse(self, directory, prefix):
+        mean_prediction = round(self._evaluation[1].mean())
+        predicted = np.round(self._evaluation[0])
+        predicted_correct = (mean_prediction == predicted).sum()
+
         KerasNetwork._analyse_from_history_plot(
             self._history, ['acc', 'val_acc'], "Model Accuracy", "accuracy",
-            "epoch", ['train', 'test'], prefix + "evolution_accuracy", directory)
+            "epoch", ['train', 'test'], prefix + "evolution_accuracy", directory,
+            hline=(float(predicted_correct)/predicted.size))
 
         KerasNetwork._analyse_from_history_plot(
             self._history, ['loss', 'val_loss'], "Model Loss", "loss", "epoch",
@@ -308,12 +314,14 @@ class KerasNetwork(Network):
 
         KerasNetwork._analyse_from_predictions_deviation(
             self._evaluation[0], self._evaluation[1], "Prediction Deviations",
-            "count", "deviation", prefix + "deviations", directory, True)
+            "count", "deviation", prefix + "deviations", directory,
+            diff_mean_to_prediction=True)
 
         KerasNetwork._analyse_from_predictions_deviation_dep_on_h(
             self._evaluation[0], self._evaluation[1],
             "Prediction Deviations depending on original", "deviation",
-            "original", prefix + "deviations_dep_h", directory)
+            "original", prefix + "deviations_dep_h", directory,
+            diff_mean_to_prediction=True)
 
         KerasNetwork._analyse_from_predictions_deviation_dep_on_similarity(
             self._evaluation[0], self._evaluation[1], self._evaluation[2],
@@ -321,9 +329,16 @@ class KerasNetwork(Network):
             "deviation",
             "similarity", prefix + "deviations_dep_sim", directory)
 
+        state_space_size = None if (not hasattr(self,"_domain_properties") or self._domain_properties is None) else self._domain_properties.state_space_size
+        reachable_sss = None if (not hasattr(self,"_domain_properties") or self._domain_properties is None) else self._domain_properties.upper_bound_reachable_state_space_size
+        KerasNetwork._analyse_misc(len(self._count_samples_hashes), state_space_size, reachable_sss,
+                                   prefix + "misc", directory)
+
         analysis_data = {"histories": [h.history for h in self._histories],
                          "evaluations": [(e[0].tolist(), e[1].tolist()) for e in self._evaluations],
-                         "count_samples": len(self._count_samples_hashes) if self._count_samples else "NA"}
+                         "count_samples": len(self._count_samples_hashes) if self._count_samples else "NA",
+                         "state_space_size" : state_space_size,
+                         "upper_reachable_state_space_bound" : reachable_sss }
 
         analysis_data["model"] = ""
         def add_model_summary(x):
@@ -335,11 +350,37 @@ class KerasNetwork(Network):
             json.dump(analysis_data, f)
 
     """----------------------ANALYSIS METHODS--------------------------------"""
+    @staticmethod
+    def _analyse_misc(samples_seen, state_space_size, reachable_sss,
+                      file, directory=".", formats=MATPLOTLIB_OUTPUT_FORMATS):
+        fig = plt.figure()
+        if state_space_size is not None:
+            sss_bar = [state_space_size]
+            new_xticks = [None, "Full State Space"]
+            if reachable_sss is not None:
+                sss_bar.append(reachable_sss)
+                new_xticks.append("Reachable State Space")
+            ax = fig.add_subplot(1, 1, 1)
+            ax.bar(np.arange(len(sss_bar)), sss_bar, width=1,
+                   color='g', align='center') #, label="State Space Size")
+            ax.bar(np.arange(len(sss_bar)), [samples_seen] * len(sss_bar),
+                   color='r', align='center', label="Training Samples Count")
+            ax.set_title("Seen Parts of State Space")
+            ax.set_ylabel("samples")
+            ax.set_yscale("log")
+            ax.set_xticklabels(new_xticks)
 
+            #ax.set_xlabel(xlabel)
+
+        fig.tight_layout()
+        for format in formats:
+            fig.savefig(os.path.join(directory, file + "." + format))
+        plt.close(fig)
     @staticmethod
     def _analyse_from_history_plot(history, measures, title, ylabel, xlabel,
                                    legend, file, directory=".",
-                                   formats=MATPLOTLIB_OUTPUT_FORMATS):
+                                   formats=MATPLOTLIB_OUTPUT_FORMATS,
+                                   hline=None):
         fig = plt.figure()
         ax = fig.add_subplot(1, 1, 1)
         for m in measures:
@@ -347,6 +388,9 @@ class KerasNetwork(Network):
         ax.set_title(title)
         ax.set_ylabel(ylabel)
         ax.set_xlabel(xlabel)
+        if hline is not None:
+            ax.axhline(hline, color=COLOR_DATA_MEAN, alpha=ALPHA_DATA_MEAN)
+            legend.append("Predicting Data Mean")
         ax.legend(legend, loc='upper left')
         fig.tight_layout()
         for format in formats:
@@ -445,27 +489,34 @@ class KerasNetwork(Network):
                                             formats=MATPLOTLIB_OUTPUT_FORMATS,
                                             diff_mean_to_prediction=False):
         # (Legend, Color, Alpha, Data)
-        deviations = [('','b', 1, predicted - original)]
+        deviations = [('Deviation of Predictions','b', 1, predicted - original)]
         if diff_mean_to_prediction:
             mean = original.mean()
+            deviations.insert(0, ("Deviation of Data Mean", COLOR_DATA_MEAN,
+                                  ALPHA_DATA_MEAN, mean - original))
         fig = plt.figure()
         ax = fig.add_subplot(1, 1, 1)
+        round = -1
+        for (label, color, alpha, data) in deviations:
+            round += 1
+            width = 0.4 #0.9 - 0.2 * round
+            dev = np.round(data.astype(np.float))
+            unique, counts = np.unique(dev, return_counts=True)
+            # Otherwise they are numpy values and do not hash as needed
+            unique = [float(i) for i in unique]
+            occurrences = dict(zip(unique, counts))
+            min_d, max_d = min(unique), max(unique)
 
-        dev = np.round(dev.astype(np.float))
-        unique, counts = np.unique(dev, return_counts=True)
-        # Otherwise they are numpy values and do not hash as needed
-        unique = [float(i) for i in unique]
-        occurrences = dict(zip(unique, counts))
-        min_d, max_d = min(unique), max(unique)
-
-        bars = np.arange(min_d, max_d + 1)
-        heights = [0 if not i in occurrences else occurrences[i]
-                   for i in range(math.floor(min_d), math.ceil(max_d) + 1)]
-
-        ax.bar(bars, heights, align='center')
+            bars = np.arange(min_d, max_d + 1) -width*len(deviations)/2 + round * width + width/2
+            heights = [0 if not i in occurrences else occurrences[i]
+                       for i in range(math.floor(min_d), math.ceil(max_d) + 1)]
+            ax.bar(bars, heights, width=width,
+                   color=color, alpha=alpha, align='center', label=label)
         ax.set_xlabel(xlabel)
         ax.set_ylabel(ylabel)
         ax.set_title(title)
+        if len(deviations) > 1:
+            ax.legend()
         fig.tight_layout()
         for format in formats:
             fig.savefig(os.path.join(directory, file + "." + format))
@@ -475,7 +526,9 @@ class KerasNetwork(Network):
     def _analyse_from_predictions_deviation_dep_on_h(predicted, original, title,
                                                      pred_label, orig_label,
                                                      file, directory=".",
-                                                     formats=MATPLOTLIB_OUTPUT_FORMATS):
+                                                     formats=MATPLOTLIB_OUTPUT_FORMATS,
+                                                     diff_mean_to_prediction=False):
+
         by_h = {}
         min_h = min(original)
         max_h = max(original)
@@ -486,23 +539,30 @@ class KerasNetwork(Network):
                 by_h[h] = []
             by_h[h].append(p - h)
 
-        fig = plt.figure()
-        ax = fig.add_subplot(1, 1, 1)
         new_x_ticks = []
         data = []
+        means = []
+        mean = original.mean() if diff_mean_to_prediction else None
         for i in range(min_h, max_h + 1):
+            if diff_mean_to_prediction:
+                means.append(mean - i)
             if i in by_h:
                 new_x_ticks.append("%d\n$n=%d$" % (i, len(by_h[i])))
                 data.append(by_h[i])
             else:
                 new_x_ticks.append("%d" % i)
                 data.append([float('nan')])
+        fig = plt.figure()
+        ax = fig.add_subplot(1, 1, 1)
         ax.boxplot(data)
         ax.set_xticklabels(new_x_ticks)
-
+        if diff_mean_to_prediction:
+            ax.scatter(np.arange(len(data)) + 1, means, color='r', alpha=0.6,
+                       label="Deviation to Data Mean")
         ax.set_xlabel(orig_label)
         ax.set_ylabel(pred_label)
         ax.set_title(title)
+        ax.legend()
         fig.tight_layout()
         for format in formats:
             fig.savefig(os.path.join(directory, file + "." + format))
