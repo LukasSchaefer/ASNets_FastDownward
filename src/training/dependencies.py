@@ -17,6 +17,31 @@ FEATURES IN YOUR CODE. FOR EXAMPLE, SOME MODULES REQUIRE EXTERNAL LIBRARIES
 THE MODULES WHICH REQUIRE THOSE EXTERNAL LIBRARIES (e.g. keras_networks require
 keras and tensorflow, whereas, if I want to use only fast-sample, i have no need
 of install those dependencies)
+
+
+CODE EXAMPLE FOR PRELOADING DEPENDENCY MODULE AND CHANGING THE FLAGS BEFORE
+LOADING THE PACKAGE
+
+# Load dependency module w/o loading the whole package (otherwise,
+# changing the dependencies will have no effect anymore
+if sys.version_info >= (3, 5):
+    import importlib.util
+    spec = importlib.util.spec_from_file_location("src.training.dependencies", "src/training/dependencies.py")
+    dependencies = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(dependencies)
+    sys.modules["src.training.dependencies"] = dependencies
+    dependencies.setup()
+    dependencies.set_external(False, True)
+elif sys.version_info < (3,):
+    import imp
+    dependencies = imp.load_source("src.training.dependencies", "src/training/dependencies.py")
+    sys.modules["src.training.dependencies"] = dependencies
+    dependencies.setup()
+    dependencies.set_external(False, True)
+else:
+    print("Warning: Dependency preloading not supported by this python version."
+          " All dependencies are require.")
+
 """
 import sys
 
