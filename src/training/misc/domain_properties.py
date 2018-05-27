@@ -147,7 +147,7 @@ class DomainProperties(object):
                 types=[predicate_types[gp.predicate]])
             static_predicate_templates.discard(canonized[0])
         self.tpl_pred_static = static_predicate_templates
-        self.pred_static = predicate_types.keys() - flexible_predicates
+        self.pred_static = set(predicate_types.keys()) - flexible_predicates
 
 
     def _analyse_combined_state_space_sizes(self):

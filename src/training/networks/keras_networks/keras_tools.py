@@ -73,7 +73,7 @@ class KerasDataGenerator(keras.utils.Sequence):
             for type in types:
                 for idx_batch in range(len(ds.data[type])):
                     batch = ds.data[type][idx_batch]
-                    count = math.ceil(len(batch)/batch_size)
+                    count = int(math.ceil(len(batch)/batch_size))
                     step = int(len(batch)/count)
                     start = 0
                     for i in range(count):

@@ -60,7 +60,8 @@ class KerasDynamicMLP(KerasDomainPropertiesNetwork):
         # If both is given, the DomainProperties will be prefered
         self._state_size = None
 
-    def _initialize_general(self, *args, state_size=None, **kwargs):
+    def _initialize_general(self, *args, **kwargs):
+        state_size = kwargs.pop("state_size", None)
         if state_size is not None:
             self._state_size = state_size
 

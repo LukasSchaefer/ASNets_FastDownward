@@ -283,6 +283,7 @@ class Atom(Literal):
     def positive(self):
         return self
 
+    @staticmethod
     def from_string(s):
         if s.startswith("Atom"):
             s = s[4:]

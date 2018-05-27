@@ -342,7 +342,6 @@ class KerasNetwork(Network):
 
         analysis_data["model"] = ""
         def add_model_summary(x):
-            nonlocal analysis_data
             analysis_data["model"] += x + "\n"
         self._model.summary(print_fn=add_model_summary)
 
@@ -458,7 +457,7 @@ class KerasNetwork(Network):
         EXPONENT = 1
         POWER = 2**EXPONENT
         h_p_bins = []
-        for i in range(min_p_h*POWER, max_p_h*POWER + 1):
+        for i in range(int(min_p_h*POWER), int(max_p_h*POWER + 1)):
             h_p_bins.append(float(i)/POWER)
 
         tiles = np.ndarray(shape=(max_o_h - min_o_h + 1, len(h_p_bins)), dtype=float)
@@ -523,7 +522,7 @@ class KerasNetwork(Network):
 
             bars = np.arange(min_d, max_d + 1) -width*len(deviations)/2 + round * width + width/2
             heights = [0 if not i in occurrences else occurrences[i]
-                       for i in range(math.floor(min_d), math.ceil(max_d) + 1)]
+                       for i in range(int(math.floor(min_d)), int(math.ceil(max_d) + 1))]
             ax.bar(bars, heights, width=width,
                    color=color, alpha=alpha, align='center', label=label)
         ax.set_xlabel(xlabel)
@@ -681,7 +680,8 @@ class KerasDomainPropertiesNetwork(KerasNetwork):
                                 set([str(item) for item in
                                      self._domain_properties.gnd_static]))
 
-    def initialize(self, msgs, *args, domain_properties=None, **kwargs):
+    def initialize(self, msgs, *args, **kwargs):
+        domain_properties = kwargs.pop("domain_properties", None)
         if domain_properties is not None:
             self._set_domain_properties(domain_properties)
         KerasNetwork.initialize(self, msgs, *args, **kwargs)

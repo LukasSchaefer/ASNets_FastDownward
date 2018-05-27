@@ -30,6 +30,9 @@ try:
 except NameError:
     FileNotFoundError = IOError
 
+class InvalidSampleEntryError(Exception):
+    pass
+
 
 # Globals
 MAGIC_WORD = "# MAGIC FIRST LINE\n"
@@ -208,7 +211,7 @@ def load_sample_line(line, data_container, format, pddl_task, sas_task, pruning_
 
     meta, data = split_meta(line)
     if meta is None and default_format is None:
-        raise ValueError("Missing meta tag. Cannot infer state format.")
+        raise InvalidSampleEntryError("Missing meta tag. Cannot infer state format.")
 
     entry_type, _, _ = extract_from_meta(meta, "type")
     entry_format, meta = extract_and_replace_from_meta(
@@ -436,6 +439,12 @@ def load_and_convert_data(path_read, format, default_format=None, prune=True,
 
         except UnicodeDecodeError:
             pass
+        except InvalidSampleEntryError as e:
+            if sys.version_info < (3,):
+                pass
+            else:
+                raise e
+
     if not read_format_found:
         raise ValueError("the given file could not be correctly opened with one "
                          "of the known techniques.")
