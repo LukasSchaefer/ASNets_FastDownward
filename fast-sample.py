@@ -31,18 +31,6 @@ import subprocess
 import sys
 import logging
 log = logging.getLogger()
-"""
-import importlib
-
-moduleName = input('Enter module name:')
-importlib.import_module(moduleName)
-
----
-outdated
-pmName = input('Enter module name:')
-pm = __import__(pmName)
-print(dir(pm))
-"""
 
 
 # DEFAULT SEARCH CONFIGURATION
@@ -201,7 +189,7 @@ ptraverse.add_argument("-b", "--batch", type=int,
                      help="WORKS ONLY WITH --execute TOGETHER. Submit the"
                           "problems found during traversal in batches to the"
                           "script to execute.")
-ptraverse.add_argument("-d", "--directory-filter", type=str,
+ptraverse.add_argument("-df", "--directory-filter", type=str,
                      action="append", default=[],
                      help="A subdirectory name has to match the regex otherwise"
                           "it is not traversed. By default no regex matches are"

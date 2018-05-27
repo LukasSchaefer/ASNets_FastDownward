@@ -133,7 +133,8 @@ class KerasDataGenerator(keras.utils.Sequence):
         y = entries[:, self.y_fields]
 
         if self.count_diff_samples is not None:
-            self.generated_sample_hashes.add(self.count_diff_samples(x, y))
+            for i in range(len(x)):
+                self.generated_sample_hashes.add(self.count_diff_samples(x[i], y[i]))
 
         if self.similarity is not None:
             (sim_batches, data_sets, measure) = self.similarity

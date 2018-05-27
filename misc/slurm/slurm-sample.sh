@@ -23,6 +23,7 @@
 ##LOAD MODULES
 module load Python/2.7.11-goolf-1.7.20
 
+##SETUP VARIABLE
 if [ ! -z ${TARGET_DIR+x} ]; then
 	if [ ! -d "$TARGET_DIR" ]; then
 		mkdir $TARGET_DIR
@@ -51,7 +52,7 @@ if [ ! -d "$PATH_TMP" ]; then
     exit 2
 fi
 
-
+##RUN
 if [ ! -z ${TARGET_DIR+x} ]; then
 	if $NDOWNWARD/fast-sample.py -tmp $PATH_TMP -t $PATH_DATA "$@"; then
 		mv $PATH_DATA/* $TARGET_DIR

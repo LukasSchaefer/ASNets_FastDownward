@@ -54,7 +54,7 @@ class KerasDynamicMLP(KerasDomainPropertiesNetwork):
             similarities.hamming_measure_cmp_iterable_equal,
             similarities.hamming_measure_cmp_iterable_equal
         ]
-        self._count_samples_hasher = lambda x, y: hash(str((x,y)))
+        self._count_samples_hasher = lambda x, y: hash(str((x, y)))
         # Either self._domain_properties will be used to determine the state
         # size or on initialization the state size has to be given
         # If both is given, the DomainProperties will be prefered

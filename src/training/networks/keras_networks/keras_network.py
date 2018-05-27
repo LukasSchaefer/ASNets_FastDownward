@@ -191,7 +191,6 @@ class KerasNetwork(Network):
             max_queue_size=10, workers=1,
             use_multiprocessing=False,
             shuffle=True, initial_epoch=0)
-
         self._count_samples_hashes.update(kdg_train.generated_sample_hashes)
 
         self._history = history
@@ -323,22 +322,23 @@ class KerasNetwork(Network):
             "original", prefix + "deviations_dep_h", directory,
             diff_mean_to_prediction=True)
 
-        KerasNetwork._analyse_from_predictions_deviation_dep_on_similarity(
-            self._evaluation[0], self._evaluation[1], self._evaluation[2],
-            "Prediction Deviations depending on the similarity to training samples",
-            "deviation",
-            "similarity", prefix + "deviations_dep_sim", directory)
+        if self._test_similarity:
+            KerasNetwork._analyse_from_predictions_deviation_dep_on_similarity(
+                self._evaluation[0], self._evaluation[1], self._evaluation[2],
+                "Prediction Deviations depending on the similarity to training samples",
+                "deviation",
+                "similarity", prefix + "deviations_dep_sim", directory)
 
-        state_space_size = None if (not hasattr(self,"_domain_properties") or self._domain_properties is None) else self._domain_properties.state_space_size
-        reachable_sss = None if (not hasattr(self,"_domain_properties") or self._domain_properties is None) else self._domain_properties.upper_bound_reachable_state_space_size
-        KerasNetwork._analyse_misc(len(self._count_samples_hashes), state_space_size, reachable_sss,
+        state_space_sizes = None if (not hasattr(self,"_domain_properties") or self._domain_properties is None) else self._domain_properties.combined_state_space_size
+        reachable_ssss = None if (not hasattr(self,"_domain_properties") or self._domain_properties is None) else self._domain_properties.combined_reachable_state_space_upper_bound
+        KerasNetwork._analyse_misc(len(self._count_samples_hashes), state_space_sizes, reachable_ssss,
                                    prefix + "misc", directory)
 
         analysis_data = {"histories": [h.history for h in self._histories],
                          "evaluations": [(e[0].tolist(), e[1].tolist()) for e in self._evaluations],
                          "count_samples": len(self._count_samples_hashes) if self._count_samples else "NA",
-                         "state_space_size" : state_space_size,
-                         "upper_reachable_state_space_bound" : reachable_sss }
+                         "state_space_size" : state_space_sizes,
+                         "upper_reachable_state_space_bound" : reachable_ssss }
 
         analysis_data["model"] = ""
         def add_model_summary(x):
@@ -351,25 +351,39 @@ class KerasNetwork(Network):
 
     """----------------------ANALYSIS METHODS--------------------------------"""
     @staticmethod
-    def _analyse_misc(samples_seen, state_space_size, reachable_sss,
+    def _analyse_misc(samples_seen, state_space_sizes, reachable_ssss,
                       file, directory=".", formats=MATPLOTLIB_OUTPUT_FORMATS):
         fig = plt.figure()
-        if state_space_size is not None:
-            sss_bar = [state_space_size]
+        if state_space_sizes is not None:
+            sss_bar = [state_space_sizes]
+            text = [str(state_space_sizes)]
             new_xticks = [None, "Full State Space"]
-            if reachable_sss is not None:
-                sss_bar.append(reachable_sss)
+            if reachable_ssss is not None:
+                sss_bar.append(reachable_ssss)
+                text.append(str(reachable_ssss))
                 new_xticks.append("Reachable State Space")
+            for i in range(len(sss_bar)):
+                text.append("%d (%.2f)" % (samples_seen, float(samples_seen)/sss_bar[i]))
+
             ax = fig.add_subplot(1, 1, 1)
-            ax.bar(np.arange(len(sss_bar)), sss_bar, width=1,
-                   color='g', align='center') #, label="State Space Size")
-            ax.bar(np.arange(len(sss_bar)), [samples_seen] * len(sss_bar),
-                   color='r', align='center', label="Training Samples Count")
-            ax.set_title("Seen Parts of State Space")
+            bars_full = ax.bar(np.arange(len(sss_bar)), sss_bar,
+                               color='g', align='center') #, label="State Space Size")
+            bars_seen = ax.bar(np.arange(len(sss_bar)), [samples_seen] * len(sss_bar),
+                               color='r', align='center', label="Training Samples Count")
+
+            i = -1
+            for rect in bars_full + bars_seen:
+                i += 1
+                height = rect.get_height()
+                plt.text(rect.get_x() + rect.get_width() / 2.0, height,
+                         text[i], ha='center', va='bottom')
+
+            ax.set_title("Seen Parts of State Spaces of all problems")
             ax.set_ylabel("samples")
             ax.set_yscale("log")
+            ax.xaxis.set_major_locator(plt.MultipleLocator(1))
             ax.set_xticklabels(new_xticks)
-
+            ax.legend()
             #ax.set_xlabel(xlabel)
 
         fig.tight_layout()
