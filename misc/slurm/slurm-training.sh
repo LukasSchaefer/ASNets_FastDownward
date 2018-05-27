@@ -11,7 +11,6 @@ source ~/bin/kerascpu/bin/activate
 
 ##RUN
 if $NDOWNWARD/fast-training.py "$@"; then
-	mv $PATH_DATA/* $TARGET_DIR
 	echo "finished"
 else
 	(>&2 echo "error: Unable to train network(s)")
