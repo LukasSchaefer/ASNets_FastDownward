@@ -23,6 +23,10 @@ const vector<OperatorID> &EvaluationResult::get_preferred_operators() const {
     return preferred_operators;
 }
 
+const vector<float> &EvaluationResult::get_operator_preferences() const {
+    return operator_preferences;
+}
+
 bool EvaluationResult::get_count_evaluation() const {
     return count_evaluation;
 }
@@ -34,6 +38,11 @@ void EvaluationResult::set_h_value(int value) {
 void EvaluationResult::set_preferred_operators(
     vector<OperatorID> &&preferred_ops) {
     preferred_operators = move(preferred_ops);
+}
+
+void EvaluationResult::set_operator_preferences(
+    std::vector<float> &&operator_preferences) {
+    operator_preferences = move(operator_preferences);
 }
 
 void EvaluationResult::set_count_evaluation(bool count_eval) {

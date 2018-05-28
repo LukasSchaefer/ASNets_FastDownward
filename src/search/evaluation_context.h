@@ -4,6 +4,7 @@
 #include "evaluation_result.h"
 #include "heuristic_cache.h"
 #include "operator_id.h"
+#include "policy.h"
 
 #include <unordered_map>
 
@@ -48,6 +49,8 @@ class SearchStatistics;
 
 class EvaluationContext {
     HeuristicCache cache;
+    // is true if context is built from a policy
+    bool contains_policy_information;
     int g_value;
     bool preferred;
     SearchStatistics *statistics;
@@ -65,6 +68,13 @@ public:
     EvaluationContext(
         const HeuristicCache &cache, int g_value, bool is_preferred,
         SearchStatistics *statistics, bool calculate_preferred = false);
+
+    // cache constructor for policy context
+    EvaluationContext(
+        const HeuristicCache &cache, bool contains_policy, int g_value,
+        bool is_preferred, SearchStatistics *statistics,
+        bool calculate_preferred = false);
+
     /*
       Create new heuristic cache for caching heuristic values. Used for example
       by eager search.
@@ -72,6 +82,12 @@ public:
     EvaluationContext(
         const GlobalState &state, int g_value, bool is_preferred,
         SearchStatistics *statistics, bool calculate_preferred = false);
+
+    // state constructor for policy context
+    EvaluationContext(
+        const GlobalState &state, bool contains_policy, int g_value,
+        bool is_preferred, SearchStatistics *statistics,
+        bool calculate_preferred = false);
     /*
       Use the following constructor when you don't care about g values,
       preferredness (and statistics), e.g. when sampling states for heuristics.
@@ -95,6 +111,7 @@ public:
     const GlobalState &get_state() const;
     int get_g_value() const;
     bool is_preferred() const;
+    bool contains_policy() const;
 
     /*
       Use get_heuristic_value() to query finite heuristic values. It
@@ -112,6 +129,8 @@ public:
     int get_heuristic_value_or_infinity(Evaluator *heur);
     const std::vector<OperatorID> &get_preferred_operators(
         Evaluator *heur);
+    const std::vector<float> &get_preferred_operator_preferences(
+        Evaluator *eval);
     bool get_calculate_preferred() const;
 };
 

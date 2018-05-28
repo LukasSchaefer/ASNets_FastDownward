@@ -3,6 +3,7 @@
 #include "evaluation_result.h"
 #include "evaluator.h"
 #include "search_statistics.h"
+#include "policy.h"
 
 #include <cassert>
 
@@ -13,6 +14,7 @@ EvaluationContext::EvaluationContext(
     const HeuristicCache &cache, int g_value, bool is_preferred,
     SearchStatistics *statistics, bool calculate_preferred)
     : cache(cache),
+      contains_policy_information(false),
       g_value(g_value),
       preferred(is_preferred),
       statistics(statistics),
@@ -20,9 +22,28 @@ EvaluationContext::EvaluationContext(
 }
 
 EvaluationContext::EvaluationContext(
+    const HeuristicCache &cache, bool contains_policy, int g_value,
+    bool is_preferred, SearchStatistics *statistics,
+    bool calculate_preferred)
+    : cache(cache),
+      contains_policy_information(contains_policy),
+      g_value(g_value),
+      preferred(is_preferred),
+      statistics(statistics),
+    calculate_preferred(calculate_preferred) {
+}
+
+EvaluationContext::EvaluationContext(
     const GlobalState &state, int g_value, bool is_preferred,
     SearchStatistics *statistics, bool calculate_preferred)
     : EvaluationContext(HeuristicCache(state), g_value, is_preferred, statistics, calculate_preferred) {
+}
+
+EvaluationContext::EvaluationContext(
+    const GlobalState &state, bool contains_policy, int g_value,
+    bool is_preferred, SearchStatistics *statistics,
+    bool calculate_preferred)
+    : EvaluationContext(HeuristicCache(state), contains_policy, g_value, is_preferred, statistics, calculate_preferred) {
 }
 
 EvaluationContext::EvaluationContext(
@@ -62,6 +83,10 @@ bool EvaluationContext::is_preferred() const {
     return preferred;
 }
 
+bool EvaluationContext::contains_policy() const {
+    return contains_policy_information;
+}
+
 bool EvaluationContext::is_heuristic_infinite(Evaluator *heur) {
     return get_result(heur).is_infinite();
 }
@@ -81,6 +106,9 @@ EvaluationContext::get_preferred_operators(Evaluator *heur) {
     return get_result(heur).get_preferred_operators();
 }
 
+const std::vector<float> &EvaluationContext::get_preferred_operator_preferences(Evaluator *eval) {
+    return get_result(eval).get_operator_preferences();
+}
 
 bool EvaluationContext::get_calculate_preferred() const {
     return calculate_preferred;

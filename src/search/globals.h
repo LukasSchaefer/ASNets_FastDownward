@@ -17,6 +17,7 @@ struct FactPair;
 class GlobalOperator;
 class GlobalState;
 class Heuristic;
+class Policy;
 class StateRegistry;
 class TaskProxy;
 
@@ -92,5 +93,7 @@ extern std::map<std::string, Heuristic*> g_registered_heuristics;
 
 bool g_register_heuristic(std::string name, Heuristic* heuristic);
 bool g_unregister_heuristic(std::string name, Heuristic* heuristic);
+bool g_register_policy(std::string name, Policy* policy);
+bool g_unregister_policy(std::string name, Policy* policy);
 void g_reset_registered_heuristics();
 #endif

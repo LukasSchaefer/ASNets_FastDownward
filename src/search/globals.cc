@@ -396,6 +396,7 @@ utils::Log g_log;
 
 
 map<string, Heuristic*> g_registered_heuristics;
+map<string, Policy*> g_registered_policies;
 
 
 bool g_register_heuristic(string name, Heuristic* heuristic) {
@@ -414,6 +415,30 @@ bool g_unregister_heuristic(std::string name, Heuristic* heuristic) {
     if (g_registered_heuristics.find(name) == g_registered_heuristics.end()
         && g_registered_heuristics[name] == heuristic) {
         g_registered_heuristics.erase(name);
+        return true;
+    } else {
+        return false;
+    }
+}
+
+
+bool g_register_policy(string name, Policy* policy) {
+    if (name == "None") {
+        return false;
+    }
+    if (g_registered_policies.find(name) == g_registered_policies.end()) {
+        g_registered_policies[name] = policy;
+        return true;
+    } else {
+        return false;
+    }
+}
+
+
+bool g_unregister_policy(string name, Policy* policy) {
+    if (g_registered_policies.find(name) == g_registered_policies.end()
+        && g_registered_policies[name] == policy) {
+        g_registered_policies.erase(name);
         return true;
     } else {
         return false;

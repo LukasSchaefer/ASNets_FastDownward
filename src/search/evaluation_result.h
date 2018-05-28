@@ -11,6 +11,9 @@ class EvaluationResult {
 
     int h_value;
     std::vector<OperatorID> preferred_operators;
+    // probabilities to represent policy with preferred operators
+    // ith value is probability to choose ith preferred operator
+    std::vector<float> operator_preferences;
     bool count_evaluation;
 public:
     // "INFINITY" is an ISO C99 macro and "INFINITE" is a macro in windows.h.
@@ -43,9 +46,11 @@ public:
     int get_h_value() const;
     bool get_count_evaluation() const;
     const std::vector<OperatorID> &get_preferred_operators() const;
+    const std::vector<float> &get_operator_preferences() const;
 
     void set_h_value(int value);
     void set_preferred_operators(std::vector<OperatorID> &&preferred_operators);
+    void set_operator_preferences(std::vector<float> &&operator_preferences);
     void set_count_evaluation(bool count_eval);
 };
 
