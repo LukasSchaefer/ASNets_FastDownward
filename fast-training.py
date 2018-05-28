@@ -85,6 +85,11 @@ ptrain.add_argument("-fin", "--finalize", type=str, nargs="+", action="store",
                     default=[],
                     help="List some key=value pairs which are passed "
                          "as key=value to the networks finalize method.")
+ptrain.add_argument("--forget", type=float,
+                     action="store", default=0.0,
+                     help=("Probability of skipping to load entries of the "
+                           "verification data"))
+
 ptrain.add_argument("-i", "--initialize", type=str, nargs="+", action="store",
                     default=[],
                     help="List some key=value pairs which are passed "
@@ -114,7 +119,7 @@ ptrain.add_argument("-pf", "--problem-filter", type=str,
                           "time to add additional filters (the file name has"
                           "to match ALL regexes)")
 ptrain.add_argument("-p", "--prefix", type=str,
-                     action="store", default=[],
+                     action="store", default="",
                      help="Prefix to add in front of analysis outputs")
 ptrain.add_argument("-s", "--selection-depth", type=int,
                      action="store", default=None,
@@ -216,7 +221,7 @@ def get_directory_groups(options):
 def load_data(options, directories, format):
     bridge = LoadSampleBridge(format=format, prune=True,
                               skip=options.skip, skip_magic=options.skip_magic,
-                              forget=0.5)
+                              forget=options.forget)
 
     dtrain, dtest = None, None
     ignore = []
@@ -340,7 +345,7 @@ def train(argv):
             network.evaluate(dtest)
             start_time = timing(start_time, "Network evaluation time: %ss")
 
-            network.analyse()
+            network.analyse(prefix=options.prefix)
             start_time = timing(start_time, "Network analysis time: %ss")
 
             network.finalize(**options.finalize)

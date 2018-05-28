@@ -3,4 +3,4 @@
 ./fast-sample.py --traverse ../DeePDown/data/FixedWorlds/transport/ -d .*var_roads_l6p1.* -p .*eval.* -e ./misc/slurm/submit.sh -a "--export=ALL ./misc/slurm/slurm-sample.sh" --batch 1 --sample -c -p
 
 
-./fast-training.py "keras_dyn_mlp(hidden=5, output_units=-1, test_similarity=hamming, formats=[hdf5, pb], graphdef=graphdef.txt, count_samples=True)" -d ../DeePDown/data/FixedWorlds/transport/ -sdt -v .*eval.* --skip-magic -o -n model -dp -e ./misc/slurm/submit.sh -a "--export=ALL ./misc/slurm/slurm-training.sh"
+./fast-training.py "keras_dyn_mlp(hidden=5, output_units=-1, test_similarity=hamming, formats=[hdf5, pb], graphdef=graphdef.txt, count_samples=True)" -d ../DeePDown/data/FixedWorlds/transport/ -sdt -v .*eval.* --skip-magic -o -n model -dp -e ./misc/slurm/submit.sh -a "--export=ALL ./misc/slurm/slurm-training.sh" --dry
