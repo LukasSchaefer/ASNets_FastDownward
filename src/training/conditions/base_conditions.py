@@ -1,13 +1,13 @@
 from .. import main_register
 from .. import parser
 from .. import parser_tools as parset
-from .. import ABC
+from .. import AbstractBaseClass
 
 from ..parser_tools import ArgumentException
 
 import abc
 
-class Condition(ABC):
+class Condition(AbstractBaseClass):
     """
     Base class for all conditions.
     Remember to register your concrete subclasses via one (or multiple) names

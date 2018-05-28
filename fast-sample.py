@@ -1,22 +1,52 @@
 #! /usr/bin/env python
 # -*- coding: utf-8 -*-
 from __future__ import print_function
+import sys
+
+# Load dependency module w/o loading the whole package (otherwise,
+# changing the dependencies will have no effect anymore
+if sys.version_info >= (3, 5):
+    import importlib.util
+    spec = importlib.util.spec_from_file_location("src.training.dependencies", "src/training/dependencies.py")
+    dependencies = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(dependencies)
+    sys.modules["src.training.dependencies"] = dependencies
+    dependencies.setup()
+    dependencies.set_external(False, True)
+elif sys.version_info < (3,):
+    import imp
+    dependencies = imp.load_source("src.training.dependencies", "src/training/dependencies.py")
+    sys.modules["src.training.dependencies"] = dependencies
+    dependencies.setup()
+    dependencies.set_external(False, True)
+else:
+    print("Warning: Dependency preloading not supported by this python version."
+          " All dependencies are require.")
+
 
 from src.training.bridges import FastDownwardSamplerBridge
 from src.training.samplers import IterableFileSampler
 from src.training.samplers import DirectorySampler
 from src.training.bridges.sampling_bridges import StateFormat
 
-from src.training import parser as training_parser
 import argparse
-import os
-import re
 import shlex
 import subprocess
 import sys
 import logging
 log = logging.getLogger()
+"""
+import importlib
 
+moduleName = input('Enter module name:')
+importlib.import_module(moduleName)
+
+---
+outdated
+pmName = input('Enter module name:')
+pm = __import__(pmName)
+print(dir(pm))
+"""
 
 
 # DEFAULT SEARCH CONFIGURATION
@@ -138,10 +168,10 @@ def parse_sample_args(argv):
     fdb = FastDownwardSamplerBridge(options.search, options.format,
                                     options.build, options.temporary_folder,
                                     options.target_file, options.target_folder,
-                                    options.append, options.reuse,
+                                    options.append, False, options.reuse,
                                     options.domain, True,
                                     options.fast_downward,
-                                    options.prune, False, True,
+                                    options.prune, True,
                                     options.compress)
     return fdb, options.problem
 
@@ -152,7 +182,7 @@ def sample(argv):
         log.warning("No problems defined for sampling.")
     ifs = IterableFileSampler(fdb, problems)
     ifs.initialize()
-    DATA = ifs.sample()
+    ifs.sample()
     ifs.finalize()
 
 

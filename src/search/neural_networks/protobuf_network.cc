@@ -9,9 +9,7 @@ ProtobufNetwork::ProtobufNetwork(const Options &opts)
     : AbstractNetwork(),
       task(opts.get<shared_ptr<AbstractTask>>("transform")),
       task_proxy(*task),
-      path(opts.get<string>("path")),
-      input_layer_name(opts.get<string>("input_layer")),
-      output_layer_name(opts.get<string>("output_layer")) {
+      path(opts.get<string>("path")) {
 }
 
 ProtobufNetwork::~ProtobufNetwork(){
@@ -50,14 +48,13 @@ void ProtobufNetwork::initialize() {
     }
 
     initialize_inputs();
+    initialize_output_layers();
 }
 
 void ProtobufNetwork::evaluate(const State& state){
     fill_input(state);
     
-    Status status = session->Run(inputs,{output_layer_name},
-    {
-    }, &outputs);
+    Status status = session->Run(inputs, output_layers, {}, &outputs);
 
 
     if (!status.ok()) {
@@ -76,9 +73,5 @@ void ProtobufNetwork::add_options_to_parser(options::OptionParser& parser) {
         "available.",
         "no_transform()");
     parser.add_option<string>("path", "Path to networks protobuf file.");
-    parser.add_option<string>("input_layer",
-        "Name of the computation graphs input layer.");
-    parser.add_option<string>("output_layer",
-        "Name of the computation graphs output layer.");
 }
 }

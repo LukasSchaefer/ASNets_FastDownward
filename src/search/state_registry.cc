@@ -57,7 +57,6 @@ const GlobalState &StateRegistry::get_initial_state() {
         // Avoid garbage values in half-full bins.
         fill_n(buffer, get_bins_per_state(), 0);
         for (size_t i = 0; i < initial_state_data.size(); ++i) {
-            cout << " IS " << i << " : " <<initial_state_data[i] << "-"<<(unsigned int) initial_state_data[i] << endl;
             state_packer.set(buffer, i, initial_state_data[i]);
         }
         axiom_evaluator.evaluate(buffer, state_packer);

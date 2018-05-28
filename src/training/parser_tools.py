@@ -365,8 +365,10 @@ class ClassArguments:
 
         # Remember if reg_or_conv is a list, then it contains soleley
         # ClassRegisters. If it is no list, then it is not a ClassRegister
-        (name, optional, default, reg_or_conv) = self.parameters[parameter]
-
+        if len(self.parameters[parameter]) == 4:
+            (name, optional, default, reg_or_conv) = self.parameters[parameter]
+        else:
+            (name, optional, default, reg_or_conv, _) = self.parameters[parameter]
         # argument not provided by user
         if tree is None:
             if optional:
