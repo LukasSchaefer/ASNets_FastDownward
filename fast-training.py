@@ -55,7 +55,6 @@ ptrain.add_argument("-sdt", "--sub-directory-training",
                           "domain.pddl file and at least one *.data file (for "
                           "those directories selected, the data is loaded from "
                           "them and from subdirectores like before)")
-                    #TODO domain file required top dir?
 ptrain.add_argument("-df", "--directory-filter", type=str,
                     action="append", default=[],
                     help="A subdirectory name has to match the regex otherwise"
@@ -78,6 +77,14 @@ ptrain.add_argument("-f", "--format", choices=CHOICE_STATE_FORMATS,
                      help=("State format name into which the loaded data shall"
                            "be converted (if not given, the preferred of the"
                            "network is chosen)"))
+ptrain.add_argument("-fin", "--finalize", type=str, nargs="+", action="store",
+                    default=[],
+                    help="List some key=value pairs which are passed "
+                         "as key=value to the networks finalize method.")
+ptrain.add_argument("-i", "--initialize", type=str, nargs="+", action="store",
+                    default=[],
+                    help="List some key=value pairs which are passed "
+                         "as key=value to the networks initialize method.")
 ptrain.add_argument("-l", "--load", type=str,
                      action="store", default=None,
                      help="Overrides the network load location defined in the "
@@ -130,6 +137,17 @@ arguments = set()
 for action in ptrain._actions:
     for key in action.option_strings:
         arguments.add(key)
+
+
+def parse_key_value_pairs_to_kwargs(pairs):
+    kwargs = {}
+    for pair in pairs:
+        idx = pair.find("=")
+        if idx == -1:
+            raise argparse.ArgumentError("The key=value pairs need an '=' sign "
+                                         "to separate keys from values.")
+        kwargs[pair[:idx]] = pair[idx + 1:]
+    return kwargs
 
 
 def prepare_training_before_loading(options, directories):
@@ -287,6 +305,8 @@ def train(argv):
     directory_groups = get_directory_groups(options)
     if len(directory_groups) == 0:
         raise argparse.ArgumentError("No valid list of directories found.")
+    options.initialize = parse_key_value_pairs_to_kwargs(options.initialize)
+    options.finalize = parse_key_value_pairs_to_kwargs(options.finalize)
     start_time = timing(start_time, "Parsing time: %ss")
 
     if options.execute is None:
@@ -303,7 +323,7 @@ def train(argv):
             #state_size = len(dtrain[0].data["O"][0][0][dtrain[0].field_current_state].split("\t"))
             start_time = timing(start_time, "Loading data time: %ss")
 
-            network.initialize(None)
+            network.initialize(None, **options.initialize)
             start_time = timing(start_time, "Network initialization time: %ss")
 
             network.train(dtrain, dtest)
@@ -315,7 +335,7 @@ def train(argv):
             network.analyse()
             start_time = timing(start_time, "Network analysis time: %ss")
 
-            network.finalize()
+            network.finalize(**options.finalize)
             _ = timing(start_time, "Network finalization time: %ss")
 
     else:
@@ -326,7 +346,8 @@ def train(argv):
             call_command[idx_group: idx_group] = ["--directory"] + dg
             print("Call executable: ", call_command)
             subprocess.call(call_command)
-            sys.exit()
+
+
 if __name__ == "__main__":
     train(sys.argv[1:])
 
