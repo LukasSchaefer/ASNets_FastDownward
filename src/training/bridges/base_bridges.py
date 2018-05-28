@@ -67,17 +67,20 @@ class SamplerBridge(Bridge):
          "Append new samples to old file of same name"),
         ('provide', True, True, parser.convert_bool,
          "Return the sampled data as object"),
+        ("forget", True, 0.0, float,
+        "Probability to 'forget' to return a sample entry from the data"),
         ('reuse', True, False, parser.convert_bool,
         "If sampled data is present allows to load it instead of sampling anew."),
         ('domain', True, None, str),
         ("makedir", True, False, parser.convert_bool),
         ("environment", True, None, main_register.get_register(Environment)),
         order=["tmp_dir", "target_file",
-               "target_dir", "append", "provide", "reuse", "domain",
+               "target_dir", "append", "provide", "forget", "reuse", "domain",
                "makedir", "environment", "id"])
 
     def __init__(self, tmp_dir=None, target_file=None, target_dir=None,
-                 append=False, provide=True, reuse=False, domain=None, makedir=False,
+                 append=False, provide=True, forget=0.0,
+                 reuse=False, domain=None, makedir=False,
                  environment=None, id=None):
         Bridge.__init__(self, id)
         self._tmp_dir = tmp_dir
@@ -85,6 +88,7 @@ class SamplerBridge(Bridge):
         self._target_dir = target_dir
         self._append = append
         self._provide = provide
+        self._forget = forget
         self._domain = domain
         self._makedir = makedir
         self._reuse = reuse

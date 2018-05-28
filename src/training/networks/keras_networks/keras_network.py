@@ -1,4 +1,4 @@
-from . import KerasDataGenerator, store_keras_model_as_protobuf
+from . import KerasDataGenerator, store_keras_model_as_protobuf, ProgressCheckingCallback
 
 from .. import Network, NetworkFormat
 
@@ -20,6 +20,11 @@ import matplotlib.pyplot as plt
 import numpy as np
 import os
 
+# TODO:
+# Call back Mechanism and Parsing
+# Unhackify callback reset
+# reinitialize for networks
+
 # List of formats in which the matplotlib figures shall be stored
 MATPLOTLIB_OUTPUT_FORMATS=["png"]
 COLOR_DATA_MEAN = "g"
@@ -27,7 +32,7 @@ ALPHA_DATA_MEAN = 0.7
 
 class KerasNetwork(Network):
     arguments = parset.ClassArguments('KerasNetwork', Network.arguments,
-        ("epochs", True, 1, int, "Number of training epochs per training call"),
+        ("epochs", True, 3000, int, "Number of training epochs per training call"),
         ("count_samples", True, False, parser.convert_bool,
          "Counts how many and which samples where used during training"
          " (This increases the runtime)."),
@@ -49,8 +54,14 @@ class KerasNetwork(Network):
         Network.__init__(self, load, store, formats, out, variables, id)
         self._epochs = epochs
         self._model = None
-
-
+        self._resets = 5 if load is None else 0
+        self._reset_monitor = "acc"
+        self._reset_time = 50
+        self._reset_threshold = 0.0
+        self._reset_minimize = False
+        self._progress_check_callback = (ProgressCheckingCallback(
+                self._reset_monitor, self._reset_time, self._reset_threshold,
+                self._reset_minimize) if self._resets > 0 else None)
         """Analysis data"""
         self._history = None
         self._histories = []
@@ -86,6 +97,9 @@ class KerasNetwork(Network):
         self._x_fields_comparators = None
         # Callback functions for the keras_networks fitting
         self._callbacks = None
+        if self._progress_check_callback is not None:
+            self._callbacks = [] if self._callbacks is None else self._callbacks
+            self._callbacks.append(self._progress_check_callback)
 
         # Variables for storing Protobuf (ignore if you do not support storing
         # Protobuf files, but in general keras networks can be converted)
@@ -182,16 +196,30 @@ class KerasNetwork(Network):
                 y_converter=self._y_converter,
                 shuffle=True)
 
-        history = self._model.fit_generator(
-            kdg_train,
-            epochs=self._epochs,
-            verbose=1, callbacks=self._callbacks,
-            validation_data=kdg_test,
-            validation_steps=None, class_weight=None,
-            max_queue_size=10, workers=1,
-            use_multiprocessing=False,
-            shuffle=True, initial_epoch=0)
-        self._count_samples_hashes.update(kdg_train.generated_sample_hashes)
+        while True:
+            if self._progress_check_callback is not None:
+                self._progress_check_callback.failed = False
+            history = self._model.fit_generator(
+                kdg_train,
+                epochs=self._epochs,
+                verbose=1, callbacks=self._callbacks,
+                validation_data=kdg_test,
+                validation_steps=None, class_weight=None,
+                max_queue_size=10, workers=1,
+                use_multiprocessing=False,
+                shuffle=True, initial_epoch=0)
+            self._resets -= 1
+            if self._resets <= 0:
+                print("EMD")
+                break
+            if self._progress_check_callback is not None and not self._progress_check_callback.failed:
+                print("SUCC")
+                break
+            else:
+                print("REE")
+                self.reinitialize()
+
+            self._count_samples_hashes.update(kdg_train.generated_sample_hashes)
 
         self._history = history
         self._histories.append(history)

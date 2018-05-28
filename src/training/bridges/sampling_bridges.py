@@ -342,7 +342,7 @@ def load_and_convert_data(path_read, format, default_format=None, prune=True,
                           pddl_task=None, sas_task=None,
                           data_container=None,
                           path_write=None, compress=True, append=False, delete=False,
-                          skip_magic_word_check=False):
+                          skip_magic_word_check=False, forget=0.0):
     """
 
     :param path_read: Path to the file containing the samples to load
@@ -423,6 +423,8 @@ def load_and_convert_data(path_read, format, default_format=None, prune=True,
                                 break
 
                         else:
+                            if forget != 0.0 and random.random() < forget:
+                                continue
                             entry, _, _ = load_sample_line(
                                 line, data_container, format,
                                 pddl_task, sas_task, old_hashs, default_format)
@@ -520,19 +522,20 @@ class LoadSampleBridge(SamplerBridge):
          "Skip magic word check (no guarantees on opening the files with the"
          " right tool (DEPRECATED)"),
         ("provide", True, False, parser.convert_bool),
-        order=["format", "prune", "skip",
+        order=["format", "prune", "forget", "skip",
              "tmp_dir", "target_file",
              "target_dir", "append", "provide", "reuse", "domain",
              "makedir", "skip_magic",
              "environment", "id"]
 )
 
-    def __init__(self, format=StateFormat.FD, prune=True, skip=True,
+    def __init__(self, format=StateFormat.FD, prune=True, forget=0.0, skip=True,
                  tmp_dir=None, target_file=None, target_dir=None,
                  append=False, provide=False, reuse=False, domain=None,
                  makedir=False, skip_magic=False, environment=None, id=None):
         SamplerBridge.__init__(self, tmp_dir, target_file, target_dir,
-                               append, provide, reuse, domain, makedir, environment, id)
+                               append, provide, forget,
+                               reuse, domain, makedir, environment, id)
 
         self._format = format
         self._prune = prune
@@ -564,7 +567,7 @@ class LoadSampleBridge(SamplerBridge):
             path_read=path_samples, format=self._format, prune=self._prune,
             path_problem=path_problem, path_domain=path_domain,
             data_container=data_container,
-            skip_magic_word_check=self._skip_magic)
+            skip_magic_word_check=self._skip_magic, forget=self._forget)
 
         return data_container
 
@@ -598,7 +601,7 @@ class FastDownwardSamplerBridge(SamplerBridge):
 
         order=["search", "format", "build",
              "tmp_dir", "target_file",
-             "target_dir", "append", "provide", "reuse", "domain",
+             "target_dir", "append", "provide", "forget", "reuse", "domain",
              "makedir", "fd_path", "prune", "store",
              "compress",
              "environment", "id"]
@@ -606,12 +609,14 @@ class FastDownwardSamplerBridge(SamplerBridge):
 
     def __init__(self, search, format=StateFormat.FD, build="debug64dynamic",
                  tmp_dir=None, target_file=None, target_dir=None,
-                 append=False, provide=True, reuse=False, domain=None,
+                 append=False, provide=True, forget=0.0,
+                 reuse=False, domain=None,
                  makedir=False, fd_path=None, prune=True,
                  store=True, compress=True,
                  environment=None, id=None):
         SamplerBridge.__init__(self, tmp_dir, target_file, target_dir,
-                               append, provide, reuse, domain, makedir, environment, id)
+                               append, provide, forget,
+                               reuse, domain, makedir, environment, id)
 
         self._search = search
         self._format = format
@@ -672,7 +677,7 @@ class FastDownwardSamplerBridge(SamplerBridge):
                 path_problem=path_problem, path_domain=path_domain,
                 data_container=data_container,
                 path_write=path_samples, compress=self._compress, append=append,
-                delete=True)
+                delete=True, forget=self._forget)
 
         else:
             if self._provide:
@@ -680,7 +685,7 @@ class FastDownwardSamplerBridge(SamplerBridge):
                     path_read=path_samples,
                     format=self._format, prune=self._prune,
                     path_problem=path_problem, path_domain=path_domain,
-                    data_container=data_container)
+                    data_container=data_container, forget=self._forget)
 
         return data_container
 

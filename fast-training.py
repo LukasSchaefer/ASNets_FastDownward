@@ -211,7 +211,8 @@ def get_directory_groups(options):
 
 def load_data(options, directories, format):
     bridge = LoadSampleBridge(format=format, prune=True,
-                              skip=options.skip, skip_magic=options.skip_magic)
+                              skip=options.skip, skip_magic=options.skip_magic,
+                              forget=0.5)
 
     dtrain, dtest = None, None
     ignore = []
@@ -231,6 +232,7 @@ def load_data(options, directories, format):
         ignore = dir_samp._iterable
 
     # We create the training set
+    bridge._forget = 0.0
     dir_samp = DirectorySampler(bridge, directories,
                                 options.directory_filter, options.problem_filter,
                                 ignore,

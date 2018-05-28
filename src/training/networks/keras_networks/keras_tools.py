@@ -1,7 +1,39 @@
+from __future__ import print_function
+
 import keras
 import math
 import numpy as np
 import random
+
+class ProgressCheckingCallback(keras.callbacks.Callback):
+    def __init__(self, monitor, epochs, threshold=None, minimize=True):
+        keras.callbacks.Callback.__init__(self)
+        self._monitor = monitor
+        self._epochs = epochs
+        self._threshold = threshold
+        self._minimize = minimize
+        self._active = True
+        self.failed = False
+
+    def on_train_begin(self, logs={}):
+        self._active = True
+
+    def on_epoch_end(self, epoch, logs={}):
+        if not self._active:
+            return
+
+        if epoch >= self._epochs:  # Fire once after self._epochs epochs
+            self._active = False
+            current = logs.get(self._monitor)
+            if current is None:
+                raise RuntimeError("ProgressCheckingCallback requires %s"
+                                   " available!" % self._monitor)
+
+
+            if ((self._minimize and current >= self._threshold)
+                or (not self._minimize and current <= self._threshold)):
+                self.model.stop_training = True
+                self.failed = True
 
 
 class KerasDataGenerator(keras.utils.Sequence):

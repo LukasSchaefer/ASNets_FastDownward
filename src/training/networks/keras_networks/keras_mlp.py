@@ -97,6 +97,9 @@ class KerasDynamicMLP(KerasDomainPropertiesNetwork):
         self._compile(self._optimizer, self._loss, ["accuracy",
                                                     "mean_absolute_error"])
 
+    def reinitialize(self):
+        self._initialize_model()
+
     def _finalize(self, *args, **kwargs):
         pass
 
