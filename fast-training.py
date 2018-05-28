@@ -47,6 +47,10 @@ ptrain.add_argument("-d", "--directory", type=str, nargs="+", action="append",
                          " calling this script with the same arguments for each "
                          "(if not --sub-directory-training, then the domain file"
                          "is required in the first given directory")
+ptrain.add_argument("--dry",
+                     action="store_true",
+                     help="Tells only which trainings it would perform, but does "
+                          "not perform the training step.")
 ptrain.add_argument("-sdt", "--sub-directory-training",
                      action="store_true",
                      help="Changes training from one network on the data within "
@@ -316,6 +320,8 @@ def train(argv):
             dg = directory_groups[idx_dg]
             print("Processing Directory Group " + str(idx_dg) + ": "
                   + str(dg))
+            if options.dry:
+                continue
             network, format = prepare_training_before_loading(options, dg)
             dtrain, dtest, problems = load_data(options, dg, format)
             prepare_training_after_loading(options, network,
@@ -347,6 +353,8 @@ def train(argv):
             call_command = list(new_command)
             call_command[idx_group: idx_group] = ["--directory"] + dg
             print("Call executable: ", call_command)
+            if options.dry:
+                continue
             subprocess.call(call_command)
 
 
