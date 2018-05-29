@@ -551,6 +551,13 @@ fast_downward_plugin(
 )
 
 fast_downward_plugin(
+    NAME HEURISTICS_POLICY
+    HELP "The heuristic policy"
+    SOURCES
+        policies/heuristic_policy
+    DEPENDENCY_ONLY)
+
+fast_downward_plugin(
     NAME CORE_TASKS
     HELP "Core task transformations"
     SOURCES
