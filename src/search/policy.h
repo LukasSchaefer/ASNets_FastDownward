@@ -4,21 +4,16 @@
 #include "evaluator.h"
 #include "operator_id.h"
 #include "per_state_information.h"
-#include "task_proxy.h"
 
-#include "algorithms/ordered_set.h"
-
-#include <memory>
 #include <vector>
-#include <unordered_set>
-
-class GlobalState;
-class TaskProxy;
+#include <tuple>
 
 namespace options {
 class OptionParser;
 class Options;
 }
+
+struct PEntry;
 
 class Policy : public Evaluator {
     /*
@@ -70,10 +65,10 @@ protected:
 protected:
 
     /*
-        main function to implement for concrete policies returning
-        the policy result for a given state
+        main function to implement for concrete policies returning the policy
+        result as pair of operator ids and preferences for a given state
     */
-    virtual PEntry compute_policy(const GlobalState &state) = 0;
+    virtual std::pair<std::vector<OperatorID>, std::vector<float>> compute_policy(const GlobalState &state) = 0;
 
 public:
     explicit Policy(const options::Options &options);

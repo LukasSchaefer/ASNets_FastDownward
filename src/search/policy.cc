@@ -44,9 +44,9 @@ EvaluationResult Policy::compute_result(EvaluationContext &eval_context) {
         operator_preferences = policy_cache[state].operator_preferences;
         result.set_count_evaluation(false);
     } else {
-        PEntry policy_result = compute_policy(state);
-        operator_ids = policy_result.operator_ids;
-        operator_preferences = policy_result.operator_preferences;
+        pair<std::vector<OperatorID>, std::vector<float>> policy_result = compute_policy(state);
+        operator_ids = policy_result.first;
+        operator_preferences = policy_result.second;
         if (!operator_ids.empty() && operator_preferences.empty()) {
             // only operator_ids set -> use uniform distribution = all preferences are equal
             unsigned int number_of_operators = operator_ids.size();
