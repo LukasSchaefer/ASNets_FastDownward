@@ -125,6 +125,7 @@ public:
       returns numeric_limits<int>::max() for infinite estimates.
     */
     bool is_heuristic_infinite(Evaluator *heur);
+    bool is_policy_dead_end(Evaluator *policy);
     int get_heuristic_value(Evaluator *heur);
     int get_heuristic_value_or_infinity(Evaluator *heur);
     const std::vector<OperatorID> &get_preferred_operators(

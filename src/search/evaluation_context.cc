@@ -91,6 +91,10 @@ bool EvaluationContext::is_heuristic_infinite(Evaluator *heur) {
     return get_result(heur).is_infinite();
 }
 
+bool EvaluationContext::is_policy_dead_end(Evaluator *policy) {
+    return get_result(policy).get_preferred_operators().empty();
+}
+
 int EvaluationContext::get_heuristic_value(Evaluator *heur) {
     int h = get_result(heur).get_h_value();
     assert(h != EvaluationResult::INFTY);
