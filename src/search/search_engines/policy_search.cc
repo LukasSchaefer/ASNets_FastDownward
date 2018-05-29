@@ -59,7 +59,7 @@ SearchStatus PolicySearch::step() {
     // find most probable/ preferenced operator
     int most_probable_op_index = -1;
     float highest_op_probability = 0;
-    for (int index = 0; index < operator_ids.size(); index++) {
+    for (unsigned int index = 0; index < operator_ids.size(); index++) {
         float probability = operator_prefs[index];
         if (probability > highest_op_probability) {
             highest_op_probability = probability;
