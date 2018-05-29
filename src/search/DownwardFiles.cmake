@@ -68,6 +68,7 @@ fast_downward_plugin(
         option_parser_util
         per_state_information
         plugin
+        policy
         pruning_method
         search_engine
         search_node_info
@@ -412,6 +413,14 @@ fast_downward_plugin(
     SOURCES
         search_engines/plugin_sampling
     DEPENDS SAMPLING_SEARCH SEARCH_COMMON
+)
+
+fast_downward_plugin(
+    NAME POLICY_SEARCH
+    HELP "Policy guided search algorithm"
+    SOURCES
+        search_engines/policy_search
+    DEPENDS SEARCH_COMMON
 )
 
 fast_downward_plugin(
