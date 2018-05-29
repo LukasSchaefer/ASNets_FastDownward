@@ -1,4 +1,4 @@
 #!/bin/bash
 
-../../fast-downward.py --build debug64dynamic test.pddl --search "eager_greedy([nh(network=sgnet(type=regression,path=model.pb, state_layer=input_1, goal_layer=input_2, \real_case\output_layers=[dense_4/Relu]\default\))], cost_type=ONE)"
+../../fast-downward.py --build debug64dynamic test.pddl --search "eager_greedy([nh(network=sgnet(type=regression,path=model.pb, state_layer=input_1, goal_layer=input_2, \real_case\output_layers=[dense_6/Relu]\default\))], cost_type=ONE)"
 # atoms & defaults does not need to be set, because their automatic detection is sufficient

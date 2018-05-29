@@ -1,3 +1,5 @@
+from __future__ import print_function
+
 import keras
 import math
 import numpy as np
@@ -73,7 +75,7 @@ class KerasDataGenerator(keras.utils.Sequence):
             for type in types:
                 for idx_batch in range(len(ds.data[type])):
                     batch = ds.data[type][idx_batch]
-                    count = math.ceil(len(batch)/batch_size)
+                    count = int(math.ceil(len(batch)/batch_size))
                     step = int(len(batch)/count)
                     start = 0
                     for i in range(count):
@@ -88,39 +90,18 @@ class KerasDataGenerator(keras.utils.Sequence):
 
         self.shuffle = shuffle
         self.count_diff_samples = count_diff_samples
+        self._mem_count_diff_samples = count_diff_samples
         self.generated_sample_hashes = set()
 
+
+    def reset(self):
         """
-        self.precaching = precaching
-        self.cache_x = None
-        self.cache_y = None
-        if self.precaching:
-            self.__compute_caching(types)
-        
-    def __compute_caching(self, types):
-        self.cache_x = []
-        self.cache_y = []
-        for idx_ds in range(len(self.data)):
-            ds = self.data[idx_ds]
-            self.cache_x.append({})
-            self.cache_y.append({})
-            for type in types:
-                self.cache_x[idx_ds][type] = []
-                self.cache_y[idx_ds][type] = []
-                for idx_batch in range(len(ds.data[type])):
-                    batch = ds.data[type][idx_batch]
-
-                    tmp = batch[:, self.x_fields]
-                    self.cache_x[idx_ds][type].append(
-                        tmp if self.x_converter is None else
-                        self.x_converter(tmp))
-                    tmp = batch[:, self.y_fields]
-                    self.cache_y[idx_ds][type].append(
-                        tmp if self.y_converter is None else
-                        self.y_converter(tmp))
-
-
+        Reset this Generator to be used anew
+        :return:
         """
+        self.count_diff_samples = self._mem_count_diff_samples
+        self.generated_sample_hashes = set()
+
     def __len__(self):
         'Denotes the number of batches per epoch'
         return len(self.batch_order)
@@ -133,7 +114,8 @@ class KerasDataGenerator(keras.utils.Sequence):
         y = entries[:, self.y_fields]
 
         if self.count_diff_samples is not None:
-            self.generated_sample_hashes.add(self.count_diff_samples(x, y))
+            for i in range(len(x)):
+                self.generated_sample_hashes.add(self.count_diff_samples(x[i], y[i]))
 
         if self.similarity is not None:
             (sim_batches, data_sets, measure) = self.similarity

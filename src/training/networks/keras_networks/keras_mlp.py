@@ -1,4 +1,4 @@
-from . import KerasNetwork, KerasDomainPropertiesNetwork
+from .keras_network import KerasNetwork, KerasDomainPropertiesNetwork
 
 from ... import parser_tools as parset
 from ... import parser
@@ -26,18 +26,19 @@ class KerasDynamicMLP(KerasDomainPropertiesNetwork):
                                              "load", "store", "formats", "out",
                                              "epochs",
                                              "count_samples", "test_similarity",
-                                             "graphdef", "variables", "id"]
+                                             "graphdef", "callbacks", "variables", "id"]
                                       )
 
     def __init__(self, hidden, output_units=-1, activation="sigmoid",
                  dropout=None, optimizer="adam", loss="mean_squared_error",
                  load=None, store=None, formats=None, out=".", epochs=1000,
                  count_samples=False, test_similarity=None, graphdef=None,
+                 callbacks=None,
                  variables=None, id=None,
                  domain_properties=None):
         KerasDomainPropertiesNetwork.__init__(
             self, load, store, formats, out, epochs, count_samples,
-            test_similarity, graphdef, variables, id, domain_properties=domain_properties)
+            test_similarity, graphdef, callbacks, variables, id, domain_properties=domain_properties)
         self._hidden = hidden
         self._output_units = output_units
         self._activation = activation
@@ -54,13 +55,14 @@ class KerasDynamicMLP(KerasDomainPropertiesNetwork):
             similarities.hamming_measure_cmp_iterable_equal,
             similarities.hamming_measure_cmp_iterable_equal
         ]
-        self._count_samples_hasher = lambda x, y: hash(str((x,y)))
+        self._count_samples_hasher = lambda x, y: hash(str((x, y)))
         # Either self._domain_properties will be used to determine the state
         # size or on initialization the state size has to be given
         # If both is given, the DomainProperties will be prefered
         self._state_size = None
 
-    def _initialize_general(self, *args, state_size=None, **kwargs):
+    def _initialize_general(self, *args, **kwargs):
+        state_size = kwargs.pop("state_size", None)
         if state_size is not None:
             self._state_size = state_size
 
@@ -96,7 +98,13 @@ class KerasDynamicMLP(KerasDomainPropertiesNetwork):
         self._compile(self._optimizer, self._loss, ["accuracy",
                                                     "mean_absolute_error"])
 
-    def _finalize(self):
+    def reinitialize(self,*args, **kwargs):
+        if self.path_load is not None:
+            self.load(**kwargs)
+        else:
+            self._initialize_model(*args, **kwargs)
+
+    def _finalize(self, *args, **kwargs):
         pass
 
     @staticmethod

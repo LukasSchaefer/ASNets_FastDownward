@@ -30,6 +30,9 @@ try:
 except NameError:
     FileNotFoundError = IOError
 
+class InvalidSampleEntryError(Exception):
+    pass
+
 
 # Globals
 MAGIC_WORD = "# MAGIC FIRST LINE\n"
@@ -208,7 +211,7 @@ def load_sample_line(line, data_container, format, pddl_task, sas_task, pruning_
 
     meta, data = split_meta(line)
     if meta is None and default_format is None:
-        raise ValueError("Missing meta tag. Cannot infer state format.")
+        raise InvalidSampleEntryError("Missing meta tag. Cannot infer state format.")
 
     entry_type, _, _ = extract_from_meta(meta, "type")
     entry_format, meta = extract_and_replace_from_meta(
@@ -339,7 +342,7 @@ def load_and_convert_data(path_read, format, default_format=None, prune=True,
                           pddl_task=None, sas_task=None,
                           data_container=None,
                           path_write=None, compress=True, append=False, delete=False,
-                          skip_magic_word_check=False):
+                          skip_magic_word_check=False, forget=0.0):
     """
 
     :param path_read: Path to the file containing the samples to load
@@ -420,6 +423,8 @@ def load_and_convert_data(path_read, format, default_format=None, prune=True,
                                 break
 
                         else:
+                            if forget != 0.0 and random.random() < forget:
+                                continue
                             entry, _, _ = load_sample_line(
                                 line, data_container, format,
                                 pddl_task, sas_task, old_hashs, default_format)
@@ -436,66 +441,15 @@ def load_and_convert_data(path_read, format, default_format=None, prune=True,
 
         except UnicodeDecodeError:
             pass
+        except InvalidSampleEntryError as e:
+            if sys.version_info < (3,):
+                pass
+            else:
+                raise e
+
     if not read_format_found:
         raise ValueError("the given file could not be correctly opened with one "
                          "of the known techniques.")
-
-
-"""
-def load_sample_file(path, data_container, format, path_problem, prune):
-    path_domain = parser.find_domain(path_problem)
-    (pddl_task, sas_task) = translate.translator.main(
-        [path_domain, path_problem, "--no-sas-file", "--log-verbosity",
-         "ERROR"])
-
-    old_hashs = set() if prune else None
-    right = False
-    techniques = [(open, lambda x: x), (gzip.open, gzip_read_converter)]
-    for (read, conv) in techniques:
-        try:
-            with read(path, "r") as src:
-                first = True
-                for line in src:
-                    line = conv(line)
-                    if first:
-                        first = False
-                        right = line == MAGIC_WORD
-                        if not right:
-                            break
-                    else:
-                        load_sample_line(line, data_container, format, pddl_task, sas_task, old_hashs)
-                if right:
-                    break
-        except UnicodeDecodeError:
-            pass
-    if not right:
-        raise ValueError("the given file could not be correctly opened with one "
-                         "of the known techniques.")
-    print("LOADED", path)
-
-def TMP_load_sample_file(path, data_container, format, path_problem, prune):
-    print("Loading", path)
-    path_domain = parser.find_domain(path_problem)
-    (pddl_task, sas_task) = translate.translator.main(
-        [path_domain, path_problem, "--no-sas-file", "--log-verbosity",
-         "ERROR"])
-
-    old_hashs = set() if prune else None
-
-    right = False
-    techniques = [(gzip.open, gzip_read_converter)]
-    for (read, conv) in techniques:
-        try:
-            with read(path, "r") as src:
-                for line in src:
-                    line = conv(line)
-                    load_sample_line(line, data_container, format, pddl_task, sas_task, old_hashs)
-                if right:
-                    break
-        except UnicodeDecodeError:
-            pass
-    print("LOADED", path)
-"""
 
 """######################### LoadSampleBride ################################"""
 
@@ -511,19 +465,20 @@ class LoadSampleBridge(SamplerBridge):
          "Skip magic word check (no guarantees on opening the files with the"
          " right tool (DEPRECATED)"),
         ("provide", True, False, parser.convert_bool),
-        order=["format", "prune", "skip",
+        order=["format", "prune", "forget", "skip",
              "tmp_dir", "target_file",
              "target_dir", "append", "provide", "reuse", "domain",
              "makedir", "skip_magic",
              "environment", "id"]
 )
 
-    def __init__(self, format=StateFormat.FD, prune=True, skip=True,
+    def __init__(self, format=StateFormat.FD, prune=True, forget=0.0, skip=True,
                  tmp_dir=None, target_file=None, target_dir=None,
                  append=False, provide=False, reuse=False, domain=None,
                  makedir=False, skip_magic=False, environment=None, id=None):
         SamplerBridge.__init__(self, tmp_dir, target_file, target_dir,
-                               append, provide, reuse, domain, makedir, environment, id)
+                               append, provide, forget,
+                               reuse, domain, makedir, environment, id)
 
         self._format = format
         self._prune = prune
@@ -555,7 +510,7 @@ class LoadSampleBridge(SamplerBridge):
             path_read=path_samples, format=self._format, prune=self._prune,
             path_problem=path_problem, path_domain=path_domain,
             data_container=data_container,
-            skip_magic_word_check=self._skip_magic)
+            skip_magic_word_check=self._skip_magic, forget=self._forget)
 
         return data_container
 
@@ -589,7 +544,7 @@ class FastDownwardSamplerBridge(SamplerBridge):
 
         order=["search", "format", "build",
              "tmp_dir", "target_file",
-             "target_dir", "append", "provide", "reuse", "domain",
+             "target_dir", "append", "provide", "forget", "reuse", "domain",
              "makedir", "fd_path", "prune", "store",
              "compress",
              "environment", "id"]
@@ -597,12 +552,14 @@ class FastDownwardSamplerBridge(SamplerBridge):
 
     def __init__(self, search, format=StateFormat.FD, build="debug64dynamic",
                  tmp_dir=None, target_file=None, target_dir=None,
-                 append=False, provide=True, reuse=False, domain=None,
+                 append=False, provide=True, forget=0.0,
+                 reuse=False, domain=None,
                  makedir=False, fd_path=None, prune=True,
                  store=True, compress=True,
                  environment=None, id=None):
         SamplerBridge.__init__(self, tmp_dir, target_file, target_dir,
-                               append, provide, reuse, domain, makedir, environment, id)
+                               append, provide, forget,
+                               reuse, domain, makedir, environment, id)
 
         self._search = search
         self._format = format
@@ -663,7 +620,7 @@ class FastDownwardSamplerBridge(SamplerBridge):
                 path_problem=path_problem, path_domain=path_domain,
                 data_container=data_container,
                 path_write=path_samples, compress=self._compress, append=append,
-                delete=True)
+                delete=True, forget=self._forget)
 
         else:
             if self._provide:
@@ -671,7 +628,7 @@ class FastDownwardSamplerBridge(SamplerBridge):
                     path_read=path_samples,
                     format=self._format, prune=self._prune,
                     path_problem=path_problem, path_domain=path_domain,
-                    data_container=data_container)
+                    data_container=data_container, forget=self._forget)
 
         return data_container
 
