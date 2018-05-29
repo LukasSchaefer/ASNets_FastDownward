@@ -1,7 +1,7 @@
 from .. import main_register
 from .. import parser
 from .. import parser_tools as parset
-from .. import ABC
+from .. import AbstractBaseClass
 
 from ..parser_tools import ArgumentException
 
@@ -13,7 +13,7 @@ class InvalidSorterInput(Exception):
     pass
 
 
-class ProblemSorter(ABC):
+class ProblemSorter(AbstractBaseClass):
     """
     Base class for all problem sorter.
     Do not forget to register your problem sorter subclass.

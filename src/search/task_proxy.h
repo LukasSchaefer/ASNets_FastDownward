@@ -781,6 +781,14 @@ public:
         return VariablesProxy(*task);
     }
 
+    virtual FactProxy get_fact(int var_id, int value) const {
+        return FactProxy(*task, var_id, value);
+    }
+    
+    virtual FactProxy get_fact(const FactPair &fact) const {
+        return FactProxy(*task, fact);
+    }
+    
     virtual OperatorsProxy get_operators() const {
         return OperatorsProxy(*task);
     }
