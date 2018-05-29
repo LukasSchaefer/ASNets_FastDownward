@@ -30,10 +30,11 @@ import os
 MATPLOTLIB_OUTPUT_FORMATS=["png"]
 COLOR_DATA_MEAN = "g"
 ALPHA_DATA_MEAN = 0.7
+COLORMAP = "viridis"
 
 class KerasNetwork(Network):
     arguments = parset.ClassArguments('KerasNetwork', Network.arguments,
-        ("epochs", True, 3000, int, "Number of training epochs per training call"),
+        ("epochs", True, 1000, int, "Number of training epochs per training call"),
         ("count_samples", True, False, parser.convert_bool,
          "Counts how many and which samples where used during training"
          " (This increases the runtime)."),
@@ -533,7 +534,7 @@ class KerasNetwork(Network):
 
         fig = plt.figure()
         ax = fig.add_subplot(1, 1, 1)
-        handle = ax.matshow(tiles, cmap="hot",
+        handle = ax.matshow(tiles, cmap=COLORMAP,
                            aspect=tiles.shape[1] / float(tiles.shape[0]), vmin=0.0, vmax=1.0)
         ax.set_xlabel(orig_label)
         ax.set_ylabel(pred_label)
