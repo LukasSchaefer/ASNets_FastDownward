@@ -36,8 +36,8 @@ EvaluationResult Policy::compute_result(EvaluationContext &eval_context) {
 
     const GlobalState &state = eval_context.get_state();
 
-    std::vector<OperatorID> operator_ids;
-    std::vector<float> operator_preferences;
+    vector<OperatorID> operator_ids;
+    vector<float> operator_preferences;
 
     if (cache_policy_values && !policy_cache[state].dirty) {
         operator_ids = policy_cache[state].operator_ids;

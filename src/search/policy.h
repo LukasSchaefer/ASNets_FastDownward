@@ -51,9 +51,6 @@ protected:
 
     virtual PEntry compute_policy(const GlobalState &state) = 0;
 
-    // what is this for? Needed in Policy?
-    // State convert_global_state(const GlobalState &global_state) const;
-
 public:
     explicit Policy(const options::Options &options);
     virtual ~Policy() override;
