@@ -4,7 +4,6 @@
 #include "evaluation_result.h"
 #include "heuristic_cache.h"
 #include "operator_id.h"
-#include "policy.h"
 
 #include <unordered_map>
 
