@@ -5,36 +5,6 @@ import math
 import numpy as np
 import random
 
-class ProgressCheckingCallback(keras.callbacks.Callback):
-    def __init__(self, monitor, epochs, threshold=None, minimize=True):
-        keras.callbacks.Callback.__init__(self)
-        self._monitor = monitor
-        self._epochs = epochs
-        self._threshold = threshold
-        self._minimize = minimize
-        self._active = True
-        self.failed = False
-
-    def on_train_begin(self, logs={}):
-        self._active = True
-
-    def on_epoch_end(self, epoch, logs={}):
-        if not self._active:
-            return
-
-        if epoch >= self._epochs:  # Fire once after self._epochs epochs
-            self._active = False
-            current = logs.get(self._monitor)
-            if current is None:
-                raise RuntimeError("ProgressCheckingCallback requires %s"
-                                   " available!" % self._monitor)
-
-
-            if ((self._minimize and current >= self._threshold)
-                or (not self._minimize and current <= self._threshold)):
-                self.model.stop_training = True
-                self.failed = True
-
 
 class KerasDataGenerator(keras.utils.Sequence):
     'Generates data for Keras'
@@ -120,39 +90,18 @@ class KerasDataGenerator(keras.utils.Sequence):
 
         self.shuffle = shuffle
         self.count_diff_samples = count_diff_samples
+        self._mem_count_diff_samples = count_diff_samples
         self.generated_sample_hashes = set()
 
+
+    def reset(self):
         """
-        self.precaching = precaching
-        self.cache_x = None
-        self.cache_y = None
-        if self.precaching:
-            self.__compute_caching(types)
-        
-    def __compute_caching(self, types):
-        self.cache_x = []
-        self.cache_y = []
-        for idx_ds in range(len(self.data)):
-            ds = self.data[idx_ds]
-            self.cache_x.append({})
-            self.cache_y.append({})
-            for type in types:
-                self.cache_x[idx_ds][type] = []
-                self.cache_y[idx_ds][type] = []
-                for idx_batch in range(len(ds.data[type])):
-                    batch = ds.data[type][idx_batch]
-
-                    tmp = batch[:, self.x_fields]
-                    self.cache_x[idx_ds][type].append(
-                        tmp if self.x_converter is None else
-                        self.x_converter(tmp))
-                    tmp = batch[:, self.y_fields]
-                    self.cache_y[idx_ds][type].append(
-                        tmp if self.y_converter is None else
-                        self.y_converter(tmp))
-
-
+        Reset this Generator to be used anew
+        :return:
         """
+        self.count_diff_samples = self._mem_count_diff_samples
+        self.generated_sample_hashes = set()
+
     def __len__(self):
         'Denotes the number of batches per epoch'
         return len(self.batch_order)

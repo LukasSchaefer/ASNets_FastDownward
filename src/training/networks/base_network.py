@@ -158,6 +158,15 @@ class Network(AbstractBaseClass):
         self.initialized = True
 
     @abc.abstractmethod
+    def reinitialize(self, *args, **kwargs):
+        """
+        Reinitialize the network (what to do may depend on the network,
+        e.g. if loading a network from a file, there might be nothing to do,
+        on other occasions, the weights might be new randomly initialized
+        """
+        pass
+
+    @abc.abstractmethod
     def _initialize_general(self, *args, **kwargs):
         """Initialization code except for the model initialization"""
         pass
@@ -209,6 +218,12 @@ class Network(AbstractBaseClass):
     def _load(self, path, format, *args, **kwargs):
         pass
 
+    def get_store_path(self, path=None):
+        path = self.path_store if path is None else path
+        path = os.path.join("." if self.path_out is None else self.path_out,
+                            "network") if path is None else path
+        return path
+
     def store(self, path=None, formats=None):
         """
         Stores the network in the specified formats.
@@ -222,8 +237,7 @@ class Network(AbstractBaseClass):
                         format is used.
         :return:
         """
-        path = self.path_store if path is None else path
-        path = os.path.join("." if self.path_out is None else self.path_out, "network") if path is None else path
+        path = self.get_store_path(path)
         formats = self.formats if formats is None else self.formats
         self._check_store_formats(formats)
         if self._model is not None:

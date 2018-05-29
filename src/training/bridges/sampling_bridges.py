@@ -451,63 +451,6 @@ def load_and_convert_data(path_read, format, default_format=None, prune=True,
         raise ValueError("the given file could not be correctly opened with one "
                          "of the known techniques.")
 
-
-"""
-def load_sample_file(path, data_container, format, path_problem, prune):
-    path_domain = parser.find_domain(path_problem)
-    (pddl_task, sas_task) = translate.translator.main(
-        [path_domain, path_problem, "--no-sas-file", "--log-verbosity",
-         "ERROR"])
-
-    old_hashs = set() if prune else None
-    right = False
-    techniques = [(open, lambda x: x), (gzip.open, gzip_read_converter)]
-    for (read, conv) in techniques:
-        try:
-            with read(path, "r") as src:
-                first = True
-                for line in src:
-                    line = conv(line)
-                    if first:
-                        first = False
-                        right = line == MAGIC_WORD
-                        if not right:
-                            break
-                    else:
-                        load_sample_line(line, data_container, format, pddl_task, sas_task, old_hashs)
-                if right:
-                    break
-        except UnicodeDecodeError:
-            pass
-    if not right:
-        raise ValueError("the given file could not be correctly opened with one "
-                         "of the known techniques.")
-    print("LOADED", path)
-
-def TMP_load_sample_file(path, data_container, format, path_problem, prune):
-    print("Loading", path)
-    path_domain = parser.find_domain(path_problem)
-    (pddl_task, sas_task) = translate.translator.main(
-        [path_domain, path_problem, "--no-sas-file", "--log-verbosity",
-         "ERROR"])
-
-    old_hashs = set() if prune else None
-
-    right = False
-    techniques = [(gzip.open, gzip_read_converter)]
-    for (read, conv) in techniques:
-        try:
-            with read(path, "r") as src:
-                for line in src:
-                    line = conv(line)
-                    load_sample_line(line, data_container, format, pddl_task, sas_task, old_hashs)
-                if right:
-                    break
-        except UnicodeDecodeError:
-            pass
-    print("LOADED", path)
-"""
-
 """######################### LoadSampleBride ################################"""
 
 

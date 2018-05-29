@@ -1,4 +1,5 @@
-from . import KerasDataGenerator, store_keras_model_as_protobuf, ProgressCheckingCallback
+from . import keras_callbacks
+from .keras_tools import KerasDataGenerator, store_keras_model_as_protobuf
 
 from .. import Network, NetworkFormat
 
@@ -44,24 +45,20 @@ class KerasNetwork(Network):
         ("graphdef", "True", None, str,
          "Name for an ASCII GraphDef file of the stored Protobuf model (only "
          "applicable if Protobuf model is stored)"),
+        ("callbacks", "True", None,
+         parset.main_register.get_register(keras_callbacks.BaseKerasCallback),
+        "Definition of a single or a list of callback functions for keras."),
         order=["load", "store", "formats", "out", "epochs", "count_samples",
-               "test_similarity", "graphdef", "variables", "id"])
+               "test_similarity", "graphdef","callbacks", "variables", "id"])
 
     def __init__(self, load=None, store=None, formats=None, out=".",
                  epochs=1000, count_samples=False, test_similarity=None,
-                 graphdef=None,
+                 graphdef=None, callbacks=None,
                  variables=None, id=None):
         Network.__init__(self, load, store, formats, out, variables, id)
         self._epochs = epochs
         self._model = None
-        self._resets = 5 if load is None else 0
-        self._reset_monitor = "acc"
-        self._reset_time = 50
-        self._reset_threshold = 0.0
-        self._reset_minimize = False
-        self._progress_check_callback = (ProgressCheckingCallback(
-                self._reset_monitor, self._reset_time, self._reset_threshold,
-                self._reset_minimize) if self._resets > 0 else None)
+
         """Analysis data"""
         self._history = None
         self._histories = []
@@ -95,11 +92,11 @@ class KerasNetwork(Network):
         # Providing here None means the measure uses its default comparator for
         # all fields
         self._x_fields_comparators = None
-        # Callback functions for the keras_networks fitting
-        self._callbacks = None
-        if self._progress_check_callback is not None:
-            self._callbacks = [] if self._callbacks is None else self._callbacks
-            self._callbacks.append(self._progress_check_callback)
+        # Callback functions for the keras_training (either None or a list)
+        self._callbacks = callbacks
+        if self._callbacks is not None and not isinstance(self._callbacks, list):
+            self._callbacks = [self._callbacks]
+
 
         # Variables for storing Protobuf (ignore if you do not support storing
         # Protobuf files, but in general keras networks can be converted)
@@ -163,6 +160,31 @@ class KerasNetwork(Network):
                 )
 
 
+    def _callbacks_setup(self):
+        if self._callbacks is not None:
+            for cb in self._callbacks:
+                cb.setup(self)
+
+    def _callbacks_finalize(self):
+        if self._callbacks is not None:
+            for cb in self._callbacks:
+                cb.finalize(self)
+
+    def _callbacks_check(self, extractor, merger, init):
+        """
+        Checks the value of a property on the callback functions
+        :param extractor: callable to extract property from single callback
+        :param merger: callable to merge the old merge value with the new extracted property value
+        :param init: initial value for the merge process
+        :return: merged value
+        """
+        if self._callbacks is not None:
+            for cb in self._callbacks:
+                value = extractor(cb)
+                init = merger(init, value)
+        return init
+
+
     def train(self, dtrain, dtest=None):
         """
         The given data is first converted into the format needed for this
@@ -197,8 +219,9 @@ class KerasNetwork(Network):
                 shuffle=True)
 
         while True:
-            if self._progress_check_callback is not None:
-                self._progress_check_callback.failed = False
+            self._callbacks_setup()
+            kdg_train.reset()
+
             history = self._model.fit_generator(
                 kdg_train,
                 epochs=self._epochs,
@@ -208,18 +231,18 @@ class KerasNetwork(Network):
                 max_queue_size=10, workers=1,
                 use_multiprocessing=False,
                 shuffle=True, initial_epoch=0)
-            self._resets -= 1
-            if self._resets <= 0:
-                print("EMD")
-                break
-            if self._progress_check_callback is not None and not self._progress_check_callback.failed:
-                print("SUCC")
-                break
-            else:
-                print("REE")
-                self.reinitialize()
 
-            self._count_samples_hashes.update(kdg_train.generated_sample_hashes)
+            shall_reinitialize = self._callbacks_check(
+                lambda x: x.shall_reinitialize(), lambda x, y: x or y, False)
+
+            self._callbacks_finalize()
+
+            if shall_reinitialize:
+                self.reinitialize()
+                continue
+            else:
+                self._count_samples_hashes.update(kdg_train.generated_sample_hashes)
+                break
 
         self._history = history
         self._histories.append(history)
@@ -260,6 +283,7 @@ class KerasNetwork(Network):
             sample_similarities = np.concatenate(sample_similarities[0])
 
         result = (result.squeeze(axis=1), y_labels, sample_similarities)
+
         self._evaluation = result
         self._evaluations.append(result)
         return result
@@ -363,7 +387,7 @@ class KerasNetwork(Network):
                                    prefix + "misc", directory)
 
         analysis_data = {"histories": [h.history for h in self._histories],
-                         "evaluations": [(e[0].tolist(), e[1].tolist()) for e in self._evaluations],
+                         "evaluations": [(e[0].tolist(), e[1].tolist(), e[2]) for e in self._evaluations],
                          "count_samples": len(self._count_samples_hashes) if self._count_samples else "NA",
                          "state_space_size" : state_space_sizes,
                          "upper_reachable_state_space_bound" : reachable_ssss }
@@ -373,7 +397,7 @@ class KerasNetwork(Network):
             analysis_data["model"] += x + "\n"
         self._model.summary(print_fn=add_model_summary)
 
-        with open(os.path.join(directory, "analysis.meta"), "w") as f:
+        with open(os.path.join(directory, prefix +  "analysis.meta"), "w") as f:
             json.dump(analysis_data, f)
 
     """----------------------ANALYSIS METHODS--------------------------------"""
@@ -509,8 +533,8 @@ class KerasNetwork(Network):
 
         fig = plt.figure()
         ax = fig.add_subplot(1, 1, 1)
-        handle = ax.matshow(tiles, cmap="jet",
-                           aspect=tiles.shape[1] / float(tiles.shape[0]))
+        handle = ax.matshow(tiles, cmap="hot",
+                           aspect=tiles.shape[1] / float(tiles.shape[0]), vmin=0.0, vmax=1.0)
         ax.set_xlabel(orig_label)
         ax.set_ylabel(pred_label)
         ax.set_title(title)
@@ -686,11 +710,12 @@ class KerasDomainPropertiesNetwork(KerasNetwork):
 
     def __init__(self, load=None, store=None, formats=None, out=".", epochs=1000,
                  count_samples=False, test_similarity=None, graphdef=None,
+                 callbacks=None,
                  variables=None, id=None,
                  domain_properties=None):
         KerasNetwork.__init__(self, load, store, formats, out, epochs,
                               count_samples, test_similarity, graphdef,
-                              variables, id)
+                              callbacks, variables, id)
 
         self._domain_properties = None
         self._gnd_static_str = None

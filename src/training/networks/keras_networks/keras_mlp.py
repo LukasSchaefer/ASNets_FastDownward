@@ -1,4 +1,4 @@
-from . import KerasNetwork, KerasDomainPropertiesNetwork
+from .keras_network import KerasNetwork, KerasDomainPropertiesNetwork
 
 from ... import parser_tools as parset
 from ... import parser
@@ -26,18 +26,19 @@ class KerasDynamicMLP(KerasDomainPropertiesNetwork):
                                              "load", "store", "formats", "out",
                                              "epochs",
                                              "count_samples", "test_similarity",
-                                             "graphdef", "variables", "id"]
+                                             "graphdef", "callbacks", "variables", "id"]
                                       )
 
     def __init__(self, hidden, output_units=-1, activation="sigmoid",
                  dropout=None, optimizer="adam", loss="mean_squared_error",
                  load=None, store=None, formats=None, out=".", epochs=1000,
                  count_samples=False, test_similarity=None, graphdef=None,
+                 callbacks=None,
                  variables=None, id=None,
                  domain_properties=None):
         KerasDomainPropertiesNetwork.__init__(
             self, load, store, formats, out, epochs, count_samples,
-            test_similarity, graphdef, variables, id, domain_properties=domain_properties)
+            test_similarity, graphdef, callbacks, variables, id, domain_properties=domain_properties)
         self._hidden = hidden
         self._output_units = output_units
         self._activation = activation
@@ -97,8 +98,11 @@ class KerasDynamicMLP(KerasDomainPropertiesNetwork):
         self._compile(self._optimizer, self._loss, ["accuracy",
                                                     "mean_absolute_error"])
 
-    def reinitialize(self):
-        self._initialize_model()
+    def reinitialize(self,*args, **kwargs):
+        if self.path_load is not None:
+            self.load(**kwargs)
+        else:
+            self._initialize_model(*args, **kwargs)
 
     def _finalize(self, *args, **kwargs):
         pass
