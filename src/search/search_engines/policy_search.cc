@@ -69,7 +69,6 @@ SearchStatus PolicySearch::step() {
 
     // collect most probable operator information
     OperatorID op_id = operator_ids[most_probable_op_index];
-    float op_pref = highest_op_probability;
     OperatorProxy op_proxy  = task_proxy.get_operators()[op_id];
 
     // reach new state
@@ -90,6 +89,9 @@ SearchStatus PolicySearch::step() {
         node.open(parent_node, op_proxy);
         return IN_PROGRESS;
     }
+
+    cout << "No solution - FAILED" << endl;
+    return FAILED;
 }
 
 static shared_ptr<SearchEngine> _parse(OptionParser &parser) {

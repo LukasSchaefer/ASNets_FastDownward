@@ -32,7 +32,7 @@ Policy::~Policy() {
 EvaluationResult Policy::compute_result(EvaluationContext &eval_context) {
     EvaluationResult result;
 
-    assert(eval_context.contains_policy);
+    assert(eval_context.contains_policy());
 
     const GlobalState &state = eval_context.get_state();
 
@@ -51,7 +51,7 @@ EvaluationResult Policy::compute_result(EvaluationContext &eval_context) {
             // only operator_ids set -> use uniform distribution = all preferences are equal
             unsigned int number_of_operators = operator_ids.size();
             operator_preferences.resize(number_of_operators);
-            for (int i = 0; i < number_of_operators; i++) {
+            for (unsigned int i = 0; i < number_of_operators; i++) {
                 operator_preferences[i] = 1/number_of_operators;
             }
         }
