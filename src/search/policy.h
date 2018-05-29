@@ -33,10 +33,20 @@ class Policy : public Evaluator {
         std::vector<OperatorID> operator_ids;
         std::vector<float> operator_preferences;
 
+        // non-dirty constructor with ids and preferences
         PEntry(std::vector<OperatorID> operator_ids, std::vector<float> operator_preferences)
             : dirty(false), operator_ids(operator_ids), operator_preferences(operator_preferences) {
         }
 
+        /*
+            non-dirty constructor only using ids (e.g. can be used when all operators should have same
+            preference which is handled in Policy::compute_result)
+        */
+        PEntry(std::vector<OperatorID> operator_ids)
+            : dirty(false), operator_ids(operator_ids), operator_preferences(std::vector<float>()) {
+        }
+
+        // dirty empty constructor
         PEntry() : dirty(true), operator_ids(std::vector<OperatorID>()), operator_preferences(std::vector<float>()) {
         }
     };

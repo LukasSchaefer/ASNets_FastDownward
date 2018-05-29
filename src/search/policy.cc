@@ -47,6 +47,14 @@ EvaluationResult Policy::compute_result(EvaluationContext &eval_context) {
         PEntry policy_result = compute_policy(state);
         operator_ids = policy_result.operator_ids;
         operator_preferences = policy_result.operator_preferences;
+        if (!operator_ids.empty() && operator_preferences.empty()) {
+            // only operator_ids set -> use uniform distribution = all preferences are equal
+            unsigned int number_of_operators = operator_ids.size();
+            operator_preferences.resize(number_of_operators);
+            for (int i = 0; i < number_of_operators; i++) {
+                operator_preferences[i] = 1/number_of_operators;
+            }
+        }
         if (cache_policy_values) {
             policy_cache[state] = PEntry(operator_ids, operator_preferences);
         }
@@ -58,3 +66,8 @@ EvaluationResult Policy::compute_result(EvaluationContext &eval_context) {
     result.set_operator_preferences(operator_preferences);
     return result;
 }
+
+static PluginTypePlugin<Policy> _type_plugin(
+    "Policy",
+    // TODO: Add information for wiki page
+    "");
