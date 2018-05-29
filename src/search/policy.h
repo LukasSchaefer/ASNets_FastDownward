@@ -21,6 +21,13 @@ class Options;
 }
 
 class Policy : public Evaluator {
+    /*
+        Entries for Policy results including
+        dirty: true if vectors/ values are not set yet 
+        operator_ids: vector of IDs for operators the policy considers
+        operator_preferences: vector of operator preferences (= probabilities) for the same operators
+            with index matching the operator IDs of the previous vector
+    */
     struct PEntry {
         bool dirty;
         std::vector<OperatorID> operator_ids;
@@ -44,11 +51,18 @@ protected:
     PerStateInformation<PEntry> policy_cache;
     bool cache_policy_values;
 
+    /* 
+        registration name and flag for g_registered_policies map in globals
+    */
     const std::string register_name;
     const bool registered;
 
 protected:
 
+    /*
+        main function to implement for concrete policies returning
+        the policy result for a given state
+    */
     virtual PEntry compute_policy(const GlobalState &state) = 0;
 
 public:
@@ -57,6 +71,8 @@ public:
 
     virtual void get_involved_heuristics(std::set<Heuristic *> &hset) {
     }
+
+    virtual bool dead_ends_are_reliable() const = 0;
 
     static void add_options_to_parser(options::OptionParser &parser);
 

@@ -90,6 +90,7 @@ extern const std::shared_ptr<AbstractTask> g_root_task();
 extern utils::Log g_log;
 
 extern std::map<std::string, Heuristic*> g_registered_heuristics;
+extern std::map<std::string, Policy*> g_registered_policies;
 
 bool g_register_heuristic(std::string name, Heuristic* heuristic);
 bool g_unregister_heuristic(std::string name, Heuristic* heuristic);
