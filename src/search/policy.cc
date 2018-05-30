@@ -61,9 +61,9 @@ EvaluationResult Policy::compute_result(EvaluationContext &eval_context) {
         result.set_count_evaluation(true);
     }
 
-    // TODO fix the error here (some C stuff I currently don't see :/)
-    result.set_preferred_operators(operator_ids);
-    result.set_operator_preferences(operator_preferences);
+    // not sure, if this move is truly what I want
+    result.set_preferred_operators(std::move(operator_ids));
+    result.set_operator_preferences(std::move(operator_preferences));
     return result;
 }
 
