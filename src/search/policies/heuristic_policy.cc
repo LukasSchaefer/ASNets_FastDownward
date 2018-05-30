@@ -41,5 +41,5 @@ static Policy *_parse(OptionParser &parser) {
 }
 
 
-static Plugin<Policy> _plugin("heuristic_policy", _parse);
+static Plugin<Policy> _plugin("heur_pol", _parse);
 }
