@@ -5,13 +5,10 @@
 #include "../task_utils/regression_utils.h"
 
 #include <memory>
-#include <tuple>
 #include <cmath>
 
 using namespace std;
 using namespace tensorflow;
-
-
 
 namespace neural_networks {
 
