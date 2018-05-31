@@ -6,6 +6,8 @@
 #include "../policy.h"
 #include "../option_parser.h"
 
+#include <tuple>
+
 namespace neural_networks {
 /*Action Schema Network (https://arxiv.org/abs/1709.04271) class. This class takes an already
  trained computation graph and loads it. At every state, it feeds a specific input representation
@@ -38,9 +40,11 @@ namespace neural_networks {
              ordering of their names
  */
 class ASNet : public ProtobufNetwork {
+    virtual std::vector<std::pair<int, int>> get_facts_lexicographically();
+    virtual std::vector<int> get_operator_indeces_lexicographically();
 protected:
     const int extra_input_size = 0;
-    std::pair<std::vector<OperatorID>, std::vector<float>> last_policy_output std::pair(std::vector<OperatorID>(), std::vector<float>());
+    std::pair<std::vector<OperatorID>, std::vector<float>> last_policy_output = std::pair<std::vector<OperatorID>, std::vector<float>>(std::vector<OperatorID>(), std::vector<float>());
     /* vector of entries of form (variable_index, value_index) for each fact in lexicographical ordering
        of their names */
     std::vector<std::pair<int, int>> facts_sorted;
