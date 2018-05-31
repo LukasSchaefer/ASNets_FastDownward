@@ -441,18 +441,18 @@ fast_downward_plugin(
     DEPENDENCY_ONLY
 )
 
-
-
 fast_downward_plugin(
     NAME PROTOBUF_NETWORKS
     HELP "Networks using Protobuf and Tensorflow"
     SOURCES
         neural_networks/protobuf_network
         neural_networks/problem_network
+        neural_networks/asnet
         neural_networks/state_goal_network
     DEPENDS NEURAL_NETWORKS
     PACKAGES TENSORFLOW PROTOBUF EIGEN
 )
+
 
 fast_downward_plugin(
     NAME NETWORK_HEURISTIC

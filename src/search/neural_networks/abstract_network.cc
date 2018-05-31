@@ -23,6 +23,10 @@ bool AbstractNetwork::is_heuristic(){
     return false;
 }
 
+bool AbstractNetwork::is_policy(){
+    return false;
+}
+
 bool AbstractNetwork::is_preferred(){
     return false;
 }
@@ -31,7 +35,15 @@ void AbstractNetwork::verify_heuristic(){
     if (!is_heuristic()){
         cerr << "Network does not support heuristic estimates." << endl
          << "Terminating." <<endl; 
-    utils::exit_with(utils::ExitCode::UNSUPPORTED);
+        utils::exit_with(utils::ExitCode::UNSUPPORTED);
+    }
+}
+
+void AbstractNetwork::verify_policy(){
+    if (!is_policy()){
+        cerr << "Network does not support policy estimates." << endl
+         << "Terminating." <<endl; 
+        utils::exit_with(utils::ExitCode::UNSUPPORTED);
     }
 }
 
@@ -39,12 +51,18 @@ void AbstractNetwork::verify_preferred(){
     if (!is_preferred()){
         cerr << "Network does not support preferred operator estimates." << endl
          << "Terminating." <<endl; 
-    utils::exit_with(utils::ExitCode::UNSUPPORTED);
+        utils::exit_with(utils::ExitCode::UNSUPPORTED);
     }
 }
 
 int AbstractNetwork::get_heuristic(){
     cerr << "Network does not support heuristic estimates." << endl
+         << "Terminating." <<endl; 
+    utils::exit_with(utils::ExitCode::UNSUPPORTED);
+}
+
+std::pair<std::vector<OperatorID>, std::vector<float>> AbstractNetwork::get_policy(){
+    cerr << "Network does not support policy estimates." << endl
          << "Terminating." <<endl; 
     utils::exit_with(utils::ExitCode::UNSUPPORTED);
 }

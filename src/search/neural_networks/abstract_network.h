@@ -6,6 +6,8 @@
 #include "../algorithms/ordered_set.h"
 #include "../utils/system.h"
 
+#include <tuple>
+#include <vector>
 
 namespace neural_networks {
 
@@ -36,15 +38,20 @@ public:
     
     /*Tells if concrete network produces such an output*/
     virtual bool is_heuristic();
+    virtual bool is_policy();
     virtual bool is_preferred();
     
     /*Checks if network produce such an output and stops execution if not.*/
     void verify_heuristic();
+    void verify_policy();
     void verify_preferred();
     
     /*Gets the output of the associated type from the networks last evaluation.
      (e.g. heuristic value) */
     virtual int get_heuristic();
+    /*policy output consists of operators as ids and corresponding
+      preferences (= probabilities) as floats */
+    virtual std::pair<std::vector<OperatorID>, std::vector<float>> get_policy();
     virtual ordered_set::OrderedSet<OperatorID>& get_preferred();
 };
 }
