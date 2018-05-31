@@ -33,6 +33,7 @@ pair<std::vector<OperatorID>, std::vector<float>> HeuristicPolicy::compute_polic
 
 static Policy *_parse(OptionParser &parser) {
     parser.document_synopsis("Heuristic Policy", "");
+    Policy::add_options_to_parser(parser);
     Options opts = parser.parse();
     if (parser.dry_run())
         return 0;
