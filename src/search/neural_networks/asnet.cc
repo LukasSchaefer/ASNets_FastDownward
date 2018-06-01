@@ -160,8 +160,8 @@ void ASNet::extract_output() {
     assert(output_c.size() == operator_indeces_sorted.size());
     float sum = 0;
     for (unsigned index = 0; index < output_c.size(); index++) {
-	float val = output_c(index);
-	operator_preferences[index] = val;
+        float val = output_c(index);
+        operator_preferences[index] = val;
         sum += val;
     }
     /* should be a policy with probabilities summing up to 1.0
