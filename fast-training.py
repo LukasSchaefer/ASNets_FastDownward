@@ -8,6 +8,7 @@ from src.training.bridges import StateFormat, LoadSampleBridge
 from src.training.misc import DomainProperties
 from src.training.networks import Network, NetworkFormat
 from src.training.samplers import DirectorySampler
+from src.training.misc import StreamContext, StreamDefinition
 
 import argparse
 import os
@@ -89,8 +90,17 @@ ptrain.add_argument("--forget", type=float,
                      action="store", default=0.0,
                      help=("Probability of skipping to load entries of the "
                            "verification data"))
-
-ptrain.add_argument("-i", "--initialize", type=str, nargs="+", action="store",
+ptrain.add_argument("-i", "--input", type=str,
+                     action="append", default=[],
+                     help="Define an input stream for the loading of samples"
+                          "(use this option multiple times for multiple). The "
+                          " available streams can be checked in "
+                          "training.misc.stream_contexts.py"
+                          "(the way this is done is for every problem file of"
+                          " which data shall be loaded the stream is asked,"
+                          "where would you store data for this file and then"
+                          "the data at the location is loaded).")
+ptrain.add_argument("-init", "--initialize", type=str, nargs="+", action="store",
                     default=[],
                     help="List some key=value pairs which are passed "
                          "as key=value to the networks initialize method.")
@@ -139,8 +149,12 @@ ptrain.add_argument("--skip-magic",
                            "word. USE ONLY IF YOU KNOW WHAT YOU ARE DOING)"))
 ptrain.add_argument("-v", "--verification", type=str,
                      action="store", default=None,
-                     help="Regex identifying which data sets are used for"
-                          "verification of the network performance.")
+                     help="Regex for grouping the data set files into 'use for"
+                          "verification' and 'use for training'.")
+ptrain.add_argument("-vs", "--verification-split", type=float,
+                     action="store", default=0.0,
+                     help="Fraction of the trainings data to split off for the "
+                          "verification data.")
 
 arguments = set()
 for action in ptrain._actions:
@@ -166,6 +180,19 @@ def prepare_training_before_loading(options, directories):
         parser_tools.main_register.get_register(Network),
         options.network)
 
+
+    # Input Streams
+    if len(options.input) == 0:
+        raise ValueError("At least one input stream has to be "
+                                     "defined.")
+    streams = []
+    for definition in options.input:
+        streams.append(parser.construct(
+            parser_tools.ItemCache(),
+            parser_tools.main_register.get_register(StreamDefinition),
+            definition))
+
+
     if options.output:
         network.path_out = directories[0]
     if options.name is not None:
@@ -178,7 +205,7 @@ def prepare_training_before_loading(options, directories):
     else:
         format = network.get_preferred_state_formats()[0]
 
-    return network, format
+    return network, streams, format
 
 
 def prepare_training_after_loading(options, network, path_domain, paths_problems):
@@ -218,8 +245,9 @@ def get_directory_groups(options):
 
 
 
-def load_data(options, directories, format):
-    bridge = LoadSampleBridge(format=format, prune=True,
+def load_data(options, directories, streams, format):
+    bridge = LoadSampleBridge(streams=StreamContext(streams=streams),
+                              format=format, prune=True,
                               skip=options.skip, skip_magic=options.skip_magic,
                               forget=options.forget)
 
@@ -250,6 +278,9 @@ def load_data(options, directories, format):
     dir_samp.initialize()
     dtrain = dir_samp.sample()
     dir_samp.finalize()
+    if options.verification_split > 0:
+        splitted = dtrain[0].splitoff(options.verification_split)[0]
+        dtest[0].add_data(splitted)
     if dtest is not None:
         dtrain[0].remove_duplicates_from_iter(dtest)
     ignore.extend(dir_samp._iterable)
@@ -327,8 +358,8 @@ def train(argv):
                   + str(dg))
             if options.dry:
                 continue
-            network, format = prepare_training_before_loading(options, dg)
-            dtrain, dtest, problems = load_data(options, dg, format)
+            network, streams, format = prepare_training_before_loading(options, dg)
+            dtrain, dtest, problems = load_data(options, dg, streams, format)
             prepare_training_after_loading(options, network,
                                            os.path.join(dg[0], "domain.pddl"),
                                            problems)
