@@ -24,10 +24,13 @@ else:
           " All dependencies are require.")
 
 
+from src.training import parser, parser_tools
+
 from src.training.bridges import FastDownwardSamplerBridge
 from src.training.samplers import IterableFileSampler
 from src.training.samplers import DirectorySampler
 from src.training.bridges.sampling_bridges import StateFormat
+from src.training.misc import StreamContext, StreamDefinition
 
 import argparse
 import shlex
@@ -90,15 +93,9 @@ psample.add_argument("problem", nargs="*", type=str, action="store",
                      help="Path to a problem to sample from. Multiple problems"
                          "can be given.")
 
-psample.add_argument("-a", "--append",
-                     action="store_true",
-                     help="If sample file exists already append new samples "
-                         "instead of overwriting.")
 psample.add_argument("-b", "--build", type=str,
                      action="store", default="debug64dynamic",
                      help="Name of the build to use")
-psample.add_argument("-c", "--compress", action="store_true",
-                     help="Store the sampled entries in a compressed file")
 psample.add_argument("-d", "--domain",
                      type=str, action="store", default=None,
                      help="Path to the domain file used by all problems (if not"
@@ -111,30 +108,19 @@ psample.add_argument("-fd", "--fast-downward", type=str,
                      action="store", default="./fast-downward.py",
                      help="Path to the fast-downward script (Default"
                           "assumes in current directory fast-downward.py).")
+psample.add_argument("-o", "--output", type=str,
+                     action="append", default=[],
+                     help="Define an output stream for the sampling"
+                          "(use this option multiple times for multiple). The "
+                          " available streams can be checked in "
+                          "training.misc.stream_contexts.py")
 psample.add_argument("-p", "--prune", action="store_true",
                      help="Prune duplicate entries")
-psample.add_argument("-r", "--reuse", action="store_true",
-                     help="Tells sampler to reuse instead of resample data, if"
-                          "for the given problem data already exists. Remark:"
-                          "In this context it means, we simply skip sampling for"
-                          "a problem if data was previously sampled. It does NOT"
-                          "check with which parameters the present data was"
-                          "sampled")
 psample.add_argument("-s", "--search", type=str,
                      action="store", default=DEFAULT_SEARCH,
                      help="Search for sampling to start in Fast-Downward (the"
                          "given search has to perform the sampling, this script"
                          " is not wrapping your search in a sampling search)")
-psample.add_argument("-t", "--target-folder", type=str,
-                     action="store", default=None,
-                     help="Folder to store for each problem a data file. By"
-                         "default the sampled data is stored in the same place"
-                         "where its associated problem file is.")
-psample.add_argument("-tf", "--target-file", type=str,
-                     action="store", default=None,
-                     help="Path to file to store for all problem samples. This"
-                         " argument cannot be used together with "
-                         "\"--target-file\".")
 psample.add_argument("-tmp", "--temporary-folder", type=str,
                      action="store", default=None,
                      help="Folder to store temporary files. By default the same"
@@ -145,22 +131,25 @@ psample.add_argument("-tmp", "--temporary-folder", type=str,
 def parse_sample_args(argv):
     options = psample.parse_args(argv)
     options.format = StateFormat.get(options.format)
-    if options.target_file is not None and options.target_folder is not None:
-        raise argparse.ArgumentError("\"--target-folder\" and \"--target-file\""
-                                     " are two mutually exclusive options."
-                                     " Please use chose one of them.")
-    if options.target_file is not None:
-        options.append = True
+
+    if len(options.output) == 0:
+        raise argparse.ArgumentError("At least one output stream has to be "
+                                     "defined.")
+    streams = []
+    for definition in options.output:
+        streams.append(parser.construct(
+            parser_tools.ItemCache(),
+            parser_tools.main_register.get_register(StreamDefinition),
+            definition))
+
+    streams = StreamContext(streams)
 
 
-    fdb = FastDownwardSamplerBridge(options.search, options.format,
+    fdb = FastDownwardSamplerBridge(options.search, streams, options.format,
                                     options.build, options.temporary_folder,
-                                    options.target_file, options.target_folder,
-                                    options.append, False, 0.0, options.reuse,
+                                    False, 0.0,
                                     options.domain, True,
-                                    options.fast_downward,
-                                    options.prune, True,
-                                    options.compress)
+                                    options.fast_downward, options.prune)
     return fdb, options.problem
 
 
