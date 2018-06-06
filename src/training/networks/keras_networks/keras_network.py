@@ -1,4 +1,5 @@
-from . import KerasDataGenerator, store_keras_model_as_protobuf
+from . import keras_callbacks
+from .keras_tools import KerasDataGenerator, store_keras_model_as_protobuf
 
 from .. import Network, NetworkFormat
 
@@ -20,9 +21,16 @@ import matplotlib.pyplot as plt
 import numpy as np
 import os
 
+# TODO:
+# Call back Mechanism and Parsing
+# Unhackify callback reset
+# reinitialize for networks
+
 # List of formats in which the matplotlib figures shall be stored
 MATPLOTLIB_OUTPUT_FORMATS=["png"]
-
+COLOR_DATA_MEAN = "g"
+ALPHA_DATA_MEAN = 0.7
+COLORMAP = "viridis"
 
 class KerasNetwork(Network):
     arguments = parset.ClassArguments('KerasNetwork', Network.arguments,
@@ -38,17 +46,19 @@ class KerasNetwork(Network):
         ("graphdef", "True", None, str,
          "Name for an ASCII GraphDef file of the stored Protobuf model (only "
          "applicable if Protobuf model is stored)"),
+        ("callbacks", "True", None,
+         parset.main_register.get_register(keras_callbacks.BaseKerasCallback),
+        "Definition of a single or a list of callback functions for keras."),
         order=["load", "store", "formats", "out", "epochs", "count_samples",
-               "test_similarity", "graphdef", "variables", "id"])
+               "test_similarity", "graphdef","callbacks", "variables", "id"])
 
     def __init__(self, load=None, store=None, formats=None, out=".",
                  epochs=1000, count_samples=False, test_similarity=None,
-                 graphdef=None,
+                 graphdef=None, callbacks=None,
                  variables=None, id=None):
         Network.__init__(self, load, store, formats, out, variables, id)
         self._epochs = epochs
         self._model = None
-
 
         """Analysis data"""
         self._history = None
@@ -83,8 +93,11 @@ class KerasNetwork(Network):
         # Providing here None means the measure uses its default comparator for
         # all fields
         self._x_fields_comparators = None
-        # Callback functions for the keras_networks fitting
-        self._callbacks = None
+        # Callback functions for the keras_training (either None or a list)
+        self._callbacks = callbacks
+        if self._callbacks is not None and not isinstance(self._callbacks, list):
+            self._callbacks = [self._callbacks]
+
 
         # Variables for storing Protobuf (ignore if you do not support storing
         # Protobuf files, but in general keras networks can be converted)
@@ -148,6 +161,31 @@ class KerasNetwork(Network):
                 )
 
 
+    def _callbacks_setup(self):
+        if self._callbacks is not None:
+            for cb in self._callbacks:
+                cb.setup(self)
+
+    def _callbacks_finalize(self):
+        if self._callbacks is not None:
+            for cb in self._callbacks:
+                cb.finalize(self)
+
+    def _callbacks_check(self, extractor, merger, init):
+        """
+        Checks the value of a property on the callback functions
+        :param extractor: callable to extract property from single callback
+        :param merger: callable to merge the old merge value with the new extracted property value
+        :param init: initial value for the merge process
+        :return: merged value
+        """
+        if self._callbacks is not None:
+            for cb in self._callbacks:
+                value = extractor(cb)
+                init = merger(init, value)
+        return init
+
+
     def train(self, dtrain, dtest=None):
         """
         The given data is first converted into the format needed for this
@@ -181,17 +219,31 @@ class KerasNetwork(Network):
                 y_converter=self._y_converter,
                 shuffle=True)
 
-        history = self._model.fit_generator(
-            kdg_train,
-            epochs=self._epochs,
-            verbose=1, callbacks=self._callbacks,
-            validation_data=kdg_test,
-            validation_steps=None, class_weight=None,
-            max_queue_size=10, workers=1,
-            use_multiprocessing=False,
-            shuffle=True, initial_epoch=0)
+        while True:
+            self._callbacks_setup()
+            kdg_train.reset()
 
-        self._count_samples_hashes.update(kdg_train.generated_sample_hashes)
+            history = self._model.fit_generator(
+                kdg_train,
+                epochs=self._epochs,
+                verbose=1, callbacks=self._callbacks,
+                validation_data=kdg_test,
+                validation_steps=None, class_weight=None,
+                max_queue_size=10, workers=1,
+                use_multiprocessing=False,
+                shuffle=True, initial_epoch=0)
+
+            shall_reinitialize = self._callbacks_check(
+                lambda x: x.shall_reinitialize(), lambda x, y: x or y, False)
+
+            self._callbacks_finalize()
+
+            if shall_reinitialize:
+                self.reinitialize()
+                continue
+            else:
+                self._count_samples_hashes.update(kdg_train.generated_sample_hashes)
+                break
 
         self._history = history
         self._histories.append(history)
@@ -232,6 +284,7 @@ class KerasNetwork(Network):
             sample_similarities = np.concatenate(sample_similarities[0])
 
         result = (result.squeeze(axis=1), y_labels, sample_similarities)
+
         self._evaluation = result
         self._evaluations.append(result)
         return result
@@ -289,9 +342,14 @@ class KerasNetwork(Network):
     """-------------------------ANALYSE PREDICATIONS-------------------------"""
 
     def _analyse(self, directory, prefix):
+        mean_prediction = round(self._evaluation[1].mean())
+        predicted = np.round(self._evaluation[0])
+        predicted_correct = (mean_prediction == predicted).sum()
+
         KerasNetwork._analyse_from_history_plot(
             self._history, ['acc', 'val_acc'], "Model Accuracy", "accuracy",
-            "epoch", ['train', 'test'], prefix + "evolution_accuracy", directory)
+            "epoch", ['train', 'test'], prefix + "evolution_accuracy", directory,
+            hline=(float(predicted_correct)/predicted.size))
 
         KerasNetwork._analyse_from_history_plot(
             self._history, ['loss', 'val_loss'], "Model Loss", "loss", "epoch",
@@ -308,38 +366,87 @@ class KerasNetwork(Network):
 
         KerasNetwork._analyse_from_predictions_deviation(
             self._evaluation[0], self._evaluation[1], "Prediction Deviations",
-            "count", "deviation", prefix + "deviations", directory, True)
+            "count", "deviation", prefix + "deviations", directory,
+            diff_mean_to_prediction=True)
 
         KerasNetwork._analyse_from_predictions_deviation_dep_on_h(
             self._evaluation[0], self._evaluation[1],
             "Prediction Deviations depending on original", "deviation",
-            "original", prefix + "deviations_dep_h", directory)
+            "original", prefix + "deviations_dep_h", directory,
+            diff_mean_to_prediction=True)
 
-        KerasNetwork._analyse_from_predictions_deviation_dep_on_similarity(
-            self._evaluation[0], self._evaluation[1], self._evaluation[2],
-            "Prediction Deviations depending on the similarity to training samples",
-            "deviation",
-            "similarity", prefix + "deviations_dep_sim", directory)
+        if self._test_similarity:
+            KerasNetwork._analyse_from_predictions_deviation_dep_on_similarity(
+                self._evaluation[0], self._evaluation[1], self._evaluation[2],
+                "Prediction Deviations depending on the similarity to training samples",
+                "deviation",
+                "similarity", prefix + "deviations_dep_sim", directory)
+
+        state_space_sizes = None if (not hasattr(self,"_domain_properties") or self._domain_properties is None) else self._domain_properties.combined_state_space_size
+        reachable_ssss = None if (not hasattr(self,"_domain_properties") or self._domain_properties is None) else self._domain_properties.combined_reachable_state_space_upper_bound
+        KerasNetwork._analyse_misc(len(self._count_samples_hashes), state_space_sizes, reachable_ssss,
+                                   prefix + "misc", directory)
 
         analysis_data = {"histories": [h.history for h in self._histories],
-                         "evaluations": [(e[0].tolist(), e[1].tolist()) for e in self._evaluations],
-                         "count_samples": len(self._count_samples_hashes) if self._count_samples else "NA"}
+                         "evaluations": [(e[0].tolist(), e[1].tolist(), e[2]) for e in self._evaluations],
+                         "count_samples": len(self._count_samples_hashes) if self._count_samples else "NA",
+                         "state_space_size" : state_space_sizes,
+                         "upper_reachable_state_space_bound" : reachable_ssss }
 
         analysis_data["model"] = ""
         def add_model_summary(x):
-            nonlocal analysis_data
             analysis_data["model"] += x + "\n"
         self._model.summary(print_fn=add_model_summary)
 
-        with open(os.path.join(directory, "analysis.meta"), "w") as f:
+        with open(os.path.join(directory, prefix +  "analysis.meta"), "w") as f:
             json.dump(analysis_data, f)
 
     """----------------------ANALYSIS METHODS--------------------------------"""
+    @staticmethod
+    def _analyse_misc(samples_seen, state_space_sizes, reachable_ssss,
+                      file, directory=".", formats=MATPLOTLIB_OUTPUT_FORMATS):
+        fig = plt.figure()
+        if state_space_sizes is not None:
+            sss_bar = [state_space_sizes]
+            text = [str(state_space_sizes)]
+            new_xticks = [None, "Full State Space"]
+            if reachable_ssss is not None:
+                sss_bar.append(reachable_ssss)
+                text.append(str(reachable_ssss))
+                new_xticks.append("Reachable State Space")
+            for i in range(len(sss_bar)):
+                text.append("%d (%.2f)" % (samples_seen, float(samples_seen)/sss_bar[i]))
 
+            ax = fig.add_subplot(1, 1, 1)
+            bars_full = ax.bar(np.arange(len(sss_bar)), sss_bar,
+                               color='g', align='center') #, label="State Space Size")
+            bars_seen = ax.bar(np.arange(len(sss_bar)), [samples_seen] * len(sss_bar),
+                               color='r', align='center', label="Training Samples Count")
+
+            i = -1
+            for rect in bars_full + bars_seen:
+                i += 1
+                height = rect.get_height()
+                plt.text(rect.get_x() + rect.get_width() / 2.0, height,
+                         text[i], ha='center', va='bottom')
+
+            ax.set_title("Seen Parts of State Spaces of all problems")
+            ax.set_ylabel("samples")
+            ax.set_yscale("log")
+            ax.xaxis.set_major_locator(plt.MultipleLocator(1))
+            ax.set_xticklabels(new_xticks)
+            ax.legend()
+            #ax.set_xlabel(xlabel)
+
+        fig.tight_layout()
+        for format in formats:
+            fig.savefig(os.path.join(directory, file + "." + format))
+        plt.close(fig)
     @staticmethod
     def _analyse_from_history_plot(history, measures, title, ylabel, xlabel,
                                    legend, file, directory=".",
-                                   formats=MATPLOTLIB_OUTPUT_FORMATS):
+                                   formats=MATPLOTLIB_OUTPUT_FORMATS,
+                                   hline=None):
         fig = plt.figure()
         ax = fig.add_subplot(1, 1, 1)
         for m in measures:
@@ -347,6 +454,9 @@ class KerasNetwork(Network):
         ax.set_title(title)
         ax.set_ylabel(ylabel)
         ax.set_xlabel(xlabel)
+        if hline is not None:
+            ax.axhline(hline, color=COLOR_DATA_MEAN, alpha=ALPHA_DATA_MEAN)
+            legend.append("Predicting Data Mean")
         ax.legend(legend, loc='upper left')
         fig.tight_layout()
         for format in formats:
@@ -400,7 +510,7 @@ class KerasNetwork(Network):
         EXPONENT = 1
         POWER = 2**EXPONENT
         h_p_bins = []
-        for i in range(min_p_h*POWER, max_p_h*POWER + 1):
+        for i in range(int(min_p_h*POWER), int(max_p_h*POWER + 1)):
             h_p_bins.append(float(i)/POWER)
 
         tiles = np.ndarray(shape=(max_o_h - min_o_h + 1, len(h_p_bins)), dtype=float)
@@ -424,8 +534,8 @@ class KerasNetwork(Network):
 
         fig = plt.figure()
         ax = fig.add_subplot(1, 1, 1)
-        handle = ax.matshow(tiles, cmap="jet",
-                           aspect=tiles.shape[1] / float(tiles.shape[0]))
+        handle = ax.matshow(tiles, cmap=COLORMAP,
+                           aspect=tiles.shape[1] / float(tiles.shape[0]), vmin=0.0, vmax=1.0)
         ax.set_xlabel(orig_label)
         ax.set_ylabel(pred_label)
         ax.set_title(title)
@@ -445,27 +555,34 @@ class KerasNetwork(Network):
                                             formats=MATPLOTLIB_OUTPUT_FORMATS,
                                             diff_mean_to_prediction=False):
         # (Legend, Color, Alpha, Data)
-        deviations = [('','b', 1, predicted - original)]
+        deviations = [('Deviation of Predictions','b', 1, predicted - original)]
         if diff_mean_to_prediction:
             mean = original.mean()
+            deviations.insert(0, ("Deviation of Data Mean", COLOR_DATA_MEAN,
+                                  ALPHA_DATA_MEAN, mean - original))
         fig = plt.figure()
         ax = fig.add_subplot(1, 1, 1)
+        round = -1
+        for (label, color, alpha, data) in deviations:
+            round += 1
+            width = 0.4 #0.9 - 0.2 * round
+            dev = np.round(data.astype(np.float))
+            unique, counts = np.unique(dev, return_counts=True)
+            # Otherwise they are numpy values and do not hash as needed
+            unique = [float(i) for i in unique]
+            occurrences = dict(zip(unique, counts))
+            min_d, max_d = min(unique), max(unique)
 
-        dev = np.round(dev.astype(np.float))
-        unique, counts = np.unique(dev, return_counts=True)
-        # Otherwise they are numpy values and do not hash as needed
-        unique = [float(i) for i in unique]
-        occurrences = dict(zip(unique, counts))
-        min_d, max_d = min(unique), max(unique)
-
-        bars = np.arange(min_d, max_d + 1)
-        heights = [0 if not i in occurrences else occurrences[i]
-                   for i in range(math.floor(min_d), math.ceil(max_d) + 1)]
-
-        ax.bar(bars, heights, align='center')
+            bars = np.arange(min_d, max_d + 1) -width*len(deviations)/2 + round * width + width/2
+            heights = [0 if not i in occurrences else occurrences[i]
+                       for i in range(int(math.floor(min_d)), int(math.ceil(max_d) + 1))]
+            ax.bar(bars, heights, width=width,
+                   color=color, alpha=alpha, align='center', label=label)
         ax.set_xlabel(xlabel)
         ax.set_ylabel(ylabel)
         ax.set_title(title)
+        if len(deviations) > 1:
+            ax.legend()
         fig.tight_layout()
         for format in formats:
             fig.savefig(os.path.join(directory, file + "." + format))
@@ -475,7 +592,9 @@ class KerasNetwork(Network):
     def _analyse_from_predictions_deviation_dep_on_h(predicted, original, title,
                                                      pred_label, orig_label,
                                                      file, directory=".",
-                                                     formats=MATPLOTLIB_OUTPUT_FORMATS):
+                                                     formats=MATPLOTLIB_OUTPUT_FORMATS,
+                                                     diff_mean_to_prediction=False):
+
         by_h = {}
         min_h = min(original)
         max_h = max(original)
@@ -486,23 +605,30 @@ class KerasNetwork(Network):
                 by_h[h] = []
             by_h[h].append(p - h)
 
-        fig = plt.figure()
-        ax = fig.add_subplot(1, 1, 1)
         new_x_ticks = []
         data = []
+        means = []
+        mean = original.mean() if diff_mean_to_prediction else None
         for i in range(min_h, max_h + 1):
+            if diff_mean_to_prediction:
+                means.append(mean - i)
             if i in by_h:
                 new_x_ticks.append("%d\n$n=%d$" % (i, len(by_h[i])))
                 data.append(by_h[i])
             else:
                 new_x_ticks.append("%d" % i)
                 data.append([float('nan')])
+        fig = plt.figure()
+        ax = fig.add_subplot(1, 1, 1)
         ax.boxplot(data)
         ax.set_xticklabels(new_x_ticks)
-
+        if diff_mean_to_prediction:
+            ax.scatter(np.arange(len(data)) + 1, means, color='r', alpha=0.6,
+                       label="Deviation to Data Mean")
         ax.set_xlabel(orig_label)
         ax.set_ylabel(pred_label)
         ax.set_title(title)
+        ax.legend()
         fig.tight_layout()
         for format in formats:
             fig.savefig(os.path.join(directory, file + "." + format))
@@ -585,11 +711,12 @@ class KerasDomainPropertiesNetwork(KerasNetwork):
 
     def __init__(self, load=None, store=None, formats=None, out=".", epochs=1000,
                  count_samples=False, test_similarity=None, graphdef=None,
+                 callbacks=None,
                  variables=None, id=None,
                  domain_properties=None):
         KerasNetwork.__init__(self, load, store, formats, out, epochs,
                               count_samples, test_similarity, graphdef,
-                              variables, id)
+                              callbacks, variables, id)
 
         self._domain_properties = None
         self._gnd_static_str = None
@@ -607,7 +734,8 @@ class KerasDomainPropertiesNetwork(KerasNetwork):
                                 set([str(item) for item in
                                      self._domain_properties.gnd_static]))
 
-    def initialize(self, msgs, *args, domain_properties=None, **kwargs):
+    def initialize(self, msgs, *args, **kwargs):
+        domain_properties = kwargs.pop("domain_properties", None)
         if domain_properties is not None:
             self._set_domain_properties(domain_properties)
         KerasNetwork.initialize(self, msgs, *args, **kwargs)

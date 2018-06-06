@@ -8,11 +8,6 @@ try:
 except ImportError:
     import dependencies
 
-# independent modules
-from .data import SizeBatchData, SampleBatchData
-from .message import Message
-from .misc import AbstractBaseClass, InvalidModuleImplementation
-
 # parsing related modules
 from .tree import TreeNode
 from .tree_parser import parse_tree
@@ -20,6 +15,12 @@ from .tree_parser import parse_tree
 from .parser_tools import main_register
 from . import parser_tools
 from . import parser
+
+# independent modules
+from .data import SizeBatchData, SampleBatchData
+from .message import Message
+from .misc import AbstractBaseClass, InvalidModuleImplementation
+
 
 
 # modules defining the objects for the user

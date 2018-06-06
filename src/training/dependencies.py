@@ -45,8 +45,6 @@ else:
 """
 import sys
 
-print("LOAAAAAAAAAAAAAAAAAAAAAAAAAAADDDDD")
-
 # If this module is loaded such that it is already registered within sys.modules,
 # then the dependency flags will be directly registered. If the module is not
 # registered in sys.modules, then 'setup()' has to be manually called after it
@@ -123,7 +121,6 @@ def setup():
         return
     else:
         done_setup = True
-    print("SETIPP")
     this = sys.modules[__name__]
     """External Dependencies"""
     add("keras", True, external=True)

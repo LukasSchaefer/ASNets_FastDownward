@@ -8,7 +8,7 @@
 #include "../globals.h"
 #include "../option_parser.h"
 #include "../task_proxy.h"
-
+#include "../evaluator.h"
 
 #include "../tasks/modified_goals_task.h"
 #include "../tasks/modified_init_goals_task.h"
@@ -29,10 +29,13 @@ private:
     int counter = 0;
 
 protected:
+    const std::vector<Evaluator *> evals;
     std::shared_ptr<utils::RandomNumberGenerator> rng;
 
     virtual const std::shared_ptr<AbstractTask> create_next(
             const std::shared_ptr<AbstractTask> seed_task) const = 0;
+    
+    bool check_solvability(std::shared_ptr<AbstractTask> task) const;
 
 public:
     SamplingTechnique(const options::Options &opts);
@@ -130,6 +133,32 @@ public:
 };
 
 
+class TechniqueUniformNone : public SamplingTechnique {
+protected:   
+    virtual const std::shared_ptr<AbstractTask> create_next(
+            const std::shared_ptr<AbstractTask> seed_task) const override;
+
+public:
+    TechniqueUniformNone(const options::Options &opts);
+    virtual ~TechniqueUniformNone() override;
+
+    virtual const std::string &get_name() const override;
+    const static std::string name;
+};
+
+
+class TechniqueUniformUniform : public SamplingTechnique {
+protected:   
+    virtual const std::shared_ptr<AbstractTask> create_next(
+            const std::shared_ptr<AbstractTask> seed_task) const override;
+
+public:
+    TechniqueUniformUniform(const options::Options &opts);
+    virtual ~TechniqueUniformUniform() override;
+
+    virtual const std::string &get_name() const override;
+    const static std::string name;
+};
 }
 
 #endif

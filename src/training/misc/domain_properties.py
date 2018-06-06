@@ -13,7 +13,8 @@ class DomainProperties(object):
     def __init__(self, domain, problems=None,
                  fixed_world=None, fixed_objects=None, instantiated_types=None,
                  gnd_static=None, gnd_flexible=None, gnd_problem=None,
-                 tpl_pred_static=None, pred_static=None,
+                 tpl_pred_static=None, pred_static=None, state_space_size=None,
+                 upper_bound_reachable_state_space_size=None,
                  run_analysis=True):
 
         """
@@ -51,6 +52,8 @@ class DomainProperties(object):
         self.tpl_pred_static = tpl_pred_static
         self.pred_static = pred_static
 
+        self.state_space_size = state_space_size
+        self.upper_bound_reachable_state_space_size = upper_bound_reachable_state_space_size
         self.analysed = False
         if run_analysis:
             self.analyse()
@@ -144,8 +147,27 @@ class DomainProperties(object):
                 types=[predicate_types[gp.predicate]])
             static_predicate_templates.discard(canonized[0])
         self.tpl_pred_static = static_predicate_templates
-        self.pred_static = predicate_types.keys() - flexible_predicates
+        self.pred_static = set(predicate_types.keys()) - flexible_predicates
 
+
+    def _analyse_combined_state_space_sizes(self):
+        if self.fixed_world:
+            self.combined_state_space_size = 2 ** len(self.gnd_flexible)
+            self.combined_reachable_state_space_upper_bound = (
+                self.problems[0][1].variables.get_state_space_size()
+            )
+            diff_goals = set()
+            for i in range(len(self.problems)):
+                diff_goals.add(self.problems[i][0].goal)
+
+            self.combined_reachable_state_space_upper_bound *= len(diff_goals)
+            self.combined_state_space_size *= len(diff_goals)
+
+
+
+        else:
+            # TODO Implement
+            pass
 
     def analyse(self):
         self._analyse_fixed_world()
@@ -153,7 +175,7 @@ class DomainProperties(object):
             self._analyse_instantiated_types()
             self._analyse_static_flexible_grounded_predicates()
             self._analyse_static_predicates_and_templates()
-
+            self._analyse_combined_state_space_sizes()
         self.analysed = True
 
     @staticmethod
@@ -172,6 +194,9 @@ class DomainProperties(object):
         """
         paths_problems = kwargs.pop("paths_problems", None)
         path_domain = kwargs.pop("path_domain", None)
+        if len(paths) == 0 and path_domain is None:
+            raise ValueError("No domain file given and no directories to look "
+                             "for it.")
 
         # Find domain file
         if path_domain is None:
@@ -221,4 +246,6 @@ class DomainProperties(object):
             translator_args[1] = path_problem
             pddl_and_sas_task = translator.main(translator_args)
             problems.append(pddl_and_sas_task)
+        if len(paths_problems) == 0:
+            problems = None
         return DomainProperties(domain, problems)
