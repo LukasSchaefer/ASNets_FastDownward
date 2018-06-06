@@ -551,7 +551,7 @@ fast_downward_plugin(
 )
 
 fast_downward_plugin(
-    NAME HEURISTICS_POLICY
+    NAME HEURISTIC_POLICY
     HELP "The heuristic policy"
     SOURCES
         policies/heuristic_policy
