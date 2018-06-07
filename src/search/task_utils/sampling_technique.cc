@@ -374,7 +374,6 @@ static shared_ptr<SamplingTechnique> _parse_technique_uniform_none(
 static PluginShared<SamplingTechnique> _plugin_technique_uniform_none(
     TechniqueUniformNone::name, _parse_technique_uniform_none);
 
-}
 
 /* START DEFINITION TECHNIQUE_UNIFORM_UNIFORM */
 const std::string TechniqueUniformUniform::name = "uniform_uniform";
@@ -417,6 +416,8 @@ static shared_ptr<SamplingTechnique> _parse_technique_uniform_uniform(
 }
 
 static PluginShared<SamplingTechnique> _plugin_technique_uniform_uniform(
-    TechniqueUniformUniform::name, _parse_technique_uniform_unifom);
+    TechniqueUniformUniform::name, _parse_technique_uniform_uniform);
+
 
 }
+
