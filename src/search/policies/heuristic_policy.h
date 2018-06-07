@@ -15,7 +15,7 @@ namespace heuristic_policy {
 class HeuristicPolicy : public Policy {
     Heuristic *heuristic;
 protected:
-    std::pair<std::vector<OperatorID>, std::vector<float>> compute_policy(const GlobalState &state);
+    PolicyResult compute_policy(const GlobalState &state);
 public:
     HeuristicPolicy(const options::Options &options);
     ~HeuristicPolicy();

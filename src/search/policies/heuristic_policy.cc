@@ -20,14 +20,14 @@ HeuristicPolicy::HeuristicPolicy(const Options &opts)
 HeuristicPolicy::~HeuristicPolicy() {
 }
 
-pair<std::vector<OperatorID>, std::vector<float>> HeuristicPolicy::compute_policy(const GlobalState &global_state) {
+PolicyResult HeuristicPolicy::compute_policy(const GlobalState &global_state) {
     // HACK: need some context to be able to call compute_result which is necessary to get at the preferred operators
     // computed with the heuristic
     EvaluationContext context = EvaluationContext(global_state, -1, true, &SearchStatistics(), true);
     EvaluationResult heuristic_result = heuristic->compute_result(context);
     vector<OperatorID> preferred_operators = heuristic_result.get_preferred_operators();
 
-    pair<std::vector<OperatorID>, std::vector<float>> policy_result = pair<std::vector<OperatorID>, std::vector<float>>(preferred_operators, vector<float>());
+    PolicyResult policy_result = pair<std::vector<OperatorID>, std::vector<float>>(preferred_operators, vector<float>());
     return policy_result;
 }
 

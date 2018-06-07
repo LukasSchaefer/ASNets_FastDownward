@@ -17,6 +17,12 @@ struct PEntry;
 
 class Policy : public Evaluator {
     /*
+        PolicyResult is a pair of OperatorIDs with corresponding probabilities
+        in second vector with matching indeces
+    */
+    using PolicyResult = std::pair<std::vector<OperatorID>, std::vector<float>>;
+
+    /*
         Entries for Policy results including
         dirty: true if vectors/ values are not set yet 
         operator_ids: vector of IDs for operators the policy considers
@@ -68,7 +74,7 @@ protected:
         main function to implement for concrete policies returning the policy
         result as pair of operator ids and preferences for a given state
     */
-    virtual std::pair<std::vector<OperatorID>, std::vector<float>> compute_policy(const GlobalState &state) = 0;
+    virtual PolicyResult compute_policy(const GlobalState &state) = 0;
 
 public:
     explicit Policy(const options::Options &options);
