@@ -106,8 +106,8 @@ public:
     // state/ statistics constructor for policy context
     EvaluationContext(
         const GlobalState &state,
-        SearchStatistics *statistics = nullptr,
         bool contains_policy = false,
+        SearchStatistics *statistics = nullptr,
         bool calculate_preferred = false);
 
     ~EvaluationContext() = default;

@@ -53,8 +53,8 @@ EvaluationContext::EvaluationContext(
 }
 
 EvaluationContext::EvaluationContext(
-        const GlobalState &state,
-        SearchStatistics *statistics, bool contains_policy, bool calculate_preferred)
+        const GlobalState &state, bool contains_policy,
+        SearchStatistics *statistics, bool calculate_preferred)
         : EvaluationContext(HeuristicCache(state), contains_policy, INVALID, false, statistics, calculate_preferred){
 }
 
