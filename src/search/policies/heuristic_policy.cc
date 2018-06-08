@@ -51,7 +51,7 @@ PolicyResult HeuristicPolicy::compute_policy(const GlobalState &global_state) {
 
     vector<OperatorID> preferred_operators = vector<OperatorID>();
     // add only best action to preferred operator list
-    preferred_operators.append(op_best);
+    preferred_operators.push_back(op_best);
 
     PolicyResult policy_result = pair<std::vector<OperatorID>, std::vector<float>>(preferred_operators, vector<float>());
     return policy_result;
