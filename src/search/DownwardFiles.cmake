@@ -555,7 +555,7 @@ fast_downward_plugin(
     HELP "The heuristic policy"
     SOURCES
         policies/heuristic_policy
-    DEPENDENCY_ONLY)
+    )
 
 fast_downward_plugin(
     NAME CORE_TASKS
