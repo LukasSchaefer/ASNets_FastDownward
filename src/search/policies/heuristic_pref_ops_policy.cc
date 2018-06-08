@@ -14,7 +14,8 @@ HeuristicPrefOpsPolicy::HeuristicPrefOpsPolicy(const Options &opts)
     : Policy(opts) {
     cout << "Initializing heuristic preferred operators policy..." << endl;
     // this could be any heuristic which sets preferred operators
-    heuristic = &additive_heuristic::AdditiveHeuristic(opts);
+    additive_heuristic::AdditiveHeuristic hadd(opts);
+    heuristic = &hadd;
 }
 
 HeuristicPrefOpsPolicy::~HeuristicPrefOpsPolicy() {
@@ -23,12 +24,17 @@ HeuristicPrefOpsPolicy::~HeuristicPrefOpsPolicy() {
 PolicyResult HeuristicPrefOpsPolicy::compute_policy(const GlobalState &global_state) {
     // HACK: need some context to be able to call compute_result which is necessary to get at the preferred operators
     // computed with the heuristic
-    EvaluationContext context = EvaluationContext(global_state, -1, true, &SearchStatistics(), true);
+    SearchStatistics statistics = SearchStatistics();
+    EvaluationContext context = EvaluationContext(global_state, -1, true, &statistics, true);
     EvaluationResult heuristic_result = heuristic->compute_result(context);
     vector<OperatorID> preferred_operators = heuristic_result.get_preferred_operators();
 
     PolicyResult policy_result = pair<std::vector<OperatorID>, std::vector<float>>(preferred_operators, vector<float>());
     return policy_result;
+}
+
+bool HeuristicPrefOpsPolicy::dead_ends_are_reliable() const {
+    return heuristic->dead_ends_are_reliable();
 }
 
 static Policy *_parse(OptionParser &parser) {
