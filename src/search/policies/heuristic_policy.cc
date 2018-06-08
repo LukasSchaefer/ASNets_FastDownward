@@ -11,7 +11,7 @@ using namespace std;
 namespace heuristic_policy {
 HeuristicPolicy::HeuristicPolicy(const Options &opts)
     : Policy(opts),
-      heuristic(opts.get_list<Heuristic *>("heuristic")){
+      heuristic(opts.get<Heuristic *>("h")) {
     cout << "Initializing heuristic policy..." << endl;
 }
 
@@ -40,6 +40,10 @@ PolicyResult HeuristicPolicy::compute_policy(const GlobalState &global_state) {
 
     PolicyResult policy_result = pair<std::vector<OperatorID>, std::vector<float>>(preferred_operators, vector<float>());
     return policy_result;
+}
+
+bool HeuristicPolicy::dead_ends_are_reliable() const {
+    return heuristic->dead_ends_are_reliable();
 }
 
 static Policy *_parse(OptionParser &parser) {
