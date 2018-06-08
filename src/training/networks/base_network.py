@@ -238,7 +238,7 @@ class Network(AbstractBaseClass):
         :return:
         """
         path = self.get_store_path(path)
-        formats = self.formats if formats is None else self.formats
+        formats = self.formats if formats is None else formats
         self._check_store_formats(formats)
         if self._model is not None:
             self._store(path, formats)
