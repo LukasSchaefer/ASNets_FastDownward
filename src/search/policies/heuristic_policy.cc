@@ -4,6 +4,7 @@
 #include "../plugin.h"
 #include "../evaluation_context.h"
 #include "../search_statistics.h"
+#include "../task_utils/successor_generator.h"
 
 #include <iostream>
 using namespace std;
@@ -11,6 +12,8 @@ using namespace std;
 namespace heuristic_policy {
 HeuristicPolicy::HeuristicPolicy(const Options &opts)
     : Policy(opts),
+      state_registry(
+        *task, *g_state_packer, *g_axiom_evaluator, task->get_initial_state_values()),
       heuristic(opts.get<Heuristic *>("h")) {
     cout << "Initializing heuristic policy..." << endl;
 }
@@ -22,7 +25,7 @@ PolicyResult HeuristicPolicy::compute_policy(const GlobalState &global_state) {
     vector<OperatorID> applicable_ops;
     g_successor_generator->generate_applicable_ops(global_state, applicable_ops);
     int h_best = -1;
-    OperatorID op_best;
+    OperatorID op_best = no_operator;
     for (OperatorID op_id : applicable_ops) {
         OperatorProxy op = task_proxy.get_operators()[op_id];
 

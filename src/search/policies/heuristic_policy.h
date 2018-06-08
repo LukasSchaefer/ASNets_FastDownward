@@ -19,6 +19,8 @@ namespace heuristic_policy {
 class HeuristicPolicy : public Policy {
     Heuristic *heuristic;
 protected:
+    StateRegistry state_registry;
+
     PolicyResult compute_policy(const GlobalState &state);
 public:
     HeuristicPolicy(const options::Options &options);

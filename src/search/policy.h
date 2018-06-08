@@ -4,6 +4,7 @@
 #include "evaluator.h"
 #include "operator_id.h"
 #include "per_state_information.h"
+#include "task_proxy.h"
 
 #include <vector>
 #include <tuple>
@@ -60,6 +61,11 @@ protected:
     */
     PerStateInformation<PEntry> policy_cache;
     bool cache_policy_values;
+
+    // Hold a reference to the task implementation and pass it to objects that need it.
+    const std::shared_ptr<AbstractTask> task;
+    // Use task_proxy to access task information.
+    TaskProxy task_proxy;
 
     /* 
         registration name and flag for g_registered_policies map in globals
