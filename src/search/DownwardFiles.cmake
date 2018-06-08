@@ -551,10 +551,10 @@ fast_downward_plugin(
 )
 
 fast_downward_plugin(
-    NAME HEURISTIC_POLICY
-    HELP "The heuristic policy"
+    NAME HEURISTIC_PREF_OPS_POLICY
+    HELP "The heuristic preferred operators policy"
     SOURCES
-        policies/heuristic_policy
+        policies/heuristic_pref_ops_policy
 )
 
 fast_downward_plugin(

@@ -14,14 +14,13 @@ class Options;
 }
 
 struct PEntry;
+/*
+    PolicyResult is a pair of OperatorIDs with corresponding probabilities
+    in second vector with matching indeces
+*/
+using PolicyResult = std::pair<std::vector<OperatorID>, std::vector<float>>;
 
 class Policy : public Evaluator {
-    /*
-        PolicyResult is a pair of OperatorIDs with corresponding probabilities
-        in second vector with matching indeces
-    */
-    using PolicyResult = std::pair<std::vector<OperatorID>, std::vector<float>>;
-
     /*
         Entries for Policy results including
         dirty: true if vectors/ values are not set yet 
