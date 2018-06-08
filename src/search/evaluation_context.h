@@ -103,6 +103,13 @@ public:
         const GlobalState &state,
         SearchStatistics *statistics = nullptr, bool calculate_preferred = false);
 
+    // state/ statistics constructor for policy context
+    EvaluationContext(
+        const GlobalState &state,
+        SearchStatistics *statistics = nullptr,
+        bool contains_policy = false,
+        bool calculate_preferred = false);
+
     ~EvaluationContext() = default;
 
     const EvaluationResult &get_result(Evaluator *heur);
@@ -110,6 +117,7 @@ public:
     const GlobalState &get_state() const;
     int get_g_value() const;
     bool is_preferred() const;
+    void set_contains_policy() const;
     bool contains_policy() const;
 
     /*

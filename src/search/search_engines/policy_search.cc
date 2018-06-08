@@ -22,6 +22,7 @@ void PolicySearch::initialize() {
     assert(policy);
     cout << "Conducting policy search" << endl;
 
+    current_eval_context.set_contains_policy();
     bool dead_end = current_eval_context.is_policy_dead_end(policy);
     statistics.inc_evaluated_states();
 
@@ -77,7 +78,8 @@ SearchStatus PolicySearch::step() {
     statistics.inc_generated();
 
     if (node.is_new()) {
-        EvaluationContext eval_context(new_state, &statistics);
+        // create eval_context with policy
+        EvaluationContext eval_context(new_state, &statistics, true);
         statistics.inc_evaluated_states();
 
         if (eval_context.is_policy_dead_end(policy)) {
@@ -87,6 +89,8 @@ SearchStatus PolicySearch::step() {
             return FAILED;
         }
         node.open(parent_node, op_proxy);
+
+        current_eval_context = eval_context;
         return IN_PROGRESS;
     }
 

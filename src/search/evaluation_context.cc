@@ -52,6 +52,12 @@ EvaluationContext::EvaluationContext(
     : EvaluationContext(HeuristicCache(state), INVALID, false, statistics, calculate_preferred) {
 }
 
+EvaluationContext::EvaluationContext(
+        const GlobalState &state,
+        SearchStatistics *statistics, bool contains_policy, bool calculate_preferred)
+        : EvaluationContext(HeuristicCache(state), contains_policy, INVALID, false, statistics, calculate_preferred){
+}
+
 const EvaluationResult &EvaluationContext::get_result(Evaluator *evaluator) {
     EvaluationResult &result = cache[evaluator];
     if (result.is_uninitialized()) {
@@ -81,6 +87,10 @@ int EvaluationContext::get_g_value() const {
 bool EvaluationContext::is_preferred() const {
     assert(g_value != INVALID);
     return preferred;
+}
+
+void EvaluationContext::set_contains_policy() const {
+    contains_policy_information = true;
 }
 
 bool EvaluationContext::contains_policy() const {
