@@ -5,6 +5,7 @@
 #include "../evaluation_context.h"
 #include "../search_statistics.h"
 #include "../task_utils/successor_generator.h"
+#include "../operator_id.h"
 
 #include <iostream>
 using namespace std;
@@ -22,16 +23,26 @@ HeuristicPolicy::~HeuristicPolicy() {
 }
 
 PolicyResult HeuristicPolicy::compute_policy(const GlobalState &global_state) {
+    // HACK: need some context to be able to call compute_result which is necessary to get at the preferred operators
+    // computed with the heuristic
+    SearchStatistics statistics = SearchStatistics();
+    EvaluationContext context = EvaluationContext(global_state, -1, true, &statistics, true);
+
+    // collect all applicable actions
     vector<OperatorID> applicable_ops;
     g_successor_generator->generate_applicable_ops(global_state, applicable_ops);
+
+    // look for action leading to the state with best (lowest) heuristic value
     int h_best = -1;
-    OperatorID op_best = no_operator;
+    OperatorID op_best = OperatorID::no_operator;
     for (OperatorID op_id : applicable_ops) {
         OperatorProxy op = task_proxy.get_operators()[op_id];
 
         GlobalState succ_state = state_registry.get_successor_state(global_state, op);
 
-        int h = heuristic->compute_heuristic(global_state);
+        EvaluationResult heuristic_result = heuristic->compute_result(context);
+        int h = heuristic_result.get_h_value();
+        // better or first action found
         if (h_best == -1 || h < h_best) {
             h_best = h;
             op_best = op_id;
@@ -39,6 +50,7 @@ PolicyResult HeuristicPolicy::compute_policy(const GlobalState &global_state) {
     }
 
     vector<OperatorID> preferred_operators = vector<OperatorID>();
+    // add only best action to preferred operator list
     preferred_operators.append(op_best);
 
     PolicyResult policy_result = pair<std::vector<OperatorID>, std::vector<float>>(preferred_operators, vector<float>());
