@@ -23,11 +23,6 @@ HeuristicPolicy::~HeuristicPolicy() {
 }
 
 PolicyResult HeuristicPolicy::compute_policy(const GlobalState &global_state) {
-    // HACK: need some context to be able to call compute_result which is necessary to get at the preferred operators
-    // computed with the heuristic
-    SearchStatistics statistics = SearchStatistics();
-    EvaluationContext context = EvaluationContext(global_state, -1, true, &statistics, true);
-
     // collect all applicable actions
     vector<OperatorID> applicable_ops;
     g_successor_generator->generate_applicable_ops(global_state, applicable_ops);
@@ -40,6 +35,10 @@ PolicyResult HeuristicPolicy::compute_policy(const GlobalState &global_state) {
 
         GlobalState succ_state = state_registry.get_successor_state(global_state, op);
 
+        // HACK: need some context to be able to call compute_result which is necessary to get at the preferred operators
+        // computed with the heuristic
+        SearchStatistics statistics = SearchStatistics();
+        EvaluationContext context = EvaluationContext(succ_state, -1, true, &statistics, true);
         EvaluationResult heuristic_result = heuristic->compute_result(context);
         int h = heuristic_result.get_h_value();
         // better or first action found
