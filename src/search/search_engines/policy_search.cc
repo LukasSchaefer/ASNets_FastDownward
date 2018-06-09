@@ -39,8 +39,6 @@ void PolicySearch::initialize() {
 }
 
 SearchStatus PolicySearch::step() {
-    search_progress.check_progress(current_eval_context);
-
     if (check_goal_and_set_plan(current_eval_context.get_state())) {
         return SOLVED;
     }
@@ -79,7 +77,7 @@ SearchStatus PolicySearch::step() {
 
     if (node.is_new()) {
         // create eval_context with policy
-        EvaluationContext eval_context(new_state, &statistics, true);
+        EvaluationContext eval_context(new_state, &statistics, true, true);
         statistics.inc_evaluated_states();
 
         if (eval_context.is_policy_dead_end(policy)) {

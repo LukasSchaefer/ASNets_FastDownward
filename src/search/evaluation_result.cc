@@ -8,7 +8,9 @@ EvaluationResult::EvaluationResult() : h_value(UNINITIALIZED) {
 }
 
 bool EvaluationResult::is_uninitialized() const {
-    return h_value == UNINITIALIZED;
+    // first condition for heuristics, second for policies
+    return (h_value == UNINITIALIZED ||
+        (!preferred_operators.empty() && !operator_preferences.empty()));
 }
 
 bool EvaluationResult::is_infinite() const {
