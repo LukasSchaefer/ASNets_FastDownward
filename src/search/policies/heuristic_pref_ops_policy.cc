@@ -14,11 +14,11 @@ HeuristicPrefOpsPolicy::HeuristicPrefOpsPolicy(const Options &opts)
     : Policy(opts) {
     cout << "Initializing heuristic preferred operators policy..." << endl;
     // this could be any heuristic which sets preferred operators
-    additive_heuristic::AdditiveHeuristic hadd(opts);
-    heuristic = &hadd;
+    heuristic = new additive_heuristic::AdditiveHeuristic(opts);
 }
 
 HeuristicPrefOpsPolicy::~HeuristicPrefOpsPolicy() {
+    delete heuristic;
 }
 
 PolicyResult HeuristicPrefOpsPolicy::compute_policy(const GlobalState &global_state) {
