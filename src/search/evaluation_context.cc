@@ -12,9 +12,10 @@ using namespace std;
 
 EvaluationContext::EvaluationContext(
     const HeuristicCache &cache, int g_value, bool is_preferred,
-    SearchStatistics *statistics, bool calculate_preferred)
+    SearchStatistics *statistics, bool calculate_preferred,
+    bool contains_policy)
     : cache(cache),
-      contains_policy_information(false),
+      contains_policy_information(contains_policy),
       g_value(g_value),
       preferred(is_preferred),
       statistics(statistics),
@@ -22,40 +23,17 @@ EvaluationContext::EvaluationContext(
 }
 
 EvaluationContext::EvaluationContext(
-    const HeuristicCache &cache, bool contains_policy, int g_value,
-    bool is_preferred, SearchStatistics *statistics,
-    bool calculate_preferred)
-    : cache(cache),
-      contains_policy_information(contains_policy),
-      g_value(g_value),
-      preferred(is_preferred),
-      statistics(statistics),
-    calculate_preferred(calculate_preferred) {
-}
-
-EvaluationContext::EvaluationContext(
     const GlobalState &state, int g_value, bool is_preferred,
-    SearchStatistics *statistics, bool calculate_preferred)
-    : EvaluationContext(HeuristicCache(state), g_value, is_preferred, statistics, calculate_preferred) {
-}
-
-EvaluationContext::EvaluationContext(
-    const GlobalState &state, bool contains_policy, int g_value,
-    bool is_preferred, SearchStatistics *statistics,
-    bool calculate_preferred)
-    : EvaluationContext(HeuristicCache(state), contains_policy, g_value, is_preferred, statistics, calculate_preferred) {
+    SearchStatistics *statistics, bool calculate_preferred,
+    bool contains_policy)
+    : EvaluationContext(HeuristicCache(state), g_value, is_preferred, statistics, calculate_preferred, contains_policy) {
 }
 
 EvaluationContext::EvaluationContext(
     const GlobalState &state,
-    SearchStatistics *statistics, bool calculate_preferred)
-    : EvaluationContext(HeuristicCache(state), INVALID, false, statistics, calculate_preferred) {
-}
-
-EvaluationContext::EvaluationContext(
-        const GlobalState &state, bool contains_policy,
-        SearchStatistics *statistics, bool calculate_preferred)
-        : EvaluationContext(HeuristicCache(state), contains_policy, INVALID, false, statistics, calculate_preferred){
+    SearchStatistics *statistics, bool calculate_preferred,
+    bool contains_policy)
+    : EvaluationContext(HeuristicCache(state), INVALID, false, statistics, calculate_preferred, contains_policy) {
 }
 
 const EvaluationResult &EvaluationContext::get_result(Evaluator *evaluator) {

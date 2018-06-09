@@ -66,13 +66,8 @@ public:
     */
     EvaluationContext(
         const HeuristicCache &cache, int g_value, bool is_preferred,
-        SearchStatistics *statistics, bool calculate_preferred = false);
-
-    // cache constructor for policy context
-    EvaluationContext(
-        const HeuristicCache &cache, bool contains_policy, int g_value,
-        bool is_preferred, SearchStatistics *statistics,
-        bool calculate_preferred = false);
+        SearchStatistics *statistics, bool calculate_preferred = false,
+        bool contains_policy = false);
 
     /*
       Create new heuristic cache for caching heuristic values. Used for example
@@ -80,13 +75,9 @@ public:
     */
     EvaluationContext(
         const GlobalState &state, int g_value, bool is_preferred,
-        SearchStatistics *statistics, bool calculate_preferred = false);
+        SearchStatistics *statistics, bool calculate_preferred = false,
+        bool contains_policy = false);
 
-    // state constructor for policy context
-    EvaluationContext(
-        const GlobalState &state, bool contains_policy, int g_value,
-        bool is_preferred, SearchStatistics *statistics,
-        bool calculate_preferred = false);
     /*
       Use the following constructor when you don't care about g values,
       preferredness (and statistics), e.g. when sampling states for heuristics.
@@ -101,14 +92,8 @@ public:
     */
     EvaluationContext(
         const GlobalState &state,
-        SearchStatistics *statistics = nullptr, bool calculate_preferred = false);
-
-    // state/ statistics constructor for policy context
-    EvaluationContext(
-        const GlobalState &state,
-        bool contains_policy = false,
-        SearchStatistics *statistics = nullptr,
-        bool calculate_preferred = false);
+        SearchStatistics *statistics = nullptr, bool calculate_preferred = false,
+        bool contains_policy = false);
 
     ~EvaluationContext() = default;
 
