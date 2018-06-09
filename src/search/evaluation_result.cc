@@ -43,8 +43,8 @@ void EvaluationResult::set_preferred_operators(
 }
 
 void EvaluationResult::set_operator_preferences(
-    std::vector<float> &&operator_preferences) {
-    operator_preferences = move(operator_preferences);
+    std::vector<float> &&operator_prefs) {
+    operator_preferences = move(operator_prefs);
 }
 
 void EvaluationResult::set_count_evaluation(bool count_eval) {
