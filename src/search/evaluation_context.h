@@ -102,7 +102,7 @@ public:
     const GlobalState &get_state() const;
     int get_g_value() const;
     bool is_preferred() const;
-    void set_contains_policy() const;
+    void set_contains_policy();
     bool contains_policy() const;
 
     /*

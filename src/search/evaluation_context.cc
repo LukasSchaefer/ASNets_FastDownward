@@ -67,7 +67,7 @@ bool EvaluationContext::is_preferred() const {
     return preferred;
 }
 
-void EvaluationContext::set_contains_policy() const {
+void EvaluationContext::set_contains_policy() {
     contains_policy_information = true;
 }
 
