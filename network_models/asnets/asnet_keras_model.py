@@ -443,6 +443,11 @@ class ASNet_Model_Builder():
         self.bias_initializer = bias_initializer
         self.extra_input_size = extra_input_size
 
+        assert num_layers >= 1, "There has to be at least 1 layer!"
+        assert hidden_representation_size > 0, "The hidden representation size has to be at least 1!"
+        assert 0.0 <= dropout and dropout <= 1, "Dropout value has to be between 0 and 1!"
+        assert extra_input_size >= 0, "The extra input size has to be positive!"
+
         number_of_propositions = len(self.problem_meta.grounded_predicates)
         number_of_propositional_actions = len(self.problem_meta.propositional_actions)
 
