@@ -20,13 +20,15 @@ class KerasDynamicMLP(KerasDomainPropertiesNetwork):
                                       ("dropout", True, None, int, "Dropout probability or None if no dropout"),
                                       ("optimizer", True, "adam", str, "Optimization algorithm"),
                                       ("loss", True, "mean_squared_error", str, "Loss function"),
+                                      ("tmp", True, None, str,
+                                       "TEST INPUT< RMV ME"),
                                       order=["hidden", "output_units",
                                              "activation", "dropout",
                                              "optimizer", "loss",
                                              "load", "store", "formats", "out",
                                              "epochs",
                                              "count_samples", "test_similarity",
-                                             "graphdef", "callbacks", "variables", "id"]
+                                             "graphdef", "callbacks", "variables", "id", "tmp"]
                                       )
 
     def __init__(self, hidden, output_units=-1, activation="sigmoid",
@@ -35,7 +37,8 @@ class KerasDynamicMLP(KerasDomainPropertiesNetwork):
                  count_samples=False, test_similarity=None, graphdef=None,
                  callbacks=None,
                  variables=None, id=None,
-                 domain_properties=None):
+                 domain_properties=None, tmp=None):
+        self.tmp = tmp
         KerasDomainPropertiesNetwork.__init__(
             self, load, store, formats, out, epochs, count_samples,
             test_similarity, graphdef, callbacks, variables, id, domain_properties=domain_properties)
