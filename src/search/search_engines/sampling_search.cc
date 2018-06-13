@@ -83,7 +83,7 @@ std::string SamplingSearch::extract_modification_hash(
     return to_string(SamplingSearch::shash(merged));
 }
 
-void SamplingSearch::extract_sample_entries_add_heuristics(
+void SamplingSearch::extract_sample_entries_add_registered_heuristics(
     const GlobalState &state, std::ostream& stream) const {
     for (const string &heuristic : use_heuristics) {
         EvaluationContext eval_context(state);
@@ -99,7 +99,7 @@ int SamplingSearch::extract_sample_entries_trajectory(
     const StateRegistry &sr, OperatorsProxy &ops,
     const string& meta,
     ostream &stream) const {
-
+    
     int counter = 0;
     
     int min_idx_goal = (expand) ? (1) : (trajectory.size() - 1);
@@ -124,16 +124,17 @@ int SamplingSearch::extract_sample_entries_trajectory(
             stream << meta;
             init_state.dump_pddl(stream);
             stream << field_separator
-                << pddl_goal.str() << field_separator
-                << ops[plan[idx_init]].get_name() << field_separator;
+                   << pddl_goal.str() << field_separator;
             sr.lookup_state(trajectory[idx_init + 1]).dump_pddl(stream);
             stream << field_separator
-                << heuristic;
+                   << ops[plan[idx_init]].get_name() << field_separator
+                   << heuristic;
 
             // the heuristics calculate their values only w.r.t. the true goal
-            if (idx_goal == (int) trajectory.size() - 1) {
-                extract_sample_entries_add_heuristics(init_state, stream);
-            }
+            //todo only if solution trajectory
+            //if (idx_goal == (int) trajectory.size() - 1) {
+            //    extract_sample_entries_add_registered_heuristics(init_state, stream);
+            //}
 
             stream << "~";
             counter++;
@@ -155,51 +156,59 @@ void SamplingSearch::extract_sample_entries_state(
     stream << meta;
     state.dump_pddl(stream);
     stream << field_separator
-        << goal_description << field_separator;
-
-    if (oid != OperatorID::no_operator) {
-        stream << ops[oid].get_name();
-    }
-    stream << field_separator;
+           << goal_description << field_separator;
     if (pid != StateID::no_state) {
         sr.lookup_state(ss.get_parent_id(state)).dump_pddl(stream);
     }
     stream << field_separator;
-
-    extract_sample_entries_add_heuristics(state, stream);
+    if (oid != OperatorID::no_operator) {
+        stream << ops[oid].get_name();
+    }
+    //stream << field_separator;
+    //extract_sample_entries_add_heuristics(state, stream);
 
     stream << "~";
 }
 
 std::string SamplingSearch::extract_sample_entries() {
     /* 
-     Data set format (; represents the field separator which can be changed):
-     <Meta problem_hash=<ProblemHash> modification_hash=<ModificationHash>
-     type={O,T,S}, format=FD> <CurrentState>;<GoalPredicates>;
-        <Operator>;<OtherState>;<HeuristicViaTrajectory>;<Heuristics>*
+     NEW DATASET FORMAT. EVERY ENTRY HAS THE FOLLOWING STRUCTURE:
+     META FIELD_1; FIELD_2; ...; FIELD_N
+     META := {"fields": [{"NAME_FIELD_1": FIELD_DESCRIPTION}, ...],
+              "delimiter": ";",
+              "problem_hash": "PROBLEM_HASH",
+              "modification_hash": MODIFICATION_HASH
+              "sample_type" : "SAMPLE_TYPE"
+     FIELD_DESCRIPTION := {"type": "TYPE_OF_FIELD(e.g. list, state)",
+                           "forward": "NEXT_SUBTYPE(e.g. state after the previous type was list)",
+                           "ARG_1_KEY": "ARG_1_VALUE(e.g. type of the sample O, T, S)"
+  
+     The following fields are available:
+        - current_state (S)
+        - previous_state (S)
+        - next_state (S)
+        - action (A)
+        - goals (S)
+        - heuristic (H)
+        - and all registered heuristics with the field name like their
+            registered name (H)
      
-     All files exists in every sampling entry, although some might be empty.
-     <T> := O if entry belongs to solution path, 
-            T if entry belongs to a trajectory stored by the search algorithm,
-            S if the entry belongs to an arbitrary visited state
-     <ModificationHash> := md5 hash of input problem file (or 'NA' if missing)
-     <ModificationHash> := hash of the modified states initial state + goals
-     <CurrentState> := State of this entry
-     <GoalPredicates> := goal predicates of the problem to solve
+     All (S) fields have as "type" "state" and an argument "format":"FD".
      
-     The next two are either both filled or both empty:
-     <Operator> :=  if <T> in {O, T}: operator chosen in the current state
-                    if <T> in {S}: operator used to reach current state
-     <OtherState> := if <T> in {O, T}: state resulting from applying operator
-                     if <T> in {S}: parent state using operator to reach current
+     The following SAMPLE_TYPEs are available:
+            'solution'   if entry belongs to solution path, 
+            'trajectory' if entry belongs to a trajectory stored by the search algorithm,
+            'visited'    if the entry belongs to an arbitrary visited state
      
-     <HeuristicViaTrajectory> := cost from the current state to the end of the
-            trajectory. If the trajectory is the solution path, then this is
-            the cost to the goal. Otherwise, this is the cost to some arbitrary
-            trajectory end. If the entry does not belong to a trajectory, then
-            this field is empty.
-     <Heuristics>* := List of heuristic values estimated for the current state
+     PROBLEM_HASH := md5 hash of input problem file (or 'NA' if missing)
+     MODIFICATION_HASH := hash of the modified states initial state + goals
+     ACTION := Name of the action connecting the earlier state with the later
+               one
+     heuristic := this field contains the heuristic value of "current_state" by
+     going form the goal backwards till the current state
+     
      */
+    
     const StateRegistry &sr = engine->get_state_registry();
     const SearchSpace &ss = engine->get_search_space();
     const TaskProxy &tp = engine->get_task_proxy();
@@ -208,14 +217,19 @@ std::string SamplingSearch::extract_sample_entries() {
 
     int count = 0;
     ostringstream meta_info;
-    meta_info << "<Meta problem_hash=\"" << this->problem_hash 
-              << "\" modification_hash=\"" 
-              << extract_modification_hash(tp.get_initial_state(), tp.get_goals())
-              << "\" format=\"FD\" type=\"";
+    meta_info << "{\"problem_hash\": \"" << this->problem_hash << "\", "
+              << "\"modification_hash\": \"" << extract_modification_hash(tp.get_initial_state(), tp.get_goals()) << "\", "
+              << "\"delimiter\": " << "\";\", ";
     ostringstream new_entries;
 
     if (store_solution_trajectories && engine->found_solution()) {
-        const string meta_info_opt_traj = meta_info.str() + "O\">";
+        const string meta_info_opt_traj = meta_info.str() + "\"sample_type\": \"solution\", "
+            "\"fields\": [{\"current_state\":{\"type\": \"state\", \"format\": \"FD\"}}, "
+                         "{\"goals\":{\"type\": \"state\", \"format\": \"FD\"}}, "
+                         "{\"next_state\":{\"type\": \"state\", \"format\": \"FD\"}}, "
+                         "{\"action\":{\"type\": \"string\"}}, "
+                         "{\"heuristic\":{\"type\": \"int\"}}"
+                        "]}";
         const GlobalState goal_state = engine->get_goal_state();
         Plan plan = engine->get_plan();
         Trajectory trajectory;
@@ -227,7 +241,12 @@ std::string SamplingSearch::extract_sample_entries() {
     }
 
     if (store_other_trajectories) {
-        const string meta_info_traj = meta_info.str() + "T\">";
+        const string meta_info_traj = meta_info.str() + "\"sample_type\": \"trajectory\", "
+            "\"fields\": [{\"current_state\":{\"type\": \"state\", \"format\": \"FD\"}}, "
+                         "{\"goals\":{\"type\": \"state\", \"format\": \"FD\"}}, "
+                         "{\"next_state\":{\"type\": \"state\", \"format\": \"FD\"}}, "
+                         "{\"action\":{\"type\": \"string\"}}, "
+                        "]}";
         for (const Path& path : sampling_search::paths) {
             count += extract_sample_entries_trajectory(
                 path.get_plan(), path.get_trajectory(),
@@ -237,7 +256,14 @@ std::string SamplingSearch::extract_sample_entries() {
     }
 
     if (store_all_states) {
-        const string meta_info_traj = meta_info.str() + "S\">";
+        const string meta_info_visited = meta_info.str() + "\"sample_type\": \"visited\", "
+            "\"fields\": [{\"current_state\":{\"type\": \"state\", \"format\": \"FD\"}}, "
+                         "{\"goals\":{\"type\": \"state\", \"format\": \"FD\"}}, "
+                         "{\"previous_state\":{\"type\": \"state\", \"format\": \"FD\"}}, "
+                         "{\"action\":{\"type\": \"string\"}}, "
+                         "{\"heuristic\":{\"type\": \"int\"}}"
+                        "]}";
+        
         ostringstream pddl_goal;
         // TODO: Replace by partial assignments via Regression from Goal
         gps.dump_pddl(pddl_goal);
@@ -246,7 +272,7 @@ std::string SamplingSearch::extract_sample_entries() {
             iter != sr.end(); ++iter) {
             StateID state = *iter;
             extract_sample_entries_state(state, pddl_goal.str(),
-                sr, ss, ops, meta_info_traj, new_entries);
+                sr, ss, ops, meta_info_visited, new_entries);
             count++;
         }
     }

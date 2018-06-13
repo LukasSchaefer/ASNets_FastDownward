@@ -68,7 +68,7 @@ namespace sampling_search {
         void next_engine();
         std::string extract_modification_hash(State init, GoalsProxy goals) const;
         std::string extract_sample_entries();
-        void extract_sample_entries_add_heuristics(const GlobalState &state,
+        void extract_sample_entries_add_registered_heuristics(const GlobalState &state,
                 std::ostream &stream) const;
         int extract_sample_entries_trajectory(
                 const Plan &plan, const Trajectory &trajectory, bool expand,

@@ -123,14 +123,21 @@ StateFormat("Objects", "Adds of the problem to the meta tag and then provides"
 
 def split_meta(line):
     line = line.strip()
-    if not line.startswith("<"):
+    if not line.startswith("{"):
         return None, line
-    else:
-        meta_end = line.find(">")
-        if meta_end == -1:
-            raise DataCorruptedError("Entry has an opening, but not"
-                                     "closing tag: " + line)
-        return line[: meta_end + 1], line[meta_end + 1:]
+
+    level = 1
+    for i in range(1, len(line)):
+        if line[i] == "{":
+            level += 1
+        elif line[i] == "}":
+            level -= 1
+            if level == 0:
+                return line[: i + 1], line[i + 1:]
+
+    raise DataCorruptedError("Entry has an opening, but not closing tag: "
+                             + line)
+
 
 
 def extract_from_meta(meta, key, default=None, converter=None):
