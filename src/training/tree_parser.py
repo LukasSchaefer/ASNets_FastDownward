@@ -78,6 +78,12 @@ def parse_tree(config):
                                  + config[: idx_c + 1])
             key = buffer
             buffer = ""
+        elif c == ":" and cur_node.data[0] == "map":
+            if buffer == "":
+                raise ParseError("Expected keyword before ':' of map"
+                                 + config[: idx_c + 1])
+            key = buffer
+            buffer = ""
         else:
             buffer += c
 
