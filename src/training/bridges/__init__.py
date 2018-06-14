@@ -2,7 +2,7 @@ from .. import dependencies
 
 if dependencies.bridges:
 
-    from .base_bridges import Bridge, SamplerBridge
-    from .sampling_bridges import FastDownwardSamplerBridge, LoadSampleBridge
+    from .base_bridges import Bridge
 
-    from .sampling_bridges import StateFormat
+    from .sampling_bridges import SamplerBridge, FastDownwardSamplerBridge, LoadSampleBridge
+    from .sampling_bridges.common import StateFormat

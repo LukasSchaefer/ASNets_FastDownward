@@ -346,7 +346,7 @@ def train(argv):
         options.verification = re.compile(options.verification)
     directory_groups = get_directory_groups(options)
     if len(directory_groups) == 0:
-        raise argparse.ArgumentError("No valid list of directories found.")
+        raise ValueError("No valid list of directories found.")
     options.initialize = parse_key_value_pairs_to_kwargs(options.initialize)
     options.finalize = parse_key_value_pairs_to_kwargs(options.finalize)
     start_time = timing(start_time, "Parsing time: %ss")
