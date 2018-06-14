@@ -14,8 +14,9 @@ class NetworkPolicy : public Policy {
 protected:
     std::shared_ptr<neural_networks::AbstractNetwork> network;
     
-    virtual PolicyResult compute_policy(const GlobalState &state);
+    virtual PolicyResult compute_policy(const GlobalState &state) override;
     PolicyResult compute_policy(const State &state);
+    virtual bool dead_ends_are_reliable() override;
 public:
     explicit NetworkPolicy(const options::Options &options);
     ~NetworkPolicy();

@@ -31,6 +31,10 @@ bool AbstractNetwork::is_preferred(){
     return false;
 }
 
+bool AbstractNetwork::dead_ends_are_reliable() {
+    return false;
+}
+
 void AbstractNetwork::verify_heuristic(){
     if (!is_heuristic()){
         cerr << "Network does not support heuristic estimates." << endl

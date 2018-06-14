@@ -69,6 +69,11 @@ EvaluationResult Policy::compute_result(EvaluationContext &eval_context) {
     return result;
 }
 
+State Policy::convert_global_state(const GlobalState &global_state) const {
+    State state(*g_root_task(), global_state.get_values());
+    return task_proxy.convert_ancestor_state(state);
+}
+
 void Policy::add_options_to_parser(OptionParser &parser) {
     parser.add_option<shared_ptr<AbstractTask>>(
         "transform",

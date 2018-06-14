@@ -32,9 +32,13 @@ PolicyResult NetworkPolicy::compute_policy(const GlobalState &global_state) {
 
 PolicyResult NetworkPolicy::compute_policy(const State &state) {
     network->evaluate(state);
-    PolicyResult policy_output network->get_policy();
+    PolicyResult policy_output = network->get_policy();
     
     return policy_output;
+}
+
+bool NetworkPolicy::dead_ends_are_reliable() {
+    return network->dead_ends_are_reliable();
 }
 
 static Policy *_parse(OptionParser &parser) {

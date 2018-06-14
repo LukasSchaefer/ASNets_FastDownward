@@ -40,6 +40,9 @@ public:
     virtual bool is_heuristic();
     virtual bool is_policy();
     virtual bool is_preferred();
+
+    // tells if dead_end detection by network policy/ heuristic is reliable
+    virtual bool dead_ends_are_reliable();
     
     /*Checks if network produce such an output and stops execution if not.*/
     void verify_heuristic();

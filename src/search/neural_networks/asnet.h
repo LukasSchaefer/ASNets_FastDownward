@@ -57,6 +57,7 @@ public:
     virtual ~ASNet() override = default;
     
     virtual bool is_policy() override;
+    virtual bool dead_ends_are_reliable() override;
     virtual PolicyResult get_policy() override;
     
     virtual void initialize() override;

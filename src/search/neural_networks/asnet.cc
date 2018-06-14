@@ -79,6 +79,10 @@ bool ASNet::is_policy() {
     return true;
 }
 
+bool ASNet::dead_ends_are_reliable() {
+    return true;
+}
+
 PolicyResult ASNet::get_policy() {
     return last_policy_output;
 }
