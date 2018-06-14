@@ -44,7 +44,7 @@ class ASNet : public ProtobufNetwork {
     virtual std::vector<int> get_operator_indeces_lexicographically();
 protected:
     const int extra_input_size = 0;
-    std::pair<std::vector<OperatorID>, std::vector<float>> last_policy_output = std::pair<std::vector<OperatorID>, std::vector<float>>(std::vector<OperatorID>(), std::vector<float>());
+    PolicyResult last_policy_output = std::pair<std::vector<OperatorID>, std::vector<float>>(std::vector<OperatorID>(), std::vector<float>());
     /* vector of entries of form (variable_index, value_index) for each fact in lexicographical ordering
        of their names */
     std::vector<std::pair<int, int>> facts_sorted;
@@ -57,7 +57,7 @@ public:
     virtual ~ASNet() override = default;
     
     virtual bool is_policy() override;
-    virtual std::pair<std::vector<OperatorID>, std::vector<float>> get_policy() override;
+    virtual PolicyResult get_policy() override;
     
     virtual void initialize() override;
     virtual void initialize_inputs() override;

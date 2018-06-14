@@ -79,7 +79,7 @@ bool ASNet::is_policy() {
     return true;
 }
 
-std::pair<std::vector<OperatorID>, std::vector<float>> ASNet::get_policy() {
+PolicyResult ASNet::get_policy() {
     return last_policy_output;
 }
 
