@@ -37,7 +37,7 @@ PolicyResult NetworkPolicy::compute_policy(const State &state) {
     return policy_output;
 }
 
-bool NetworkPolicy::dead_ends_are_reliable() {
+bool NetworkPolicy::dead_ends_are_reliable() const {
     return network->dead_ends_are_reliable();
 }
 
