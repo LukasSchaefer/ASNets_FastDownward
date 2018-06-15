@@ -16,7 +16,7 @@ namespace policy_search {
       current_eval_context(state_registry.get_initial_state(), &statistics),
       use_heuristic_dead_end_detection(opts.get<bool>("dead_end_detection")) {
         if (use_heuristic_dead_end_detection) {
-            dead_end_heuristic = new FFHeuristic(opts);
+            dead_end_heuristic = opts.get(Heuristic *>("dead_end_detection_heuristic"));
             // only use this dead-end detection if it is reliable on the task
             if (!dead_end_heuristic->dead_ends_are_reliable()) {
                 use_heuristic_dead_end_detection = false;
@@ -121,7 +121,9 @@ namespace policy_search {
         parser.add_option<Policy *>("p", "policy");
         parser.add_option<bool>("dead_end_detection",
         "Boolean value indicating whether early dead-end detection using "
-        "a heuristic function should be used during search", "true")
+        "a heuristic function should be used during search", "true");
+        parser.add_option<Heuristic *>("dead_end_detection_heuristic",
+        "heuristic used for early dead-end detection", "ff");
         SearchEngine::add_options_to_parser(parser);
         Options opts = parser.parse();
 

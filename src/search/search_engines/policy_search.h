@@ -21,7 +21,7 @@ namespace policy_search {
 */
 class PolicySearch : public SearchEngine {
     Policy *policy;
-    const bool use_heuristic_dead_end_detection;
+    bool use_heuristic_dead_end_detection;
     Heuristic *dead_end_heuristic;
 
     EvaluationContext current_eval_context;
