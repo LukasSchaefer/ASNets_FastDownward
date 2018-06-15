@@ -16,12 +16,15 @@ namespace policy_search {
       current_eval_context(state_registry.get_initial_state(), &statistics),
       use_heuristic_dead_end_detection(opts.get<bool>("dead_end_detection")) {
         if (use_heuristic_dead_end_detection) {
-            dead_end_heuristic = opts.get(Heuristic *>("dead_end_detection_heuristic"));
+            dead_end_heuristic = opts.get<Heuristic *>("dead_end_detection_heuristic");
             // only use this dead-end detection if it is reliable on the task
             if (!dead_end_heuristic->dead_ends_are_reliable()) {
                 use_heuristic_dead_end_detection = false;
             }
         }
+	if (use_heuristic_dead_end_detection) {
+	    cout << "policy search uses heuristic dead-end detection" << endl;
+	}
     }
 
     PolicySearch::~PolicySearch() {
