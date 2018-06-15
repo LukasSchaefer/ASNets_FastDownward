@@ -3,7 +3,6 @@
 #include "../policy.h"
 #include "../option_parser.h"
 #include "../plugin.h"
-# include "../heuristics/ff_heuristic.h"
 
 using namespace std;
 using utils::ExitCode;

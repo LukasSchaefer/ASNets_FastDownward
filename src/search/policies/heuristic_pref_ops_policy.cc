@@ -2,7 +2,6 @@
 
 #include "../option_parser.h"
 #include "../plugin.h"
-#include "../heuristics/additive_heuristic.h"
 #include "../evaluation_context.h"
 #include "../search_statistics.h"
 
@@ -11,10 +10,9 @@ using namespace std;
 
 namespace heuristic_pref_ops_policy {
 HeuristicPrefOpsPolicy::HeuristicPrefOpsPolicy(const Options &opts)
-    : Policy(opts) {
+    : Policy(opts),
+      heuristic(opts.get<Heuristic *>("h")) {
     cout << "Initializing heuristic preferred operators policy..." << endl;
-    // this could be any heuristic which sets preferred operators
-    heuristic = new additive_heuristic::AdditiveHeuristic(opts);
 }
 
 HeuristicPrefOpsPolicy::~HeuristicPrefOpsPolicy() {
@@ -39,6 +37,9 @@ bool HeuristicPrefOpsPolicy::dead_ends_are_reliable() const {
 
 static Policy *_parse(OptionParser &parser) {
     parser.document_synopsis("Heuristic Preferred Operators Policy", "");
+    parser.add_option<Heuristic *> ("h",
+    "heuristic function which is used to compute preferred operators. "
+    "These are followed along the policy.", "add");
     Policy::add_options_to_parser(parser);
     Options opts = parser.parse();
     if (parser.dry_run())
