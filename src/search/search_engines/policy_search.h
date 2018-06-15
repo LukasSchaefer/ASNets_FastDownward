@@ -21,7 +21,7 @@ namespace policy_search {
 */
 class PolicySearch : public SearchEngine {
     Policy *policy;
-    bool use_heuristic_dead_end_detection;
+    bool use_heuristic_dead_end_detection = true;
     const int exploration_trajectory_limit;
     int trajectory_length = 0;
     Heuristic *dead_end_heuristic;

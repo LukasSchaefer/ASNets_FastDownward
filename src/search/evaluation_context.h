@@ -49,7 +49,7 @@ class SearchStatistics;
 class EvaluationContext {
     HeuristicCache cache;
     // is true if context is built from a policy
-    const bool contains_policy_information;
+    bool contains_policy_information;
     int g_value;
     bool preferred;
     SearchStatistics *statistics;

@@ -46,7 +46,8 @@ namespace policy_search {
     }
 
     void PolicySearch::set_current_eval_context(StateID state_id) {
-        current_eval_context = EvaluationContext(state_registry.lookup_state(state_id), &statistics, true, true);
+	GlobalState state = state_registry.lookup_state(state_id);
+        current_eval_context = EvaluationContext(state, &statistics, true, true);
     }
 
     void PolicySearch::initialize() {
@@ -153,7 +154,7 @@ namespace policy_search {
         parser.add_option<Heuristic *>("dead_end_detection_heuristic",
         "heuristic used for early dead-end detection", "ff");
         parser.add_option<int> ("trajectory_limit",
-        "Int to represent the length limit for explored trajectories during",
+        "Int to represent the length limit for explored trajectories during "
         "network policy exploration", "-1");
         SearchEngine::add_options_to_parser(parser);
         Options opts = parser.parse();
