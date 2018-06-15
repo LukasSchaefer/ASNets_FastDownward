@@ -12,8 +12,9 @@ namespace policy_search {
     const Options &opts)
     : SearchEngine(opts),
       policy(opts.get<Policy *>("p")),
-      current_eval_context(state_registry.get_initial_state(), &statistics),
-      use_heuristic_dead_end_detection(opts.get<bool>("dead_end_detection")) {
+      current_eval_context(state_registry.get_initial_state(), &statistics, true, true),
+      use_heuristic_dead_end_detection(opts.get<bool>("dead_end_detection")),
+      exploration_trajectory_limit(opts.get<int>("trajectory_limit")) {
         if (use_heuristic_dead_end_detection) {
             dead_end_heuristic = opts.get<Heuristic *>("dead_end_detection_heuristic");
             // only use this dead-end detection if it is reliable on the task
@@ -29,11 +30,27 @@ namespace policy_search {
     PolicySearch::~PolicySearch() {
     }
 
+    StateID PolicySearch::get_last_state_id() const {
+        assert(!solution_found);
+        return current_eval_context.get_state().get_id();
+    }
+
+    Plan PolicySearch::get_plan_to_last_state() const {
+        assert(!solution_found);
+        Plan plan;
+        search_space.trace_path(get_last_state_id(), plan);
+        return plan;
+    }
+
+    void PolicySearch::set_current_eval_context(StateID state_id) {
+        current_eval_context = EvaluationContext(state_registry.lookup_state(state_id),
+            &statistics, true, true);
+    }
+
     void PolicySearch::initialize() {
         assert(policy);
         cout << "Conducting policy search" << endl;
 
-        current_eval_context.set_contains_policy();
         bool dead_end = false;
         if (use_heuristic_dead_end_detection) {
             dead_end = current_eval_context.is_heuristic_infinite(dead_end_heuristic);
@@ -58,6 +75,12 @@ namespace policy_search {
         if (check_goal_and_set_plan(current_eval_context.get_state())) {
             return SOLVED;
         }
+
+        if (exploration_trajectory_limit != -1 && trajectory_length >= exploration_trajectory_limit) {
+            cout << "No solution - trajectory limit reached" << endl;
+            return TRAJECTORY_LIMIT_REACHED;
+        }
+
         assert(current_eval_context.contains_policy());
 
         // collect current state and search node
@@ -111,6 +134,7 @@ namespace policy_search {
             node.open(parent_node, op_proxy);
 
             current_eval_context = eval_context;
+            trajectory_length++;
             return IN_PROGRESS;
         }
 
@@ -126,6 +150,9 @@ namespace policy_search {
         "a heuristic function should be used during search", "true");
         parser.add_option<Heuristic *>("dead_end_detection_heuristic",
         "heuristic used for early dead-end detection", "ff");
+        parser.add_option<int> ("trajectory_limit",
+        "Int to represent the length limit for explored trajectories during",
+        "network policy exploration", "-1");
         SearchEngine::add_options_to_parser(parser);
         Options opts = parser.parse();
 

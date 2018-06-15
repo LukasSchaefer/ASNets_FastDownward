@@ -22,6 +22,8 @@ namespace policy_search {
 class PolicySearch : public SearchEngine {
     Policy *policy;
     bool use_heuristic_dead_end_detection;
+    const int exploration_trajectory_limit;
+    int trajectory_length = 0;
     Heuristic *dead_end_heuristic;
 
     EvaluationContext current_eval_context;
@@ -33,6 +35,11 @@ protected:
 public:
     explicit PolicySearch(const options::Options &opts);
     virtual ~PolicySearch() override;
+
+    StateID get_last_state_id() const;
+    Plan get_plan_to_last_state() const;
+
+    void set_current_eval_context(StateID state_id);
 };
 }
 

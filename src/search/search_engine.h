@@ -24,7 +24,7 @@ template<typename T>
 class OrderedSet;
 }
 
-enum SearchStatus {IN_PROGRESS, TIMEOUT, FAILED, SOLVED};
+enum SearchStatus {IN_PROGRESS, TIMEOUT, FAILED, SOLVED, TRAJECTORY_LIMIT_REACHED};
 
 class SearchEngine {
 public:
