@@ -8,6 +8,8 @@ using namespace std;
 using utils::ExitCode;
 
 namespace policy_search {
+    using Plan = std::vector<OperatorID>;
+
     PolicySearch::PolicySearch(
     const Options &opts)
     : SearchEngine(opts),
@@ -38,13 +40,13 @@ namespace policy_search {
     Plan PolicySearch::get_plan_to_last_state() const {
         assert(!solution_found);
         Plan plan;
-        search_space.trace_path(get_last_state_id(), plan);
+        GlobalState last_state = state_registry.lookup_state(get_last_state_id());
+        search_space.trace_path(last_state, plan);
         return plan;
     }
 
     void PolicySearch::set_current_eval_context(StateID state_id) {
-        current_eval_context = EvaluationContext(state_registry.lookup_state(state_id),
-            &statistics, true, true);
+        current_eval_context = EvaluationContext(state_registry.lookup_state(state_id), &statistics, true, true);
     }
 
     void PolicySearch::initialize() {
