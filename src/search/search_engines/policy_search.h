@@ -4,6 +4,7 @@
 #include "../evaluation_context.h"
 #include "../open_list.h"
 #include "../search_engine.h"
+#include "../heuristic.h"
 
 #include <utility>
 #include <vector>
@@ -20,6 +21,8 @@ namespace policy_search {
 */
 class PolicySearch : public SearchEngine {
     Policy *policy;
+    const bool use_heuristic_dead_end_detection;
+    Heuristic *dead_end_heuristic;
 
     EvaluationContext current_eval_context;
 

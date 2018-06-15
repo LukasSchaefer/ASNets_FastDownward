@@ -18,8 +18,6 @@ NetworkPolicy::NetworkPolicy(const Options &opts)
     cout << "Initializing network policy..." << endl;
     network->verify_policy();
     network->initialize();
-    
-    
 }
 
 NetworkPolicy::~NetworkPolicy() {
