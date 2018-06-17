@@ -1,5 +1,6 @@
 #include "asnet_sampling_search.h"
 
+#include "../abstract_task.h"
 #include "../evaluation_context.h"
 #include "../globals.h"
 #include "../open_list_factory.h"
@@ -7,15 +8,8 @@
 #include "../plugin.h"
 #include "../pruning_method.h"
 
-#include "../algorithms/ordered_set.h"
 #include "../tasks/modified_init_goals_task.h"
 #include "../task_utils/successor_generator.h"
-#include "../task_utils/sampling.h"
-#include "../utils/rng.h"
-#include "../utils/rng_options.h"
-
-#include "../task_utils/sampling.h"
-#include "../utils/rng.h"
 
 #include "../task_utils/lexicographical_access.h"
 #include "../task_utils/regression_utils.h"
@@ -48,18 +42,14 @@ ASNetSamplingSearch::ASNetSamplingSearch(const Options &opts)
 : SearchEngine(opts),
 problem_hash(opts.get<string>("hash")),
 target_location(opts.get<string>("target")),
-teacher_policy(opts.get<Policy *>("teacher_policy")),
+teacher_search(opts.get<shared_ptr<SearchEngine>>("search")),
 exploration_trajectory_limit(opts.get<int>("trajectory_limit")),
+use_non_goal_teacher_paths(opts.get<bool>("use_non_goal_teacher_paths")),
 facts_sorted(lexicographical_access::get_facts_lexicographically(task_proxy)),
 operator_indeces_sorted(lexicographical_access::get_operator_indeces_lexicographically(task_proxy)) {
     network_policy = NetworkPolicy(opts);
     opts.set<Policy *>("policy", asnet_policy);
     network_search = PolicySearch(opts);
-
-    // no trajectory-limit for teacher search/ policy
-    opts.set<int>("trajectory_limit", -1);
-    opts.set<Policy *>("policy", teacher_policy);
-    teacher_search = PolicySearch(opts);
 }
 
 std::string ASNetSamplingSearch::extract_modification_hash(
@@ -119,7 +109,7 @@ void ASNetSamplingSearch::state_into_stream(GlobalState &state, ostringstream st
   * These are binary value for every action indicating whether it is applicable in the state.
   * The values are ordered lexicographically by action-names in a "," separated list form.
 */
-void ASNetSamplingSearch::applicable_values_into_stream(GlobalState &state, ostringstream applicable_stream) const {
+vector<int> ASNetSamplingSearch::applicable_values_into_stream(GlobalState &state, ostringstream applicable_stream) const {
     // collect all applicable actions in state
     vector<OperatorID> applicable_op_ids;
     g_successor_generator->generate_applicable_ops(state, applicable_op_ids);
@@ -144,6 +134,7 @@ void ASNetSamplingSearch::applicable_values_into_stream(GlobalState &state, ostr
         }
     }
     vector_into_stream<int>(applicable_values, applicable_stream);
+    return applicable_values;
 }
 
 /*
@@ -192,8 +183,20 @@ void ASNetSamplingSearch::network_probs_into_stream(GlobalState &state, ostrings
   * the teacher-search.
   * The values are ordered lexicographically by action-names in a "," separated list form.
 */
-void ASNetSamplingSearch::action_opt_values_into_stream(GlobalState &state, ostringstream action_opts_stream) const {
+void ASNetSamplingSearch::action_opt_values_into_stream(
+    GlobalState &state, vector<int> applicable_values,
+    ostringstream action_opts_stream) const {
     // TODO: check whether actions start the plan found for teacher-search from state going
+    unsigned int number_of_operators = operator_indeces_sorted.size();
+    vector<float> action_opt_values;
+    action_opt_values.resize(number_of_operators);
+    for (int op_index = 0; op_index < number_of_operators; op_index++) {
+        if (applicable_values[op_index] == 0) {
+            // action is not applicable -> action_opt_value = 0 (does not matter)
+            
+            // TODO
+        }
+    }
 }
 
 /*
@@ -237,7 +240,7 @@ void ASNetSamplingSearch::extract_sample_entries_trajectory(
 
         // extract action_applicable_values into applicable_stream
         ostringstream applicable_stream;
-        applicable_values_into_stream(&state, applicable_stream);
+        vector<int> applicable_values = applicable_values_into_stream(&state, applicable_stream);
 
         // extract action_network_probs into network_probs_stream
         ostringstream network_probs_stream;
@@ -245,7 +248,7 @@ void ASNetSamplingSearch::extract_sample_entries_trajectory(
 
         // extract action_opt_values into action_opts_stream
         ostringstream action_opts_stream;
-        action_opt_values_into_stream(&state, action_opts_stream);
+        action_opt_values_into_stream(&state, applicable_values, action_opts_stream);
 
         stream << problem_hash << ";" << goal_stream.str() << ";"
                << state_stream.str() << ";" << applicable_stream.str() << ";"
@@ -283,10 +286,10 @@ std::string ASNetSamplingSearch::extract_exploration_sample_entries() {
         extract_sample_entries_trajectory(plan, trajectory, sr, ops, new_entries);
     } else {
         // no solution found -> termination due to timeout, dead-end or trajectory limit reached
-        const StateID last_state = network_search->get_last_state_id();
-        Plan plan = network_search->get_plan_to_last_state();
+        const GlobalState last_state = network_search->get_last_state();
+        Plan plan;
         Trajectory trajectory;
-        ss.trace_path(last_state, trajectory);
+        ss.trace_path(last_state, plan, trajectory);
         // add all StateIDs from trajectory to list of explored states
         network_explored_states.insert(network_explored_states.end(), trajectory.begin(), trajectory.end());
 
@@ -323,12 +326,12 @@ std::string ASNetSamplingSearch::extract_teacher_sample_entries() {
         ss.trace_path(goal_state, trajectory);
 
         extract_sample_entries_trajectory(plan, trajectory, sr, ops, new_entries);
-    } else {
+    } else if (use_non_goal_teacher_paths) {
         // no solution found -> termination due to timeout, dead-end or trajectory limit reached
-        const StateID last_state = teacher_search->get_last_state_id();
-        Plan plan = teacher_search->get_plan_to_last_state();
+        const GlobalState last_state = teacher_search->get_last_state();
+        Plan plan;
         Trajectory trajectory;
-        ss.trace_path(last_state, trajectory);
+        ss.trace_path(last_state, plan, trajectory);
 
         extract_sample_entries_trajectory(plan, trajectory, sr, ops, new_entries);
     }
@@ -347,17 +350,58 @@ void ASNetSamplingSearch::initialize() {
     cout << "done." << endl;
 }
 
-SearchStatus SamplingSearch::step() {
+void ASNetSamplingSearch::set_modified_task_with_new_initial_state(StateID &state_id) {
+    TaskProxy modified_task_proxy(*task_proxy);
+    const successor_generator::SuccessorGenerator successor_generator(modified_task_proxy);
+
+    // extract state values as new initial state
+    GlobalState init_state = state_registry.lookup_state(state_id);
+    vector<int> init_state_values;
+    init_state_values.reserve(init_state.size());
+    for (int val : init_state.get_values()) {
+        init_state_values.push_back(val);
+    }
+
+    // extract goal facts
+    vector<FactPair> goal_facts;
+    GoalsProxy goals_proxy = task_proxy.get_goals();
+    goal_facts.reserve(goals_proxy.size());
+    for (unsigned int i = 0; i < goals_proxy.size(); i++) {
+        goal_facts.push_back(goals_proxy[i].get_pair());
+    }
+    modified_task =  make_shared<extra_tasks::ModifiedInitGoalsTask>(task,
+        init_state_values,
+        goal_facts);
+
+}
+
+SearchStatus ASNetSamplingSearch::step() {
     network_search->search();
     samples << extract_exploration_sample_entries();
     save_plan_intermediate();
 
     for (StateID & state_id : network_explored_states) {
         // explore states with teacher policy from state_id onwards
-        teacher_search.set_current_eval_context(state_id);
+        set_modified_task_with_new_initial_state(&state_id)
+
+        // does this truly generate a new SearchEngine with the new modified_task?
+        // looks like it would just return a new shared pointer to the same engine
+        teacher_search = opts.get<shared_ptr<SearchEngine>>("search");
         teacher_search->search();
-        samples << extract_teacher_sample_entries();
-        save_plan_intermediate();
+        switch (teacher_search->get_status()) {
+            case FAILED: 
+                // if search reached dead-end -> don't sample states
+                break;;
+            case TIMEOUT:
+                if (!use_non_goal_teacher_paths) {
+                    /* if search went into timeout, only sample if non-goal paths
+                       should be used for sampling */
+                    break;
+                }
+            default: 
+                samples << extract_teacher_sample_entries();
+                save_plan_intermediate();
+        }
     }
 
     return SOLVED;
@@ -421,15 +465,17 @@ void ASNetSamplingSearch::add_sampling_options(OptionParser &parser) {
     parser.add_option<std::string> ("target",
         "Place to save the sampled data (currently only appending files"
         "is supported", "None");
-    parser.add_option<Policy *> ("teacher_policy",
-        "Teacher policy which is used to sample (usually optimal) trajectories "
-        "along states from trajectories explored by the network policy.");
+    parser.add_option<shared_ptr<SearchEngine>> ("search",
+        "Search engine to use as teacher-search guidance");
     parser.add_option<std::string> ("hash",
         "MD5 hash of the input problem. This can be used to "
         "differentiate which problems created which entries.", "None");
     parser.add_option<int> ("trajectory_limit",
         "Int to represent the length limit for explored trajectories during",
         "network policy exploration", 300);
+    parser.add_option<bool> ("use_non_goal_teacher_paths",
+        "Bool value indicating whether paths/ trajectories of the teacher search "
+        "not reaching a goal state should be sampled", "true");
     parser.add_option<shared_ptr<neural_networks::AbstractNetwork>>("network",
         "Network to sample with (Built for ASNets)", "asnet");
 }
@@ -446,6 +492,25 @@ static shared_ptr<SearchEngine> _parse(OptionParser &parser) {
 }
 
 static PluginShared<SearchEngine> _plugin("asnet_sampling_search", _parse);
+
+/*
+ * Use modified_task as transformed task in search.
+ * Used to manipulate the initial state to run teacher-search from specific sampled
+ * states onward.
+ */
+std::shared_ptr<AbstractTask> modified_task = g_root_task();
+
+static shared_ptr<AbstractTask> _parse_sampling_transform(
+    OptionParser &parser) {
+    if (parser.dry_run()) {
+        return nullptr;
+    } else {
+
+        return modified_task;
+    }
+}
+static PluginShared<AbstractTask> _plugin_sampling_transform(
+    "asnet_sampling_transform", _parse_sampling_transform);
 
 /* Global variable for search algorithms to store arbitrary paths (plans [
    operator ids] and trajectories [state ids]).

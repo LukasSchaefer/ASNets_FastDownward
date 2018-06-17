@@ -37,20 +37,22 @@ namespace asnet_sampling_search {
         const std::string problem_hash;
         const std::string target_location;
 
+        // teacher search used for sampling along reasonable (usually optimal) trajectories
+        std::shared_ptr<SearchEngine> teacher_search;
+        // limit for explored trajectories during network policy exploration
+        const int exploration_trajectory_limit;
+        /* if true -> sample even teacher trajectories/ paths which did not reach a goal
+           otherwise only sample states along plans, so trajectories/ paths leading to a goal state */
+        const bool use_non_goal_teacher_paths;
+
         /* vector of entries of form (variable_index, value_index) for each fact in lexicographical ordering
            of their names */
         std::vector<std::pair<int, int>> facts_sorted;
         /* vector of operator indeces sorted by the corresponding operator names */
         std::vector<int> operator_indeces_sorted;
 
-        // teacher policy used for extraction along reasonable (usually optimal) trajectories
-        const Policy* teacher_policy;
-        // limit for explored trajectories during network policy exploration
-        const int exploration_trajectory_limit;
-
         Policy * network_policy;
         PolicySearch network_search;
-        PolicySearch teacher_search;
     protected:
 
         std::ostringstream samples;
@@ -61,7 +63,7 @@ namespace asnet_sampling_search {
         std::string extract_modification_hash(State init, GoalsProxy goals) const;
         void goal_into_stream(ostringstream goal_stream) const;
         void state_into_stream(GlobalState &state, ostringstream state_stream) const;
-        void applicable_values_into_stream(GlobalState &state, ostringstream applicable_stream) const;
+        vector<int> applicable_values_into_stream(GlobalState &state, ostringstream applicable_stream) const;
         void network_probs_into_stream(GlobalState &state, ostringstream network_probs_stream) const;
         void action_opt_values_into_stream(GlobalState &state, ostringstream action_opts_stream) const;
         int extract_sample_entries_trajectory(
@@ -70,6 +72,7 @@ namespace asnet_sampling_search {
                 std::ostream &stream) const;
         std::string extract_exploration_sample_entries();
         std::string extract_teacher_sample_entries();
+        void set_modified_task_with_new_initial_state(StateID &state_id);
         void add_header_samples(std::ostream &stream) const;
         void save_plan_intermediate();
 
