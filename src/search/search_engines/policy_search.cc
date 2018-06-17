@@ -32,19 +32,6 @@ namespace policy_search {
     PolicySearch::~PolicySearch() {
     }
 
-    StateID PolicySearch::get_last_state_id() const {
-        assert(!solution_found);
-        return current_eval_context.get_state().get_id();
-    }
-
-    Plan PolicySearch::get_plan_to_last_state() const {
-        assert(!solution_found);
-        Plan plan;
-        GlobalState last_state = state_registry.lookup_state(get_last_state_id());
-        search_space.trace_path(last_state, plan);
-        return plan;
-    }
-
     void PolicySearch::set_current_eval_context(StateID state_id) {
         GlobalState state = state_registry.lookup_state(state_id);
         current_eval_context = EvaluationContext(state, &statistics, true, true);

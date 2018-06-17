@@ -36,9 +36,6 @@ public:
     explicit PolicySearch(const options::Options &opts);
     virtual ~PolicySearch() override;
 
-    StateID get_last_state_id() const;
-    Plan get_plan_to_last_state() const;
-
     void set_current_eval_context(StateID state_id);
 };
 }
