@@ -23,10 +23,10 @@ class PolicySearch : public SearchEngine {
     Policy *policy;
     bool use_heuristic_dead_end_detection = true;
     const int exploration_trajectory_limit;
+    EvaluationContext current_eval_context;
     int trajectory_length = 0;
     Heuristic *dead_end_heuristic;
 
-    EvaluationContext current_eval_context;
 
 protected:
     virtual void initialize() override;

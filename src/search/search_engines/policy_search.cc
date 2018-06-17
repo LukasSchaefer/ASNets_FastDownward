@@ -14,9 +14,9 @@ namespace policy_search {
     const Options &opts)
     : SearchEngine(opts),
       policy(opts.get<Policy *>("p")),
-      current_eval_context(state_registry.get_initial_state(), &statistics, true, true),
       use_heuristic_dead_end_detection(opts.get<bool>("dead_end_detection")),
-      exploration_trajectory_limit(opts.get<int>("trajectory_limit")) {
+      exploration_trajectory_limit(opts.get<int>("trajectory_limit")),
+      current_eval_context(state_registry.get_initial_state(), &statistics, true, true) {
         if (use_heuristic_dead_end_detection) {
             dead_end_heuristic = opts.get<Heuristic *>("dead_end_detection_heuristic");
             // only use this dead-end detection if it is reliable on the task

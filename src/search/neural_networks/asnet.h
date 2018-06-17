@@ -43,12 +43,12 @@ namespace neural_networks {
 class ASNet : public ProtobufNetwork {
 protected:
     const int extra_input_size = 0;
-    PolicyResult last_policy_output = std::pair<std::vector<OperatorID>, std::vector<float>>(std::vector<OperatorID>(), std::vector<float>());
     /* vector of entries of form (variable_index, value_index) for each fact in lexicographical ordering
        of their names */
     std::vector<std::pair<int, int>> facts_sorted;
     /* vector of operator indeces sorted by the corresponding operator names */
     std::vector<int> operator_indeces_sorted;
+    PolicyResult last_policy_output = std::pair<std::vector<OperatorID>, std::vector<float>>(std::vector<OperatorID>(), std::vector<float>());
     
 public:
     explicit ASNet(const Options &opts);

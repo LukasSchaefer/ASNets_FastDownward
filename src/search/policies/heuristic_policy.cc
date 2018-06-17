@@ -13,9 +13,9 @@ using namespace std;
 namespace heuristic_policy {
 HeuristicPolicy::HeuristicPolicy(const Options &opts)
     : Policy(opts),
+      heuristic(opts.get<Heuristic *>("h")),
       state_registry(
-        *task, *g_state_packer, *g_axiom_evaluator, task->get_initial_state_values()),
-      heuristic(opts.get<Heuristic *>("h")) {
+        *task, *g_state_packer, *g_axiom_evaluator, task->get_initial_state_values()) {
     cout << "Initializing heuristic policy..." << endl;
 }
 
