@@ -1,15 +1,11 @@
 #include "lexicographical_access.h"
 
-#include "../task_proxy.h"
-
-#include <vector>
-#include <tuple>
 
 namespace lexicographical_access {
 
 /* sorts facts lexicographically and returns vector with tuple entries of
    (variable_index, value_index (in variable domain)) */
-static std::vector<std::pair<int, int>> get_facts_lexicographically(TaskProxy task_proxy) {
+std::vector<std::pair<int, int>> get_facts_lexicographically(TaskProxy task_proxy) {
     // compute necessary vector size (sum of all variable domain sizes)
     unsigned int num_facts = 0;
     for (int dom_size : g_variable_domain) {
@@ -41,7 +37,7 @@ static std::vector<std::pair<int, int>> get_facts_lexicographically(TaskProxy ta
 
 /* sorts operators lexicographically and returns vector of operator indeces in lexicographical ordering
    of their names */
-static std::vector<int> get_operator_indeces_lexicographically(TaskProxy task_proxy) {
+std::vector<int> get_operator_indeces_lexicographically(TaskProxy task_proxy) {
     // fill vector of pairs consisting of (operator_name, operator_index)
     std::vector<std::pair<std::string, int>> operators_with_names(task_proxy.get_operators().size());
     auto operators = task_proxy.get_operators();

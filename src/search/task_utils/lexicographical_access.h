@@ -11,8 +11,8 @@ namespace lexicographical_access {
 
     /* sorts facts lexicographically and returns vector with tuple entries of
     (variable_index, value_index (in variable domain)) */
-    static std::vector<std::pair<int, int>> get_facts_lexicographically(TaskProxy task_proxy);
+    std::vector<std::pair<int, int>> get_facts_lexicographically(TaskProxy task_proxy);
 
-    static std::vector<int> get_operator_indeces_lexicographically(TaskProxy task_proxy);
+    std::vector<int> get_operator_indeces_lexicographically(TaskProxy task_proxy);
 }
 #endif
