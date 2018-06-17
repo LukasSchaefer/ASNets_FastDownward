@@ -22,8 +22,7 @@ HeuristicPrefOpsPolicy::~HeuristicPrefOpsPolicy() {
 PolicyResult HeuristicPrefOpsPolicy::compute_policy(const GlobalState &global_state) {
     // HACK: need some context to be able to call compute_result which is necessary to get at the preferred operators
     // computed with the heuristic
-    SearchStatistics statistics = SearchStatistics();
-    EvaluationContext context = EvaluationContext(global_state, -1, true, &statistics, true);
+    EvaluationContext context = EvaluationContext(global_state, nullptr, true);
     EvaluationResult heuristic_result = heuristic->compute_result(context);
     vector<OperatorID> preferred_operators = heuristic_result.get_preferred_operators();
 
