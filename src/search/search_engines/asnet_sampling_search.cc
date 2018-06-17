@@ -200,16 +200,16 @@ void ASNetSamplingSearch::action_opt_values_into_stream(GlobalState &state, ostr
   * Extracts the state_representation and puts it into stream for the sample
   * 
   * Format to represent a state:
-  * <HASH>; <FACT_GOAL_VALUES>; <fact_values>; <ACTION_APPLICABLE_VALUES>; <ACTION_NETWORK_PROBABILITIES>; <ACTION_OPT_VALUES>
+  * <HASH>; <FACT_GOAL_VALUES>; <FACT_VALUES>; <ACTION_APPLICABLE_VALUES>; <ACTION_NETWORK_PROBABILITIES>; <ACTION_OPT_VALUES>
   * 
   * using ";" as a separator
   * 
   * fields explained:
-  * - <HASH>:     hash-value indicating the problem instance
-  * - <fact_goal_values>: binary value for every fact indicating whether the fact is part of the goal. Values
+  * - <HASH>: hash-value indicating the problem instance
+  * - <FACT_GOAL_VALUES>: binary value for every fact indicating whether the fact is part of the goal. Values
   *                       are ordered lexicographically by fact-names in a "," separated list form
-  * - <FACT_GOAL_VALUES>: binary values (0,1) indicating whether a fact is true. Values are ordered lexicographically
-  *                       by fact-names and are all "," separated in a list and are given for every fact (e.g. [0,1,1,0]) 
+  * - <FACT_VALUES>: binary values (0,1) indicating whether a fact is true. Values are ordered lexicographically
+  *                  by fact-names and are all "," separated in a list and are given for every fact (e.g. [0,1,1,0]) 
   * - <ACTION_APPLICABLE_VALUES>: binary values indicating whether an action is applicable in the current state.
   *                               Ordering again is lexicographically by action-names and the values are in a ","
   *                               separated list form for all actions.
