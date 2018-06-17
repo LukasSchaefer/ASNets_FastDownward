@@ -4,6 +4,7 @@
 #include "protobuf_network.h"
 
 #include "../policy.h"
+#include "../task_utils/lexicographical_access.h"
 #include "../option_parser.h"
 
 #include <tuple>
@@ -40,8 +41,6 @@ namespace neural_networks {
              ordering of their names
  */
 class ASNet : public ProtobufNetwork {
-    virtual std::vector<std::pair<int, int>> get_facts_lexicographically();
-    virtual std::vector<int> get_operator_indeces_lexicographically();
 protected:
     const int extra_input_size = 0;
     PolicyResult last_policy_output = std::pair<std::vector<OperatorID>, std::vector<float>>(std::vector<OperatorID>(), std::vector<float>());

@@ -46,7 +46,7 @@ namespace policy_search {
     }
 
     void PolicySearch::set_current_eval_context(StateID state_id) {
-	GlobalState state = state_registry.lookup_state(state_id);
+        GlobalState state = state_registry.lookup_state(state_id);
         current_eval_context = EvaluationContext(state, &statistics, true, true);
     }
 

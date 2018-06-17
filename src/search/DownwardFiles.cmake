@@ -449,7 +449,7 @@ fast_downward_plugin(
         neural_networks/problem_network
         neural_networks/asnet
         neural_networks/state_goal_network
-    DEPENDS NEURAL_NETWORKS
+    DEPENDS NEURAL_NETWORKS LEXICOGRAPHICAL_ACCESS
     PACKAGES TENSORFLOW PROTOBUF EIGEN
 )
 
@@ -602,6 +602,15 @@ fast_downward_plugin(
         task_utils/causal_graph
     DEPENDENCY_ONLY
 )
+
+fast_downward_plugin(
+    NAME LEXICOGRAPHICAL_ACCESS
+    HELP "Tools to access operator and facts lexicographically sorted"
+    SOURCES
+        task_utils/lexicographical_access
+    DEPENDENCY_ONLY
+)
+
 fast_downward_plugin(
     NAME REGRESSION
     HELP "Tools for regression"
