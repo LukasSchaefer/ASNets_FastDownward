@@ -33,7 +33,8 @@ SearchEngine::SearchEngine(const Options &opts)
       search_space(state_registry,
                    static_cast<OperatorCost>(opts.get_enum("cost_type"))),
       cost_type(static_cast<OperatorCost>(opts.get_enum("cost_type"))),
-      max_time(opts.get<double>("max_time")) {
+      max_time(opts.get<double>("max_time")),
+      last_state(state_registry.get_initial_state()) {
     if (opts.get<int>("bound") < 0) {
         cerr << "error: negative cost bound " << opts.get<int>("bound") << endl;
         utils::exit_with(ExitCode::INPUT_ERROR);
@@ -65,6 +66,11 @@ const SearchEngine::Plan &SearchEngine::get_plan() const {
 const GlobalState SearchEngine::get_goal_state() const {
     assert(solution_found);
     return state_registry.lookup_state(goal_id);
+}
+
+GlobalState SearchEngine::get_last_state() const {
+    assert(!solution_found);
+    return last_state;
 }
 
 
@@ -111,6 +117,7 @@ bool SearchEngine::check_goal_and_set_plan(const GlobalState &state) {
         set_plan(plan);
         return true;
     }
+    last_state = state;
     return false;
 }
 
@@ -156,8 +163,8 @@ void SearchEngine::add_options_to_parser(OptionParser &parser) {
     parser.add_option<shared_ptr<AbstractTask>>(
         "transform",
         "Optional task transformation for the search algorithm."
-        " Currently, adapt_costs(), sampling_transform(), and no_transform() are "
-        "available.",
+        " Currently, adapt_costs(), sampling_transform(), asnet_sampling_transform(), "
+        "and no_transform() are available.",
         "no_transform()");
 }
 

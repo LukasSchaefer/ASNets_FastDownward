@@ -48,6 +48,7 @@ protected:
     int bound;
     OperatorCost cost_type;
     double max_time;
+    GlobalState last_state;
 
     virtual void initialize() {}
     virtual SearchStatus step() = 0;
@@ -64,6 +65,7 @@ public:
     SearchStatus get_status() const;
     const Plan &get_plan() const;
     const GlobalState get_goal_state() const;
+    GlobalState get_last_state() const;
     const StateRegistry &get_state_registry() const;
     const SearchSpace &get_search_space() const;
     const TaskProxy &get_task_proxy() const;
