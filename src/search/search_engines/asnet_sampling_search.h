@@ -34,6 +34,7 @@ namespace asnet_sampling_search {
         std::vector<StateID> network_explored_states = std::vector<StateID>();
 
     protected:
+        const options::ParseTree search_parse_tree;
         const std::string problem_hash;
         const std::string target_location;
 
@@ -60,12 +61,22 @@ namespace asnet_sampling_search {
         /* Statistics*/
         int generated_samples = 0;
 
+        options::ParseTree prepare_search_parse_tree(
+                const std::string& unparsed_config) const;
         std::string extract_modification_hash(State init, GoalsProxy goals) const;
         void goal_into_stream(ostringstream goal_stream) const;
-        void state_into_stream(GlobalState &state, ostringstream state_stream) const;
-        vector<int> applicable_values_into_stream(GlobalState &state, ostringstream applicable_stream) const;
-        void network_probs_into_stream(GlobalState &state, ostringstream network_probs_stream) const;
-        void action_opt_values_into_stream(GlobalState &state, ostringstream action_opts_stream) const;
+        void state_into_stream(GlobalState &state,
+                ostringstream state_stream) const;
+        vector<int> applicable_values_into_stream(
+                GlobalState &state,
+                ostringstream applicable_stream) const;
+        void network_probs_into_stream(
+                GlobalState &state,
+                ostringstream network_probs_stream) const;
+        void action_opt_values_into_stream(
+                GlobalState &state,
+                vector<int> applicable_values,
+                ostringstream action_opts_stream) const;
         int extract_sample_entries_trajectory(
                 const Plan &plan, const Trajectory &trajectory,
                 const StateRegistry &sr, OperatorsProxy &ops,
@@ -73,6 +84,7 @@ namespace asnet_sampling_search {
         std::string extract_exploration_sample_entries();
         std::string extract_teacher_sample_entries();
         void set_modified_task_with_new_initial_state(StateID &state_id);
+        SearchEngine get_new_teacher_search_with_modified_task() const;
         void add_header_samples(std::ostream &stream) const;
         void save_plan_intermediate();
 

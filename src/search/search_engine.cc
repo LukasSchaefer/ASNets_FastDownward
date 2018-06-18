@@ -69,7 +69,6 @@ const GlobalState SearchEngine::get_goal_state() const {
 }
 
 GlobalState SearchEngine::get_last_state() const {
-    assert(!solution_found);
     return last_state;
 }
 

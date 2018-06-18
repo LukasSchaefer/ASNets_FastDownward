@@ -40,9 +40,9 @@ template <typename t> void vector_into_stream(vector<t> vec, ostringstream oss) 
 
 ASNetSamplingSearch::ASNetSamplingSearch(const Options &opts)
 : SearchEngine(opts),
+search_parse_tree(prepare_search_parse_tree(opts.get_unparsed_config())),
 problem_hash(opts.get<string>("hash")),
 target_location(opts.get<string>("target")),
-teacher_search(opts.get<shared_ptr<SearchEngine>>("search")),
 exploration_trajectory_limit(opts.get<int>("trajectory_limit")),
 use_non_goal_teacher_paths(opts.get<bool>("use_non_goal_teacher_paths")),
 facts_sorted(lexicographical_access::get_facts_lexicographically(task_proxy)),
@@ -50,6 +50,12 @@ operator_indeces_sorted(lexicographical_access::get_operator_indeces_lexicograph
     network_policy = NetworkPolicy(opts);
     opts.set<Policy *>("policy", asnet_policy);
     network_search = PolicySearch(opts);
+}
+
+options::ParseTree ASNetSamplingSearch::prepare_search_parse_tree(
+    const std::string& unparsed_config) const {
+    options::ParseTree pt = options::generate_parse_tree(unparsed_config);
+    return subtree(pt, options::first_child_of_root(pt));
 }
 
 std::string ASNetSamplingSearch::extract_modification_hash(
@@ -186,17 +192,78 @@ void ASNetSamplingSearch::network_probs_into_stream(GlobalState &state, ostrings
 void ASNetSamplingSearch::action_opt_values_into_stream(
     GlobalState &state, vector<int> applicable_values,
     ostringstream action_opts_stream) const {
-    // TODO: check whether actions start the plan found for teacher-search from state going
     unsigned int number_of_operators = operator_indeces_sorted.size();
     vector<float> action_opt_values;
     action_opt_values.resize(number_of_operators);
-    for (int op_index = 0; op_index < number_of_operators; op_index++) {
-        if (applicable_values[op_index] == 0) {
-            // action is not applicable -> action_opt_value = 0 (does not matter)
-            
-            // TODO
+
+    // get all OperatorProxys
+    OperatorsProxy op_proxys = task_proxy.get_operators();
+
+    // set state as new initial state for new searches
+    set_modified_task_with_new_initial_state(&state.get_id())
+    // get modified teacher search using state as the initial state
+    SearchEngine teacher_search_from_state = get_new_teacher_search_with_modified_task();
+    // search and compute plan-cost if solution was found
+    teacher_search_from_state.search();
+    int plan_cost_from_state = -1;
+    if (teacher_search_from_state.found_solution()) {
+        plan_cost_from_state = 0;
+        // sum up costs on plan
+        for (OperatorID op_id : teacher_search_from_state.get_plan()) {
+            plan_cost_from_state += op_proxys[op_id].get_cost();
         }
     }
+
+    for (int op_index = 0; op_index < number_of_operators; op_index++) {
+        if (applicable_values[op_index] == 0) {
+            // action is not applicable -> action_opt_value = 0
+            action_opt_values[op_index] = 0;
+        } else {
+            // action is applicable -> check whether it starts an optimal plan according to teacher-search
+            
+            // get operator to sorted op_index
+            int unsorted_index = operator_indeces_sorted[op_index];
+            OperatorProxy op = op_proxys[unsorted_index];
+
+            // get state reached by action
+            GlobalState succ_state = state_registry.get_successor_state(state, op);
+            // get modified teacher search using succ_state as the initial state
+            set_modified_task_with_new_initial_state(&succ_state.get_id());
+            SearchEngine teacher_search_from_succ_state = get_new_teacher_search_with_modified_task();
+            // search and compute plan-cost if solution was found
+            teacher_search_from_succ_state.search();
+
+            if (!teacher_search_from_succ_state.found_solution()) {
+                // applying action and search does not find a solution -> not good path
+                action_opt_values[op_index] = 0;
+                continue;
+            } else {
+                // solution found from succ_state
+                if (teacher_search_from_state.found_solution()) {
+                    // both search found a solution -> compute the cost from succ_state + op.cost() and compare
+                    int plan_cost_from_succ_state = op.get_cost();
+                    for (OperatorID op_id : teacher_search_from_succ_state.get_plan()) {
+                        plan_cost_from_succ_state += op_proxys[op_id].get_cost();
+                    }
+                    if (plan_cost_from_succ_state <= plan_cost_from_state) {
+                        // operator is starting optimal or better plan (after teacher search)
+                        action_opt_values[op_index] = 1;
+                        continue;
+                    } else {
+                        // plan starting with operator is worse -> not good path
+                        action_opt_values[op_index] = 0;
+                        continue;
+                    }
+                } else {
+                    // solution found from succ_state, but not from state
+                    // -> from succ_state was better -> 1
+                    action_opt_values[op_index] = 1;
+                    continue;
+                }
+            }
+        }
+    }
+    vector_into_stream<float>(action_opt_values, action_opts_stream);
 }
 
 /*
@@ -343,13 +410,6 @@ std::string ASNetSamplingSearch::extract_teacher_sample_entries() {
     return post;
 }
 
-void ASNetSamplingSearch::initialize() {
-    cout << "Initializing ASNet Sampling Manager...";
-    add_header_samples(samples);
-
-    cout << "done." << endl;
-}
-
 void ASNetSamplingSearch::set_modified_task_with_new_initial_state(StateID &state_id) {
     TaskProxy modified_task_proxy(*task_proxy);
     const successor_generator::SuccessorGenerator successor_generator(modified_task_proxy);
@@ -375,6 +435,21 @@ void ASNetSamplingSearch::set_modified_task_with_new_initial_state(StateID &stat
 
 }
 
+SearchEngine ASNetSamplingSearch::get_new_teacher_search_with_modified_task() const {
+    OptionParser engine_parser(search_parse_tree, false);
+    return engine_parser.start_parsing<shared_ptr<SearchEngine>>();
+}
+
+void ASNetSamplingSearch::initialize() {
+    cout << "Initializing ASNet Sampling Manager...";
+    add_header_samples(samples);
+    // set teacher_search
+    OptionParser engine_parser(search_parse_tree, false);
+    teacher_search = engine_parser.start_parsing<shared_ptr<SearchEngine>>();
+
+    cout << "done." << endl;
+}
+
 SearchStatus ASNetSamplingSearch::step() {
     network_search->search();
     samples << extract_exploration_sample_entries();
@@ -383,15 +458,12 @@ SearchStatus ASNetSamplingSearch::step() {
     for (StateID & state_id : network_explored_states) {
         // explore states with teacher policy from state_id onwards
         set_modified_task_with_new_initial_state(&state_id)
-
-        // does this truly generate a new SearchEngine with the new modified_task?
-        // looks like it would just return a new shared pointer to the same engine
-        teacher_search = opts.get<shared_ptr<SearchEngine>>("search");
+        teacher_search = &get_new_teacher_search_with_modified_task();
         teacher_search->search();
         switch (teacher_search->get_status()) {
             case FAILED: 
                 // if search reached dead-end -> don't sample states
-                break;;
+                break;
             case TIMEOUT:
                 if (!use_non_goal_teacher_paths) {
                     /* if search went into timeout, only sample if non-goal paths
@@ -462,11 +534,11 @@ void ASNetSamplingSearch::save_plan_intermediate() {
 
 void ASNetSamplingSearch::add_sampling_options(OptionParser &parser) {
     SearchEngine::add_options_to_parser(parser);
+    parser.add_option<shared_ptr<SearchEngine>> ("search",
+        "Search engine to use as teacher-search guidance");
     parser.add_option<std::string> ("target",
         "Place to save the sampled data (currently only appending files"
         "is supported", "None");
-    parser.add_option<shared_ptr<SearchEngine>> ("search",
-        "Search engine to use as teacher-search guidance");
     parser.add_option<std::string> ("hash",
         "MD5 hash of the input problem. This can be used to "
         "differentiate which problems created which entries.", "None");
