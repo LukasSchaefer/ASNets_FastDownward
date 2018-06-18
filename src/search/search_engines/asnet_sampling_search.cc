@@ -92,12 +92,11 @@ void ASNetSamplingSearch::state_into_stream(const GlobalState &state, ostringstr
   * The values are ordered lexicographically by action-names in a "," separated list form.
 */
 vector<int> ASNetSamplingSearch::applicable_values_into_stream(
-            const GlobalState &state, const TaskProxy &tp,
-            const OperatorsProxy &ops, ostringstream &applicable_stream) const {
+            const GlobalState &state, const OperatorsProxy &ops,
+	    ostringstream &applicable_stream) const {
     // collect all applicable actions in state
     vector<OperatorID> applicable_op_ids;
-    successor_generator::SuccessorGenerator successor_generator = successor_generator::SuccessorGenerator(tp);
-    successor_generator.generate_applicable_ops(state, applicable_op_ids);
+    g_successor_generator->generate_applicable_ops(state, applicable_op_ids);
 
     unsigned long number_of_operators = operator_indeces_sorted.size();
     vector<int> applicable_values;
@@ -262,7 +261,7 @@ void ASNetSamplingSearch::action_opt_values_into_stream(
 */
 void ASNetSamplingSearch::extract_sample_entries_trajectory(
     const Trajectory &trajectory, const StateRegistry &sr,
-    const TaskProxy &tp, const OperatorsProxy &ops, ostream &stream) {
+    const OperatorsProxy &ops, ostream &stream) {
     
     // extract fact_goal_values into goal_stream
     ostringstream goal_stream;
@@ -277,7 +276,7 @@ void ASNetSamplingSearch::extract_sample_entries_trajectory(
 
         // extract action_applicable_values into applicable_stream
         ostringstream applicable_stream;
-        vector<int> applicable_values = applicable_values_into_stream(state, tp, ops, applicable_stream);
+        vector<int> applicable_values = applicable_values_into_stream(state, ops, applicable_stream);
 
         // extract action_network_probs into network_probs_stream
         ostringstream network_probs_stream;
@@ -320,7 +319,7 @@ std::string ASNetSamplingSearch::extract_exploration_sample_entries() {
         // add all StateIDs from trajectory to list of explored states
         network_explored_states.insert(network_explored_states.end(), trajectory.begin(), trajectory.end());
 
-        extract_sample_entries_trajectory(trajectory, sr, tp, ops, new_entries);
+        extract_sample_entries_trajectory(trajectory, sr, ops, new_entries);
     } else {
         // no solution found -> termination due to timeout, dead-end or trajectory limit reached
         const GlobalState last_state = network_search->get_last_state();
@@ -330,7 +329,7 @@ std::string ASNetSamplingSearch::extract_exploration_sample_entries() {
         // add all StateIDs from trajectory to list of explored states
         network_explored_states.insert(network_explored_states.end(), trajectory.begin(), trajectory.end());
 
-        extract_sample_entries_trajectory(trajectory, sr, tp, ops, new_entries);
+        extract_sample_entries_trajectory(trajectory, sr, ops, new_entries);
     }
 
     string post = new_entries.str();
@@ -362,7 +361,7 @@ std::string ASNetSamplingSearch::extract_teacher_sample_entries() {
         Trajectory trajectory;
         ss.trace_path(goal_state, trajectory);
 
-        extract_sample_entries_trajectory(trajectory, sr, tp, ops, new_entries);
+        extract_sample_entries_trajectory(trajectory, sr, ops, new_entries);
     } else if (use_non_goal_teacher_paths) {
         // no solution found -> termination due to timeout, dead-end or trajectory limit reached
         const GlobalState last_state = teacher_search->get_last_state();
@@ -370,7 +369,7 @@ std::string ASNetSamplingSearch::extract_teacher_sample_entries() {
         Trajectory trajectory;
         ss.trace_path(last_state, plan, trajectory);
 
-        extract_sample_entries_trajectory(trajectory, sr, tp, ops, new_entries);
+        extract_sample_entries_trajectory(trajectory, sr, ops, new_entries);
     }
 
     string post = new_entries.str();
@@ -400,8 +399,8 @@ void ASNetSamplingSearch::set_modified_task_with_new_initial_state(StateID state
         goal_facts.push_back(goals_proxy[i].get_pair());
     }
     modified_task =  make_shared<extra_tasks::ModifiedInitGoalsTask>(task,
-        init_state_values,
-        goal_facts);
+        std::move(init_state_values),
+        std::move(goal_facts));
 
 }
 
@@ -440,6 +439,7 @@ SearchStatus ASNetSamplingSearch::step() {
                        should be used for sampling */
                     break;
                 }
+		[[fallthrough]];
             default: 
                 samples << extract_teacher_sample_entries();
                 save_plan_intermediate();
