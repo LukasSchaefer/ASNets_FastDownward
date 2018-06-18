@@ -17,7 +17,7 @@ namespace asnet_sampling_search {
 
 const string SAMPLE_FILE_MAGIC_WORD = "# MAGIC FIRST LINE ASNET SAMPLING";
 
-template <typename t> void vector_into_stream(vector<t> vec, ostringstream oss) {
+template <typename t> void vector_into_stream(vector<t> vec, ostringstream &oss) {
     oss << "[";
     std::move(vec.begin(), vec.end()-1, std::ostream_iterator<t>(oss, ","));
     oss << vec.back() << "]";
@@ -48,11 +48,11 @@ options::ParseTree ASNetSamplingSearch::prepare_search_parse_tree(
   * These are binary value for every fact indicating whether the fact is part of the goal. Values
   * are ordered lexicographically by fact-names in a "," separated list form.
 */
-void ASNetSamplingSearch::goal_into_stream(ostringstream goal_stream) const {
+void ASNetSamplingSearch::goal_into_stream(ostringstream &goal_stream) const {
     unsigned long number_of_facts = facts_sorted.size();
     vector<int> fact_goal_values;
     fact_goal_values.resize(number_of_facts);
-    for (int fact_index = 0; fact_index < number_of_facts; fact_index++) {
+    for (unsigned int fact_index = 0; fact_index < number_of_facts; fact_index++) {
         if (std::find(g_goal.begin(), g_goal.end(), facts_sorted[fact_index]) != g_goal.end()) {
             // fact_index th fact is a goal
             fact_goal_values[fact_index] = 1;
@@ -69,11 +69,11 @@ void ASNetSamplingSearch::goal_into_stream(ostringstream goal_stream) const {
   * These are binary value for every fact indicating whether the fact is currently true in the state.
   * The values are ordered lexicographically by fact-names in a "," separated list form.
 */
-void ASNetSamplingSearch::state_into_stream(GlobalState &state, ostringstream state_stream) const {
+void ASNetSamplingSearch::state_into_stream(const GlobalState &state, ostringstream &state_stream) const {
     unsigned long number_of_facts = facts_sorted.size();
     vector<int> fact_values;
     fact_values.resize(number_of_facts);
-    for (int fact_index = 0; fact_index < number_of_facts; fact_index++) {
+    for (unsigned int fact_index = 0; fact_index < number_of_facts; fact_index++) {
         pair<int, int> fact = facts_sorted[fact_index];
         if (state[fact.first] == fact.second) {
             // fact_index th fact is currently true
@@ -91,21 +91,21 @@ void ASNetSamplingSearch::state_into_stream(GlobalState &state, ostringstream st
   * These are binary value for every action indicating whether it is applicable in the state.
   * The values are ordered lexicographically by action-names in a "," separated list form.
 */
-vector<int> ASNetSamplingSearch::applicable_values_into_stream(GlobalState &state, ostringstream applicable_stream) const {
+vector<int> ASNetSamplingSearch::applicable_values_into_stream(
+            const GlobalState &state, const TaskProxy &tp,
+            const OperatorsProxy &ops, ostringstream &applicable_stream) const {
     // collect all applicable actions in state
     vector<OperatorID> applicable_op_ids;
-    g_successor_generator->generate_applicable_ops(state, applicable_op_ids);
-
-    // get all OperatorProxys
-    OperatorsProxy op_proxys = task_proxy.get_operators();
+    successor_generator::SuccessorGenerator successor_generator = successor_generator::SuccessorGenerator(tp);
+    successor_generator.generate_applicable_ops(state, applicable_op_ids);
 
     unsigned long number_of_operators = operator_indeces_sorted.size();
     vector<int> applicable_values;
     applicable_values.resize(number_of_operators);
 
-    for (int op_index = 0; op_index < number_of_operators; op_index++) {
+    for (unsigned int op_index = 0; op_index < number_of_operators; op_index++) {
         int unsorted_index = operator_indeces_sorted[op_index];
-        OperatorID op_id = op_proxys[unsorted_index].get_global_operator_id();
+        OperatorID op_id = ops[unsorted_index].get_global_operator_id();
         // check whether op_id is among the ids of applicable operators
         if (std::find(applicable_op_ids.begin(), applicable_op_ids.end(), op_id) != applicable_op_ids.end()) {
             // op is applicable in state
@@ -125,7 +125,8 @@ vector<int> ASNetSamplingSearch::applicable_values_into_stream(GlobalState &stat
   * according to the network policy.
   * The values are ordered lexicographically by action-names in a "," separated list form.
 */
-void ASNetSamplingSearch::network_probs_into_stream(GlobalState &state, ostringstream network_probs_stream) const {
+void ASNetSamplingSearch::network_probs_into_stream(
+            const GlobalState &state, const OperatorsProxy &ops, ostringstream &network_probs_stream) const {
     // create evaluation context to be able to call compute_result and extract the policy result
     EvaluationContext eval_context = EvaluationContext(state, nullptr, true);
     EvaluationResult policy_result = network_policy->compute_result(eval_context);
@@ -133,16 +134,13 @@ void ASNetSamplingSearch::network_probs_into_stream(GlobalState &state, ostrings
     vector<OperatorID> preferred_operator_ids = policy_result.get_preferred_operators();
     vector<float> preferred_operator_preferences = policy_result.get_operator_preferences();
 
-    // get all OperatorProxys
-    OperatorsProxy op_proxys = task_proxy.get_operators();
-
     unsigned long number_of_operators = operator_indeces_sorted.size();
     vector<float> network_prob_values;
     network_prob_values.resize(number_of_operators);
 
-    for (int op_index = 0; op_index < number_of_operators; op_index++) {
+    for (unsigned int op_index = 0; op_index < number_of_operators; op_index++) {
         int unsorted_index = operator_indeces_sorted[op_index];
-        OperatorID op_id = op_proxys[unsorted_index].get_global_operator_id();
+        OperatorID op_id = ops[unsorted_index].get_global_operator_id();
 
         // check whether op_id is among the ids of preferred operators
         auto pos = std::find(preferred_operator_ids.begin(), preferred_operator_ids.end(), op_id);
@@ -166,14 +164,11 @@ void ASNetSamplingSearch::network_probs_into_stream(GlobalState &state, ostrings
   * The values are ordered lexicographically by action-names in a "," separated list form.
 */
 void ASNetSamplingSearch::action_opt_values_into_stream(
-    GlobalState &state, vector<int> applicable_values,
-    ostringstream action_opts_stream) {
+    const GlobalState &state, vector<int> applicable_values,
+    const OperatorsProxy &ops, ostringstream &action_opts_stream) {
     unsigned long number_of_operators = operator_indeces_sorted.size();
     vector<float> action_opt_values;
     action_opt_values.resize(number_of_operators);
-
-    // get all OperatorProxys
-    OperatorsProxy op_proxys = task_proxy.get_operators();
 
     // set state as new initial state for new searches
     set_modified_task_with_new_initial_state(state.get_id());
@@ -186,11 +181,11 @@ void ASNetSamplingSearch::action_opt_values_into_stream(
         plan_cost_from_state = 0;
         // sum up costs on plan
         for (OperatorID op_id : teacher_search_from_state->get_plan()) {
-            plan_cost_from_state += op_proxys[op_id].get_cost();
+            plan_cost_from_state += ops[op_id].get_cost();
         }
     }
 
-    for (int op_index = 0; op_index < number_of_operators; op_index++) {
+    for (unsigned int op_index = 0; op_index < number_of_operators; op_index++) {
         if (applicable_values[op_index] == 0) {
             // action is not applicable -> action_opt_value = 0
             action_opt_values[op_index] = 0;
@@ -199,7 +194,7 @@ void ASNetSamplingSearch::action_opt_values_into_stream(
             
             // get operator to sorted op_index
             int unsorted_index = operator_indeces_sorted[op_index];
-            OperatorProxy op = op_proxys[unsorted_index];
+            OperatorProxy op = ops[unsorted_index];
 
             // get state reached by action
             GlobalState succ_state = state_registry.get_successor_state(state, op);
@@ -219,7 +214,7 @@ void ASNetSamplingSearch::action_opt_values_into_stream(
                     // both search found a solution -> compute the cost from succ_state + op.cost() and compare
                     int plan_cost_from_succ_state = op.get_cost();
                     for (OperatorID op_id : teacher_search_from_succ_state->get_plan()) {
-                        plan_cost_from_succ_state += op_proxys[op_id].get_cost();
+                        plan_cost_from_succ_state += ops[op_id].get_cost();
                     }
                     if (plan_cost_from_succ_state <= plan_cost_from_state) {
                         // operator is starting optimal or better plan (after teacher search)
@@ -266,9 +261,8 @@ void ASNetSamplingSearch::action_opt_values_into_stream(
   *                        the teacher-search. Again ordered lexicographically by action-names in a "," separated list.
 */
 void ASNetSamplingSearch::extract_sample_entries_trajectory(
-    const Plan &plan, const Trajectory &trajectory,
-    const StateRegistry &sr, OperatorsProxy &ops,
-    ostream &stream) {
+    const Trajectory &trajectory, const StateRegistry &sr,
+    const TaskProxy &tp, const OperatorsProxy &ops, ostream &stream) {
     
     // extract fact_goal_values into goal_stream
     ostringstream goal_stream;
@@ -283,15 +277,15 @@ void ASNetSamplingSearch::extract_sample_entries_trajectory(
 
         // extract action_applicable_values into applicable_stream
         ostringstream applicable_stream;
-        vector<int> applicable_values = applicable_values_into_stream(state, applicable_stream);
+        vector<int> applicable_values = applicable_values_into_stream(state, tp, ops, applicable_stream);
 
         // extract action_network_probs into network_probs_stream
         ostringstream network_probs_stream;
-        network_probs_into_stream(state, network_probs_stream);
+        network_probs_into_stream(state, ops, network_probs_stream);
 
         // extract action_opt_values into action_opts_stream
         ostringstream action_opts_stream;
-        action_opt_values_into_stream(state, applicable_values, action_opts_stream);
+        action_opt_values_into_stream(state, applicable_values, ops, action_opts_stream);
 
         stream << problem_hash << ";" << goal_stream.str() << ";"
                << state_stream.str() << ";" << applicable_stream.str() << ";"
@@ -326,7 +320,7 @@ std::string ASNetSamplingSearch::extract_exploration_sample_entries() {
         // add all StateIDs from trajectory to list of explored states
         network_explored_states.insert(network_explored_states.end(), trajectory.begin(), trajectory.end());
 
-        extract_sample_entries_trajectory(plan, trajectory, sr, ops, new_entries);
+        extract_sample_entries_trajectory(trajectory, sr, tp, ops, new_entries);
     } else {
         // no solution found -> termination due to timeout, dead-end or trajectory limit reached
         const GlobalState last_state = network_search->get_last_state();
@@ -336,7 +330,7 @@ std::string ASNetSamplingSearch::extract_exploration_sample_entries() {
         // add all StateIDs from trajectory to list of explored states
         network_explored_states.insert(network_explored_states.end(), trajectory.begin(), trajectory.end());
 
-        extract_sample_entries_trajectory(plan, trajectory, sr, ops, new_entries);
+        extract_sample_entries_trajectory(trajectory, sr, tp, ops, new_entries);
     }
 
     string post = new_entries.str();
@@ -368,7 +362,7 @@ std::string ASNetSamplingSearch::extract_teacher_sample_entries() {
         Trajectory trajectory;
         ss.trace_path(goal_state, trajectory);
 
-        extract_sample_entries_trajectory(plan, trajectory, sr, ops, new_entries);
+        extract_sample_entries_trajectory(trajectory, sr, tp, ops, new_entries);
     } else if (use_non_goal_teacher_paths) {
         // no solution found -> termination due to timeout, dead-end or trajectory limit reached
         const GlobalState last_state = teacher_search->get_last_state();
@@ -376,7 +370,7 @@ std::string ASNetSamplingSearch::extract_teacher_sample_entries() {
         Trajectory trajectory;
         ss.trace_path(last_state, plan, trajectory);
 
-        extract_sample_entries_trajectory(plan, trajectory, sr, ops, new_entries);
+        extract_sample_entries_trajectory(trajectory, sr, tp, ops, new_entries);
     }
 
     string post = new_entries.str();

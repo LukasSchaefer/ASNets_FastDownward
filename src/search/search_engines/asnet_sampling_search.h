@@ -70,23 +70,21 @@ namespace asnet_sampling_search {
 
         options::ParseTree prepare_search_parse_tree(
                 const std::string& unparsed_config) const;
-        void goal_into_stream(std::ostringstream goal_stream) const;
-        void state_into_stream(GlobalState &state,
-                std::ostringstream state_stream) const;
+        void goal_into_stream(std::ostringstream &goal_stream) const;
+        void state_into_stream(const GlobalState &state,
+                std::ostringstream &state_stream) const;
         std::vector<int> applicable_values_into_stream(
-                GlobalState &state,
-                std::ostringstream applicable_stream) const;
+                const GlobalState &state, const TaskProxy &tp,
+                const OperatorsProxy &ops, std::ostringstream &applicable_stream) const;
         void network_probs_into_stream(
-                GlobalState &state,
-                std::ostringstream network_probs_stream) const;
+                const GlobalState &state, const OperatorsProxy &ops,
+                std::ostringstream &network_probs_stream) const;
         void action_opt_values_into_stream(
-                GlobalState &state,
-                std::vector<int> applicable_values,
-                std::ostringstream action_opts_stream);
+                const GlobalState &state, std::vector<int> applicable_values,
+                const OperatorsProxy &ops, std::ostringstream &action_opts_stream);
         void extract_sample_entries_trajectory(
-                const Plan &plan, const Trajectory &trajectory,
-                const StateRegistry &sr, OperatorsProxy &ops,
-                std::ostream &stream);
+                const Trajectory &trajectory, const StateRegistry &sr,
+                const TaskProxy &tp, const OperatorsProxy &ops, std::ostream &stream);
         std::string extract_exploration_sample_entries();
         std::string extract_teacher_sample_entries();
         void set_modified_task_with_new_initial_state(StateID state_id);
