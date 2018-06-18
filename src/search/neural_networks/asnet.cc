@@ -1,11 +1,8 @@
 #include "asnet.h"
 
-#include "../option_parser.h"
 #include "../plugin.h"
 #include "../task_utils/regression_utils.h"
 
-#include <memory>
-#include <cmath>
 
 using namespace std;
 using namespace tensorflow;
@@ -96,17 +93,19 @@ void ASNet::fill_input(const State& state){
         idx++;
     }
 
+    /*
     if (extra_input_size) {
         auto additional_input_features = inputs[3].second.matrix<float>();
         // TODO: Implement extra input features later on
     }
+    */
 }
 
 void ASNet::extract_output() {
     auto output_c = outputs[0].flat<float>();
     std::vector<float> operator_preferences(output_c.size());
     // one output probability for each action
-    assert(output_c.size() == operator_indeces_sorted.size());
+    assert(output_c.size() == (int) operator_indeces_sorted.size());
     float sum = 0;
     for (unsigned index = 0; index < output_c.size(); index++) {
         float val = output_c(index);

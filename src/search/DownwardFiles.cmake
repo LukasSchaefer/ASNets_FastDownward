@@ -318,6 +318,14 @@ fast_downward_plugin(
 )
 
 fast_downward_plugin(
+    NAME ASNET_SAMPLING_SEARCH
+    HELP "ASNet sampling search algorithm"
+    SOURCES
+        search_engines/asnet_sampling_search
+    DEPENDS EXTRA_TASKS POLICY_SEARCH NETWORK_POLICY LEXICOGRAPHICAL_ACCESS SUCCESSOR_GENERATOR
+)
+
+fast_downward_plugin(
     NAME EAGER_SEARCH
     HELP "Eager search algorithm"
     SOURCES
@@ -590,7 +598,7 @@ fast_downward_plugin(
         tasks/domain_abstracted_task_factory
         tasks/modified_goals_task
         tasks/modified_operator_costs_task
-	tasks/modified_init_goals_task
+        tasks/modified_init_goals_task
     DEPENDS TASK_PROPERTIES
     DEPENDENCY_ONLY
 )

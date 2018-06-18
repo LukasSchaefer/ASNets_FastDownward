@@ -5,17 +5,15 @@
 #include "../evaluation_context.h"
 #include "../search_statistics.h"
 #include "../task_utils/successor_generator.h"
-#include "../operator_id.h"
 
-#include <iostream>
 using namespace std;
 
 namespace heuristic_policy {
 HeuristicPolicy::HeuristicPolicy(const Options &opts)
     : Policy(opts),
+      heuristic(opts.get<Heuristic *>("h")),
       state_registry(
-        *task, *g_state_packer, *g_axiom_evaluator, task->get_initial_state_values()),
-      heuristic(opts.get<Heuristic *>("h")) {
+        *task, *g_state_packer, *g_axiom_evaluator, task->get_initial_state_values()) {
     cout << "Initializing heuristic policy..." << endl;
 }
 
@@ -37,8 +35,7 @@ PolicyResult HeuristicPolicy::compute_policy(const GlobalState &global_state) {
 
         // HACK: need some context to be able to call compute_result which is necessary to get at the preferred operators
         // computed with the heuristic
-        SearchStatistics statistics = SearchStatistics();
-        EvaluationContext context = EvaluationContext(succ_state, -1, true, &statistics, true);
+        EvaluationContext context = EvaluationContext(succ_state, nullptr, true);
         EvaluationResult heuristic_result = heuristic->compute_result(context);
         int h = heuristic_result.get_h_value();
         // better or first action found

@@ -18,9 +18,9 @@ using namespace std;
 Policy::Policy(const Options &opts)
     : Evaluator(opts.get_unparsed_config(), true, true, true),
       policy_cache(PEntry()),
+      cache_policy_values(opts.get<bool>("cache_estimates")),
       task(opts.get<shared_ptr<AbstractTask>>("transform")),
       task_proxy(*task),
-      cache_policy_values(opts.get<bool>("cache_estimates")),
       register_name(opts.get<string>("register")),
       registered(g_register_policy(this->register_name, this)) {
 }

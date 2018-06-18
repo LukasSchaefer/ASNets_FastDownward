@@ -88,7 +88,7 @@ public:
     virtual ~Policy() override;
 
     virtual bool dead_ends_are_reliable() const = 0;
-    virtual void get_involved_heuristics(std::set<Heuristic *> &hset) {
+    virtual void get_involved_heuristics(std::set<Heuristic *> &/*hset*/) {
     }
 
     static void add_options_to_parser(options::OptionParser &parser);

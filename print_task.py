@@ -100,7 +100,7 @@ def main(argv):
         pddl_task.simplify(fluent_predicates)
         
         task_meta = ProblemMeta(pddl_task, propositional_actions, grounded_predicates)
-        assert_correct_len_relatedness_of_propositional_actions
+        assert_correct_len_relatedness_of_propositional_actions(task_meta)
 
         # print_propositional_actions(task_meta)
         # print_grounded_predicates(task_meta)

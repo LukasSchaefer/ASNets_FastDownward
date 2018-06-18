@@ -14,9 +14,9 @@ namespace policy_search {
     const Options &opts)
     : SearchEngine(opts),
       policy(opts.get<Policy *>("p")),
-      current_eval_context(state_registry.get_initial_state(), &statistics, true, true),
       use_heuristic_dead_end_detection(opts.get<bool>("dead_end_detection")),
-      exploration_trajectory_limit(opts.get<int>("trajectory_limit")) {
+      exploration_trajectory_limit(opts.get<int>("trajectory_limit")),
+      current_eval_context(state_registry.get_initial_state(), &statistics, true, true) {
         if (use_heuristic_dead_end_detection) {
             dead_end_heuristic = opts.get<Heuristic *>("dead_end_detection_heuristic");
             // only use this dead-end detection if it is reliable on the task
@@ -30,19 +30,6 @@ namespace policy_search {
     }
 
     PolicySearch::~PolicySearch() {
-    }
-
-    StateID PolicySearch::get_last_state_id() const {
-        assert(!solution_found);
-        return current_eval_context.get_state().get_id();
-    }
-
-    Plan PolicySearch::get_plan_to_last_state() const {
-        assert(!solution_found);
-        Plan plan;
-        GlobalState last_state = state_registry.lookup_state(get_last_state_id());
-        search_space.trace_path(last_state, plan);
-        return plan;
     }
 
     void PolicySearch::set_current_eval_context(StateID state_id) {
