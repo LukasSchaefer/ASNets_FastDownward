@@ -1,11 +1,8 @@
 #include "asnet.h"
 
-#include "../option_parser.h"
 #include "../plugin.h"
 #include "../task_utils/regression_utils.h"
 
-#include <memory>
-#include <cmath>
 
 using namespace std;
 using namespace tensorflow;

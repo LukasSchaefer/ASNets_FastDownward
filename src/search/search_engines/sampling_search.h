@@ -10,7 +10,7 @@
 #include <memory>
 #include <ostream>
 #include <sstream>
-#include <tree.hh>
+#include <../ext/tree.hh>
 #include <vector>
 
 class Evaluator;

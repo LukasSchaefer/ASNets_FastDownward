@@ -5,7 +5,6 @@
 #include "../evaluation_context.h"
 #include "../search_statistics.h"
 
-#include <iostream>
 using namespace std;
 
 namespace heuristic_pref_ops_policy {

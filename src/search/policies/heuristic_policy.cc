@@ -5,9 +5,7 @@
 #include "../evaluation_context.h"
 #include "../search_statistics.h"
 #include "../task_utils/successor_generator.h"
-#include "../operator_id.h"
 
-#include <iostream>
 using namespace std;
 
 namespace heuristic_policy {
