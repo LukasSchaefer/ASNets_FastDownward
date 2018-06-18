@@ -38,4 +38,5 @@ syntax: glob
 *.synctex.gz
 __pycache__/*
 *.idea/*
+*.vscode/*
 discussion/tmp

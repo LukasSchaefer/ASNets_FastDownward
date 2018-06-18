@@ -3,17 +3,13 @@
 #include "../abstract_task.h"
 #include "../evaluation_context.h"
 #include "../globals.h"
-#include "../open_list_factory.h"
 #include "../option_parser.h"
 #include "../plugin.h"
-#include "../pruning_method.h"
 
 #include "../tasks/modified_init_goals_task.h"
 #include "../task_utils/successor_generator.h"
 
 #include "../task_utils/lexicographical_access.h"
-#include "../task_utils/regression_utils.h"
-#include "../task_utils/predecessor_generator.h"
 
 #include "policy_search.h"
 #include "../policies/network_policy.h"
