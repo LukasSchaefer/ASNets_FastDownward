@@ -18,6 +18,7 @@
 ^profile.sh
 ^tmp/*
 ^output.sas.*
+^CMakeLists.txt
 
 syntax: glob
 *.sample
@@ -39,4 +40,5 @@ syntax: glob
 __pycache__/*
 *.idea/*
 *.vscode/*
+*cmake-build-debug/*
 discussion/tmp
