@@ -30,6 +30,7 @@ problem_hash(opts.get<string>("hash")),
 target_location(opts.get<string>("target")),
 exploration_trajectory_limit(opts.get<int>("trajectory_limit")),
 use_non_goal_teacher_paths(opts.get<bool>("use_non_goal_teacher_paths")),
+use_teacher_search(opts.get<bool>("use_teacher_search")),
 facts_sorted(lexicographical_access::get_facts_lexicographically(task_proxy)),
 operator_indeces_sorted(lexicographical_access::get_operator_indeces_lexicographically(task_proxy)),
 asnet(opts.get<shared_ptr<neural_networks::AbstractNetwork>>("network")),
@@ -415,7 +416,6 @@ void ASNetSamplingSearch::initialize() {
     // set teacher_search
     OptionParser engine_parser(search_parse_tree, false);
     teacher_search = engine_parser.start_parsing<shared_ptr<SearchEngine>>();
-
     cout << "done." << endl;
 }
 
@@ -424,25 +424,27 @@ SearchStatus ASNetSamplingSearch::step() {
     samples << extract_exploration_sample_entries();
     save_plan_intermediate();
 
-    for (StateID & state_id : network_explored_states) {
-        // explore states with teacher policy from state_id onwards
-        set_modified_task_with_new_initial_state(state_id);
-        teacher_search = get_new_teacher_search_with_modified_task();
-        teacher_search->search();
-        switch (teacher_search->get_status()) {
-            case FAILED: 
-                // if search reached dead-end -> don't sample states
-                break;
-            case TIMEOUT:
-                if (!use_non_goal_teacher_paths) {
-                    /* if search went into timeout, only sample if non-goal paths
-                       should be used for sampling */
+    if (use_teacher_search) {
+        for (StateID & state_id : network_explored_states) {
+            // explore states with teacher policy from state_id onwards
+            set_modified_task_with_new_initial_state(state_id);
+            teacher_search = get_new_teacher_search_with_modified_task();
+            teacher_search->search();
+            switch (teacher_search->get_status()) {
+                case FAILED:
+                    // if search reached dead-end -> don't sample states
                     break;
-                }
-		[[fallthrough]];
-            default: 
-                samples << extract_teacher_sample_entries();
-                save_plan_intermediate();
+                case TIMEOUT:
+                    if (!use_non_goal_teacher_paths) {
+                        /* if search went into timeout, only sample if non-goal paths
+                        should be used for sampling */
+                        break;
+                    }
+                    [[fallthrough]];
+                default:
+                    samples << extract_teacher_sample_entries();
+                    save_plan_intermediate();
+            }
         }
     }
 
@@ -518,6 +520,10 @@ void ASNetSamplingSearch::add_sampling_options(OptionParser &parser) {
     parser.add_option<bool> ("use_non_goal_teacher_paths",
         "Bool value indicating whether paths/ trajectories of the teacher search "
         "not reaching a goal state should be sampled", "true");
+    parser.add_option<bool> ("use_teacher_search",
+        "Bool value indicating whether the teacher search should be used for sampling. "
+        "If false: only the network search exploration is used for sampling BUT teacher "
+        "search in general is still needed for opt values", "true");
     parser.add_option<shared_ptr<neural_networks::AbstractNetwork>>("network",
         "Network to sample with (Built for ASNets)", "asnet");
     parser.add_option<Policy *>("network_policy", "Network Policy using the "

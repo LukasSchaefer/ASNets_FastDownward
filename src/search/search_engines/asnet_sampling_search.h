@@ -47,6 +47,9 @@ namespace asnet_sampling_search {
            otherwise only sample states along plans, so trajectories/ paths leading to a goal state */
         const bool use_non_goal_teacher_paths;
 
+        // if false -> only sample using the network search
+        const bool use_teacher_search;
+
         /* vector of entries of form (variable_index, value_index) for each fact in lexicographical ordering
            of their names */
         std::vector<std::pair<int, int>> facts_sorted;
