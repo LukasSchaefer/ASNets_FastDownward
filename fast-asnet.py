@@ -50,15 +50,15 @@ def main(argv):
     function call:
     python fast-asnet.py <domain.pddl> <problem.pddl>
     """
-        _, task_meta = create_pddl_task(argv)
-        print("Building the ASNet keras model...")
-        asnet_builder = ASNet_Model_Builder(task_meta)
-        asnet_model = asnet_builder.build_asnet_keras_model(1, dropout=0.25)
-        asnet_model.compile(loss='mean_squared_error', optimizer='adam')
-        print("Done building the model")
-        header_size = np.asarray([layer.name.encode('utf8') for layer in asnet_model.layers]).nbytes
-        print("Header size for h5 model file in bytes: " + str(header_size))
-        asnet_model.save('asnet_model.h5')
+    _, task_meta = create_pddl_task(argv)
+    print("Building the ASNet keras model...")
+    asnet_builder = ASNet_Model_Builder(task_meta)
+    asnet_model = asnet_builder.build_asnet_keras_model(1, dropout=0.25)
+    asnet_model.compile(loss='mean_squared_error', optimizer='adam')
+    print("Done building the model")
+    header_size = np.asarray([layer.name.encode('utf8') for layer in asnet_model.layers]).nbytes
+    print("Header size for h5 model file in bytes: " + str(header_size))
+    asnet_model.save('asnet_model.h5')
 
 
 if __name__ == "__main__":
