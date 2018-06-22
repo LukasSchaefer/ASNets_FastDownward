@@ -46,6 +46,10 @@ def create_pddl_task(argv):
         return pddl_task, task_meta
 
 def main(argv):
+    """
+    function call:
+    python fast-asnet.py <domain.pddl> <problem.pddl>
+    """
         _, task_meta = create_pddl_task(argv)
         print("Building the ASNet keras model...")
         asnet_builder = ASNet_Model_Builder(task_meta)
