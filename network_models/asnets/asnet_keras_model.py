@@ -18,6 +18,12 @@ class ASNet_Model_Builder():
         """
         self.problem_meta = problem_meta
 
+        # initialize all layer counters for unique naming
+        self.concat_layer_counter = 0
+        self.expand_layer_counter = 0
+        self.index_access_counter = 0
+        self.zeros_layer_counter = 0
+
 
     def __make_action_module(self, action, layer_index):
         """
@@ -107,15 +113,16 @@ class ASNet_Model_Builder():
         """
         related_proposition_ids = self.problem_meta.prop_action_to_related_gr_pred_ids[propositional_action]
         # collect outputs of related proposition modules in last layer
-        get_index_of_tensor_layer = Lambda(lambda x, index: x[:, self.hidden_representation_size * index:\
-            self.hidden_representation_size * (index + 1)])
+        get_index_of_tensor_layer = Lambda(lambda x, index, hidden_rep_size: x[:, hidden_rep_size * index:\
+            hidden_rep_size * (index + 1)])
         related_outputs = []
         for index in related_proposition_ids:
-            get_index_of_tensor_layer.arguments = {'index': index}
+            get_index_of_tensor_layer.arguments = {'index': index, 'hidden_rep_size': self.hidden_representation_size}
             related_outputs.append(get_index_of_tensor_layer(last_layer_proposition_module_outputs))
         # concatenate related output tensors to new input tensor
         if len(related_outputs) > 1:
-            return concatenate(related_outputs)
+            self.concat_layer_counter += 1
+            return concatenate(related_outputs, name='concat' + str(self.concat_layer_counter - 1))
         else:
             return related_outputs[0]
 
@@ -133,13 +140,14 @@ class ASNet_Model_Builder():
         # collect outputs of related action modules in last layer and pool all outputs together of
         # action modules of the same underlying action schema
         pooled_related_outputs = []
+        get_index_of_tensor_layer = Lambda(lambda x, index, hidden_rep_size: x[:, hidden_rep_size * index:\
+            hidden_rep_size * (index + 1)])
         for action_schema_list in related_propositional_action_ids:
             action_schema_outputs = []
-            get_index_of_tensor_layer = Lambda(lambda x, index: x[:, self.hidden_representation_size * index:\
-                self.hidden_representation_size * (index + 1)])
             for index in action_schema_list:
-                get_index_of_tensor_layer.arguments = {'index': index}
+                get_index_of_tensor_layer.arguments = {'index': index, 'hidden_rep_size': self.hidden_representation_size}
                 action_schema_outputs.append(get_index_of_tensor_layer(last_action_module_outputs))
+                # return action_schema_outputs[-1]
             # concatenate outputs
             if not action_schema_outputs:
                 # There were no related propositional actions of the corresponding action schema
@@ -147,26 +155,30 @@ class ASNet_Model_Builder():
 
                 # TODO: maybe make this more logical/ easier understandable (any output of get_index_of_tensor_layer
                 # will be correct shape (batch_size, hidden_representation_size))
-                get_index_of_tensor_layer.arguments = {'index': 0}
+                get_index_of_tensor_layer.arguments = {'index': 0, 'hidden_rep_size': self.hidden_representation_size}
                 shape_like_tensor = get_index_of_tensor_layer(last_action_module_outputs)
 
-                zeros = Lambda(lambda x: K.zeros_like(x))(shape_like_tensor)
+                zeros = Lambda(lambda x: K.zeros_like(x), name='zeros_layer' + str(self.zeros_layer_counter))(shape_like_tensor)
+                self.zeros_layer_counter += 1
                 pooled_related_outputs.append(zeros)
             else:
                 if len(action_schema_outputs) > 1:
-                    concatenated_output = concatenate(action_schema_outputs, 0)
+                    concatenated_output = concatenate(action_schema_outputs, 0, name='concat' + str(self.concat_layer_counter))
+                    self.concat_layer_counter += 1
                 else:
                     concatenated_output = action_schema_outputs[0]
                 # Pool all those output-vectors together to a single output-vector sized vector
                 # (Not sure if this is what I am doing here)
                 # expand dim to 3D is needed for MaxPooling to a single (batch_size, hidden_representation_size) tensor
-                concatenated_output = Lambda(lambda x: K.expand_dims(x, 1))(concatenated_output)
+                concatenated_output = Lambda(lambda x: K.expand_dims(x, 1), name='expand_layer' + str(self.expand_layer_counter))(concatenated_output)
+                self.expand_layer_counter += 1
                 pooled_output = GlobalMaxPooling1D()(concatenated_output)
                 pooled_related_outputs.append(pooled_output)
 
         # concatenate all pooled related output tensors to new input tensor for module
         if len(pooled_related_outputs) > 1:
-            return concatenate(pooled_related_outputs)
+            self.concat_layer_counter += 1
+            return concatenate(pooled_related_outputs, name='concat' + str(self.concat_layer_counter - 1))
         else:
             return pooled_related_outputs[0]
 

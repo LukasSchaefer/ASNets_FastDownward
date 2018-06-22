@@ -1,24 +1,21 @@
 """
 Utility tools for tensorflow needed for ASNets
-(mostly taken from https://github.com/qxcv/asnets/blob/master/deepfpg/tf_utils.py)
+(mostly taken from https://github.com/qxcv/asnets/blob/master/deepfpg/tf_utils.py
+and wrapped in keras lambda layers)
 """
 
 import tensorflow as tf
 from keras import backend as K
 from tensorflow.python.keras._impl.keras.layers import Lambda
 
-
 def broadcast_to(pattern, array):
     """Broacast ``array`` to match shape of ``pattern``."""
-    pat_shape = pattern.shape
-    arr_shape = array.shape
-    multiples = []
-    for index, (x, y) in enumerate(zip(pat_shape, arr_shape)):
-        # CARE!!! IS FIX 1 FOR BATCH_SIZE IN NONE CASE ALWAYS OKAY?!
-        x_value = x.value if x.value is not None else 1
-        y_value = y.value if y.value is not None else 1
-        multiples.append(x_value / y_value)
-    rv = Lambda(lambda x: K.tile(x, multiples))(array)
+    shape_layer = Lambda(lambda x: tf.shape(x))
+    pat_shape = shape_layer(pattern)
+    arr_shape = shape_layer(array)
+    floordiv_layer = Lambda(lambda x: tf.floordiv(x[0], x[1]))
+    multiples = floordiv_layer([pat_shape, arr_shape])
+    rv = Lambda(lambda x: tf.tile(x[0], x[1]))([array, multiples])
     return rv
 
 
