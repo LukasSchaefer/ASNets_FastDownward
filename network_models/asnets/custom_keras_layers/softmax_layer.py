@@ -1,5 +1,5 @@
 import sys
-from utils import broadcast_to
+from .utils import broadcast_to
 from keras import backend as K
 from keras.engine.topology import Layer
 from tensorflow.python.keras._impl.keras.layers import Lambda

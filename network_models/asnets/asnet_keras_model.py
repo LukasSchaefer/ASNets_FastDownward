@@ -408,15 +408,15 @@ class ASNet_Model_Builder():
             outputs.append(action_module(input_tensor))
 
         outputs = concatenate(outputs, name="final_outputs_concatenation")
-        # policy_output = SoftmaxOutputLayer(len(self.problem_meta.propositional_actions))([outputs, self.action_applicable_values])
-        policy_output = SoftmaxOutputLayer(len(self.problem_meta.propositional_actions))(outputs)
+        policy_output = SoftmaxOutputLayer(len(self.problem_meta.propositional_actions))([outputs, self.action_applicable_values])
+        output = policy_output
         if self.extra_input_size:
             asnet_model = Model(inputs=[self.proposition_truth_values, self.proposition_goal_values,
-                self.action_applicable_values, self.additional_input_features], outputs=policy_output,
+                self.action_applicable_values, self.additional_input_features], outputs=output,
                 name="asnet_keras_model")
         else:
             asnet_model = Model(inputs=[self.proposition_truth_values, self.proposition_goal_values,
-                self.action_applicable_values], outputs=policy_output, name="asnet_keras_model")
+                self.action_applicable_values], outputs=output, name="asnet_keras_model")
 
         return asnet_model
 
