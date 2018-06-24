@@ -188,7 +188,7 @@ class ASNet_Model_Builder():
 
         # concatenate all pooled related output tensors to new input tensor for module
         if len(pooled_related_outputs) > 1:
-            return concatenate(pooled_related_outputs, name='input_pooled_concat' + proposition.predicate +\
+            return concatenate(pooled_related_outputs, name='input_pooled_concat_' + proposition.predicate +\
                 str(self.pred_input_concat_counter[proposition.predicate]))
         else:
             return pooled_related_outputs[0]
