@@ -399,7 +399,7 @@ void ASNetSamplingSearch::set_modified_task_with_new_initial_state(StateID state
     for (unsigned int i = 0; i < goals_proxy.size(); i++) {
         goal_facts.push_back(goals_proxy[i].get_pair());
     }
-    modified_task =  make_shared<extra_tasks::ModifiedInitGoalsTask>(task,
+    modified_task = make_shared<extra_tasks::ModifiedInitGoalsTask>(task,
         std::move(init_state_values),
         std::move(goal_facts));
 
@@ -411,7 +411,7 @@ shared_ptr<SearchEngine> ASNetSamplingSearch::get_new_teacher_search_with_modifi
 }
 
 void ASNetSamplingSearch::initialize() {
-    cout << "Initializing ASNet Sampling Manager...";
+    cout << "Initializing ASNet Sampling Manager..." << endl;
     add_header_samples(samples);
     // set teacher_search
     OptionParser engine_parser(search_parse_tree, false);
