@@ -23,6 +23,7 @@ class ASNet_Model_Builder():
         self.pred_input_concat_counter = {}
         self.pred_input_expand_counter = {}
         self.pred_zeros_counter = {}
+        self.pred_input_pool_counter = {}
 
 
     def __make_action_module(self, action, layer_index):
@@ -183,7 +184,11 @@ class ASNet_Model_Builder():
                     self.pred_input_expand_counter[proposition.predicate] += 1
                 concatenated_output = Lambda(lambda x: K.expand_dims(x, 1), name='input_expand_' + proposition.predicate +\
                     str(self.pred_input_expand_counter[proposition.predicate]))(concatenated_output)
-                pooled_output = GlobalMaxPooling1D()(concatenated_output)
+                if proposition.predicate not in self.pred_input_pool_counter.keys():
+                    self.pred_input_pool_counter[proposition.predicate] = 0
+                else:
+                    self.pred_input_pool_counter[proposition.predicate] += 1
+                pooled_output = GlobalMaxPooling1D(name='input_pool_' + proposition.predicate + str(self.pred_input_pool_counter[proposition.predicate]))(concatenated_output)
                 pooled_related_outputs.append(pooled_output)
 
         # concatenate all pooled related output tensors to new input tensor for module
