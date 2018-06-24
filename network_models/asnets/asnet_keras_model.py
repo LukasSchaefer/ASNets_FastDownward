@@ -19,10 +19,10 @@ class ASNet_Model_Builder():
         self.problem_meta = problem_meta
 
         # initialize all layer counters for unique naming
-        self.concat_layer_counter = 0
-        self.expand_layer_counter = 0
-        self.index_access_counter = 0
-        self.zeros_layer_counter = 0
+        # dicts for unique counter per predicate name
+        self.pred_input_concat_counter = {}
+        self.pred_input_expand_counter = {}
+        self.pred_zeros_counter = {}
 
 
     def __make_action_module(self, action, layer_index):
@@ -121,8 +121,7 @@ class ASNet_Model_Builder():
             related_outputs.append(get_index_of_tensor_layer(last_layer_proposition_module_outputs))
         # concatenate related output tensors to new input tensor
         if len(related_outputs) > 1:
-            self.concat_layer_counter += 1
-            return concatenate(related_outputs, name='concat' + str(self.concat_layer_counter - 1))
+            return concatenate(related_outputs, name='input_concat_' + propositional_action.name.strip('(').strip(')').replace(' ', '_'))
         else:
             return related_outputs[0]
 
@@ -158,27 +157,39 @@ class ASNet_Model_Builder():
                 get_index_of_tensor_layer.arguments = {'index': 0, 'hidden_rep_size': self.hidden_representation_size}
                 shape_like_tensor = get_index_of_tensor_layer(last_action_module_outputs)
 
-                zeros = Lambda(lambda x: K.zeros_like(x), name='zeros_layer' + str(self.zeros_layer_counter))(shape_like_tensor)
-                self.zeros_layer_counter += 1
+                if proposition.predicate not in self.pred_zeros_counter.keys():
+                    self.pred_zeros_counter[proposition.predicate] = 0
+                else:
+                    self.pred_zeros_counter[proposition.predicate] += 1
+                zeros = Lambda(lambda x: K.zeros_like(x), name='zeros_' + proposition.predicate +\
+                    str(self.pred_zeros_counter[proposition.predicate]))(shape_like_tensor)
                 pooled_related_outputs.append(zeros)
             else:
                 if len(action_schema_outputs) > 1:
-                    concatenated_output = concatenate(action_schema_outputs, 0, name='concat' + str(self.concat_layer_counter))
-                    self.concat_layer_counter += 1
+                    if proposition.predicate not in self.pred_input_concat_counter.keys():
+                        self.pred_input_concat_counter[proposition.predicate] = 0
+                    else:
+                        self.pred_input_concat_counter[proposition.predicate] += 1
+                    concatenated_output = concatenate(action_schema_outputs, 0, name='input_concat_' + proposition.predicate +\
+                        str(self.pred_input_concat_counter[proposition.predicate]))
                 else:
                     concatenated_output = action_schema_outputs[0]
                 # Pool all those output-vectors together to a single output-vector sized vector
                 # (Not sure if this is what I am doing here)
                 # expand dim to 3D is needed for MaxPooling to a single (batch_size, hidden_representation_size) tensor
-                concatenated_output = Lambda(lambda x: K.expand_dims(x, 1), name='expand_layer' + str(self.expand_layer_counter))(concatenated_output)
-                self.expand_layer_counter += 1
+                if proposition.predicate not in self.pred_input_expand_counter.keys():
+                    self.pred_input_expand_counter[proposition.predicate] = 0
+                else:
+                    self.pred_input_expand_counter[proposition.predicate] += 1
+                concatenated_output = Lambda(lambda x: K.expand_dims(x, 1), name='input_expand_' + proposition.predicate +\
+                    str(self.pred_input_expand_counter[proposition.predicate]))(concatenated_output)
                 pooled_output = GlobalMaxPooling1D()(concatenated_output)
                 pooled_related_outputs.append(pooled_output)
 
         # concatenate all pooled related output tensors to new input tensor for module
         if len(pooled_related_outputs) > 1:
-            self.concat_layer_counter += 1
-            return concatenate(pooled_related_outputs, name='concat' + str(self.concat_layer_counter - 1))
+            return concatenate(pooled_related_outputs, name='input_pooled_concat' + proposition.predicate +\
+                str(self.pred_input_concat_counter[proposition.predicate]))
         else:
             return pooled_related_outputs[0]
 
