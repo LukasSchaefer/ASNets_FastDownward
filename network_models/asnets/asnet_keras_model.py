@@ -20,10 +20,8 @@ class ASNet_Model_Builder():
 
         # initialize all layer counters for unique naming
         # dicts for unique counter per predicate name
-        self.pred_input_concat_counter = {}
-        self.pred_input_expand_counter = {}
-        self.pred_zeros_counter = {}
-        self.pred_input_pool_counter = {}
+        self.pred_counter = {}
+        self.pred_act_schema_counter = {}
 
 
     def __make_action_module(self, action, layer_index):
@@ -137,12 +135,23 @@ class ASNet_Model_Builder():
         """
         related_propositional_action_ids = self.problem_meta.gr_pred_to_related_prop_action_ids[proposition]
 
+        # initiate pred counter dicts for layer names
+        if proposition.predicate not in self.pred_counter.keys():
+            self.pred_counter[proposition.predicate] = 0
+        else:
+            self.pred_counter[proposition.predicate] += 1
+        current_pred_counter = self.pred_counter[proposition.predicate]
+        
+        # initiate pred inner counter per action schema
+        self.pred_act_schema_counter[proposition.predicate] = 0
+
         # collect outputs of related action modules in last layer and pool all outputs together of
         # action modules of the same underlying action schema
         pooled_related_outputs = []
         get_index_of_tensor_layer = Lambda(lambda x, index, hidden_rep_size: x[:, hidden_rep_size * index:\
             hidden_rep_size * (index + 1)])
         for action_schema_list in related_propositional_action_ids:
+            current_pred_act_schema_cunter = self.pred_act_schema_counter[proposition.predicate]
             action_schema_outputs = []
             for index in action_schema_list:
                 get_index_of_tensor_layer.arguments = {'index': index, 'hidden_rep_size': self.hidden_representation_size}
@@ -158,43 +167,29 @@ class ASNet_Model_Builder():
                 get_index_of_tensor_layer.arguments = {'index': 0, 'hidden_rep_size': self.hidden_representation_size}
                 shape_like_tensor = get_index_of_tensor_layer(last_action_module_outputs)
 
-                if proposition.predicate not in self.pred_zeros_counter.keys():
-                    self.pred_zeros_counter[proposition.predicate] = 0
-                else:
-                    self.pred_zeros_counter[proposition.predicate] += 1
-                zeros = Lambda(lambda x: K.zeros_like(x), name='zeros_' + proposition.predicate +\
-                    str(self.pred_zeros_counter[proposition.predicate]))(shape_like_tensor)
+                zeros = Lambda(lambda x: K.zeros_like(x), name='zeros_' + proposition.predicate + '_' + str(current_pred_counter) + '.' +\
+                    str(current_pred_act_schema_cunter))(shape_like_tensor)
                 pooled_related_outputs.append(zeros)
             else:
                 if len(action_schema_outputs) > 1:
-                    if proposition.predicate not in self.pred_input_concat_counter.keys():
-                        self.pred_input_concat_counter[proposition.predicate] = 0
-                    else:
-                        self.pred_input_concat_counter[proposition.predicate] += 1
-                    concatenated_output = concatenate(action_schema_outputs, 0, name='input_concat_' + proposition.predicate +\
-                        str(self.pred_input_concat_counter[proposition.predicate]))
+                    concatenated_output = concatenate(action_schema_outputs, 0, name='input_concat_' + proposition.predicate + '_' + str(current_pred_counter) + '.' +\
+                        str(current_pred_act_schema_cunter))
                 else:
                     concatenated_output = action_schema_outputs[0]
                 # Pool all those output-vectors together to a single output-vector sized vector
                 # (Not sure if this is what I am doing here)
                 # expand dim to 3D is needed for MaxPooling to a single (batch_size, hidden_representation_size) tensor
-                if proposition.predicate not in self.pred_input_expand_counter.keys():
-                    self.pred_input_expand_counter[proposition.predicate] = 0
-                else:
-                    self.pred_input_expand_counter[proposition.predicate] += 1
-                concatenated_output = Lambda(lambda x: K.expand_dims(x, 1), name='input_expand_' + proposition.predicate +\
-                    str(self.pred_input_expand_counter[proposition.predicate]))(concatenated_output)
-                if proposition.predicate not in self.pred_input_pool_counter.keys():
-                    self.pred_input_pool_counter[proposition.predicate] = 0
-                else:
-                    self.pred_input_pool_counter[proposition.predicate] += 1
-                pooled_output = GlobalMaxPooling1D(name='input_pool_' + proposition.predicate + str(self.pred_input_pool_counter[proposition.predicate]))(concatenated_output)
+                concatenated_output = Lambda(lambda x: K.expand_dims(x, 1), name='input_expand_' + proposition.predicate + '_' + str(current_pred_counter) + '.' +\
+                    str(current_pred_act_schema_cunter))(concatenated_output)
+                pooled_output = GlobalMaxPooling1D(name='input_pool_' + proposition.predicate + '_' + str(current_pred_counter) + '.' +\
+                    str(current_pred_act_schema_cunter))(concatenated_output)
                 pooled_related_outputs.append(pooled_output)
+            # increase inner action schema counter for pred for next action schema (if existing)
+            self.pred_act_schema_counter[proposition.predicate] += 1
 
         # concatenate all pooled related output tensors to new input tensor for module
         if len(pooled_related_outputs) > 1:
-            return concatenate(pooled_related_outputs, name='input_pooled_concat_' + proposition.predicate +\
-                str(self.pred_input_concat_counter[proposition.predicate]))
+            return concatenate(pooled_related_outputs, name='input_pooled_concat_' + proposition.predicate + '_' + str(current_pred_counter))
         else:
             return pooled_related_outputs[0]
 
