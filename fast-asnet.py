@@ -54,7 +54,7 @@ def read_sample(line):
     dict of values corresponding to the sample informations in the format as explained below
     """
     fields = line.split(';')
-    assert(len(fields) == 6, "Sample does not include all necessary information!")
+    assert len(fields) == 6, "Sample does not include all necessary information!"
     problem_hash = fields[0]
     goal_values = ast.literal_eval(fields[1])
     state_values = ast.literal_eval(fields[2])
@@ -104,7 +104,7 @@ def extract_samples():
     return samples
 
 
-def prediction(network, sample):
+def predict(network, sample):
     """
     Computes and return prediction for the network for the given sample-dict
     as a numpy-array

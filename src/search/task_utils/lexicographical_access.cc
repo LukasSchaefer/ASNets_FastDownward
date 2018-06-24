@@ -14,11 +14,13 @@ std::vector<std::pair<int, int>> get_facts_lexicographically(TaskProxy task_prox
 
     // fill vector of triples consisting of (fact_name, variable_index, value_index)
     std::vector<std::tuple<std::string, int, int>> facts_with_names(num_facts);
+    unsigned int index = 0;
     for (unsigned int var_index = 0; var_index < task_proxy.get_variables().size(); var_index++) {
         for (unsigned int val_index = 0; val_index < g_fact_names[var_index].size(); val_index++) {
             std::string fact_name = g_fact_names[var_index][val_index];
             std::tuple<std::string, int, int> fact_triple = std::make_tuple(fact_name, var_index, val_index);
-            facts_with_names.push_back(fact_triple);
+            facts_with_names[index] = fact_triple;
+            index++;
         }
     }
 
