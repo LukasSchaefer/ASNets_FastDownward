@@ -111,7 +111,11 @@ def predict(network, sample):
     as a numpy-array
     """
     inputs = [sample['facts'], sample['goals'], sample['applicable_values']]
-    return network.predict(inputs)
+    prediction = network.predict(inputs)
+    assert len(prediction[0]) == len(sample['applicable_values'][0]),\
+        "There are %s actions in the task but only probabilities for %d actions! These numbers have to match!"\
+        % (len(prediction[0]), len(sample['applicable_values'][0]))
+    return prediction
 
 
 def main(argv):
@@ -121,15 +125,17 @@ def main(argv):
         asnet_model = asnet_builder.build_asnet_keras_model(1, dropout=0.25)
         asnet_model.compile(loss='mean_squared_error', optimizer='adam')
         print("Done building the model")
+        
+        samples = extract_samples()
+        print("Computing prediction")
+        for sample in samples:
+            print(predict(asnet_model, sample))
+
         print("Saving model")
         asnet_model.save('asnet_model.h5')
+
         print("Loading model")
         asnet_model = load_model('asnet_model.h5')
-
-        # samples = extract_samples()
-        # print("Computing prediction")
-        # for sample in samples:
-        #     print(predict(asnet_model, sample))
 
 
 if __name__ == "__main__":
