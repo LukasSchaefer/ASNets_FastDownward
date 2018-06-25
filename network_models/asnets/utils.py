@@ -10,12 +10,12 @@ from tensorflow.python.keras._impl.keras.layers import Lambda
 
 def broadcast_to(pattern, array):
     """Broacast ``array`` to match shape of ``pattern``."""
-    shape_layer = Lambda(lambda x: tf.shape(x))
+    shape_layer = Lambda(lambda x: K.shape(x))
     pat_shape = shape_layer(pattern)
     arr_shape = shape_layer(array)
     floordiv_layer = Lambda(lambda x: tf.floordiv(x[0], x[1]))
     multiples = floordiv_layer([pat_shape, arr_shape])
-    rv = Lambda(lambda x: tf.tile(x[0], x[1]))([array, multiples])
+    rv = Lambda(lambda x: K.tile(x[0], x[1]))([array, multiples])
     return rv
 
 
@@ -60,5 +60,5 @@ def masked_softmax(activations, mask):
     # this is just for safety
     clipped_sums = Lambda(lambda x: K.clip(x, 1e-5, 1e10), name='softmax_clip')(sums)
     div_output_layer = Lambda(lambda x: x[0] / x[1], name='softmax_div_output')
-    output = div_output_layer([sums, clipped_sums])
+    output = div_output_layer([safe_exps, clipped_sums])
     return output
