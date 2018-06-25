@@ -151,7 +151,7 @@ class ASNet_Model_Builder():
         get_index_of_tensor_layer = Lambda(lambda x, index, hidden_rep_size: x[:, hidden_rep_size * index:\
             hidden_rep_size * (index + 1)])
         for action_schema_list in related_propositional_action_ids:
-            current_pred_act_schema_cunter = self.pred_act_schema_counter[proposition.predicate]
+            current_pred_act_schema_counter = self.pred_act_schema_counter[proposition.predicate]
             action_schema_outputs = []
             for index in action_schema_list:
                 get_index_of_tensor_layer.arguments = {'index': index, 'hidden_rep_size': self.hidden_representation_size}
@@ -168,21 +168,25 @@ class ASNet_Model_Builder():
                 shape_like_tensor = get_index_of_tensor_layer(last_action_module_outputs)
 
                 zeros = Lambda(lambda x: K.zeros_like(x), name='zeros_' + proposition.predicate + '_' + str(current_pred_counter) + '.' +\
-                    str(current_pred_act_schema_cunter))(shape_like_tensor)
+                    str(current_pred_act_schema_counter))(shape_like_tensor)
                 pooled_related_outputs.append(zeros)
             else:
                 if len(action_schema_outputs) > 1:
-                    concatenated_output = concatenate(action_schema_outputs, 0, name='input_concat_' + proposition.predicate + '_' + str(current_pred_counter) + '.' +\
-                        str(current_pred_act_schema_cunter))
+                    concat_tensors = []
+                    for index, tensor in enumerate(action_schema_outputs):
+                        tensor = Lambda(lambda x: K.expand_dims(x, 1), name='input_expand_multiple_' + str(index) + '_' + proposition.predicate + '_' + str(current_pred_counter) + '.' +\
+                            str(current_pred_act_schema_counter))(tensor)
+                        concat_tensors.append(tensor)
+                    concatenated_output = concatenate(concat_tensors, 1, name='input_concat_' + proposition.predicate + '_' + str(current_pred_counter) + '.' +\
+                        str(current_pred_act_schema_counter))
                 else:
                     concatenated_output = action_schema_outputs[0]
+                    concatenated_output = Lambda(lambda x: K.expand_dims(x, 1), name='input_expand_' + proposition.predicate + '_' + str(current_pred_counter) + '.' +\
+                        str(current_pred_act_schema_counter))(concatenated_output)
                 # Pool all those output-vectors together to a single output-vector sized vector
-                # (Not sure if this is what I am doing here)
                 # expand dim to 3D is needed for MaxPooling to a single (batch_size, hidden_representation_size) tensor
-                concatenated_output = Lambda(lambda x: K.expand_dims(x, 1), name='input_expand_' + proposition.predicate + '_' + str(current_pred_counter) + '.' +\
-                    str(current_pred_act_schema_cunter))(concatenated_output)
                 pooled_output = GlobalMaxPooling1D(name='input_pool_' + proposition.predicate + '_' + str(current_pred_counter) + '.' +\
-                    str(current_pred_act_schema_cunter))(concatenated_output)
+                    str(current_pred_act_schema_counter))(concatenated_output)
                 pooled_related_outputs.append(pooled_output)
             # increase inner action schema counter for pred for next action schema (if existing)
             self.pred_act_schema_counter[proposition.predicate] += 1
