@@ -6,6 +6,7 @@ import ast
 import h5py
 import tensorflow as tf
 from keras import optimizers
+from keras.models import load_model
 import numpy as np
 
 from src.translate.translator import main as translate
@@ -56,19 +57,19 @@ def read_sample(line):
     fields = line.split(';')
     assert len(fields) == 6, "Sample does not include all necessary information!"
     problem_hash = fields[0]
-    goal_values = ast.literal_eval(fields[1])
-    state_values = ast.literal_eval(fields[2])
-    applicable_values = ast.literal_eval(fields[3])
-    network_probs = ast.literal_eval(fields[4])
-    opt_values = ast.literal_eval(fields[5])
+    goal_values = [ast.literal_eval(fields[1])]
+    state_values = [ast.literal_eval(fields[2])]
+    applicable_values = [ast.literal_eval(fields[3])]
+    network_probs = [ast.literal_eval(fields[4])]
+    opt_values = [ast.literal_eval(fields[5])]
 
     sample_dict = {}
     sample_dict['hash'] = problem_hash
-    sample_dict['goals'] = np.asarray(goal_values)
-    sample_dict['facts'] = np.asarray(state_values)
-    sample_dict['applicable_actions'] = np.asarray(applicable_values)
-    sample_dict['network_probs'] = np.asarray(network_probs)
-    sample_dict['opt_values'] = np.asarray(opt_values)
+    sample_dict['goals'] = np.array(goal_values, dtype=np.int32)
+    sample_dict['facts'] = np.array(state_values, dtype=np.int32)
+    sample_dict['applicable_values'] = np.array(applicable_values, dtype=np.int32)
+    sample_dict['network_probs'] = np.array(network_probs, dtype=np.float32)
+    sample_dict['opt_values'] = np.array(opt_values, dtype=np.int32)
     return sample_dict
 
 
@@ -76,7 +77,7 @@ def extract_samples():
     """
     Reading samples.txt file and build up list of samples with each
     sample entry corresponding to a dict of values in the following format
-    ["hash": <PROBLEM_HASH>, "goals": <GOAL_VALUES>, "facts": <STATE_VALUES>, "applicable_actions": <APPLICABLE_VALUES>,
+    ["hash": <PROBLEM_HASH>, "goals": <GOAL_VALUES>, "facts": <STATE_VALUES>, "applicable_values": <APPLICABLE_VALUES>,
      "network_probs": <NETWORK_PROBS>, "opt_values": <OPT_VALUES>]
     with
         - <PROBLEM_HASH>: hash-value indicating the problem instance
@@ -96,8 +97,8 @@ def extract_samples():
     samples = []
     with open('samples.txt') as sample_file:
         for line in sample_file.readlines():
-            if line.startswith("#"):
-                # comment -> skip
+            if line.startswith("#") or line.strip() == "":
+                # comment/ empty line -> skip
                 continue
             else:
                 samples.append(read_sample(line))
@@ -123,6 +124,9 @@ def main(argv):
         asnet_model.save('asnet_model.h5')
 
         samples = extract_samples()
+        print("Computing prediction")
+        for sample in samples:
+            print(predict(asnet_model, sample))
 
 
 if __name__ == "__main__":
