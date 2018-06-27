@@ -120,11 +120,15 @@ vector<int> ASNetSamplingSearch::applicable_values_into_stream(
 }
 
 /*
+  * SHOULD NOT BE NECESSARY BECAUSE THESE VALUES WOULD ONLY BE USED FOR THE LOSS BUT THERE WE HAVE
+  * THE COMPUTED PREDICTION = PROBABILITIES EITHER WAY
+  * 
   * function extracts action_network_probs:
   * These are float value for every action representing the probability to choose the action in the state
   * according to the network policy.
   * The values are ordered lexicographically by action-names in a "," separated list form.
 */
+/*
 void ASNetSamplingSearch::network_probs_into_stream(
             const GlobalState &state, const OperatorsProxy &ops, ostringstream &network_probs_stream) const {
     // create evaluation context to be able to call compute_result and extract the policy result
@@ -156,6 +160,7 @@ void ASNetSamplingSearch::network_probs_into_stream(
     }
     vector_into_stream<float>(network_prob_values, network_probs_stream);
 }
+*/
 
 /*
   * function extracts action_opt_values:
@@ -241,7 +246,7 @@ void ASNetSamplingSearch::action_opt_values_into_stream(
   * Extracts the state_representation and puts it into stream for the sample
   * 
   * Format to represent a state:
-  * <HASH>; <FACT_GOAL_VALUES>; <FACT_VALUES>; <ACTION_APPLICABLE_VALUES>; <ACTION_NETWORK_PROBABILITIES>; <ACTION_OPT_VALUES>
+  * <HASH>; <FACT_GOAL_VALUES>; <FACT_VALUES>; <ACTION_APPLICABLE_VALUES>; <ACTION_OPT_VALUES>
   * 
   * using ";" as a separator
   * 
@@ -254,9 +259,6 @@ void ASNetSamplingSearch::action_opt_values_into_stream(
   * - <ACTION_APPLICABLE_VALUES>: binary values indicating whether an action is applicable in the current state.
   *                               Ordering again is lexicographically by action-names and the values are in a ","
   *                               separated list form for all actions.
-  * - <ACTION_NETWORK_PROBABILITIES>: float value for every action representing the probability to choose the action in the
-  *                                   state according to the network policy. Values are again ordered lexicographically by
-  *                                   action-names and values are "," separated, e.g. [0.0,0.1,0.3,0.6]
   * - <ACTION_OPT_VALUES>: binary value for each action indicating whether the action starts a found plan according to
   *                        the teacher-search. Again ordered lexicographically by action-names in a "," separated list.
 */
@@ -280,8 +282,8 @@ void ASNetSamplingSearch::extract_sample_entries_trajectory(
         vector<int> applicable_values = applicable_values_into_stream(state, ops, applicable_stream);
 
         // extract action_network_probs into network_probs_stream
-        ostringstream network_probs_stream;
-        network_probs_into_stream(state, ops, network_probs_stream);
+        // ostringstream network_probs_stream;
+        // network_probs_into_stream(state, ops, network_probs_stream);
 
         // extract action_opt_values into action_opts_stream
         ostringstream action_opts_stream;
@@ -289,7 +291,7 @@ void ASNetSamplingSearch::extract_sample_entries_trajectory(
 
         stream << problem_hash << ";" << goal_stream.str() << ";"
                << state_stream.str() << ";" << applicable_stream.str() << ";"
-               << network_probs_stream.str() << ";" << action_opts_stream.str();
+               /*<< network_probs_stream.str() << ";" */ << action_opts_stream.str();
 
         stream << "~";
     }
@@ -468,12 +470,11 @@ void ASNetSamplingSearch::print_statistics() const {
 void ASNetSamplingSearch::add_header_samples(ostream &stream) const {
     stream << SAMPLE_FILE_MAGIC_WORD << endl;
     stream << "# Everything in a line after '#' is a comment" << endl;
-    stream << "# Entry format:<HASH>; <FACT_GOAL_VALUES>; <FACT_VALUES>; <ACTION_APPLICABLE_VALUES>; <ACTION_NETWORK_PROBABILITIES>; <ACTION_OPT_VALUES>" << endl;
+    stream << "# Entry format:<HASH>; <FACT_GOAL_VALUES>; <FACT_VALUES>; <ACTION_APPLICABLE_VALUES>; <ACTION_OPT_VALUES>" << endl;
     stream << "# <HASH> := hash value to identify where the sample comes from" << endl;
     stream << "# <FACT_GOAL_VALUES> := binary value for every fact indicating whether the fact is part of the goal. Values are ordered lexicographically by fact-names in a \",\" separated list form." << endl;
     stream << "# <FACT_VALUES> := binary values (0,1) indicating whether a fact is true. Values are ordered lexicographically by fact-names and are all \",\" separated in a list and are given for every fact (e.g. [0,1,1,0])." << endl;
     stream << "# <ACTION_APPLICABLE_VALUES> := binary values indicating whether an action is applicable in the current state. Ordering again is lexicographically by action-names and the values are in a \",\" separated list form for all actions." << endl;
-    stream << "# <ACTION_NETWORK_PROBABILITIES> := float value for every action representing the probability to choose the action in the state according to the network policy. Values are again ordered lexicographically by action-names and values are \",\" separated, e.g. [0.0,0.1,0.3,0.6]." << endl;
     stream << "# <ACTION_OPT_VALUES> := binary value for each action indicating whether the action starts a found plan according to the teacher-search. Again ordered lexicographically by action-names in a \",\" separated list." << endl;
 }
 
@@ -510,7 +511,7 @@ void ASNetSamplingSearch::add_sampling_options(OptionParser &parser) {
         "Search engine to use as teacher-search guidance");
     parser.add_option<std::string> ("target",
         "Place to save the sampled data (currently only appending files "
-        "is supported", "None");
+        "is supported", "sample.data");
     parser.add_option<std::string> ("hash",
         "MD5 hash of the input problem. This can be used to "
         "differentiate which problems created which entries.", "None");
@@ -519,11 +520,11 @@ void ASNetSamplingSearch::add_sampling_options(OptionParser &parser) {
         "network policy exploration", "300");
     parser.add_option<bool> ("use_non_goal_teacher_paths",
         "Bool value indicating whether paths/ trajectories of the teacher search "
-        "not reaching a goal state should be sampled", "true");
+        "not reaching a goal state should be sampled", "True");
     parser.add_option<bool> ("use_teacher_search",
         "Bool value indicating whether the teacher search should be used for sampling. "
         "If false: only the network search exploration is used for sampling BUT teacher "
-        "search in general is still needed for opt values", "true");
+        "search in general is still needed for opt values", "True");
     parser.add_option<shared_ptr<neural_networks::AbstractNetwork>>("network",
         "Network to sample with (Built for ASNets)", "asnet");
     parser.add_option<Policy *>("network_policy", "Network Policy using the "
