@@ -296,15 +296,15 @@ def sample(options, directory, domain_path, problem_path, extra_input_size):
     :param extra_input_size: size for additional input features per action
     :return:
     """
-    cmd = ["python", "fast-downward.py", 
+    cmd = ['python', 'fast-downward.py',
                 "--build", options.build, domain_path, problem_path,
-                "--search", '"asnet_sampling_search(search=' + options.teacher_search +
+                '--search', 'asnet_sampling_search(search=' + options.teacher_search +
                             ', trajectory_limit=' + str(options.trajectory_limit) +
                             ', use_non_goal_teacher_paths=' + str(options.use_non_goal_teacher_paths) +
                             ', use_teacher_search=' + str(options.use_teacher_search) +
                             ', network=asnet(path=asnet.pb, extra_input_size=' + str(extra_input_size) + ')' +
-                            ', target=' + os.path.join(directory, "sample.data") + ')"']
-    spt = SubprocessTask("Sampling of " + problem_path, cmd)
+                            ', target=' + os.path.join(directory, "sample.data") + ')']
+    spt = SubprocessTask('Sampling of ' + problem_path, cmd)
     spt.run()
 
 
