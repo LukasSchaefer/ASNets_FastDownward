@@ -5,6 +5,7 @@ if dependencies.keras_networks:
         "keras_networks", ["tensorflow", "keras"])
     dependency_checker.check_dependencies()
 
+    from .keras_asnet import KerasASNet
     from .keras_callbacks import KerasProgressChecking, KerasModelCheckpoint
     from .keras_mlp import KerasDynamicMLP
     from .keras_network import KerasNetwork, KerasDomainPropertiesNetwork
