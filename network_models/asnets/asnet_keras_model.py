@@ -35,7 +35,7 @@ class ASNet_Model_Builder():
         """
         num_related_predicates = len(self.problem_meta.action_to_related_pred_names[action])
         if layer_index == 0:
-            mod_name = 'first_layer_actmod_' + action.name
+            mod_name = '1st_layer_actmod_' + action.name
             # num_related_predicates truth values and goal values -> 2*
             # + 1 for value indicating if action is applicable
             # + extra_dimension for every module in first layer
@@ -102,102 +102,6 @@ class ASNet_Model_Builder():
                      name=mod_name)
 
 
-    def __make_action_module_input(self, propositional_action, last_layer_proposition_module_outputs):
-        """
-        computes input for action module of propositional action
-
-        :param propositional_action: propositional action the module corresponds to
-        :param last_layer_proposition_module_outputs: output tensor of last proposition layer
-        :return: input for action module of propositional_action
-        """
-        related_proposition_ids = self.problem_meta.prop_action_to_related_gr_pred_ids[propositional_action]
-        # collect outputs of related proposition modules in last layer
-        get_index_of_tensor_layer = Lambda(lambda x, index, hidden_rep_size: x[:, hidden_rep_size * index:\
-            hidden_rep_size * (index + 1)])
-        related_outputs = []
-        for index in related_proposition_ids:
-            get_index_of_tensor_layer.arguments = {'index': index, 'hidden_rep_size': self.hidden_representation_size}
-            related_outputs.append(get_index_of_tensor_layer(last_layer_proposition_module_outputs))
-        # concatenate related output tensors to new input tensor
-        if len(related_outputs) > 1:
-            return concatenate(related_outputs, name='input_concat_' + propositional_action.name.strip('(').strip(')').replace(' ', '_'))
-        else:
-            return related_outputs[0]
-
-
-    def __make_proposition_module_input(self, proposition, last_action_module_outputs):
-        """
-        computes input for proposition module of proposition
-
-        :param proposition: proposition the module corresponds to
-        :param last_action_module_outputs: output tensor of last action layer
-        :return: input for proposition module of proposition
-        """
-        related_propositional_action_ids = self.problem_meta.gr_pred_to_related_prop_action_ids[proposition]
-
-        # initiate pred counter dicts for layer names
-        if proposition.predicate not in self.pred_counter.keys():
-            self.pred_counter[proposition.predicate] = 0
-        else:
-            self.pred_counter[proposition.predicate] += 1
-        current_pred_counter = self.pred_counter[proposition.predicate]
-        
-        # initiate pred inner counter per action schema
-        self.pred_act_schema_counter[proposition.predicate] = 0
-
-        # collect outputs of related action modules in last layer and pool all outputs together of
-        # action modules of the same underlying action schema
-        pooled_related_outputs = []
-        get_index_of_tensor_layer = Lambda(lambda x, index, hidden_rep_size: x[:, hidden_rep_size * index:\
-            hidden_rep_size * (index + 1)])
-        for action_schema_list in related_propositional_action_ids:
-            current_pred_act_schema_counter = self.pred_act_schema_counter[proposition.predicate]
-            action_schema_outputs = []
-            for index in action_schema_list:
-                get_index_of_tensor_layer.arguments = {'index': index, 'hidden_rep_size': self.hidden_representation_size}
-                action_schema_outputs.append(get_index_of_tensor_layer(last_action_module_outputs))
-                # return action_schema_outputs[-1]
-            # concatenate outputs
-            if not action_schema_outputs:
-                # There were no related propositional actions of the corresponding action schema
-                # -> create hidden-representation-sized vector of 0s
-
-                # TODO: maybe make this more logical/ easier understandable (any output of get_index_of_tensor_layer
-                # will be correct shape (batch_size, hidden_representation_size))
-                get_index_of_tensor_layer.arguments = {'index': 0, 'hidden_rep_size': self.hidden_representation_size}
-                shape_like_tensor = get_index_of_tensor_layer(last_action_module_outputs)
-
-                zeros = Lambda(lambda x: K.zeros_like(x), name='zeros_' + proposition.predicate + '_' + str(current_pred_counter) + '.' +\
-                    str(current_pred_act_schema_counter))(shape_like_tensor)
-                pooled_related_outputs.append(zeros)
-            else:
-                if len(action_schema_outputs) > 1:
-                    concat_tensors = []
-                    for index, tensor in enumerate(action_schema_outputs):
-                        tensor = Lambda(lambda x: K.expand_dims(x, 1), name='input_expand_multiple_' + str(index) + '_' + proposition.predicate + '_' + str(current_pred_counter) + '.' +\
-                            str(current_pred_act_schema_counter))(tensor)
-                        concat_tensors.append(tensor)
-                    concatenated_output = concatenate(concat_tensors, 1, name='input_concat_' + proposition.predicate + '_' + str(current_pred_counter) + '.' +\
-                        str(current_pred_act_schema_counter))
-                else:
-                    concatenated_output = action_schema_outputs[0]
-                    concatenated_output = Lambda(lambda x: K.expand_dims(x, 1), name='input_expand_' + proposition.predicate + '_' + str(current_pred_counter) + '.' +\
-                        str(current_pred_act_schema_counter))(concatenated_output)
-                # Pool all those output-vectors together to a single output-vector sized vector
-                # expand dim to 3D is needed for MaxPooling to a single (batch_size, hidden_representation_size) tensor
-                pooled_output = GlobalMaxPooling1D(name='input_pool_' + proposition.predicate + '_' + str(current_pred_counter) + '.' +\
-                    str(current_pred_act_schema_counter))(concatenated_output)
-                pooled_related_outputs.append(pooled_output)
-            # increase inner action schema counter for pred for next action schema (if existing)
-            self.pred_act_schema_counter[proposition.predicate] += 1
-
-        # concatenate all pooled related output tensors to new input tensor for module
-        if len(pooled_related_outputs) > 1:
-            return concatenate(pooled_related_outputs, name='input_pooled_concat_' + proposition.predicate + '_' + str(current_pred_counter))
-        else:
-            return pooled_related_outputs[0]
-
-
     def __make_modules(self):
         """
         builds all action and proposition modules based on the ungrounded
@@ -242,6 +146,116 @@ class ASNet_Model_Builder():
         return action_layers_modules, proposition_layers_modules
 
 
+    def __make_action_module_input(self,
+                                   propositional_action,
+                                   last_layer_proposition_module_outputs,
+                                   layer_index):
+        """
+        computes input for action module of propositional action
+
+        :param propositional_action: propositional action the module corresponds to
+        :param last_layer_proposition_module_outputs: output tensor of last proposition layer
+        :param layer_index: index number of the layer this module is built for
+        :return: input for action module of propositional_action
+        """
+        related_proposition_ids = self.problem_meta.prop_action_to_related_gr_pred_ids[propositional_action]
+        # collect outputs of related proposition modules in last layer
+        get_index_of_tensor_layer = Lambda(lambda x, index, hidden_rep_size: x[:, hidden_rep_size * index:\
+            hidden_rep_size * (index + 1)])
+        related_outputs = []
+        for index in related_proposition_ids:
+            get_index_of_tensor_layer.arguments = {'index': index, 'hidden_rep_size': self.hidden_representation_size}
+            related_outputs.append(get_index_of_tensor_layer(last_layer_proposition_module_outputs))
+        # concatenate related output tensors to new input tensor
+        if len(related_outputs) > 1:
+            return concatenate(related_outputs, name=('%d_layer_input_concat_' % layer_index) +
+                    propositional_action.name.strip('(').strip(')').replace(' ', '_'))
+        else:
+            return related_outputs[0]
+
+
+    def __make_proposition_module_input(self,
+                                        proposition,
+                                        last_action_module_outputs,
+                                        layer_index):
+        """
+        computes input for proposition module of proposition
+
+        :param proposition: proposition the module corresponds to
+        :param last_action_module_outputs: output tensor of last action layer
+        :param layer_index: index number of the layer this module is built for
+        :return: input for proposition module of proposition
+        """
+        related_propositional_action_ids = self.problem_meta.gr_pred_to_related_prop_action_ids[proposition]
+
+        # initiate pred counter dicts for layer names
+        if proposition.predicate not in self.pred_counter.keys():
+            self.pred_counter[proposition.predicate] = 0
+        else:
+            self.pred_counter[proposition.predicate] += 1
+        current_pred_counter = self.pred_counter[proposition.predicate]
+        
+        # initiate pred inner counter per action schema
+        self.pred_act_schema_counter[proposition.predicate] = 0
+
+        # collect outputs of related action modules in last layer and pool all outputs together of
+        # action modules of the same underlying action schema
+        pooled_related_outputs = []
+        get_index_of_tensor_layer = Lambda(lambda x, index, hidden_rep_size: x[:, hidden_rep_size * index:\
+            hidden_rep_size * (index + 1)])
+        for action_schema_list in related_propositional_action_ids:
+            current_pred_act_schema_counter = self.pred_act_schema_counter[proposition.predicate]
+            action_schema_outputs = []
+            for index in action_schema_list:
+                get_index_of_tensor_layer.arguments = {'index': index, 'hidden_rep_size': self.hidden_representation_size}
+                action_schema_outputs.append(get_index_of_tensor_layer(last_action_module_outputs))
+                # return action_schema_outputs[-1]
+            # concatenate outputs
+            if not action_schema_outputs:
+                # There were no related propositional actions of the corresponding action schema
+                # -> create hidden-representation-sized vector of 0s
+
+                # TODO: maybe make this more logical/ easier understandable (any output of get_index_of_tensor_layer
+                # will be correct shape (batch_size, hidden_representation_size))
+                get_index_of_tensor_layer.arguments = {'index': 0, 'hidden_rep_size': self.hidden_representation_size}
+                shape_like_tensor = get_index_of_tensor_layer(last_action_module_outputs)
+
+                zeros = Lambda(lambda x: K.zeros_like(x), name=('%d_layer_zeros_' % layer_index) +
+                        proposition.predicate + '_' + str(current_pred_counter) + '.' +
+                        str(current_pred_act_schema_counter))(shape_like_tensor)
+                pooled_related_outputs.append(zeros)
+            else:
+                if len(action_schema_outputs) > 1:
+                    concat_tensors = []
+                    for index, tensor in enumerate(action_schema_outputs):
+                        tensor = Lambda(lambda x: K.expand_dims(x, 1), name=('%d_layer_input_expand_multiple_' % layer_index) +
+                                str(index) + '_' + proposition.predicate + '_' + str(current_pred_counter) + '.' +
+                                str(current_pred_act_schema_counter))(tensor)
+                        concat_tensors.append(tensor)
+                    concatenated_output = concatenate(concat_tensors, 1, name=('%d_layer_input_concat_' % layer_index) +
+                            proposition.predicate + '_' + str(current_pred_counter) + '.' +
+                            str(current_pred_act_schema_counter))
+                else:
+                    concatenated_output = action_schema_outputs[0]
+                    concatenated_output = Lambda(lambda x: K.expand_dims(x, 1), name=('%d_layer_input_expand_' % layer_index) +
+                            proposition.predicate + '_' + str(current_pred_counter) + '.' +
+                            str(current_pred_act_schema_counter))(concatenated_output)
+                # Pool all those output-vectors together to a single output-vector sized vector
+                # expand dim to 3D is needed for MaxPooling to a single (batch_size, hidden_representation_size) tensor
+                pooled_output = GlobalMaxPooling1D(name=('%d_layer_input_pool_' % layer_index) + proposition.predicate + '_' +
+                        str(current_pred_counter) + '.' + str(current_pred_act_schema_counter))(concatenated_output)
+                pooled_related_outputs.append(pooled_output)
+            # increase inner action schema counter for pred for next action schema (if existing)
+            self.pred_act_schema_counter[proposition.predicate] += 1
+
+        # concatenate all pooled related output tensors to new input tensor for module
+        if len(pooled_related_outputs) > 1:
+            return concatenate(pooled_related_outputs, name=('%d_layer_input_pooled_concat_' % layer_index) +
+                    proposition.predicate + '_' + str(current_pred_counter))
+        else:
+            return pooled_related_outputs[0]
+
+
     def __get_first_layer_action_module_output(self,
                                                propositional_action,
                                                action_index,
@@ -259,7 +273,7 @@ class ASNet_Model_Builder():
         """
         # build input list
         input_list = []
-        slice_layer_name = "slice_layer_%s" % (propositional_action.name.strip('(').strip(')').replace(' ', '_'))
+        slice_layer_name = "1st_layer_slice_layer_%s" % (propositional_action.name.strip('(').strip(')').replace(' ', '_'))
         slice_layer = Lambda(lambda x, start, end: x[:, start: end], name=slice_layer_name)
         # add truth values of related propositions
         for prop_index in related_proposition_ids:
@@ -290,7 +304,7 @@ class ASNet_Model_Builder():
         
         output = action_module(input_tensor)
         if self.dropout:
-            dropout_name = 'first_layer_actmod_' + propositional_action.get_underlying_action_name() + \
+            dropout_name = '1st_layer_actmod_' + propositional_action.get_underlying_action_name() + \
                 str(action_index) + '_dropout'
             return Dropout(self.dropout, name=dropout_name)(output)
         else:
@@ -336,8 +350,6 @@ class ASNet_Model_Builder():
         :param input_tensor: input for proposition module
         :param proposition_module: proposition module of underlying predicate in layer_index layer
         :param layer_index: index indicating in which layer this module output is computed
-        :param last_action_module_outputs: tensor as concatenation of all output vectors of the action modules
-            in the last action layer (in order of ids)
         :return: output tensor of module
         """
         output = proposition_module(input_tensor)
@@ -388,7 +400,7 @@ class ASNet_Model_Builder():
                         propositional_action, action_index, related_proposition_ids, action_module))
                 else:
                     # compute corresponding action input tensor
-                    input_tensor = self.__make_action_module_input(propositional_action, proposition_layers_outputs[layer_index - 1])
+                    input_tensor = self.__make_action_module_input(propositional_action, proposition_layers_outputs[layer_index - 1], layer_index)
                     # extract corresponding action module for layer_index layer
                     action_module = action_layers_modules[layer_index][
                         propositional_action.get_underlying_action_name()]
@@ -403,7 +415,7 @@ class ASNet_Model_Builder():
             proposition_layer_outputs = []
             for proposition_index, proposition in enumerate(self.problem_meta.grounded_predicates):
                 # compute corresponding proposition input tensor
-                input_tensor = self.__make_proposition_module_input(proposition, action_layers_outputs[layer_index])
+                input_tensor = self.__make_proposition_module_input(proposition, action_layers_outputs[layer_index], layer_index)
 
                 # extract corresponding proposition module for layer_index layer
                 proposition_module = proposition_layers_modules[layer_index][proposition.predicate]
@@ -416,7 +428,7 @@ class ASNet_Model_Builder():
         # last action layer
         outputs = []
         for action_index, propositional_action in enumerate(self.problem_meta.propositional_actions):
-            input_tensor = self.__make_action_module_input(propositional_action, proposition_layers_outputs[-1])
+            input_tensor = self.__make_action_module_input(propositional_action, proposition_layers_outputs[-1], layer_index + 1)
             action_module = action_layers_modules[-1][propositional_action.get_underlying_action_name()]
             # compute output of action module and add to the list for output tensors
             outputs.append(action_module(input_tensor))
