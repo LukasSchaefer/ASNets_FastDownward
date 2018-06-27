@@ -160,6 +160,9 @@ class KerasNetwork(Network):
                     store_graphdef=self._store_graphdef
                 )
 
+    def _store_weights(self, path):
+        self._model.save_weights(path)
+
 
     def _callbacks_setup(self):
         if self._callbacks is not None:
