@@ -1,6 +1,6 @@
 """
 Utility tools for tensorflow needed for ASNets
-(mostly taken from https://github.com/qxcv/asnets/blob/master/deepfpg/tf_utils.py
+(broadcast and softmax mostly taken from https://github.com/qxcv/asnets/blob/master/deepfpg/tf_utils.py
 and wrapped in keras lambda layers)
 """
 
@@ -57,8 +57,21 @@ def masked_softmax(activations, mask):
 
     # now we can divide out by sums of exponentials
     sums = Lambda(lambda x: K.sum(x, axis=-1, keepdims=True), name='softmax_sums')(safe_exps)
-    # this is just for safety
-    clipped_sums = Lambda(lambda x: K.clip(x, 1e-5, 1e10), name='softmax_clip')(sums)
     div_output_layer = Lambda(lambda x: x[0] / x[1], name='softmax_div_output')
-    output = div_output_layer([safe_exps, clipped_sums])
+    output = div_output_layer([safe_exps, sums])
     return output
+
+
+def custom_binary_crossentropy(y_true, y_pred):
+    """
+    custom binary crossentropy loss-function out of Action Schema Networks: Generalised Policies
+    with Deep Learning (https://arxiv.org/abs/1709.04271)
+
+    :param y_true: opt-value for each action indicating whether the action starts an optimal
+                   plan according to the teacher policy
+    :param y_pred: prediction = probabilities of the network to choose each action for
+                   all actions 
+    """
+    y_pred = K.clip(y_pred, K.epsilon(), 1.0-K.epsilon())
+    out = ((1.0 - y_true) * K.log(1.0 - y_pred)) + (y_true * K.log(y_pred))
+    return K.mean(out, axis=-1)
