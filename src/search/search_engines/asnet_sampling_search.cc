@@ -520,11 +520,11 @@ void ASNetSamplingSearch::add_sampling_options(OptionParser &parser) {
         "network policy exploration", "300");
     parser.add_option<bool> ("use_non_goal_teacher_paths",
         "Bool value indicating whether paths/ trajectories of the teacher search "
-        "not reaching a goal state should be sampled", "True");
+        "not reaching a goal state should be sampled", "true");
     parser.add_option<bool> ("use_teacher_search",
         "Bool value indicating whether the teacher search should be used for sampling. "
         "If false: only the network search exploration is used for sampling BUT teacher "
-        "search in general is still needed for opt values", "True");
+        "search in general is still needed for opt values", "true");
     parser.add_option<shared_ptr<neural_networks::AbstractNetwork>>("network",
         "Network to sample with (Built for ASNets)", "asnet");
     parser.add_option<Policy *>("network_policy", "Network Policy using the "
