@@ -302,7 +302,7 @@ def sample(options, directory, domain_path, problem_path, extra_input_size):
                             ', trajectory_limit=' + str(options.trajectory_limit) +
                             ', use_non_goal_teacher_paths=' + str(options.use_non_goal_teacher_paths) +
                             ', use_teacher_search=' + str(options.use_teacher_search) +
-                            ', network_search=policy_search(p=np(network=asnet(path=' + str(os.path.join(directory, 'asnet.pb')) + ', extra_input_size=' + str(extra_input_size) + ')))' +
+                            ', network_search=policysearch(p=np(network=asnet(path=' + str(os.path.join(directory, 'asnet.pb')) + ', extra_input_size=' + str(extra_input_size) + ')))' +
                             ', target=' + os.path.join(directory, "sample.data") + ')']
     spt = SubprocessTask('Sampling of ' + problem_path, cmd)
     spt.run()
