@@ -125,13 +125,13 @@ def load_sample_line(line, data_container, old_hashs, extra_input_size):
         # comment or empty line -> nothing to read
         return
 
-    if pruning_set is not None:
+    if old_hashs is not None:
         line_hash = hash(line)
-        if line_hash in pruning_set:
+        if line_hash in old_hashs:
             # line is a duplicate
             return
         else:
-            pruning_set.add(line_hash)
+            old_hashs.add(line_hash)
 
     data = [x.strip() for x in line.split(";")]
 
