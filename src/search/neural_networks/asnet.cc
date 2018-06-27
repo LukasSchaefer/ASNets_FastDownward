@@ -134,7 +134,7 @@ void ASNet::extract_output() {
 static shared_ptr<neural_networks::AbstractNetwork> _parse(OptionParser &parser) {
     neural_networks::ProtobufNetwork::add_options_to_parser(parser);
     parser.add_option<int>("extra_input_size",
-        "extra input size (per action) of optional additional input features", 0);
+        "extra input size (per action) of optional additional input features", "0");
     Options opts = parser.parse();
 
     shared_ptr<neural_networks::ASNet> asnet;

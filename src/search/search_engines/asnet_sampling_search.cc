@@ -526,11 +526,11 @@ void ASNetSamplingSearch::add_sampling_options(OptionParser &parser) {
         "If false: only the network search exploration is used for sampling BUT teacher "
         "search in general is still needed for opt values", "true");
     parser.add_option<shared_ptr<neural_networks::AbstractNetwork>>("network",
-        "Network to sample with (Built for ASNets)", "asnet");
+        "Network to sample with (Built for ASNets)");
     parser.add_option<Policy *>("network_policy", "Network Policy using the "
-        "network from above", "np");
+        "network from above");
     parser.add_option<shared_ptr<SearchEngine>>("network_search",
-        "Policy search using the network policy", "policysearch");
+        "Policy search using the network policy");
 }
 
 static shared_ptr<SearchEngine> _parse(OptionParser &parser) {
