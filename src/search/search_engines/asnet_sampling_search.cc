@@ -33,8 +33,6 @@ use_non_goal_teacher_paths(opts.get<bool>("use_non_goal_teacher_paths")),
 use_teacher_search(opts.get<bool>("use_teacher_search")),
 facts_sorted(lexicographical_access::get_facts_lexicographically(task_proxy)),
 operator_indeces_sorted(lexicographical_access::get_operator_indeces_lexicographically(task_proxy)),
-asnet(opts.get<shared_ptr<neural_networks::AbstractNetwork>>("network")),
-network_policy(opts.get<Policy *>("network_policy")),
 network_search(opts.get<shared_ptr<SearchEngine>>("network_search")) {
 }
 
@@ -525,12 +523,8 @@ void ASNetSamplingSearch::add_sampling_options(OptionParser &parser) {
         "Bool value indicating whether the teacher search should be used for sampling. "
         "If false: only the network search exploration is used for sampling BUT teacher "
         "search in general is still needed for opt values", "true");
-    parser.add_option<shared_ptr<neural_networks::AbstractNetwork>>("network",
-        "Network to sample with (Built for ASNets)");
-    parser.add_option<Policy *>("network_policy", "Network Policy using the "
-        "network from above");
     parser.add_option<shared_ptr<SearchEngine>>("network_search",
-        "Policy search using the network policy");
+        "Policy search using the network policy", "policysearch(p=np(network=asnet(path=asnet.pb)))");
 }
 
 static shared_ptr<SearchEngine> _parse(OptionParser &parser) {

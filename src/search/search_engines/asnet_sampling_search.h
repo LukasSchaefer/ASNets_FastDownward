@@ -56,10 +56,7 @@ namespace asnet_sampling_search {
         /* vector of operator indeces sorted by the corresponding operator names */
         std::vector<int> operator_indeces_sorted;
 
-        // network
-        std::shared_ptr<neural_networks::AbstractNetwork> asnet;
-        // Policy and corresponding Search of network
-        Policy * network_policy;
+        // search of network policy
         std::shared_ptr<SearchEngine> network_search;
 
         // teacher search used for sampling along reasonable (usually optimal) trajectories
