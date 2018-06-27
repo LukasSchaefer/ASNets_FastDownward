@@ -80,7 +80,7 @@ pasnet.add_argument("-t", "--train", action="store_true",
 pasnet.add_argument("-e", "--evaluate", action="store_true",
                      help="Flag indicating that evaluation should be executed.")
 pasnet.add_argument("--sort_problems", type=bool,
-                     action="store", default=True,
+                     action="store", default=False,
                      help="Boolean value indicating whether the problems should "
                           "be sorted by difficulty.")
 pasnet.add_argument("--batch", type=int,
@@ -297,7 +297,7 @@ def sample(options, directory, domain_path, problem_path, extra_input_size):
     :return:
     """
     cmd = ["python", "fast-downward.py", 
-                "--build", options.build, problem_path, domain_path,
+                "--build", options.build, domain_path, problem_path,
                 "--search", '"asnet_sampling_search(search=' + options.teacher_search +
                             ', trajectory_limit=' + str(options.trajectory_limit) +
                             ', use_non_goal_teacher_paths=' + str(options.use_non_goal_teacher_paths) +
