@@ -18,4 +18,10 @@ def sample_entry_numpy_state_hasher(x):
 
 
 def list_hasher(x):
-    return hash(tuple([hash(i) for i in x]))
+    final_hash_list = []
+    for element in x:
+        if isinstance(element, list):
+            final_hash_list.append(list_hasher(element))
+        else:
+            final_hash_list.append(hash(element))
+    return hash(tuple(final_hash_list))

@@ -8,7 +8,6 @@ from ... import parser_tools as parset
 from ... import SampleBatchData
 
 from ...misc import hasher
-from ...misc import StreamContext
 
 import os
 import random
