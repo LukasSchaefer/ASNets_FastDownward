@@ -275,8 +275,7 @@ def prepare_and_construct_network_before_loading(options, extra_input_size, mode
     :return: KerasASNet Network-object
     """
     network = KerasASNet(extra_input_size=extra_input_size,
-                         model=model,
-                         epochs=options.epochs)
+                         model=model)
 
     return network
 
@@ -302,6 +301,25 @@ def sample(options, directory, domain_path, problem_path, extra_input_size):
                             ', target=' + os.path.join(directory, "sample.data") + ')']
     spt = SubprocessTask('Sampling of ' + problem_path, cmd)
     spt.run()
+
+
+def exploration_explored_goal(sample_path):
+    """
+    check whether the network exploration of the sampling creating sample_file
+    reached a goal state
+
+    :param sample_path: path to sample.data file including all sampling information
+    :return: true if network exploration reached a goal state and false otherwise
+    """
+    sample_file = open(sample_path, 'r')
+    for line in sample_file.readline():
+        if line == "GOAL_EXPLORATION":
+            sample_file.close()
+            return True
+        elif line == "NO_GOAL_EXPLORATION":
+            sample_file.close()
+            return False
+    raise ValueError("Sample File %s did not contain information on network exploration!" % sample_path)
 
 
 def load_data(options, directory, domain_path, problem_path, extra_input_size):
@@ -384,55 +402,97 @@ def train(options, directory, domain_path, problem_list):
     previous_asnet_weights = options.weights
 
     asnet = None
-    for problem_index, problem_path in enumerate(problem_list):
-        print("Processing problem file " + str(problem_path) + " ("
-                + str(problem_index + 1) + "/ " + str(len(problem_list)) + ")")
-        if options.dry:
-            continue
+    # success_rate = percentage of network exploration runs during sampling which reach a
+    #                goal state
+    # best success rate over all epochs
+    best_success_rate = 0.0
+    # success rate of current epoch
+    current_success_rate = 0.0
 
-        _, task_meta = create_pddl_task(domain_path, problem_path)
-        start_time = timing(start_time, "PDDL translation time: %ss")
+    # incremented if current_success_rate did not improve over best_success_rate by more
+    # than 0.01%
+    epochs_since_improvement = 0
 
-        asnet_model = create_asnet_model(task_meta, options, extra_input_size, previous_asnet_weights)
-        start_time = timing(start_time, "Keras model creation time: %ss")
+    epoch_counter = 0
+    while epoch_counter < options.epochs and (current_success_rate < 99.9 or epochs_since_improvement < 5):
+        print("Starting Epoch %d" % epoch_counter)
+        # number of explorations reaching a goal state
+        solved_explorations = 0
+        # number of total explorations executed
+        executed_explorations = 0
+        for problem_index, problem_path in enumerate(problem_list):
+            print("Processing problem file " + str(problem_path) + " ("
+                    + str(problem_index + 1) + "/ " + str(len(problem_list)) + ")")
+            if options.dry:
+                continue
 
-        asnet = prepare_and_construct_network_before_loading(options, extra_input_size, asnet_model)
-        # store protobuf network file for fast-downward sampling
-        if os.path.isfile(os.path.join(directory, "asnet.pb")):
-            os.remove(os.path.join(directory, "asnet.pb"))
-        asnet._store(os.path.join(directory, "asnet"), [NetworkFormat.protobuf])
-        start_time = timing(start_time, "Preparing and storing of the network time: %ss")
+            _, task_meta = create_pddl_task(domain_path, problem_path)
+            start_time = timing(start_time, "PDDL translation time: %ss")
 
-        # build ASNetSamplingSearch command and execute for sampling -> saves samples in sample.data
-        if not os.path.isfile(os.path.join(directory, "sample.data")):
-            open(os.path.join(directory, "sample.data"), 'a')
-        sample(options, directory, domain_path, problem_path, extra_input_size)
-        start_time = timing(start_time, "Sampling search time: %ss")
+            asnet_model = create_asnet_model(task_meta, options, extra_input_size, previous_asnet_weights)
+            start_time = timing(start_time, "Keras model creation time: %ss")
 
-        dtrain, dtest = load_data(options, directory, domain_path, problem_path, extra_input_size)
+            asnet = prepare_and_construct_network_before_loading(options, extra_input_size, asnet_model)
+            # store protobuf network file for fast-downward sampling
+            if os.path.isfile(os.path.join(directory, "asnet.pb")):
+                os.remove(os.path.join(directory, "asnet.pb"))
+            asnet._store(os.path.join(directory, "asnet"), [NetworkFormat.protobuf])
+            start_time = timing(start_time, "Preparing and storing of the network time: %ss")
 
-        start_time = timing(start_time, "Loading data time: %ss")
+            # build ASNetSamplingSearch command and execute for sampling -> saves samples in sample.data
+            if not os.path.isfile(os.path.join(directory, "sample.data")):
+                open(os.path.join(directory, "sample.data"), 'a')
+            sample(options, directory, domain_path, problem_path, extra_input_size)
+            start_time = timing(start_time, "Sampling search time: %ss")
 
-        asnet.initialize(None, **options.initialize)
-        start_time = timing(start_time, "Network initialization time: %ss")
+            # extract exploration information for the given problem sampling (out of sample.data)
+            if exploration_explored_goal(os.path.join(directory, "sample.data")):
+                solved_explorations += 1
+            executed_explorations += 1
 
-        asnet.train(dtrain, dtest)
-        start_time = timing(start_time, "Network training time: %ss")
+            dtrain, dtest = load_data(options, directory, domain_path, problem_path, extra_input_size)
 
-        asnet.evaluate(dtest)
-        start_time = timing(start_time, "Network evaluation time: %ss")
+            start_time = timing(start_time, "Loading data time: %ss")
 
-        asnet.analyse(prefix=options.prefix)
-        start_time = timing(start_time, "Network analysis time: %ss")
+            asnet.initialize(None, **options.initialize)
+            start_time = timing(start_time, "Network initialization time: %ss")
 
-        asnet.finalize(**options.finalize)
-        _ = timing(start_time, "Network finalization time: %ss")
+            asnet.train(dtrain, dtest)
+            start_time = timing(start_time, "Network training time: %ss")
 
-        # saving weights for next problem instance
-        if previous_asnet_weights is not None:
-            os.remove(previous_asnet_weights)
-        asnet._store_weights(os.path.join(directory, "asnet_weights.h5"))
-        previous_asnet_weights = os.path.join(directory, "asnet_weights.h5")
+            asnet.evaluate(dtest)
+            start_time = timing(start_time, "Network evaluation time: %ss")
+
+            asnet.analyse(prefix=options.prefix)
+            start_time = timing(start_time, "Network analysis time: %ss")
+
+            asnet.finalize(**options.finalize)
+            _ = timing(start_time, "Network finalization time: %ss")
+
+            # saving weights for next problem instance
+            if previous_asnet_weights is not None:
+                os.remove(previous_asnet_weights)
+            asnet._store_weights(os.path.join(directory, "asnet_weights.h5"))
+            previous_asnet_weights = os.path.join(directory, "asnet_weights.h5")
+
+        # compute percentage of successfull explorations
+        current_success_rate = (solved_explorations / executed_explorations) * 100
+        print("Epochs success rate: %d" % current_success_rate)
+
+        # update best_success_rate & epochs_since_improvement
+        if current_success_rate < best_success_rate + 0.01:
+            epochs_since_improvement += 1
+        else:
+            epochs_since_improvement = 0
+
+        if current_success_rate > best_success_rate:
+            print("This is the new best success rate!")
+            best_success_rate = current_success_rate
+        
+    if (current_success_rate >= 99.9 and epochs_since_improvement >= 5):
+        print("EARLY TRAINING TERMINATION:")
+        print("The success rate is with %d% >= 99.9% and there were no significant "
+              "improvements of the success rate for %d epochs." % (current_success_rate, epochs_since_improvement))
 
     # save model in protobuf for fast-downward
     if asnet is not None:

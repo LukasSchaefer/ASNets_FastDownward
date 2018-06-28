@@ -123,6 +123,10 @@ def load_sample_line(line, data_container, old_hashs, extra_input_size):
     if line.startswith("#") or line == "":
         # comment or empty line -> nothing to read
         return
+    
+    if line == "GOAL_EXPLORATION" or line == "NO_GOAL_EXPLORATION":
+        # exploration information -> no sample information -> skip
+        return
 
     if old_hashs is not None:
         line_hash = hash(line)

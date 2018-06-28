@@ -313,6 +313,7 @@ std::string ASNetSamplingSearch::extract_exploration_sample_entries() {
     ostringstream new_entries;
 
     if (network_search->found_solution()) {
+        new_entries << "GOAL_EXPLORATION" << endl;
         const GlobalState goal_state = network_search->get_goal_state();
         Plan plan = network_search->get_plan();
         Trajectory trajectory;
@@ -323,6 +324,7 @@ std::string ASNetSamplingSearch::extract_exploration_sample_entries() {
         extract_sample_entries_trajectory(trajectory, sr, ops, new_entries);
     } else {
         // no solution found -> termination due to timeout, dead-end or trajectory limit reached
+        new_entries << "NO_GOAL_EXPLORATION" << endl;
         const GlobalState last_state = network_search->get_last_state();
         Plan plan;
         Trajectory trajectory;
@@ -468,6 +470,7 @@ void ASNetSamplingSearch::print_statistics() const {
 void ASNetSamplingSearch::add_header_samples(ostream &stream) const {
     stream << SAMPLE_FILE_MAGIC_WORD << endl;
     stream << "# Everything in a line after '#' is a comment" << endl;
+    stream << "# (NO_)GOAL_EXPLORATION indicate whether the executed network search exploration reached a goal state (or not)" << endl;
     stream << "# Entry format:<HASH>; <FACT_GOAL_VALUES>; <FACT_VALUES>; <ACTION_APPLICABLE_VALUES>; <ACTION_OPT_VALUES>" << endl;
     stream << "# <HASH> := hash value to identify where the sample comes from" << endl;
     stream << "# <FACT_GOAL_VALUES> := binary value for every fact indicating whether the fact is part of the goal. Values are ordered lexicographically by fact-names in a \",\" separated list form." << endl;
