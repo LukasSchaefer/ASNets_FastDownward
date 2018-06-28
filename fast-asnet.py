@@ -312,7 +312,8 @@ def exploration_explored_goal(sample_path):
     :return: true if network exploration reached a goal state and false otherwise
     """
     sample_file = open(sample_path, 'r')
-    for line in sample_file.readline():
+    sample_lines = [l.strip() for l in sample_file.readlines()]
+    for line in sample_lines:
         if line == "GOAL_EXPLORATION":
             sample_file.close()
             return True
@@ -451,6 +452,8 @@ def train(options, directory, domain_path, problem_list):
             executed_explorations += 1
 
             dtrain, dtest = load_data(options, directory, domain_path, problem_path, extra_input_size)
+
+            print("%d / %d network explorations were successfull" % (solved_explorations, executed_explorations))
 
             start_time = timing(start_time, "Loading data time: %ss")
 

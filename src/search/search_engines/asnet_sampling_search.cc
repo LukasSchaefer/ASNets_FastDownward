@@ -313,7 +313,7 @@ std::string ASNetSamplingSearch::extract_exploration_sample_entries() {
     ostringstream new_entries;
 
     if (network_search->found_solution()) {
-        new_entries << "GOAL_EXPLORATION" << endl;
+        new_entries << "GOAL_EXPLORATION~";
         const GlobalState goal_state = network_search->get_goal_state();
         Plan plan = network_search->get_plan();
         Trajectory trajectory;
@@ -324,7 +324,7 @@ std::string ASNetSamplingSearch::extract_exploration_sample_entries() {
         extract_sample_entries_trajectory(trajectory, sr, ops, new_entries);
     } else {
         // no solution found -> termination due to timeout, dead-end or trajectory limit reached
-        new_entries << "NO_GOAL_EXPLORATION" << endl;
+        new_entries << "NO_GOAL_EXPLORATION~";
         const GlobalState last_state = network_search->get_last_state();
         Plan plan;
         Trajectory trajectory;
