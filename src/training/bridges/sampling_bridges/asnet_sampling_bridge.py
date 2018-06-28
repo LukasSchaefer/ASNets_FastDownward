@@ -152,14 +152,14 @@ def load_sample_line(line, data_container, old_hashs, extra_input_size):
     opt_values = [ast.literal_eval(data[4])]
 
     sample_list = [problem_hash,
-                   np.array(goal_values, dtype=np.int32),
-                   np.array(state_values, dtype=np.int32),
-                   np.array(applicable_values, dtype=np.int32),
-                   np.array(opt_values, dtype=np.int32)]
+                   goal_values,
+                   state_values,
+                   applicable_values,
+                   opt_values]
 
     if extra_input_size > 0:
         additional_input_values = [ast.literal_eval(data[5])]
-        sample_list.append(np.array(additional_input_values, dtype=np.int32))
+        sample_list.append(additional_input_values)
 
     if data_container is not None:
         data_container.add(sample_list)

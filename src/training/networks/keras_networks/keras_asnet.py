@@ -89,8 +89,13 @@ class KerasASNet(KerasNetwork):
                 print("Warning: Data set previously finalized. Skipping now.")
                 continue
 
-            # no convertion should be necessary for ASNets
-            # (already created in needed format in ASNetSamplingBridge)
+            # convert lists from input to numpy arrays for network input
+            # (all but first hash entry are lists)
+            for type in data_set.data:
+                for batch in data_set.data[type]:
+                    for entry in batch:
+                        for idx_input in range(1, len(entry)):
+                            entry[idx_input] = np.array(entry[idx_input], dtype=np.int32)
 
             data_set.finalize()
         return data
