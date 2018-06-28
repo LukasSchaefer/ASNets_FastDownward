@@ -86,8 +86,7 @@ pasnet.add_argument("--sort_problems", type=bool,
 pasnet.add_argument("--epochs", type=int,
                      action="store", default=300,
                      help="Number of epochs during training.")
-pasnet.add_argument("--delete", type=bool,
-                     action="store", default=True,
+pasnet.add_argument("--delete", action="store_true",
                      help="Flag indicating whether the sample file will be deleted "
                      "after data extraction.")
 
