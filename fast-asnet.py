@@ -405,6 +405,8 @@ def train(options, directory, domain_path, problem_list):
         start_time = timing(start_time, "Preparing and storing of the network time: %ss")
 
         # build ASNetSamplingSearch command and execute for sampling -> saves samples in sample.data
+        if not os.path.isfile(os.path.join(directory, "sample.data")):
+            open(os.path.join(directory, "sample.data"), 'a')
         sample(options, directory, domain_path, problem_path, extra_input_size)
         start_time = timing(start_time, "Sampling search time: %ss")
 
