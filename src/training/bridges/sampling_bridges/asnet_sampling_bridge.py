@@ -161,7 +161,7 @@ def load_sample_line(line, data_container, old_hashs, extra_input_size):
         sample_list.append(additional_input_values)
 
     if data_container is not None:
-        data_container.add(sample_list)
+        data_container.add(sample_list, type="O")
 
 
 class ASNetSampleBridge(SamplerBridge):
@@ -202,7 +202,11 @@ class ASNetSampleBridge(SamplerBridge):
 
 
     def _sample(self, path_problem, path_dir_tmp, path_domain, data_container):
-        data_container = (SizeBatchData(nb_fields=6, meta=path_problem,
+        if self._extra_input_size > 0:
+            nb_fields = 6
+        else:
+            nb_fields = 5
+        data_container = (SizeBatchData(nb_fields=nb_fields, meta=path_problem,
                                         pruning=(hasher.list_hasher if self._prune else None))
                           if data_container is None else data_container)
 

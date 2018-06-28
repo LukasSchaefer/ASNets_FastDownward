@@ -83,9 +83,6 @@ pasnet.add_argument("--sort_problems", type=bool,
                      action="store", default=False,
                      help="Boolean value indicating whether the problems should "
                           "be sorted by difficulty.")
-pasnet.add_argument("--batch", type=int,
-                     action="store", default=300,
-                     help="Batch size for training.")
 pasnet.add_argument("--epochs", type=int,
                      action="store", default=300,
                      help="Number of epochs during training.")
@@ -331,16 +328,14 @@ def load_data(options, directory, domain_path, problem_path, extra_input_size):
         test_problem_filter = list(options.problem_filter)
         test_problem_filter.append(options.verification)
 
-        dir_samp = IterableFileSampler(bridge, [problem_path], options.batch,
-                                       merge=True)
+        dir_samp = IterableFileSampler(bridge, [problem_path], merge=True)
         dir_samp.initialize()
         dtest = dir_samp.sample()
         dir_samp.finalize()
 
     # We create the training set
     bridge._forget = 0.0
-    dir_samp = IterableFileSampler(bridge, [problem_path], options.batch,
-                                   merge=True)
+    dir_samp = IterableFileSampler(bridge, [problem_path], merge=True)
     dir_samp.initialize()
     dtrain = dir_samp.sample()
     dir_samp.finalize()
