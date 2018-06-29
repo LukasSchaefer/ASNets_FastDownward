@@ -1,8 +1,8 @@
 import os
 import sys
-from tensorflow.python.keras._impl.keras.models import Model
-from tensorflow.python.keras._impl.keras.layers import Input, Dense, Dropout, Lambda, concatenate, GlobalMaxPooling1D
-from tensorflow.python.keras._impl.keras import backend as K
+from keras.models import Model
+from keras.layers import Input, Dense, Dropout, Lambda, concatenate, GlobalMaxPooling1D
+from keras import backend as K
 
 import problem_meta
 from utils import masked_softmax

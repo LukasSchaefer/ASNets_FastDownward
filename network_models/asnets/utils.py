@@ -6,7 +6,7 @@ and wrapped in keras lambda layers)
 
 import tensorflow as tf
 from keras import backend as K
-from tensorflow.python.keras._impl.keras.layers import Lambda
+from keras.layers import Lambda
 
 def broadcast_to(pattern, array):
     """Broacast ``array`` to match shape of ``pattern``."""
@@ -15,6 +15,7 @@ def broadcast_to(pattern, array):
     arr_shape = shape_layer(array)
     floordiv_layer = Lambda(lambda x: tf.floordiv(x[0], x[1]))
     multiples = floordiv_layer([pat_shape, arr_shape])
+    multiples = Lambda(lambda x: K.cast(x, 'int32'), name='broadcast_int_cast_multiples')(multiples)
     rv = Lambda(lambda x: K.tile(x[0], x[1]))([array, multiples])
     return rv
 
