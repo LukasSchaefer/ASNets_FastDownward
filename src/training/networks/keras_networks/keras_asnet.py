@@ -1,10 +1,9 @@
-from .keras_network import KerasNetwork, KerasNetwork
+from .keras_network import KerasNetwork
 
 from ... import parser_tools as parset
 from ... import parser
 from ... import main_register
 
-import keras
 import numpy as np
 
 
@@ -12,23 +11,19 @@ class KerasASNet(KerasNetwork):
     arguments = parset.ClassArguments('ASNetKeras',
                                       KerasNetwork.arguments,
                                       ("extra_input_size", False, 0, int, "Size of additional input features per action"),
-                                      ("model", True, None, None, "Keras model for ASNet"),
-                                      order=["extra_input_size", "model", "load", "store",
+                                      order=["extra_input_size", "load", "store",
                                              "formats", "out", "epochs", "count_samples",
                                              "test_similarity", "graphdef", "callbacks",
                                              "variables", "id"]
                                       )
 
-    def __init__(self, extra_input_size=0, model=None, load=None, store=None, formats=None,
+    def __init__(self, extra_input_size=0, load=None, store=None, formats=None,
                  out=".", epochs=1000, count_samples=False, test_similarity=None,
                  graphdef=None, callbacks=None, variables=None, id=None):
         KerasNetwork.__init__(
             self, load, store, formats, out, epochs, count_samples,
             test_similarity, graphdef, callbacks, variables, id)
         self._extra_input_size = extra_input_size
-        self._model = model
-        if self._model is None:
-            raise ValueError("No ASNet model given to KerasASNet.")
 
         # entries in ds data is in following format:
         # [<PROBLEM_HASH>, <GOAL_VALUES>, <STATE_VALUES>, <APPLICABLE_VALUES>,

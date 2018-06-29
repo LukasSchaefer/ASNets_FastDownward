@@ -27,6 +27,7 @@ from src.training.bridges.sampling_bridges.asnet_sampling_bridge import ASNetSam
 from src.training.misc import StreamContext, StreamDefinition, DomainProperties
 from src.training.networks import Network, NetworkFormat
 from src.training.networks.keras_networks.keras_asnet import KerasASNet
+from src.training.networks.keras_networks.keras_tools import store_keras_model_as_protobuf
 from src.training.problem_sorter.base_sorters import DifficultySorter
 from src.training.samplers import IterableFileSampler
 
@@ -284,17 +285,17 @@ def create_asnet_model(task_meta, options, extra_input_size, weights_path=None):
     return asnet_model
 
 
-def prepare_and_construct_network_before_loading(options, extra_input_size, model):
+def prepare_and_construct_network_before_loading(options, model_path, extra_input_size):
     """
     Constructs KerasASNet Network for training etc. with the given model
 
     :param options: parser options
+    :param model_path: path to the protobuf keras model file
     :param extra_input_size: size for additional input features per action
-    :param model: created ASNet Keras model
     :return: KerasASNet Network-object
     """
-    network = KerasASNet(extra_input_size=extra_input_size,
-                         model=model)
+    network = KerasASNet(load=model_path,
+                         extra_input_size=extra_input_size)
 
     return network
 
@@ -458,12 +459,15 @@ def train(options, directory, domain_path, problem_list):
             asnet_model = create_asnet_model(task_meta, options, extra_input_size, previous_asnet_weights)
             start_time = timing(start_time, "Keras model creation time: %ss")
 
-            asnet = prepare_and_construct_network_before_loading(options, extra_input_size, asnet_model)
             # store protobuf network file for fast-downward sampling
             if os.path.isfile(os.path.join(directory, "asnet.pb")):
                 os.remove(os.path.join(directory, "asnet.pb"))
-            asnet._store(os.path.join(directory, "asnet"), [NetworkFormat.protobuf])
+            print("Stored the keras model in a %s" % os.path.join(directory, "asnet.pb"))
+            store_keras_model_as_protobuf(asnet_model, directory, "asnet.pb")
+
+            asnet = prepare_and_construct_network_before_loading(options, os.path.join(directory, "asnet.pb"), extra_input_size)
             start_time = timing(start_time, "Preparing and storing of the network time: %ss")
+
 
             # build ASNetSamplingSearch command and execute for sampling -> saves samples in sample.data
             if not os.path.isfile(os.path.join(directory, "sample.data")):
