@@ -138,7 +138,8 @@ pasnet.add_argument("-bi", "--bias_initializer", type=str,
 pasnet.add_argument("--extra_input_features", type=str,
                     action="store", default=None,
                     help="Additional input features per action. This involves additional "
-                         "heuristic input features landmarks or None.")
+                         "heuristic input features from landmarks or None. The options for "
+                         "these landmark inputs are 'landmarks' or 'binary_landmarks'.")
 pasnet.add_argument("-opt", "--optimizer", type=str,
                     action="store", default='adam',
                     help="Optimizer to be used during training")
@@ -414,13 +415,15 @@ def train(options, directory, domain_path, problem_list):
     options.initialize = parse_key_value_pairs_to_kwargs(options.initialize)
     options.finalize = parse_key_value_pairs_to_kwargs(options.finalize)
 
+    # set extra_input_size per action depending on extra_input_features
     if options.extra_input_features is None:
         extra_input_size = 0
+    elif options.extra_input_features == "landmarks":
+        extra_input_size = 2
+    elif options.extra_input_features == "binary_landmarks":
+        extra_input_size = 3
     else:
-        if options.extra_input_features == "landmarks":
-            extra_input_size = 1
-        else:
-            raise ValueError("Invalid extra input feature value: %s" % options.extra_input_features)
+        raise ValueError("Invalid extra input feature value: %s" % options.extra_input_features)
 
     start_time = timing(start_time, "Parsing time: %ss")
 
@@ -459,6 +462,7 @@ def train(options, directory, domain_path, problem_list):
             start_time = timing(start_time, "Keras model creation time: %ss")
 
             asnet = prepare_and_construct_network_before_loading(options, extra_input_size, asnet_model)
+
             # store protobuf network file for fast-downward sampling
             if os.path.isfile(os.path.join(directory, "asnet.pb")):
                 os.remove(os.path.join(directory, "asnet.pb"))
