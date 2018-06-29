@@ -4,9 +4,10 @@ import keras
 import math
 import numpy as np
 import random
+from tensorflow.python.keras._impl.keras.utils.data_utils import Sequence
 
 
-class KerasDataGenerator(keras.utils.Sequence):
+class KerasDataGenerator(Sequence):
     'Generates data for Keras'
     def __init__(self, data, x_fields=None, y_fields=None, types=["O"], batch_size=100,
                  x_converter=None, y_converter=None, y_remember=None,

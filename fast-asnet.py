@@ -2,13 +2,19 @@
 # -*- coding: utf-8 -*-
 
 import argparse
+import ast
 import os
 import re
-import time
 import sys
-import ast
-from keras import optimizers
+import subprocess
+import time
+
 import numpy as np
+
+sys.path.append("network_models/asnets")
+from problem_meta import ProblemMeta
+from asnet_keras_model import ASNet_Model_Builder
+from utils import custom_binary_crossentropy
 
 from src.translate.translator import main as translate
 from src.translate.normalize import normalize
@@ -16,14 +22,8 @@ from src.translate.instantiate import instantiate, get_fluent_predicates
 from src.translate.build_model import compute_model
 from src.translate.pddl_to_prolog import translate as pddl_to_prolog
 
-sys.path.append("network_models/asnets")
-from problem_meta import ProblemMeta
-from asnet_keras_model import ASNet_Model_Builder
-from utils import custom_binary_crossentropy
-
 from src.training import parser, parser_tools
 from src.training.bridges.sampling_bridges.asnet_sampling_bridge import ASNetSampleBridge
-from src.training.environments.task import SubprocessTask
 from src.training.misc import StreamContext, StreamDefinition, DomainProperties
 from src.training.networks import Network, NetworkFormat
 from src.training.networks.keras_networks.keras_asnet import KerasASNet
@@ -89,6 +89,8 @@ pasnet.add_argument("--epochs", type=int,
 pasnet.add_argument("--delete", action="store_true",
                      help="Flag indicating whether the sample file will be deleted "
                      "after data extraction.")
+pasnet.add_argument("--print_all", action="store_true",
+                     help="Show all intermediate prints.")
 
 # ASNet sampling search arguments
 pasnet.add_argument("--build", type=str,
@@ -101,15 +103,13 @@ pasnet.add_argument("--teacher_search", type=str,
 pasnet.add_argument("--trajectory_limit", type=int,
                     action="store", default=300,
                     help="Limit for explorated sample trajectories.")
-pasnet.add_argument("--use_non_goal_teacher_paths", type=bool,
-                    action="store", default=True,
-                    help="Bool value indicating whether paths/ trajectories of "
-                         "the teacher search not reaching a goal state should be "
+pasnet.add_argument("--use_only_goal_teacher_paths", action="store_true",
+                    help="Flag indicating whether only paths/ trajectories of "
+                         "the teacher search reaching a goal state should be "
                          "sampled in the ASNet Sampling.")
-pasnet.add_argument("--use_teacher_search", type=bool,
-                    action="store", default=True,
-                    help="Bool value indicating whether the teacher search should "
-                         "be used for sampling.")
+pasnet.add_argument("--use_no_teacher_search", action="store_true",
+                    help="Flag indicating whether the teacher search should "
+                         "be deactivated during sampling.")
 
 # ASNet model arguments
 pasnet.add_argument("-layers", "--number_of_layers", type=int,
@@ -148,6 +148,25 @@ for action in pasnet._actions:
     for key in action.option_strings:
         arguments.add(key)
 
+
+def deactivate_prints():
+    """
+    Preventing all print outputs until reactivate_prints() call
+    """
+    sys.stdout = open(os.devnull, 'w')
+
+def reactivate_prints():
+    """
+    Reactivate print outputs after deactivate_prints() call
+    """
+    sys.stdout = sys.__stdout__
+
+def execute_cmd_without_output(cmd):
+    """
+    Execute cmd subprocess without outputs
+    """
+    FNULL = open(os.devnull, 'w')
+    retcode = subprocess.call(cmd, stdout=FNULL, stderr=subprocess.STDOUT)
 
 def parse_key_value_pairs_to_kwargs(pairs):
     kwargs = {}
@@ -194,7 +213,7 @@ def get_problems_from_directory(directory, sort_problems):
     return problem_list
 
 
-def create_pddl_task(domain_path, problem_path):
+def create_pddl_task(options, domain_path, problem_path):
     """
     Reads, translates the pddl_task and simplifies it to remove
     unused/ unreachable predicates etc.
@@ -202,8 +221,8 @@ def create_pddl_task(domain_path, problem_path):
     :return: pddl_task, task_meta
     """
     print("Processing PDDL Translation.")
-    # deactivate prints for translation
-    sys.stdout = open(os.devnull, 'w')
+    if not options.print_all:
+        deactivate_prints()
     pddl_task, _ = translate([domain_path, problem_path])
     normalize(pddl_task)
     prog = pddl_to_prolog(pddl_task)
@@ -212,8 +231,8 @@ def create_pddl_task(domain_path, problem_path):
     fluent_predicates = get_fluent_predicates(pddl_task, model)
     pddl_task.simplify(fluent_predicates)
 
-    # reactivate prints
-    sys.stdout = sys.__stdout__
+    if not options.print_all:
+        reactivate_prints()
 
     print("Computing task meta information.")
     task_meta = ProblemMeta(pddl_task, propositional_actions, grounded_predicates)
@@ -295,12 +314,16 @@ def sample(options, directory, domain_path, problem_path, extra_input_size):
                 "--build", options.build, domain_path, problem_path,
                 '--search', 'asnet_sampling_search(search=' + options.teacher_search +
                             ', trajectory_limit=' + str(options.trajectory_limit) +
-                            ', use_non_goal_teacher_paths=' + str(options.use_non_goal_teacher_paths) +
-                            ', use_teacher_search=' + str(options.use_teacher_search) +
+                            ', use_non_goal_teacher_paths=' + str(not options.use_only_goal_teacher_paths) +
+                            ', use_teacher_search=' + str(not options.use_no_teacher_search) +
                             ', network_search=policysearch(p=np(network=asnet(path=' + str(os.path.join(directory, 'asnet.pb')) + ', extra_input_size=' + str(extra_input_size) + ')))' +
                             ', target=' + os.path.join(directory, "sample.data") + ')']
-    spt = SubprocessTask('Sampling of ' + problem_path, cmd)
-    spt.run()
+    print('Running sampling search for ' + problem_path + '...')
+    if options.print_all:
+        subprocess.call(cmd)
+    else:
+        execute_cmd_without_output(cmd)
+    print("Sampling search done.")
 
 
 def exploration_explored_goal(sample_path):
@@ -335,6 +358,7 @@ def load_data(options, directory, domain_path, problem_path, extra_input_size):
     :return: dtrain, dtest
         with both being lists of SizeBatchData
     """
+    print("Loading sampling data ...")
     bridge = ASNetSampleBridge(sample_path=os.path.join(directory, "sample.data"),
                                domain=domain_path, prune=True, forget=options.forget,
                                skip=options.skip, extra_input_size=extra_input_size,
@@ -362,6 +386,7 @@ def load_data(options, directory, domain_path, problem_path, extra_input_size):
         dtest[0].add_data(splitted)
     if dtest is not None:
         dtrain[0].remove_duplicates_from_iter(dtest)
+    print("Sampling data loading completed.")
     return dtrain, dtest
 
 
@@ -416,7 +441,7 @@ def train(options, directory, domain_path, problem_list):
 
     epoch_counter = 0
     while epoch_counter < options.epochs and (current_success_rate < 99.9 or epochs_since_improvement < 5):
-        print("Starting Epoch %d" % epoch_counter)
+        print("Starting Epoch %d" % (epoch_counter + 1))
         # number of explorations reaching a goal state
         solved_explorations = 0
         # number of total explorations executed
@@ -427,7 +452,7 @@ def train(options, directory, domain_path, problem_list):
             if options.dry:
                 continue
 
-            _, task_meta = create_pddl_task(domain_path, problem_path)
+            _, task_meta = create_pddl_task(options, domain_path, problem_path)
             start_time = timing(start_time, "PDDL translation time: %ss")
 
             asnet_model = create_asnet_model(task_meta, options, extra_input_size, previous_asnet_weights)
@@ -518,7 +543,6 @@ def evaluate(options, directory, domain_path, problem_list):
 
 def main(argv):
     options = pasnet.parse_args(argv[1:])
-
     # check that domain file is present
     directory = options.directory
     if directory is None:

@@ -149,10 +149,10 @@ def load_sample_line(line, data_container, old_hashs, extra_input_size):
 
     # extract all data fields
     problem_hash = data[0]
-    goal_values = [ast.literal_eval(data[1])]
-    state_values = [ast.literal_eval(data[2])]
-    applicable_values = [ast.literal_eval(data[3])]
-    opt_values = [ast.literal_eval(data[4])]
+    goal_values = ast.literal_eval(data[1])
+    state_values = ast.literal_eval(data[2])
+    applicable_values = ast.literal_eval(data[3])
+    opt_values = ast.literal_eval(data[4])
 
     sample_list = [problem_hash,
                    goal_values,
@@ -161,7 +161,7 @@ def load_sample_line(line, data_container, old_hashs, extra_input_size):
                    opt_values]
 
     if extra_input_size > 0:
-        additional_input_values = [ast.literal_eval(data[5])]
+        additional_input_values = ast.literal_eval(data[5])
         sample_list.append(additional_input_values)
 
     if data_container is not None:
