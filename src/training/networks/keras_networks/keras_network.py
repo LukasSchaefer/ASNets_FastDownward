@@ -200,15 +200,6 @@ class KerasNetwork(Network):
         :param dtest: List of SampleBatchData for testing
         :return:
         """
-        steps_per_epoch = None
-        for data_set in dtrain:
-            for type in data_set.data:
-                number_of_batches = len(data_set.data[type])
-                if steps_per_epoch is None:
-                    steps_per_epoch = number_of_batches
-                else:
-                    assert steps_per_epoch == number_of_batches, "Number of batches in data sets does not match!"
-
         dtrain = self._convert_data(dtrain)
         kdg_train = KerasDataGenerator(
             dtrain,
@@ -242,8 +233,7 @@ class KerasNetwork(Network):
                 validation_steps=None, class_weight=None,
                 max_queue_size=10, workers=1,
                 use_multiprocessing=False,
-                shuffle=True, initial_epoch=0,
-                steps_per_epoch=steps_per_epoch)
+                shuffle=True, initial_epoch=0)
 
             shall_reinitialize = self._callbacks_check(
                 lambda x: x.shall_reinitialize(), lambda x, y: x or y, False)
