@@ -1,10 +1,9 @@
-from .keras_network import KerasNetwork, KerasNetwork
+from .keras_network import KerasNetwork
 
 from ... import parser_tools as parset
 from ... import parser
 from ... import main_register
 
-import keras
 import numpy as np
 
 
