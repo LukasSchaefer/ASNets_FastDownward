@@ -269,7 +269,8 @@ def create_asnet_model(task_meta, options, extra_input_size, weights_path=None):
     :return: Keras ASNet Model
     """
     print("Building the ASNet keras model...")
-    asnet_builder = ASNet_Model_Builder(task_meta)
+    asnet_builder = ASNet_Model_Builder(task_meta, options.print_all)
+    print("Builder done")
     asnet_model = asnet_builder.build_asnet_keras_model(options.number_of_layers,
                                                         options.hidden_rep_size,
                                                         options.activation,
@@ -277,7 +278,9 @@ def create_asnet_model(task_meta, options, extra_input_size, weights_path=None):
                                                         options.kernel_initializer,
                                                         options.bias_initializer,
                                                         extra_input_size)
+    print("Build keras model done")
     asnet_model.compile(loss=custom_binary_crossentropy, optimizer=options.optimizer)
+    print("Compile done")
     if weights_path:
         print("Loading previous weights")
         asnet_model.load_weights(weights_path, by_name=True)
@@ -294,7 +297,8 @@ def prepare_and_construct_network_before_loading(extra_input_size, model):
     :return: KerasASNet Network-object
     """
     network = KerasASNet(extra_input_size=extra_input_size,
-                         model=model)
+                         model=model,
+                         epochs=10)
 
     return network
 
@@ -493,11 +497,12 @@ def train(options, directory, domain_path, problem_list):
             asnet.train(dtrain, dtest)
             start_time = timing(start_time, "Network training time: %ss")
 
-            asnet.evaluate(dtest)
-            start_time = timing(start_time, "Network evaluation time: %ss")
+            if dtest:
+                asnet.evaluate(dtest)
+                start_time = timing(start_time, "Network evaluation time: %ss")
 
-            asnet.analyse(prefix=options.prefix)
-            start_time = timing(start_time, "Network analysis time: %ss")
+                asnet.analyse(prefix=options.prefix)
+                start_time = timing(start_time, "Network analysis time: %ss")
 
             asnet.finalize(**options.finalize)
             _ = timing(start_time, "Network finalization time: %ss")

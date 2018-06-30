@@ -11,12 +11,14 @@ from utils import masked_softmax
 class ASNet_Model_Builder():
     """responsible for building the keras model of Action Schema Networks"""
 
-    def __init__(self, problem_meta):
+    def __init__(self, problem_meta, print_all):
         """
         :param problem_meta: ASNet specific meta informations about the underlying
             PDDL task
+        :param print_all: bool value indicating whether all steps should be printed
         """
         self.problem_meta = problem_meta
+        self.print_all = print_all
 
         # initialize all layer counters for unique naming
         # dicts for unique counter per predicate name
@@ -387,7 +389,11 @@ class ASNet_Model_Builder():
         for layer_index in range(self.num_layers):
             # list of outputs of all action modules in layer_index layer
             action_layer_outputs = []
+            if self.print_all:
+                print("Building act layer %d" % layer_index)
             for action_index, propositional_action in enumerate(self.problem_meta.propositional_actions):
+                if self.print_all:
+                    print("Computing output of %s" % propositional_action.name)
                 if layer_index == 0:
                     # list of ids (= indeces) of related propositions
                     related_proposition_ids = self.problem_meta.prop_action_to_related_gr_pred_ids[
@@ -413,7 +419,11 @@ class ASNet_Model_Builder():
 
             # list of outputs of all proposition modules in layer_index layer
             proposition_layer_outputs = []
+            if self.print_all:
+                print("Build Prop layer %d" % layer_index)
             for proposition_index, proposition in enumerate(self.problem_meta.grounded_predicates):
+                if self.print_all:
+                    print("Computing output of %s" % proposition.__str__())
                 # compute corresponding proposition input tensor
                 input_tensor = self.__make_proposition_module_input(proposition, action_layers_outputs[layer_index], layer_index)
 
@@ -427,12 +437,16 @@ class ASNet_Model_Builder():
 
         # last action layer
         outputs = []
+        if self.print_all:
+            print("Build last layer")
         for action_index, propositional_action in enumerate(self.problem_meta.propositional_actions):
             input_tensor = self.__make_action_module_input(propositional_action, proposition_layers_outputs[-1], layer_index + 1)
             action_module = action_layers_modules[-1][propositional_action.get_underlying_action_name()]
             # compute output of action module and add to the list for output tensors
             outputs.append(action_module(input_tensor))
 
+        if self.print_all:
+            print("Computing final output")
         outputs = concatenate(outputs, name="final_outputs_concatenation")
         policy_output = masked_softmax(outputs, self.action_applicable_values)
         if self.extra_input_size:
@@ -514,6 +528,8 @@ class ASNet_Model_Builder():
         # Similarly proposition_layers_modules is a list of dicts where the ith dict corresponds
         # to the ith proposition layer's modules mapping from predicate names to the module
         action_layers_modules, proposition_layers_modules = self.__make_modules()
+        if self.print_all:
+            print("Modules built")
 
         asnet_model = self.__make_network(action_layers_modules, proposition_layers_modules)
 
