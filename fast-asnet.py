@@ -10,6 +10,7 @@ import subprocess
 import time
 
 import numpy as np
+from keras.optimizers import Adam
 
 sys.path.append("network_models/asnets")
 from problem_meta import ProblemMeta
@@ -87,7 +88,7 @@ pasnet.add_argument("--epochs", type=int,
                      action="store", default=300,
                      help="Number of epochs of sampling and training on each problem during training.")
 pasnet.add_argument("--problem_epochs", type=int,
-                     action="store", default=50,
+                     action="store", default=128,
                      help="Number of epochs of training after sampling for one problem.")
 pasnet.add_argument("--delete", action="store_true",
                      help="Flag indicating whether the sample file will be deleted "
@@ -128,7 +129,7 @@ pasnet.add_argument("-act", "--activation", type=str,
                     help="Name of activation function to be used in all modules of all "
                          "layers but the last output layer")
 pasnet.add_argument("-drop", "--dropout", type=float,
-                    action="store", default=0.0,
+                    action="store", default=0.25,
                     help="Dropout rate used in every intermediate node (= probability to "
                          "deactivate intermediate nodes)")
 pasnet.add_argument("-ki", "--kernel_initializer", type=str,
@@ -138,6 +139,10 @@ pasnet.add_argument("-ki", "--kernel_initializer", type=str,
 pasnet.add_argument("-bi", "--bias_initializer", type=str,
                     action="store", default='zeros',
                     help="Initializer to be used for all bias vectors of all modules")
+pasnet.add_argument("--regularizer_value", type=float,
+                    action="store", default=0.001,
+                    help="Regularization value used for L2 regularization applied to all "
+                         "weights (including bias vectors)")
 pasnet.add_argument("--extra_input_features", type=str,
                     action="store", default=None,
                     help="Additional input features per action. This involves additional "
@@ -145,7 +150,11 @@ pasnet.add_argument("--extra_input_features", type=str,
                          "these landmark inputs are 'landmarks' or 'binary_landmarks'.")
 pasnet.add_argument("-opt", "--optimizer", type=str,
                     action="store", default='adam',
-                    help="Optimizer to be used during training")
+                    help="Optimizer to be used during training (usually Adam with "
+                         "potentially adapted learning rate).")
+pasnet.add_argument("-lr", "--learning_rate", type=float,
+                    action="store", default=0.0005,
+                    help="Learning rate used for (Adam) Optimizer.")
 
 arguments = set()
 for action in pasnet._actions:
@@ -261,7 +270,10 @@ def create_asnet_model(task_meta, options, extra_input_size, weights_path=None):
                               of all modules
         - bias_initializer: initializer to be used for all bias vectors
                             of all modules
+        - regularizer_value: regularization value used for L2 regularization applied
+                             to all weights (included bias vectors)
         - optimizer: optimizer to be used during training
+        - learning_rate: learning rate to use for (Adam) Optimizer
         - loss: loss function to be used during training
     :param extra_input_size: size of additional input features per action
                              This usually involves additional heuristic input features
@@ -279,8 +291,13 @@ def create_asnet_model(task_meta, options, extra_input_size, weights_path=None):
                                                         options.dropout,
                                                         options.kernel_initializer,
                                                         options.bias_initializer,
+                                                        options.regularizer_value,
                                                         extra_input_size)
-    asnet_model.compile(loss=custom_binary_crossentropy, optimizer=options.optimizer)
+    if options.optimizer == 'adam':
+        optimizer = Adam(lr=options.learning_rate)
+    else:
+        optimizer = options.optimizer
+    asnet_model.compile(loss=custom_binary_crossentropy, optimizer=optimizer)
     if weights_path:
         print("Loading previous weights")
         asnet_model.load_weights(weights_path, by_name=True)

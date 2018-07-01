@@ -2,6 +2,7 @@ import os
 import sys
 from keras.models import Model
 from keras.layers import Input, Dense, Dropout, Lambda, concatenate, GlobalMaxPooling1D
+from keras import regularizers
 from keras import backend as K
 
 import problem_meta
@@ -53,6 +54,8 @@ class ASNet_Model_Builder():
                      use_bias=True,
                      kernel_initializer=self.kernel_initializer,
                      bias_initializer=self.bias_initializer,
+                     kernel_regularizer=regularizers.l2(self.regularizer_value),
+                     bias_regularizer=regularizers.l2(self.regularizer_value),
                      name=mod_name)
 
 
@@ -79,6 +82,8 @@ class ASNet_Model_Builder():
                      use_bias=True,
                      kernel_initializer=self.kernel_initializer,
                      bias_initializer=self.bias_initializer,
+                     kernel_regularizer=regularizers.l2(self.regularizer_value),
+                     bias_regularizer=regularizers.l2(self.regularizer_value),
                      name=mod_name)
 
 
@@ -101,6 +106,8 @@ class ASNet_Model_Builder():
                      use_bias=True,
                      kernel_initializer=self.kernel_initializer,
                      bias_initializer=self.bias_initializer,
+                     kernel_regularizer=regularizers.l2(self.regularizer_value),
+                     bias_regularizer=regularizers.l2(self.regularizer_value),
                      name=mod_name)
 
 
@@ -464,9 +471,10 @@ class ASNet_Model_Builder():
                                 num_layers,
                                 hidden_representation_size=16,
                                 activation='relu',
-                                dropout=0.0,
+                                dropout=0.25,
                                 kernel_initializer='glorot_normal',
                                 bias_initializer='zeros',
+                                regularizer_value=0.001,
                                 extra_input_size=0):
         """
         builds and returns a keras network model for Action Schema Networks
@@ -482,6 +490,8 @@ class ASNet_Model_Builder():
             of all modules
         :param bias_initializer: initializer to be used for all bias vectors
             of all modules
+        :param regularizer_value: value used for all L2 regularizations applied
+            to all weights (-matrices and bias vectors!)
         :param extra_input_size: size of additional input features per action
             This usually involves additional heuristic input features like values
             indicating landmark values for actions (as used in the paper of Toyer
@@ -494,6 +504,7 @@ class ASNet_Model_Builder():
         self.dropout = dropout
         self.kernel_initializer = kernel_initializer
         self.bias_initializer = bias_initializer
+        self.regularizer_value = regularizer_value
         self.extra_input_size = extra_input_size
 
         assert num_layers >= 1, "There has to be at least 1 layer!"
