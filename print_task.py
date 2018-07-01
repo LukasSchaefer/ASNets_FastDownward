@@ -104,11 +104,11 @@ def main(argv):
         task_meta = ProblemMeta(pddl_task, propositional_actions, grounded_predicates)
         assert_correct_len_relatedness_of_propositional_actions(task_meta)
 
-        print_propositional_actions(task_meta)
-        print_grounded_predicates(task_meta)
+        # print_propositional_actions(task_meta)
+        # print_grounded_predicates(task_meta)
 
-        print_predicates(task_meta)
-        print_actions(task_meta)
+        # print_predicates(task_meta)
+        # print_actions(task_meta)
 
         # asnet_builder = ASNet_Model_Builder(task_meta, False)
         # asnet_model = asnet_builder.build_asnet_keras_model(1, dropout=0.25)
