@@ -195,11 +195,7 @@ class ASNetSampleBridge(SamplerBridge):
         self._sample_path = sample_path
         self._delete = delete
         if self._provide:
-            error_message = "The 'provide' parameter has no effect on the ASNetSampleBridge."
-            if sys.version_info[0] < 3:
-                print >> sys.stderr, error_message
-            else:
-                print(error_message, file=sys.stderr)
+            print("The 'provide' parameter has no effect on the ASNetSampleBridge.", file=sys.stderr)
 
     def _initialize(self):
         pass

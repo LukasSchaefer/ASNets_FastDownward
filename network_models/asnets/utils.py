@@ -69,7 +69,7 @@ def custom_binary_crossentropy(y_true, y_pred):
     custom binary crossentropy loss-function out of Action Schema Networks: Generalised Policies
     with Deep Learning (https://arxiv.org/abs/1709.04271)
 
-    :param y_true: opt-value for each action indicating whether the action starts an optimal
+    :param y_true: opt-value (binary value 0 or 1) for each action indicating whether the action starts an optimal
                    plan according to the teacher policy
     :param y_pred: prediction = probabilities of the network to choose each action for
                    all actions 

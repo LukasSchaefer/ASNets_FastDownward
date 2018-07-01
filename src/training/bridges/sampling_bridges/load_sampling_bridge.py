@@ -40,11 +40,7 @@ class LoadSampleBridge(SamplerBridge):
         self._skip = skip
         self._skip_magic = skip_magic
         if self._provide:
-            error_message = "The 'provide' parameter has no effect on the LoadSampleBridge."
-            if sys.version_info[0] < 3:
-                print >> sys.stderr, error_message
-            else:
-                print(error_message, file=sys.stderr)
+            print("The 'provide' parameter has no effect on the LoadSampleBridge.", file=sys.stderr)
 
     def _initialize(self):
         pass

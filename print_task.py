@@ -10,6 +10,8 @@ sys.path.append("network_models/asnets")
 from problem_meta import ProblemMeta
 from asnet_keras_model import ASNet_Model_Builder
 
+from keras.models import load_model
+
 
 def print_grounded_predicates(task_meta):
     print("Grounded Predicates:")
@@ -108,7 +110,7 @@ def main(argv):
         print_predicates(task_meta)
         print_actions(task_meta)
 
-        # asnet_builder = ASNet_Model_Builder(task_meta)
+        # asnet_builder = ASNet_Model_Builder(task_meta, False)
         # asnet_model = asnet_builder.build_asnet_keras_model(1, dropout=0.25)
         # print(asnet_model.summary())
 

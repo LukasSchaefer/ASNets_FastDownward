@@ -51,7 +51,7 @@ void ASNet::initialize_inputs() {
 }
 
 void ASNet::initialize_output_layers() {
-    output_layers.push_back("softmax_div_output/truediv");
+    output_layers.push_back("softmax_div_output/div");
 }
 
 

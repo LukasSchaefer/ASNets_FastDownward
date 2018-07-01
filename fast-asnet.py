@@ -85,7 +85,10 @@ pasnet.add_argument("--sort_problems", type=bool,
                           "be sorted by difficulty.")
 pasnet.add_argument("--epochs", type=int,
                      action="store", default=300,
-                     help="Number of epochs during training.")
+                     help="Number of epochs of sampling and training on each problem during training.")
+pasnet.add_argument("--problem_epochs", type=int,
+                     action="store", default=50,
+                     help="Number of epochs of training after sampling for one problem.")
 pasnet.add_argument("--delete", action="store_true",
                      help="Flag indicating whether the sample file will be deleted "
                      "after data extraction.")
@@ -270,7 +273,6 @@ def create_asnet_model(task_meta, options, extra_input_size, weights_path=None):
     """
     print("Building the ASNet keras model...")
     asnet_builder = ASNet_Model_Builder(task_meta, options.print_all)
-    print("Builder done")
     asnet_model = asnet_builder.build_asnet_keras_model(options.number_of_layers,
                                                         options.hidden_rep_size,
                                                         options.activation,
@@ -278,27 +280,25 @@ def create_asnet_model(task_meta, options, extra_input_size, weights_path=None):
                                                         options.kernel_initializer,
                                                         options.bias_initializer,
                                                         extra_input_size)
-    print("Build keras model done")
     asnet_model.compile(loss=custom_binary_crossentropy, optimizer=options.optimizer)
-    print("Compile done")
     if weights_path:
         print("Loading previous weights")
         asnet_model.load_weights(weights_path, by_name=True)
-    print("Done building the model")
     return asnet_model
 
 
-def prepare_and_construct_network_before_loading(extra_input_size, model):
+def prepare_and_construct_network_before_loading(options, extra_input_size, model):
     """
     Constructs KerasASNet Network for training etc. with the given model
 
+    :param options: parser options for problem epochs
     :param extra_input_size: size for additional input features per action
     :param model: built keras asnet model
     :return: KerasASNet Network-object
     """
     network = KerasASNet(extra_input_size=extra_input_size,
                          model=model,
-                         epochs=10)
+                         epochs=options.problem_epochs)
 
     return network
 
@@ -327,7 +327,6 @@ def sample(options, directory, domain_path, problem_path, extra_input_size):
         subprocess.call(cmd)
     else:
         execute_cmd_without_output(cmd)
-    print("Sampling search done.")
 
 
 def exploration_explored_goal(sample_path):
@@ -390,7 +389,6 @@ def load_data(options, directory, domain_path, problem_path, extra_input_size):
         dtest[0].add_data(splitted)
     if dtest is not None:
         dtrain[0].remove_duplicates_from_iter(dtest)
-    print("Sampling data loading completed.")
     return dtrain, dtest
 
 
@@ -433,7 +431,11 @@ def train(options, directory, domain_path, problem_list):
     # path to previous weight file (or None if not existing)
     previous_asnet_weights = options.weights
 
-    asnet = None
+    # asnet model to save weights after final epoch for evaluation
+    asnet_model = None
+    # problem model dict: problem_path -> problem_asnet_model
+    problem_model_dict = {}
+
     # success_rate = percentage of network exploration runs during sampling which reach a
     #                goal state
     # best success rate over all epochs
@@ -447,6 +449,7 @@ def train(options, directory, domain_path, problem_list):
 
     epoch_counter = 0
     while epoch_counter < options.epochs and (current_success_rate < 99.9 or epochs_since_improvement < 5):
+        print()
         print("Starting Epoch %d" % (epoch_counter + 1))
         # number of explorations reaching a goal state
         solved_explorations = 0
@@ -458,13 +461,18 @@ def train(options, directory, domain_path, problem_list):
             if options.dry:
                 continue
 
-            _, task_meta = create_pddl_task(options, domain_path, problem_path)
-            start_time = timing(start_time, "PDDL translation time: %ss")
+            # access built model if already in dict
+            if problem_path in problem_model_dict.keys():
+                asnet_model = problem_model_dict[problem_path]
+                print("Accessing already built model for %s" % problem_path)
+            else:
+                _, task_meta = create_pddl_task(options, domain_path, problem_path)
+                start_time = timing(start_time, "PDDL translation time: %ss")
+                asnet_model = create_asnet_model(task_meta, options, extra_input_size, previous_asnet_weights)
+                start_time = timing(start_time, "Keras model creation time: %ss")
+                problem_model_dict[problem_path] = asnet_model
 
-            asnet_model = create_asnet_model(task_meta, options, extra_input_size, previous_asnet_weights)
-            start_time = timing(start_time, "Keras model creation time: %ss")
-
-            asnet = prepare_and_construct_network_before_loading(extra_input_size, asnet_model)
+            asnet = prepare_and_construct_network_before_loading(options, extra_input_size, asnet_model)
 
             # store protobuf network file for fast-downward sampling
             if os.path.isfile(os.path.join(directory, "asnet.pb")):
@@ -526,15 +534,25 @@ def train(options, directory, domain_path, problem_list):
         if current_success_rate > best_success_rate:
             print("This is the new best success rate!")
             best_success_rate = current_success_rate
+
+        epoch_counter+= 1
         
     if (current_success_rate >= 99.9 and epochs_since_improvement >= 5):
         print("EARLY TRAINING TERMINATION:")
         print("The success rate is with %d% >= 99.9% and there were no significant "
               "improvements of the success rate for %d epochs." % (current_success_rate, epochs_since_improvement))
 
-    # save model in protobuf for fast-downward
-    if asnet is not None:
-        asnet._store(os.path.join(directory, "asnet"), NetworkFormat.protobuf)
+    # delete remaining weights and model and sample data
+    if os.path.isfile(os.path.join(directory, "asnet.pb")):
+        os.remove(os.path.join(directory, "asnet.pb"))
+    if os.path.isfile(os.path.join(directory, "sample.data")):
+        os.remove(os.path.join(directory, "sample.data"))
+    if os.path.isfile(os.path.join(directory, "asnet_weights.h5")):
+        os.remove(os.path.join(directory, "asnet_weights.h5"))
+
+    # save final model weights
+    if asnet_model is not None:
+        asnet_model.save_weights("asnet_final_weights.h5")
 
 
 def evaluate(options, directory, domain_path, problem_list):
