@@ -1,4 +1,5 @@
 from .keras_network import KerasNetwork
+from .keras_tools import KerasDataGenerator
 
 from ... import parser_tools as parset
 from ... import parser
@@ -57,6 +58,65 @@ class KerasASNet(KerasNetwork):
         self._y_converter = lambda y: [np.stack(y[:,0], axis=0)]
 
         self._count_samples_hasher = lambda x, y: hash(str((x, y)))
+
+
+    def print_data(self, dtrain):
+        """
+        Check training data and print them all
+        """
+        dtrain = self._convert_data(dtrain)
+        kdg_train = KerasDataGenerator(
+            dtrain,
+            x_fields=None if self._x_fields_extractor is None else self._x_fields_extractor(dtrain[0]),
+            y_fields=None if self._y_fields_extractor is None else self._y_fields_extractor(dtrain[0]),
+            x_converter=self._x_converter,
+            y_converter=self._y_converter,
+            shuffle=True,
+            count_diff_samples=self._count_samples_hasher if self._count_samples else None)
+
+        for batch in range(kdg_train.__len__()):
+            x, y = kdg_train[batch]
+            assert len(x) == 3, "Not 3 arrays in x train data!"
+            print()
+            print("Batch %d:" % batch)
+            for sample_idx in range(len(x[0])):
+                print("Sample %d:" % sample_idx)
+                print("X:")
+                print("Proposition truth values:")
+                print(x[0][sample_idx])
+                print("Proposition goal values:")
+                print(x[1][sample_idx])
+                print("Applicable values:")
+                print(x[2][sample_idx])
+                print("Y:")
+                print(y[0][sample_idx])
+
+            print()
+            print("Loss:")
+            pred = None
+            for arr in x[2]:
+                sum = np.sum(arr)
+                p = arr / sum
+                if pred is None:
+                    pred = [p]
+                else:
+                    pred = np.append(pred, [p], axis=0)
+                assert np.sum(pred[-1]) == 1, "Sum of prediction is not 1"
+            y = y[0]
+            pred = np.clip(pred, 1e-8, 1 - 1e-8)
+            ones = np.ones(y.shape)
+            out = -(y * np.log(pred) + (ones - y) * np.log(ones - pred))
+            loss = np.sum(out, axis=-1)
+            for sample_idx in range(len(pred)):
+                print()
+                print("Sample %d:" % sample_idx)
+                print("Pred:")
+                print(pred[sample_idx])
+                print("Y:")
+                print(y[sample_idx])
+                # print("Out:")
+                # print(out[sample_idx])
+                print("Loss: %d" % loss[sample_idx])
 
 
     def _initialize_general(self, *args, **kwargs):

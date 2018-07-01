@@ -90,9 +90,12 @@ pasnet.add_argument("--epochs", type=int,
 pasnet.add_argument("--problem_epochs", type=int,
                      action="store", default=128,
                      help="Number of epochs of training after sampling for one problem.")
+pasnet.add_argument("--no_accumulating_samples", action="store_true",
+                     help="Flag deactivating accumulation of samples (activating "
+                          "deletion in bridge after sample data extraction.")
 pasnet.add_argument("--delete", action="store_true",
-                     help="Flag indicating whether the sample file will be deleted "
-                     "after data extraction.")
+                     help="If flag ist set then all sample and network data is deleted "
+                          "after the entire training/ evaluation process.")
 pasnet.add_argument("--print_all", action="store_true",
                      help="Show all intermediate prints.")
 
@@ -153,7 +156,7 @@ pasnet.add_argument("-opt", "--optimizer", type=str,
                     help="Optimizer to be used during training (usually Adam with "
                          "potentially adapted learning rate).")
 pasnet.add_argument("-lr", "--learning_rate", type=float,
-                    action="store", default=0.0005,
+                    action="store", default=0.001,
                     help="Learning rate used for (Adam) Optimizer.")
 
 arguments = set()
@@ -382,7 +385,7 @@ def load_data(options, directory, domain_path, problem_path, extra_input_size):
     bridge = ASNetSampleBridge(sample_path=os.path.join(directory, "sample.data"),
                                domain=domain_path, prune=True, forget=options.forget,
                                skip=options.skip, extra_input_size=extra_input_size,
-                               delete=options.delete)
+                               delete=options.no_accumulating_samples)
 
     dtrain, dtest = None, None
     # We create a test set
@@ -426,7 +429,8 @@ def train(options, directory, domain_path, problem_list):
     :param problem_list: list of paths to problem files of the domain
     :return: 
     """
-    start_time = time.time()
+    begin_train_time = time.time()
+    start_time = begin_train_time
     if options.verification is not None:
         options.verification = re.compile(options.verification)
     
@@ -445,6 +449,10 @@ def train(options, directory, domain_path, problem_list):
 
     start_time = timing(start_time, "Parsing time: %ss")
 
+    # remove old sample data
+    if os.path.isfile(os.path.join(directory, "sample.data")):
+        os.remove(os.path.join(directory, "sample.data"))
+
     # path to previous weight file (or None if not existing)
     previous_asnet_weights = options.weights
 
@@ -456,7 +464,7 @@ def train(options, directory, domain_path, problem_list):
     # success_rate = percentage of network exploration runs during sampling which reach a
     #                goal state
     # best success rate over all epochs
-    best_success_rate = 0.0
+    best_success_rate = -1
     # success rate of current epoch
     current_success_rate = 0.0
 
@@ -519,6 +527,8 @@ def train(options, directory, domain_path, problem_list):
             asnet.initialize(None, **options.initialize)
             start_time = timing(start_time, "Network initialization time: %ss")
 
+            # asnet.print_data(dtrain)
+
             asnet.train(dtrain, dtest)
             start_time = timing(start_time, "Network training time: %ss")
 
@@ -533,6 +543,7 @@ def train(options, directory, domain_path, problem_list):
             _ = timing(start_time, "Network finalization time: %ss")
 
             # saving weights for next problem instance
+            print("Storing weights in %s" % os.path.join(directory, "asnet_weights.h5"))
             if previous_asnet_weights is not None:
                 os.remove(previous_asnet_weights)
             asnet._store_weights(os.path.join(directory, "asnet_weights.h5"))
@@ -560,16 +571,21 @@ def train(options, directory, domain_path, problem_list):
               "improvements of the success rate for %d epochs." % (current_success_rate, epochs_since_improvement))
 
     # delete remaining weights and model and sample data
-    if os.path.isfile(os.path.join(directory, "asnet.pb")):
-        os.remove(os.path.join(directory, "asnet.pb"))
-    if os.path.isfile(os.path.join(directory, "sample.data")):
-        os.remove(os.path.join(directory, "sample.data"))
-    if os.path.isfile(os.path.join(directory, "asnet_weights.h5")):
-        os.remove(os.path.join(directory, "asnet_weights.h5"))
+    if options.delete:
+        print("Deleting network files and sample data")
+        if os.path.isfile(os.path.join(directory, "asnet.pb")):
+            os.remove(os.path.join(directory, "asnet.pb"))
+        if os.path.isfile(os.path.join(directory, "sample.data")):
+            os.remove(os.path.join(directory, "sample.data"))
+        if os.path.isfile(os.path.join(directory, "asnet_weights.h5")):
+            os.remove(os.path.join(directory, "asnet_weights.h5"))
 
     # save final model weights
+    print("Saving final weights in %s" % os.path.join(directory, "asnet_final_weights.h5"))
     if asnet_model is not None:
-        asnet_model.save_weights("asnet_final_weights.h5")
+        asnet_model.save_weights(os.path.join(directory, "asnet_final_weights.h5"))
+
+    _ = timing(begin_train_time, "Entire training time: %ss")
 
 
 def evaluate(options, directory, domain_path, problem_list):
