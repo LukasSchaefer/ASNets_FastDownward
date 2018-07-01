@@ -93,25 +93,25 @@ class KerasASNet(KerasNetwork):
 
             print()
             print("Loss:")
-            pred = None
+            uniform_probs = None
             for arr in x[2]:
                 sum = np.sum(arr)
                 p = arr / sum
-                if pred is None:
-                    pred = [p]
+                if uniform_probs is None:
+                    uniform_probs = [p]
                 else:
-                    pred = np.append(pred, [p], axis=0)
-                assert np.sum(pred[-1]) == 1, "Sum of prediction is not 1"
+                    uniform_probs = np.append(uniform_probs, [p], axis=0)
+                assert np.sum(uniform_probs[-1]) == 1, "Sum of prediction is not 1"
             y = y[0]
-            pred = np.clip(pred, 1e-8, 1 - 1e-8)
+            uniform_probs = np.clip(uniform_probs, 1e-8, 1 - 1e-8)
             ones = np.ones(y.shape)
-            out = -(y * np.log(pred) + (ones - y) * np.log(ones - pred))
+            out = -(y * np.log(uniform_probs) + (ones - y) * np.log(ones - uniform_probs))
             loss = np.sum(out, axis=-1)
             for sample_idx in range(len(pred)):
                 print()
                 print("Sample %d:" % sample_idx)
-                print("Pred:")
-                print(pred[sample_idx])
+                print("Uniform Action Probabilities (among all appicable actions):")
+                print(uniform_probs[sample_idx])
                 print("Y:")
                 print(y[sample_idx])
                 # print("Out:")
