@@ -62,6 +62,7 @@ def print_actions(task_meta):
     print("Actions:")
     for action in task_meta.task.actions:
         print(action)
+        action.dump()
         print(task_meta.action_to_related_pred_names[action])
         groundings = task_meta.action_name_to_prop_actions[action.name]
         print("Number of groundings: %d" % len(groundings))
@@ -102,17 +103,18 @@ def main(argv):
         pddl_task.simplify(fluent_predicates)
         
         task_meta = ProblemMeta(pddl_task, propositional_actions, grounded_predicates)
-        assert_correct_len_relatedness_of_propositional_actions(task_meta)
 
-        # print_propositional_actions(task_meta)
+        print_propositional_actions(task_meta)
         # print_grounded_predicates(task_meta)
 
+        print_actions(task_meta)
         # print_predicates(task_meta)
-        # print_actions(task_meta)
 
-        # asnet_builder = ASNet_Model_Builder(task_meta, False)
-        # asnet_model = asnet_builder.build_asnet_keras_model(1, dropout=0.25)
-        # print(asnet_model.summary())
+        assert_correct_len_relatedness_of_propositional_actions(task_meta)
+
+        asnet_builder = ASNet_Model_Builder(task_meta, False)
+        asnet_model = asnet_builder.build_asnet_keras_model(1, dropout=0.25)
+        print(asnet_model.summary())
 
 
 if __name__ == "__main__":

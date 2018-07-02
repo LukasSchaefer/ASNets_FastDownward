@@ -79,6 +79,13 @@ class Effect(object):
             return Effect(self.parameters, self.condition.relaxed(), self.literal)
     def simplified(self):
         return Effect(self.parameters, self.condition.simplified(), self.literal)
+    def get_literals(self):
+        literals = [self.literal]
+        if isinstance(self.condition, conditions.Literal):
+            literals.append(self.condition)
+        else:
+            literals += self.condition.parts
+        return literals
 
 
 class ConditionalEffect(object):
@@ -113,6 +120,13 @@ class ConditionalEffect(object):
             return ConditionalEffect(self.condition, norm_effect)
     def extract_cost(self):
         return None, self
+    def get_literals(self):
+        literals = self.effect.get_literals()
+        if isinstance(self.condition, conditions.Literal):
+            literals.append(self.condition)
+        else:
+            literals += self.condition.parts
+        return literals
 
 class UniversalEffect(object):
     def __init__(self, parameters, effect):
@@ -141,6 +155,9 @@ class UniversalEffect(object):
             return UniversalEffect(self.parameters, norm_effect)
     def extract_cost(self):
         return None, self
+    def get_literals(self):
+        return self.effect.get_literals()
+
 
 class ConjunctiveEffect(object):
     def __init__(self, effects):
@@ -172,6 +189,11 @@ class ConjunctiveEffect(object):
             else:
                 new_effects.append(effect)
         return cost_effect, ConjunctiveEffect(new_effects)
+    def get_literals(self):
+        literals = []
+        for effect in self.effects:
+            literals += effect.get_literals()
+        return literals
 
 class SimpleEffect(object):
     def __init__(self, effect):
@@ -185,6 +207,9 @@ class SimpleEffect(object):
         return self
     def extract_cost(self):
         return None, self
+    def get_literals(self):
+        return self.effect.get_literals()
+
 
 class CostEffect(object):
     def __init__(self, effect):
@@ -199,3 +224,5 @@ class CostEffect(object):
     def extract_cost(self):
         return self, None # this would only happen if
     #an action has no effect apart from the cost effect
+    def get_literals(self):
+        return self.effect.get_literals()
