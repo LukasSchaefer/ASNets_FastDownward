@@ -28,6 +28,7 @@ from src.training.bridges.sampling_bridges.asnet_sampling_bridge import ASNetSam
 from src.training.misc import StreamContext, StreamDefinition, DomainProperties
 from src.training.networks import Network, NetworkFormat
 from src.training.networks.keras_networks.keras_asnet import KerasASNet
+from src.training.networks.keras_networks.keras_tools import store_keras_model_as_protobuf
 from src.training.problem_sorter.base_sorters import DifficultySorter
 from src.training.samplers import IterableFileSampler
 
@@ -408,12 +409,22 @@ def fd_evaluate(options, domain_path, problem_path, network_path, extra_input_si
     """
     cmd = ['python', 'fast-downward.py',
                 "--build", options.build, domain_path, problem_path,
-                '--search', 'policysearch(p=np(network=asnet(path=' + str(network_path) + ', extra_input_size=' + str(extra_input_size) + ')))']
+                '--search', 'policysearch(p=np(network=asnet(path=' + str(network_path) +
+                ', extra_input_size=' + str(extra_input_size) + ')))']
     print('Running network policy search for ' + problem_path + '...')
-    if options.print_all:
-        subprocess.call(cmd)
-    else:
-        execute_cmd_without_output(cmd)
+    # run process
+    p = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+    # runs command
+    sys.stdout.flush()
+    for line in iter(p.stdout.readline, b''):
+        sys.stdout.flush()
+        if options.print_all:
+            print(line.decode("utf-8").rstrip())
+        if b"Solution found!" in line.rstrip():
+            solution_found = True
+        elif b"No solution - FAILED" in line.rstrip():
+            solution_found = False
+    return solution_found
 
 
 def exploration_explored_goal(sample_path):
@@ -694,6 +705,9 @@ def evaluate(options, directory, domain_path, problem_list):
     # problem model dict: problem_path -> problem_asnet_model
     problem_model_dict = {}
 
+    # solved evaluation counter
+    solved_problems = 0
+
     for problem_index, problem_path in enumerate(problem_list):
         print("Evaluating problem file " + str(problem_path) + " ("
                 + str(problem_index + 1) + "/ " + str(len(problem_list)) + ")")
@@ -711,25 +725,21 @@ def evaluate(options, directory, domain_path, problem_list):
             start_time = timing(start_time, "Keras model creation time: %ss")
             problem_model_dict[problem_path] = asnet_model
 
-        asnet = prepare_and_construct_network_before_loading(options, extra_input_size, asnet_model)
-        start_time = timing(start_time, "Preparing and storing of the network time: %ss")
-
-        asnet.initialize(None, **options.initialize)
-        start_time = timing(start_time, "Network initialization time: %ss")
-
         # store protobuf network file for fast-downward search
-        if os.path.isfile("asnet.pb"):
-            os.remove("asnet.pb")
-        asnet._store("asnet", [NetworkFormat.protobuf])
+        network_file = "asnet.pb"
+        if os.path.isfile(network_file):
+            os.remove(network_file)
+        store_keras_model_as_protobuf(asnet_model, file=network_file)
         start_time = timing(start_time, "Network saving time: %ss")
 
         # execute fast-downward network search
-        network_path = "asnet.pb"
-        fd_evaluate(options, domain_path, problem_path, network_path, extra_input_size)
+        solved_problem = fd_evaluate(options, domain_path, problem_path, network_file, extra_input_size)
         start_time = timing(start_time, "Network search evaluation time: %ss")
-
-        asnet.finalize(**options.finalize)
-        _ = timing(start_time, "Network finalization time: %ss")
+        if solved_problem:
+            solved_problems += 1
+            print("Problem was SOLVED")
+        else:
+            print("Problem was NOT SOLVED")
 
     # delete remaining model file
     if options.delete:
@@ -737,6 +747,7 @@ def evaluate(options, directory, domain_path, problem_list):
         if os.path.isfile(os.path.join(directory, "asnet.pb")):
             os.remove(os.path.join(directory, "asnet.pb"))
 
+    print("Solved %d / %d problems" % (solved_problems, len(problem_list)))
     _ = timing(begin_eval_time, "Entire evaluation time: %ss")
 
 
