@@ -31,42 +31,80 @@ from src.training.networks.keras_networks.keras_asnet import KerasASNet
 from src.training.problem_sorter.base_sorters import DifficultySorter
 from src.training.samplers import IterableFileSampler
 
-DESCRIPTIONS = """Train, sample and evaluate ASNets."""
+DESCRIPTION = """Action Schema Networks (ASNets) Training, Sampling and Evaluation\n
 
-pasnet = argparse.ArgumentParser(description=DESCRIPTIONS)
+The script supports two modes of execution:\n
+\t-t/--train: Trains ASNets on given problems with the given configuration\n
+\t-e/--evaluate: Evaluates ASNets on given problems with the given configuration
+
+Use -h within a block to show the help menu for the block (this ends the processing
+of the block and continues with the next block)
+
+The scripts always need a given directory path after -d/--directory which contains
+a PDDL domain-file 'domain.pddl' with this exact name as well as an arbitrary amount
+of PDDL problem instances of this domain. The training and/ or evaluation will be executed
+on these files.
+
+TRAINING:\n
+Training performs EPOCHS (--epochs EPOCHS; default 300) Epochs in which training is
+performed for each given problem. Training first builds the network model and then
+executes ASNet sampling via a fast-downward sampling search (using a teacher search;
+default A* with LM-Cut heuristic). This process samples a set of states explored
+which are afterwards used to train the network for the current problem in PROBLEM_EPOCHS
+(--problem_epochs PROBLEM_EPOCHS; default 128) training-epochs. After this process the
+learned weights are saved and used in the next iteration (epoch or problem).
+This iterative sampling and training mechanism stops after all EPOCHS are performed or
+the early stopping criteria are met.
+
+EVALUATION:\n
+Evaluation executes a naive network policy search for each problem in the given directory.
+The evaluation process should always be given previously trained weights of ASNets of the
+exact same domain and with the same configuration by the -w/--weights <path_to_weight_file.h5>
+argument. These weights have to be saved in a HDF5 file. This can be achieved in keras by
+using 'model.save_weights(weight_file_path)'. Otherwise new weights have to be generated for
+evaluation which would not be trained and are therefore expected to perform poorly.\n
+
+Example:\n
+./SCRIPT -t -d DIRECTORY OPTIONS - train ASNets on all problems in DIRECTORY with OPTIONS\n
+./SCRIPT -e -d DIRECTORY -w WEIGHT_FILE OPTIONS - loads the weights from WEIGHT_FILE and
+    executes the network policy search for all problems in DIRECTORY with OPTIONS\n
+./SCRIPT -t -e -d DIRECTORY - first train ASNets on all problems in DIRECTORY with OPTIONS
+    and afterwards executes the network policy search for all these problems using the given
+    OPTIONS and the weights obtained from the training"""
+
+pasnet = argparse.ArgumentParser(description=DESCRIPTION)
 
 # arguments generally from fast-training (some were removed/ not necessary or currently used for ASNets):
 pasnet.add_argument("-d", "--directory", type=str,
                     action="store", default=None,
                     help="Path to directory from which to load the "
-                         "training data.")
+                         "training data. This directory must contain "
+                         "a 'domain.pddl' file with this exact name and "
+                         "an arbitrary amount of problem instances of this "
+                         "exact domain.")
 pasnet.add_argument("-w", "--weights", type=str,
                     action="store", default=None,
-                    help="Path to weight file to load weights from.")
+                    help="Path to ASNet HDF5 weight file to load weights from. "
+                         "Note that these weights have to be generated from a "
+                         "ASNet for the same domain as they are intended to be "
+                         "used for (set by -d).")
 pasnet.add_argument("--dry",
                      action="store_true",
-                     help="Tells only which trainings it would perform, but does "
-                          "not perform the training step.")
-pasnet.add_argument("-fin", "--finalize", type=str, nargs="+",
-                    action="store", default=[],
-                    help="List some key=value pairs which are passed "
-                         "as key=value to the networks finalize method.")
-pasnet.add_argument("--forget", type=float,
-                     action="store", default=0.0,
-                     help=("Probability of skipping to load entries of the "
-                           "verification data"))
-pasnet.add_argument("-init", "--initialize", type=str, nargs="+",
-                    action="store", default=[],
-                    help="List some key=value pairs which are passed "
-                         "as key=value to the networks initialize method.")
-pasnet.add_argument("-p", "--prefix", type=str,
-                     action="store", default="",
-                     help="Prefix to add in front of analysis outputs")
+                     help="Tells only which trainings/ evaluations it would perform, but does "
+                          "not perform these step.")
 pasnet.add_argument("--skip",
                      action="store_true",
                      help=("If set, then missing sample files are skipped, "
                            "otherwise every problem file is expected to have "
                            "sample file."))
+pasnet.add_argument("-init", "--initialize", type=str, nargs="+",
+                    action="store", default=[],
+                    help="List some key=value pairs which are passed "
+                         "as key=value to the networks initialize method.")
+pasnet.add_argument("-fin", "--finalize", type=str, nargs="+",
+                    action="store", default=[],
+                    help="List some key=value pairs which are passed "
+                         "as key=value to the networks finalize method.")
 pasnet.add_argument("-v", "--verification", type=str,
                      action="store", default=None,
                      help="Regex for grouping the data set files into 'use for "
@@ -75,6 +113,13 @@ pasnet.add_argument("-vs", "--verification-split", type=float,
                      action="store", default=0.0,
                      help="Fraction of the trainings data to split off for the "
                           "verification data.")
+pasnet.add_argument("--forget", type=float,
+                     action="store", default=0.0,
+                     help="Probability of skipping to load entries of the "
+                           "verification data")
+pasnet.add_argument("-p", "--prefix", type=str,
+                     action="store", default="",
+                     help="Prefix to add in front of analysis outputs")
                           
 pasnet.add_argument("-t", "--train", action="store_true",
                      help="Flag indicating that training should be executed.")
@@ -83,7 +128,8 @@ pasnet.add_argument("-e", "--evaluate", action="store_true",
 pasnet.add_argument("--sort_problems", type=bool,
                      action="store", default=False,
                      help="Boolean value indicating whether the problems should "
-                          "be sorted by difficulty.")
+                          "be sorted by difficulty. Expects certain problem file "
+                          "naming.")
 pasnet.add_argument("--epochs", type=int,
                      action="store", default=300,
                      help="Number of epochs of sampling and training on each problem during training.")
@@ -92,7 +138,7 @@ pasnet.add_argument("--problem_epochs", type=int,
                      help="Number of epochs of training after sampling for one problem.")
 pasnet.add_argument("--no_accumulating_samples", action="store_true",
                      help="Flag deactivating accumulation of samples (activating "
-                          "deletion in bridge after sample data extraction.")
+                          "deletion in bridge after sample data extraction.)")
 pasnet.add_argument("--delete", action="store_true",
                      help="If flag ist set then all sample and network data is deleted "
                           "after the entire training/ evaluation process.")
@@ -182,7 +228,7 @@ def execute_cmd_without_output(cmd):
     Execute cmd subprocess without outputs
     """
     FNULL = open(os.devnull, 'w')
-    retcode = subprocess.call(cmd, stdout=FNULL, stderr=subprocess.STDOUT)
+    _ = subprocess.call(cmd, stdout=FNULL, stderr=subprocess.STDOUT)
 
 def parse_key_value_pairs_to_kwargs(pairs):
     kwargs = {}
@@ -349,9 +395,30 @@ def sample(options, directory, domain_path, problem_path, extra_input_size):
         execute_cmd_without_output(cmd)
 
 
+def fd_evaluate(options, domain_path, problem_path, network_path, extra_input_size):
+    """
+    Execute policysearch with network policy of asnet.pb with given configuration
+
+    :param options: parser options for search configuration
+    :param domain_path: path to domain file
+    :param problem_path: path to problem file to execute search on
+    :param network_path: path to asnet.pb network file to load for network policy
+    :param extra_input_size: size for additional input features per action
+    :return:
+    """
+    cmd = ['python', 'fast-downward.py',
+                "--build", options.build, domain_path, problem_path,
+                '--search', 'policysearch(p=np(network=asnet(path=' + str(network_path) + ', extra_input_size=' + str(extra_input_size) + ')))']
+    print('Running network policy search for ' + problem_path + '...')
+    if options.print_all:
+        subprocess.call(cmd)
+    else:
+        execute_cmd_without_output(cmd)
+
+
 def exploration_explored_goal(sample_path):
     """
-    check whether the network exploration of the sampling creating sample_file
+    Check whether the network exploration of the sampling creating sample_file
     reached a goal state
 
     :param sample_path: path to sample.data file including all sampling information
@@ -359,7 +426,9 @@ def exploration_explored_goal(sample_path):
     """
     sample_file = open(sample_path, 'r')
     sample_lines = [l.strip() for l in sample_file.readlines()]
-    for line in sample_lines:
+    # reversed order so that last sampling result is met first
+    # (otherwise if sampling results are accumulated (default) the old results would be met first)
+    for line in reversed(sample_lines):
         if line == "GOAL_EXPLORATION":
             sample_file.close()
             return True
@@ -599,7 +668,76 @@ def evaluate(options, directory, domain_path, problem_list):
     :param problem_list: list of paths to problem files of the domain
     :return: 
     """
-    # TODO
+    begin_eval_time = time.time()
+    start_time = begin_eval_time
+
+    options.initialize = parse_key_value_pairs_to_kwargs(options.initialize)
+    options.finalize = parse_key_value_pairs_to_kwargs(options.finalize)
+
+    # set extra_input_size per action depending on extra_input_features
+    if options.extra_input_features is None:
+        extra_input_size = 0
+    elif options.extra_input_features == "landmarks":
+        extra_input_size = 2
+    elif options.extra_input_features == "binary_landmarks":
+        extra_input_size = 3
+    else:
+        raise ValueError("Invalid extra input feature value: %s" % options.extra_input_features)
+
+    start_time = timing(start_time, "Parsing time: %ss")
+
+    # path to previous weight file (or None if not existing)
+    asnet_weights = options.weights
+    if asnet_weights is None:
+        print("WARNING: Evaluation is started without given weights! Will use randomly initialized weights.")
+
+    # problem model dict: problem_path -> problem_asnet_model
+    problem_model_dict = {}
+
+    for problem_index, problem_path in enumerate(problem_list):
+        print("Evaluating problem file " + str(problem_path) + " ("
+                + str(problem_index + 1) + "/ " + str(len(problem_list)) + ")")
+        if options.dry:
+            continue
+
+        # access built model if already in dict
+        if problem_path in problem_model_dict.keys():
+            asnet_model = problem_model_dict[problem_path]
+            print("Accessing already built model for %s" % problem_path)
+        else:
+            _, task_meta = create_pddl_task(options, domain_path, problem_path)
+            start_time = timing(start_time, "PDDL translation time: %ss")
+            asnet_model = create_asnet_model(task_meta, options, extra_input_size, asnet_weights)
+            start_time = timing(start_time, "Keras model creation time: %ss")
+            problem_model_dict[problem_path] = asnet_model
+
+        asnet = prepare_and_construct_network_before_loading(options, extra_input_size, asnet_model)
+        start_time = timing(start_time, "Preparing and storing of the network time: %ss")
+
+        asnet.initialize(None, **options.initialize)
+        start_time = timing(start_time, "Network initialization time: %ss")
+
+        # store protobuf network file for fast-downward search
+        if os.path.isfile("asnet.pb"):
+            os.remove("asnet.pb")
+        asnet._store("asnet", [NetworkFormat.protobuf])
+        start_time = timing(start_time, "Network saving time: %ss")
+
+        # execute fast-downward network search
+        network_path = "asnet.pb"
+        fd_evaluate(options, domain_path, problem_path, network_path, extra_input_size)
+        start_time = timing(start_time, "Network search evaluation time: %ss")
+
+        asnet.finalize(**options.finalize)
+        _ = timing(start_time, "Network finalization time: %ss")
+
+    # delete remaining model file
+    if options.delete:
+        print("Deleting network file")
+        if os.path.isfile(os.path.join(directory, "asnet.pb")):
+            os.remove(os.path.join(directory, "asnet.pb"))
+
+    _ = timing(begin_eval_time, "Entire evaluation time: %ss")
 
 
 def main(argv):
@@ -619,6 +757,9 @@ def main(argv):
 
     if options.train:
         train(options, directory, domain_path, problem_list)
+        if options.evaluate:
+            options.weights = os.path.join(directory, "asnet_final_weights.h5")
+            evaluate(options, directory, domain_path, problem_list)
     elif options.evaluate:
         evaluate(options, directory, domain_path, problem_list)
     else:
