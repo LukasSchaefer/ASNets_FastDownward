@@ -1,5 +1,6 @@
 import os
 import sys
+import re
 from keras.models import Model
 from keras.layers import Input, Dense, Dropout, Lambda, concatenate, GlobalMaxPooling1D
 from keras import regularizers
@@ -39,13 +40,13 @@ class ASNet_Model_Builder():
         """
         num_related_predicates = len(self.problem_meta.action_to_related_pred_names[action])
         if layer_index == 0:
-            mod_name = '1st_layer_actmod_' + action.name
+            mod_name = '1st_layer_actmod_' + re.sub(r"\W+", "", action.name)
             # num_related_predicates truth values and goal values -> 2*
             # + 1 for value indicating if action is applicable
             # + extra_dimension for every module in first layer
             input_shape = (2 * num_related_predicates + 1 + self.extra_input_size,)
         else:
-            mod_name = ('%d_layer_actmod_' % layer_index) + action.name
+            mod_name = ('%d_layer_actmod_' % layer_index) + re.sub(r"\W+", "", action.name)
             # for every related proposition, one hidden representation vector as input
             # of the last layer
             input_shape = (num_related_predicates * self.hidden_representation_size,)
@@ -72,7 +73,7 @@ class ASNet_Model_Builder():
                  DOES NOT COMPUTES THE MASKED SOFTMAX YET
         """
         num_related_predicates = len(self.problem_meta.action_to_related_pred_names[action])
-        mod_name = 'last_layer_actmod_' + action.name
+        mod_name = 'last_layer_actmod_' + re.sub(r"\W+", "", action.name)
         # for every related proposition, one hidden representation vector as input
         # of the last layer
         input_shape = (num_related_predicates * self.hidden_representation_size,)
@@ -98,7 +99,7 @@ class ASNet_Model_Builder():
         :return: keras layer representing the module
         """
         num_related_action_schemas = len(self.problem_meta.pred_to_related_action_names[predicate])
-        mod_name = ('%d_layer_propmod_' % layer_index) + predicate.name
+        mod_name = ('%d_layer_propmod_' % layer_index) + re.sub(r"\W+", "", predicate.name)
         # one hidden representation sized input vector
         input_shape = (num_related_action_schemas * self.hidden_representation_size,)
         return Dense(units=self.hidden_representation_size,
@@ -179,7 +180,7 @@ class ASNet_Model_Builder():
         # concatenate related output tensors to new input tensor
         if len(related_outputs) > 1:
             return concatenate(related_outputs, name=('%d_layer_input_concat_' % layer_index) +
-                    propositional_action.name.strip('(').strip(')').replace(' ', '_'))
+                    re.sub(r"\W+", "", propositional_action.name))
         else:
             return related_outputs[0]
 
@@ -231,7 +232,7 @@ class ASNet_Model_Builder():
                 shape_like_tensor = get_index_of_tensor_layer(last_action_module_outputs)
 
                 zeros = Lambda(lambda x: K.zeros_like(x), name=('%d_layer_zeros_' % layer_index) +
-                        proposition.predicate + '_' + str(current_pred_counter) + '.' +
+                        re.sub(r"\W+", "", proposition.predicate) + '_' + str(current_pred_counter) + '.' +
                         str(current_pred_act_schema_counter))(shape_like_tensor)
                 pooled_related_outputs.append(zeros)
             else:
@@ -239,20 +240,20 @@ class ASNet_Model_Builder():
                     concat_tensors = []
                     for index, tensor in enumerate(action_schema_outputs):
                         tensor = Lambda(lambda x: K.expand_dims(x, 1), name=('%d_layer_input_expand_multiple_' % layer_index) +
-                                str(index) + '_' + proposition.predicate + '_' + str(current_pred_counter) + '.' +
+                                str(index) + '_' + re.sub(r"\W+", "", proposition.predicate) + '_' + str(current_pred_counter) + '.' +
                                 str(current_pred_act_schema_counter))(tensor)
                         concat_tensors.append(tensor)
                     concatenated_output = concatenate(concat_tensors, 1, name=('%d_layer_input_concat_' % layer_index) +
-                            proposition.predicate + '_' + str(current_pred_counter) + '.' +
+                            re.sub(r"\W+", "", proposition.predicate) + '_' + str(current_pred_counter) + '.' +
                             str(current_pred_act_schema_counter))
                 else:
                     concatenated_output = action_schema_outputs[0]
                     concatenated_output = Lambda(lambda x: K.expand_dims(x, 1), name=('%d_layer_input_expand_' % layer_index) +
-                            proposition.predicate + '_' + str(current_pred_counter) + '.' +
+                            re.sub(r"\W+", "", proposition.predicate) + '_' + str(current_pred_counter) + '.' +
                             str(current_pred_act_schema_counter))(concatenated_output)
                 # Pool all those output-vectors together to a single output-vector sized vector
                 # expand dim to 3D is needed for MaxPooling to a single (batch_size, hidden_representation_size) tensor
-                pooled_output = GlobalMaxPooling1D(name=('%d_layer_input_pool_' % layer_index) + proposition.predicate + '_' +
+                pooled_output = GlobalMaxPooling1D(name=('%d_layer_input_pool_' % layer_index) + re.sub(r"\W+", "", proposition.predicate) + '_' +
                         str(current_pred_counter) + '.' + str(current_pred_act_schema_counter))(concatenated_output)
                 pooled_related_outputs.append(pooled_output)
             # increase inner action schema counter for pred for next action schema (if existing)
@@ -261,7 +262,7 @@ class ASNet_Model_Builder():
         # concatenate all pooled related output tensors to new input tensor for module
         if len(pooled_related_outputs) > 1:
             return concatenate(pooled_related_outputs, name=('%d_layer_input_pooled_concat_' % layer_index) +
-                    proposition.predicate + '_' + str(current_pred_counter))
+                    re.sub(r"\W+", "", proposition.predicate) + '_' + str(current_pred_counter))
         else:
             return pooled_related_outputs[0]
 
@@ -283,7 +284,7 @@ class ASNet_Model_Builder():
         """
         # build input list
         input_list = []
-        slice_layer_name = "1st_layer_slice_layer_%s" % (propositional_action.name.strip('(').strip(')').replace(' ', '_'))
+        slice_layer_name = "1st_layer_slice_layer_%s" % (re.sub(r"\W+", "", propositional_action.name))
         slice_layer = Lambda(lambda x, start, end: x[:, start: end], name=slice_layer_name)
         # add truth values of related propositions
         for prop_index in related_proposition_ids:
@@ -309,12 +310,12 @@ class ASNet_Model_Builder():
             additional_input_features = slice_layer(self.additional_input_features)
             input_list.append(additional_input_features)
         # convert input list to tensor
-        concatenate_layer_name = "1st_layer_input_%s_concatenate" % (propositional_action.name.strip('(').strip(')').replace(' ', '_'))
+        concatenate_layer_name = "1st_layer_input_%s_concatenate" % (re.sub(r"\W+", "", propositional_action.name))
         input_tensor = concatenate(input_list, name=concatenate_layer_name)
         
         output = action_module(input_tensor)
         if self.dropout:
-            dropout_name = '1st_layer_actmod_' + propositional_action.get_underlying_action_name() + \
+            dropout_name = '1st_layer_actmod_' + re.sub(r"\W+", "", propositional_action.get_underlying_action_name()) + \
                 str(action_index) + '_dropout'
             return Dropout(self.dropout, name=dropout_name)(output)
         else:
@@ -339,7 +340,7 @@ class ASNet_Model_Builder():
         """
         output = action_module(input_tensor)
         if self.dropout:
-            dropout_name = ('%d_layer_actmod_' % layer_index) + propositional_action.get_underlying_action_name() +\
+            dropout_name = ('%d_layer_actmod_' % layer_index) + re.sub(r"\W+", "", propositional_action.get_underlying_action_name()) +\
                 str(action_index) + '_dropout'
             return Dropout(self.dropout, name=dropout_name)(output)
         else:
@@ -364,7 +365,7 @@ class ASNet_Model_Builder():
         """
         output = proposition_module(input_tensor)
         if self.dropout:
-            dropout_name = ('%d_layer_propmod_' % layer_index) + proposition.predicate + str(proposition_index) + '_dropout'
+            dropout_name = ('%d_layer_propmod_' % layer_index) + re.sub(r"\W+", "", proposition.predicate) + str(proposition_index) + '_dropout'
             return Dropout(self.dropout, name=dropout_name)(output)
         else:
             return output
