@@ -230,14 +230,20 @@ class ProblemMeta:
         """
         related_propositions = []
         for proposition in propositional_action.precondition:
+                if proposition.negated:
+                    proposition = proposition.negate()
                 related_propositions.append(proposition.__str__())
                 gr_pred_to_related_prop_action_names[proposition].append(propositional_action.name)
         for _, proposition in propositional_action.add_effects:
             if proposition.__str__() not in related_propositions:
+                if proposition.negated:
+                    proposition = proposition.negate()
                 related_propositions.append(proposition.__str__())
                 gr_pred_to_related_prop_action_names[proposition].append(propositional_action.name)
         for _, proposition in propositional_action.del_effects:
             if proposition.__str__() not in related_propositions:
+                if proposition.negated:
+                    proposition = proposition.negate()
                 related_propositions.append(proposition.__str__())
                 gr_pred_to_related_prop_action_names[proposition].append(propositional_action.name)
 
@@ -315,6 +321,8 @@ class ProblemMeta:
         """
         related_predicates = []
         for part in action.precondition.parts:
+            if part.negated:
+                part = part.negate()
             related_predicates.append(part)
             predicate = self.task._predicate_dict()[part.predicate]
             if action.name not in self.pred_to_related_action_names[predicate]:
