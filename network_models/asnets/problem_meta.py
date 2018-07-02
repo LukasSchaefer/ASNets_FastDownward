@@ -1,3 +1,7 @@
+import sys
+sys.path.append("../../")
+from src.translate.pddl.conditions import Literal
+
 class ProblemMeta:
     """Contains additional information about relations of actions
     and propositions in a pddl-task used for ASNets"""
@@ -230,22 +234,28 @@ class ProblemMeta:
         """
         related_propositions = []
         for proposition in propositional_action.precondition:
-                if proposition.negated:
-                    proposition = proposition.negate()
-                related_propositions.append(proposition.__str__())
-                gr_pred_to_related_prop_action_names[proposition].append(propositional_action.name)
-        for _, proposition in propositional_action.add_effects:
-            if proposition.__str__() not in related_propositions:
-                if proposition.negated:
-                    proposition = proposition.negate()
-                related_propositions.append(proposition.__str__())
-                gr_pred_to_related_prop_action_names[proposition].append(propositional_action.name)
-        for _, proposition in propositional_action.del_effects:
-            if proposition.__str__() not in related_propositions:
-                if proposition.negated:
-                    proposition = proposition.negate()
-                related_propositions.append(proposition.__str__())
-                gr_pred_to_related_prop_action_names[proposition].append(propositional_action.name)
+            if proposition.negated:
+                proposition = proposition.negate()
+            related_propositions.append(proposition.__str__())
+            gr_pred_to_related_prop_action_names[proposition].append(propositional_action.name)
+        for cond_literals, effect_literal in propositional_action.add_effects:
+            literals = [effect_literal]
+            literals += cond_literals
+            for proposition in literals:
+                if proposition.__str__() not in related_propositions:
+                    if proposition.negated:
+                        proposition = proposition.negate()
+                    related_propositions.append(proposition.__str__())
+                    gr_pred_to_related_prop_action_names[proposition].append(propositional_action.name)
+        for cond_literals, effect_literal in propositional_action.del_effects:
+            literals = [effect_literal]
+            literals += cond_literals
+            for proposition in literals:
+                if proposition.__str__() not in related_propositions:
+                    if proposition.negated:
+                        proposition = proposition.negate()
+                    related_propositions.append(proposition.__str__())
+                    gr_pred_to_related_prop_action_names[proposition].append(propositional_action.name)
 
         prop_action_to_related_gr_pred_names[propositional_action] = related_propositions
 
@@ -320,22 +330,29 @@ class ProblemMeta:
         :param action: action to compute related predicates of
         """
         related_predicates = []
-        for part in action.precondition.parts:
-            if part.negated:
-                part = part.negate()
-            related_predicates.append(part)
-            predicate = self.task._predicate_dict()[part.predicate]
+        preconds = []
+        if isinstance(action.precondition, Literal):
+            preconds = [action.precondition]
+        else:
+            preconds = action.precondition.parts
+        for cond in preconds:
+            if cond.negated:
+                cond = cond.negate()
+            related_predicates.append(cond)
+            predicate = self.task._predicate_dict()[cond.predicate]
             if action.name not in self.pred_to_related_action_names[predicate]:
                 self.pred_to_related_action_names[predicate].append(action.name)
         for eff in action.effects:
-            pred = eff.literal
-            if pred.negated:
-                pred = pred.negate()
-            if pred not in related_predicates:
-                related_predicates.append(pred)
-                predicate = self.task._predicate_dict()[pred.predicate]
-                if action.name not in self.pred_to_related_action_names[predicate]:
-                    self.pred_to_related_action_names[predicate].append(action.name)
+            literals = eff.get_literals()
+            for pred in literals:
+                if pred.negated:
+                    pred = pred.negate()
+                if pred not in related_predicates:
+                    if pred.predicate in self.task._predicate_dict().keys():
+                        related_predicates.append(pred)
+                        predicate = self.task._predicate_dict()[pred.predicate]
+                        if action.name not in self.pred_to_related_action_names[predicate]:
+                            self.pred_to_related_action_names[predicate].append(action.name)
 
         self.action_to_related_pred_names[action] = sorted(related_predicates)
 
