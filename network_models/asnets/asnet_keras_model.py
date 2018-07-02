@@ -38,7 +38,7 @@ class ASNet_Model_Builder():
         :param layer_index: index number of the layer this module is built for
         :return: keras layer representing the module
         """
-        num_related_predicates = len(self.problem_meta.action_to_related_pred_names[action])
+        num_related_predicates = len(self.problem_meta.action_to_related_preds[action])
         if layer_index == 0:
             mod_name = '1st_layer_actmod_' + re.sub(r"\W+", "", action.name)
             # num_related_predicates truth values and goal values -> 2*
@@ -72,7 +72,7 @@ class ASNet_Model_Builder():
         :return: keras layer representing the module of the final output layer
                  DOES NOT COMPUTES THE MASKED SOFTMAX YET
         """
-        num_related_predicates = len(self.problem_meta.action_to_related_pred_names[action])
+        num_related_predicates = len(self.problem_meta.action_to_related_preds[action])
         mod_name = 'last_layer_actmod_' + re.sub(r"\W+", "", action.name)
         # for every related proposition, one hidden representation vector as input
         # of the last layer
@@ -98,7 +98,7 @@ class ASNet_Model_Builder():
         :param layer_index: index number of the layer this module is built for
         :return: keras layer representing the module
         """
-        num_related_action_schemas = len(self.problem_meta.pred_to_related_action_names[predicate])
+        num_related_action_schemas = len(self.problem_meta.pred_to_related_actions[predicate])
         mod_name = ('%d_layer_propmod_' % layer_index) + re.sub(r"\W+", "", predicate.name)
         # one hidden representation sized input vector
         input_shape = (num_related_action_schemas * self.hidden_representation_size,)

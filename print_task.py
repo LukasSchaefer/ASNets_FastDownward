@@ -40,7 +40,7 @@ def print_propositional_actions(task_meta):
 
 def assert_correct_len_relatedness_of_propositional_actions(task_meta):
     for action in task_meta.task.actions:
-        number_of_related_predicates = len(task_meta.action_to_related_pred_names[action])
+        number_of_related_predicates = len(task_meta.action_to_related_preds[action])
         for prop_act in task_meta.action_name_to_prop_actions[action.name]:
             assert len(task_meta.prop_action_to_related_gr_pred_names[prop_act]) == number_of_related_predicates,\
                     "Number of related propositions of %s does not match the one of its underlying action\
@@ -51,7 +51,8 @@ def print_predicates(task_meta):
     print("Predicates:")
     for pred in task_meta.task.predicates:
         print(pred)
-        print(task_meta.pred_to_related_action_names[pred])
+        related_action_names = [act.name for act in task_meta.pred_to_related_actions[pred]]
+        print(related_action_names)
         groundings = task_meta.predicate_name_to_grounded_predicates[pred.name]
         print("Number of groundings: %d" % len(groundings))
         print("")
@@ -63,7 +64,7 @@ def print_actions(task_meta):
     for action in task_meta.task.actions:
         print(action)
         action.dump()
-        print(task_meta.action_to_related_pred_names[action])
+        print(task_meta.action_to_related_preds[action])
         groundings = task_meta.action_name_to_prop_actions[action.name]
         print("Number of groundings: %d" % len(groundings))
         print("")
@@ -105,13 +106,14 @@ def main(argv):
         task_meta = ProblemMeta(pddl_task, propositional_actions, grounded_predicates)
 
         print_propositional_actions(task_meta)
-        # print_grounded_predicates(task_meta)
+        print_grounded_predicates(task_meta)
 
         print_actions(task_meta)
-        # print_predicates(task_meta)
+        print_predicates(task_meta)
 
         assert_correct_len_relatedness_of_propositional_actions(task_meta)
 
+        print("Building the model:")
         asnet_builder = ASNet_Model_Builder(task_meta, False)
         asnet_model = asnet_builder.build_asnet_keras_model(1, dropout=0.25)
         print(asnet_model.summary())
