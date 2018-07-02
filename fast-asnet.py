@@ -416,6 +416,7 @@ def fd_evaluate(options, domain_path, problem_path, network_path, extra_input_si
     p = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
     # runs command
     sys.stdout.flush()
+    solution_found = None
     for line in iter(p.stdout.readline, b''):
         sys.stdout.flush()
         if options.print_all:
@@ -424,6 +425,8 @@ def fd_evaluate(options, domain_path, problem_path, network_path, extra_input_si
             solution_found = True
         elif b"No solution - FAILED" in line.rstrip():
             solution_found = False
+    if solution_found is None:
+        raise ValueError("Neither solution found nor failed solution result detected after fast-downward search.")
     return solution_found
 
 

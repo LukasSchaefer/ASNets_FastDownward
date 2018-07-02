@@ -77,6 +77,5 @@ def custom_binary_crossentropy(y_true, y_pred):
     """
     ones = K.ones(K.shape(y_true))
     y_pred = K.clip(y_pred, K.epsilon(), 1.0 - K.epsilon())
-    # out = ((ones - y_true) * K.log(ones - y_pred)) + (y_true * K.log(y_pred))
     out = -(y_true * K.log(y_pred) + (ones - y_true) * K.log(ones - y_pred))
     return K.sum(out, axis=-1)

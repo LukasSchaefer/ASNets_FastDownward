@@ -7,6 +7,7 @@ from keras import backend as K
 
 import problem_meta
 from utils import masked_softmax
+from softmax_layer import SoftmaxOutputLayer
 
 
 class ASNet_Model_Builder():
@@ -455,7 +456,8 @@ class ASNet_Model_Builder():
         if self.print_all:
             print("Computing final output")
         outputs = concatenate(outputs, name="final_outputs_concatenation")
-        policy_output = masked_softmax(outputs, self.action_applicable_values)
+        # policy_output = masked_softmax(outputs, self.action_applicable_values)
+        policy_output = SoftmaxOutputLayer()([outputs, self.action_applicable_values])
         if self.extra_input_size:
             asnet_model = Model(inputs=[self.proposition_truth_values, self.proposition_goal_values,
                 self.action_applicable_values, self.additional_input_features], outputs=policy_output,
