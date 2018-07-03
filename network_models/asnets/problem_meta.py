@@ -108,7 +108,7 @@ class ProblemMeta:
                     pddl_actions_to_remove.append(pddl_actions[pddl_index])
                     pddl_index += 1
                 else:
-                    raise ValueError("Action %s occurs in SAS task but not in PDDL task!" % pddl_actions[pddl_index].name)
+                    raise ValueError("Action %s occurs in SAS task but not in PDDL task!" % sas_op_names[sas_index].name)
 
             if pddl_index < len(pddl_actions):
                 # sas_index was at the end of sas op names -> rest of the PDDL prop actions should be removed
@@ -142,6 +142,9 @@ class ProblemMeta:
         sas_negated_names = []
         for var_index in range(len(self.sas_task.variables.value_names)):
             for fact_name in self.sas_task.variables.value_names[var_index]:
+                # these are strange values created by the PDDL -> SAS task translations
+                if fact_name == "<none of those>":
+                    continue
                 # don't add negated atom facts (no real new facts)
                 if not fact_name.startswith("NegatedAtom"):
                     bisect.insort(sas_fact_names, fact_name)
@@ -184,7 +187,7 @@ class ProblemMeta:
                     pddl_props_to_remove.append(pddl_propositions[pddl_index])
                     pddl_index += 1
                 else:
-                    raise ValueError("Proposition %s occurs in SAS task but not in PDDL task!" % pddl_propositions[pddl_index].__str__())
+                    raise ValueError("Proposition %s occurs in SAS task but not in PDDL task!" % sas_fact_names[sas_index])
             
             if pddl_index < len(pddl_propositions):
                 # sas_index was at the end of sas fact names -> rest of the PDDL propositions should be removed
@@ -341,6 +344,9 @@ class ProblemMeta:
             for gr_pred_name in related_gr_pred_names:
                 if gr_pred_name in self.grounded_predicate_name_to_id.keys():
                     related_gr_pred_ids.append(self.grounded_predicate_name_to_id[gr_pred_name])
+                else:
+                    # add dummy id -1 for pruned grounded predicate
+                    related_gr_pred_ids.append(-1)
             prop_action_to_related_gr_pred_ids[propositional_action] = related_gr_pred_ids
 
         # adapt gr_pred_to_related_prop_action_names to match described format grouping
@@ -563,5 +569,7 @@ class ProblemMeta:
                         predicate = self.pddl_task._predicate_dict()[pred.predicate]
                         if action not in self.pred_to_related_actions[predicate]:
                             self.pred_to_related_actions[predicate].append(action)
+                    else:
+                        raise ValueError("Predicate %s is related to action %s, but is not included in list of predicates" % (pred.predicate, action.name))
 
         self.action_to_related_preds[action] = sorted(related_predicates)

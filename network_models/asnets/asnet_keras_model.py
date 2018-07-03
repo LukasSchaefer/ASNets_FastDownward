@@ -175,8 +175,16 @@ class ASNet_Model_Builder():
             hidden_rep_size * (index + 1)])
         related_outputs = []
         for index in related_proposition_ids:
-            get_index_of_tensor_layer.arguments = {'index': index, 'hidden_rep_size': self.hidden_representation_size}
-            related_outputs.append(get_index_of_tensor_layer(last_layer_proposition_module_outputs))
+            if index == -1:
+                # related prop was pruned -> add zeros
+                # get random module output tensor for shape
+                get_index_of_tensor_layer.arguments = {'index': 0, 'hidden_rep_size': self.hidden_representation_size}
+                shape_like_tensor = get_index_of_tensor_layer(last_layer_proposition_module_outputs)
+                zeros = Lambda(lambda x: K.zeros_like(x))(shape_like_tensor)
+                related_outputs.append(zeros)
+            else:
+                get_index_of_tensor_layer.arguments = {'index': index, 'hidden_rep_size': self.hidden_representation_size}
+                related_outputs.append(get_index_of_tensor_layer(last_layer_proposition_module_outputs))
         # concatenate related output tensors to new input tensor
         if len(related_outputs) > 1:
             return concatenate(related_outputs, name=('%d_layer_input_concat_' % layer_index) +
@@ -288,15 +296,30 @@ class ASNet_Model_Builder():
         slice_layer = Lambda(lambda x, start, end: x[:, start: end], name=slice_layer_name)
         # add truth values of related propositions
         for prop_index in related_proposition_ids:
+            if prop_index == -1:
+                # related proposition was pruned -> dummy tensor zeros 
+                # get random truth input tensor for shape
+                slice_layer.arguments = {'start': 0, 'end': 1}
+                shape_like_tensor = slice_layer(self.proposition_truth_values)
+                zeros = Lambda(lambda x: K.zeros_like(x))(shape_like_tensor)
+                input_list.append(zeros)
             slice_layer.arguments = {'start': prop_index, 'end': prop_index + 1}
             truth_value = slice_layer(self.proposition_truth_values)
             input_list.append(truth_value)
 
         # add goal values of related propositions
         for prop_index in related_proposition_ids:
-            slice_layer.arguments = {'start': prop_index, 'end': prop_index + 1}
-            goal_value = slice_layer(self.proposition_goal_values)
-            input_list.append(goal_value)
+            if prop_index == -1:
+                # related proposition was pruned -> dummy tensor zeros 
+                # get random truth input tensor for shape
+                slice_layer.arguments = {'start': 0, 'end': 1}
+                shape_like_tensor = slice_layer(self.proposition_truth_values)
+                zeros = Lambda(lambda x: K.zeros_like(x))(shape_like_tensor)
+                input_list.append(zeros)
+            else:
+                slice_layer.arguments = {'start': prop_index, 'end': prop_index + 1}
+                goal_value = slice_layer(self.proposition_goal_values)
+                input_list.append(goal_value)
 
         # add value indicating if propositional action is currently applicable
         slice_layer.arguments = {'start': action_index, 'end': action_index + 1}
