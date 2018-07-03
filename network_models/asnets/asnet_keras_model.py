@@ -134,14 +134,14 @@ class ASNet_Model_Builder():
         # create modules and put them in corresponding lists for all but last action layer
         for layer_index in range(self.num_layers):
             action_layer_modules = {}
-            for action in self.problem_meta.task.actions:
+            for action in self.problem_meta.pddl_task.actions:
                 # create module for action in layer_index' layer
                 action_layer_modules[action.name] = self.__make_action_module(action, layer_index)
             # complete dicts for each layer are put in action_layers_modules
             action_layers_modules.append(action_layer_modules)
 
             proposition_layer_modules = {}
-            for predicate in self.problem_meta.task.predicates:
+            for predicate in self.problem_meta.pddl_task.predicates:
                 # create module for predicate in layer_index' layer
                 proposition_layer_modules[predicate.name] = self.__make_predicate_module(
                     predicate, layer_index)
@@ -150,7 +150,7 @@ class ASNet_Model_Builder():
 
         last_action_layer_modules = {}
         # create modules for last action layer
-        for action in self.problem_meta.task.actions:
+        for action in self.problem_meta.pddl_task.actions:
             last_action_layer_modules[action.name] = self.__make_final_action_layer_module(action)
         action_layers_modules.append(last_action_layer_modules)
 

@@ -1,4 +1,5 @@
 import sys
+import bisect
 
 from src.translate.translator import main as translate
 from src.translate.normalize import normalize
@@ -39,17 +40,25 @@ def print_propositional_actions(task_meta):
 
 
 def assert_correct_len_relatedness_of_propositional_actions(task_meta):
-    for action in task_meta.task.actions:
+    for action in task_meta.pddl_task.actions:
         number_of_related_predicates = len(task_meta.action_to_related_preds[action])
         for prop_act in task_meta.action_name_to_prop_actions[action.name]:
             assert len(task_meta.prop_action_to_related_gr_pred_names[prop_act]) == number_of_related_predicates,\
                     "Number of related propositions of %s does not match the one of its underlying action\
                      schema %s" % (prop_act.name, action.name)
 
+def assert_correct_len_relatedness_of_grounded_predicates(task_meta):
+    for predicate in task_meta.pddl_task.predicates:
+        number_of_related_action_schemas = len(task_meta.pred_to_related_actions[predicate])
+        for gr_pred in task_meta.predicate_name_to_grounded_predicates[predicate.name]:
+            assert len(task_meta.gr_pred_to_related_prop_action_names[gr_pred]) == number_of_related_action_schemas,\
+                    "Number of related actions of %s does not match the one of its underlying predicate\
+                     %s" % (gr_pred.__str__(), predicate.name)
+
 
 def print_predicates(task_meta):
     print("Predicates:")
-    for pred in task_meta.task.predicates:
+    for pred in task_meta.pddl_task.predicates:
         print(pred)
         related_action_names = [act.name for act in task_meta.pred_to_related_actions[pred]]
         print(related_action_names)
@@ -61,7 +70,7 @@ def print_predicates(task_meta):
 
 def print_actions(task_meta):
     print("Actions:")
-    for action in task_meta.task.actions:
+    for action in task_meta.pddl_task.actions:
         print(action)
         action.dump()
         print(task_meta.action_to_related_preds[action])
@@ -94,16 +103,17 @@ def main(argv):
         print("Please give two arguments!")
         print("Usage: print_task <domain.pddl> <problem.pddl>")
     else:
-        pddl_task, _ = translate([argv[1],argv[2]])
+        pddl_task, sas_task = translate([argv[1],argv[2]])
+
         normalize(pddl_task)
         prog = pddl_to_prolog(pddl_task)
         model = compute_model(prog)
         _, grounded_predicates, propositional_actions, _, _ = instantiate(pddl_task, model)
-        fluent_predicates = get_fluent_predicates(pddl_task, model)
 
+        fluent_predicates = get_fluent_predicates(pddl_task, model)
         pddl_task.simplify(fluent_predicates)
-        
-        task_meta = ProblemMeta(pddl_task, propositional_actions, grounded_predicates)
+
+        task_meta = ProblemMeta(pddl_task, sas_task, propositional_actions, grounded_predicates)
 
         print_propositional_actions(task_meta)
         print_grounded_predicates(task_meta)
@@ -112,9 +122,10 @@ def main(argv):
         print_predicates(task_meta)
 
         assert_correct_len_relatedness_of_propositional_actions(task_meta)
+        assert_correct_len_relatedness_of_grounded_predicates(task_meta)
 
         print("Building the model:")
-        asnet_builder = ASNet_Model_Builder(task_meta, False)
+        asnet_builder = ASNet_Model_Builder(task_meta, True)
         asnet_model = asnet_builder.build_asnet_keras_model(1, dropout=0.25)
         print(asnet_model.summary())
 

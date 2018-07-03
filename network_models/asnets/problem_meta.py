@@ -1,4 +1,5 @@
 import sys
+import bisect
 sys.path.append("../../")
 from src.translate.pddl.conditions import Literal
 
@@ -7,12 +8,19 @@ class ProblemMeta:
     and propositions in a pddl-task used for ASNets"""
 
     def __init__(self,
-                 task,
+                 pddl_task,
+                 sas_task,
                  propositional_actions,
                  grounded_predicates):
-        self.task = task
+        self.pddl_task = pddl_task
+        self.sas_task = sas_task
         self.propositional_actions = sorted(propositional_actions, key=lambda prop_action: prop_action.name)
         self.grounded_predicates = sorted(grounded_predicates)
+
+        # remove propositional actions in PDDL task which do not occur in the SAS task
+        self.__prune_propositional_actions()
+        # remove grounded predicates in PDDL task which do not occur in the SAS task
+        self.__prune_grounded_predicates()
 
         # setup dicts to access propositional_actions and grounded predicates by name
         # {prop_act.name: prop_act} and {gr_pred.__str__(): gr_pred}
@@ -59,6 +67,144 @@ class ProblemMeta:
         self.prop_action_to_related_gr_pred_names, self.prop_action_to_related_gr_pred_ids =\
             self.__compute_relations_between_groundings()
         
+
+    def __prune_propositional_actions(self):
+        """
+        Goes over PDDL propositional actions and removes those that do not occur in the SAS task
+        and ensures that there are none propositional actions in the SAS task that are missing in
+        the PDDL task
+        """
+        # sort sas task operators alphabetically
+        sas_op_names = []
+        for op in self.sas_task.operators:
+            bisect.insort(sas_op_names, op.name)
+        if not all(sas_op_names[i] <= sas_op_names[i+1] for i in range(len(sas_op_names)-1)):
+            # list is not sorted
+            raise ValueError("SAS operator names list is not sorted!")
+        
+        num_sas_task_ops = len(sas_op_names)
+        num_pddl_task_prop_actions = len(self.propositional_actions)
+        print("PDDL task actions: %d" % num_pddl_task_prop_actions)
+        print("SAS task operators: %d" % num_sas_task_ops)
+
+        if num_sas_task_ops != num_pddl_task_prop_actions:
+            assert num_sas_task_ops < num_pddl_task_prop_actions, "There are more PDDL propositional actions than SAS operators"
+
+            pddl_index = 0
+            sas_index = 0
+            pddl_actions = self.propositional_actions
+            pddl_actions_to_remove = []
+            if not all(pddl_actions[i].name <= pddl_actions[i+1].name for i in range(len(pddl_actions)-1)):
+                # list is not sorted
+                raise ValueError("PDDL propositional actions list is not sorted by name!")
+
+            while pddl_index < len(pddl_actions) and sas_index < len(sas_op_names):
+                if pddl_actions[pddl_index].name == sas_op_names[sas_index]:
+                    # names are equal -> go on
+                    pddl_index += 1
+                    sas_index += 1
+                    continue
+                elif pddl_actions[pddl_index].name < sas_op_names[sas_index]:
+                    pddl_actions_to_remove.append(pddl_actions[pddl_index])
+                    pddl_index += 1
+                else:
+                    raise ValueError("Action %s occurs in SAS task but not in PDDL task!" % pddl_actions[pddl_index].name)
+
+            if pddl_index < len(pddl_actions):
+                # sas_index was at the end of sas op names -> rest of the PDDL prop actions should be removed
+                pddl_actions_to_remove.extend(pddl_actions[pddl_index:])
+            elif sas_index < len(sas_op_names):
+                # pddl_index was at the end of PDDL prop actions but not for SAS ops -> SAS ops from there
+                # on do NOT occur in the PDDL prop actions -> error
+                raise ValueError("The last %d ops from the SAS task are not included in the PDDL task" % (len(sas_op_names) - sas_index))
+
+            print("%d propositional actions are to be removed from the PDDL task" % len(pddl_actions_to_remove))
+            assert (num_pddl_task_prop_actions - len(pddl_actions_to_remove)) == num_sas_task_ops, "There were " +\
+                "%d pddl propositional actions and %d sas operators but %d actions are supposed to be removed" %\
+                (num_pddl_task_prop_actions, num_sas_task_ops, len(pddl_actions_to_remove))
+
+            # remove the outstanding propositions which do not occur in the SAS task
+            for act in pddl_actions_to_remove:
+                pddl_actions.remove(act)
+
+            self.propositional_actions = pddl_actions
+
+
+    def __prune_grounded_predicates(self):
+        """
+        Goes over PDDL grounded predicates and removes those that do not occur in the SAS task as
+        a fact. Ignores all facts in the SAS task which are NegatedAtoms.
+        Additionally ensures that there are no facts in the SAS task that are missing in
+        the PDDL task
+        """
+        # sort sas task facts alphabetically and remove NegatedAtom "fake" facts
+        sas_fact_names = []
+        sas_negated_names = []
+        for var_index in range(len(self.sas_task.variables.value_names)):
+            for fact_name in self.sas_task.variables.value_names[var_index]:
+                # don't add negated atom facts (no real new facts)
+                if not fact_name.startswith("NegatedAtom"):
+                    bisect.insort(sas_fact_names, fact_name)
+                else:
+                    sas_negated_names.append(fact_name)
+        if not all(sas_fact_names[i] <= sas_fact_names[i+1] for i in range(len(sas_fact_names)-1)):
+            # list is not sorted
+            raise ValueError("SAS Fact name list is not sorted!")
+
+        for sas_fact_name in sas_negated_names:
+            # remove negated at the beginning of the name
+            non_negated_name = sas_fact_name[7:]
+            if not non_negated_name in sas_fact_names:
+                raise ValueError("Fact %s only appears as a negated fact in the SAS task." % sas_fact_name)
+
+        num_sas_task_facts = len(sas_fact_names)
+        num_pddl_task_propositions = len(self.grounded_predicates)
+        print("PDDL task propositions: %d" % num_pddl_task_propositions)
+        print("SAS task facts: %d" % num_sas_task_facts)
+
+        # remove propositions from PDDL task which do not occur in the SAS task
+        if num_sas_task_facts != num_pddl_task_propositions:
+            print("Prune PDDL propositions not occuring in the SAS task")
+            assert num_sas_task_facts < num_pddl_task_propositions, "There are more PDDL propositions than SAS facts"
+            pddl_index = 0
+            sas_index = 0
+            pddl_propositions = self.grounded_predicates
+            pddl_props_to_remove = []
+            if not all(pddl_propositions[i].__str__() <= pddl_propositions[i+1].__str__() for i in range(len(pddl_propositions)-1)):
+                # list is not sorted
+                raise ValueError("PDDL propositions list is not sorted by name!")
+
+            while pddl_index < len(pddl_propositions) and sas_index < len(sas_fact_names):
+                if pddl_propositions[pddl_index].__str__() == sas_fact_names[sas_index]:
+                    # names are equal -> go on
+                    pddl_index += 1
+                    sas_index += 1
+                    continue
+                elif pddl_propositions[pddl_index].__str__() < sas_fact_names[sas_index]:
+                    pddl_props_to_remove.append(pddl_propositions[pddl_index])
+                    pddl_index += 1
+                else:
+                    raise ValueError("Proposition %s occurs in SAS task but not in PDDL task!" % pddl_propositions[pddl_index].__str__())
+            
+            if pddl_index < len(pddl_propositions):
+                # sas_index was at the end of sas fact names -> rest of the PDDL propositions should be removed
+                pddl_props_to_remove.extend(pddl_propositions[pddl_index:])
+            elif sas_index < len(sas_fact_names):
+                # pddl_index was at the end of PDDL propositions but not for SAS facts -> SAS facts from there
+                # on do NOT occur in the PDDL propositions -> error
+                raise ValueError("The last %d facts from the SAS task are not included in the PDDL task" % (len(sas_fact_names) - sas_index))
+
+            print("%d propositions are to be removed from the PDDL task" % len(pddl_props_to_remove))
+            assert (num_pddl_task_propositions - len(pddl_props_to_remove)) == num_sas_task_facts, "There were " +\
+                "%d pddl propositions and %d sas facts but %d propositions are supposed to be removed" %\
+                (num_pddl_task_propositions, num_sas_task_facts, len(pddl_props_to_remove))
+
+            # remove the outstanding propositions which do not occur in the SAS task
+            for prop in pddl_props_to_remove:
+                pddl_propositions.remove(prop)
+
+            self.grounded_predicates = pddl_propositions
+
 
     def __compute_propositional_action_name_to_id_dict(self):
         """
@@ -114,7 +260,7 @@ class ProblemMeta:
         """
         action_name_to_prop_actions = {}
         # init all act-entries with empty list
-        for act in self.task.actions:
+        for act in self.pddl_task.actions:
             action_name_to_prop_actions[act.name] = []
 
         # fill all lists with corresponding propositional actions
@@ -132,7 +278,7 @@ class ProblemMeta:
         """
         predicate_name_to_propositions = {}
         # init all pred-entries with empty list
-        for pred in self.task.predicates:
+        for pred in self.pddl_task.predicates:
             predicate_name_to_propositions[pred.name] = []
 
         # fill all lists with corresponding propositions
@@ -193,12 +339,13 @@ class ProblemMeta:
             related_gr_pred_names = prop_action_to_related_gr_pred_names[propositional_action]
             related_gr_pred_ids = []
             for gr_pred_name in related_gr_pred_names:
-                related_gr_pred_ids.append(self.grounded_predicate_name_to_id[gr_pred_name])
+                if gr_pred_name in self.grounded_predicate_name_to_id.keys():
+                    related_gr_pred_ids.append(self.grounded_predicate_name_to_id[gr_pred_name])
             prop_action_to_related_gr_pred_ids[propositional_action] = related_gr_pred_ids
 
         # adapt gr_pred_to_related_prop_action_names to match described format grouping
         # prop action names/ ids of actions sharing the underlying action schema
-        for predicate in self.task.predicates:
+        for predicate in self.pddl_task.predicates:
             related_action_schemas = self.pred_to_related_actions[predicate]
             for grounded_predicate in self.predicate_name_to_grounded_predicates[predicate.name]:
                 related_prop_action_names = gr_pred_to_related_prop_action_names[grounded_predicate]
@@ -239,7 +386,7 @@ class ProblemMeta:
         :return: None
         """
         # get abstract predicates related to the underlying action
-        underlying_action = self.task._action_dict()[propositional_action.get_underlying_action_name()]
+        underlying_action = self.pddl_task._action_dict()[propositional_action.get_underlying_action_name()]
         related_preds = self.action_to_related_preds[underlying_action]
 
         # get par_type list for abstract action
@@ -253,7 +400,7 @@ class ProblemMeta:
         # put pairs in list of (par_name, arg_object)
         argument_objects = []
         for par_index, (par_name, par_type) in enumerate(par_type_list):
-            type_objects = self.task._objects_dict_typed()[par_type]
+            type_objects = self.pddl_task._objects_dict_typed()[par_type]
             arg_found = False
             # look for object of par_type with name as indicated in propositional action name (arg_name_list)
             for obj in type_objects:
@@ -268,7 +415,7 @@ class ProblemMeta:
         related_propositions = []
 
         for pred in related_preds:
-            type_hierarchy = self.task._type_hierarchy()
+            type_hierarchy = self.pddl_task._type_hierarchy()
             pred_args = []
             for par in pred.args:
                 if par[0] == "?":
@@ -286,7 +433,7 @@ class ProblemMeta:
                     # not a usual argument/parameter -> constant
                     # find object with par name
                     obj_found = False
-                    for obj in self.task.objects:
+                    for obj in self.pddl_task.objects:
                         if obj.name == par:
                             pred_args.append(obj)
                             obj_found = True
@@ -295,12 +442,13 @@ class ProblemMeta:
                         raise ValueError("Parameter %s occurs in predicate %s related to %s and seems to be a constant but no " +\
                             "object with the given name was found." % (par, pred.__str__(), underlying_action.name))
 
-            predicate = self.task._predicate_dict()[pred.predicate]
+            predicate = self.pddl_task._predicate_dict()[pred.predicate]
             related_propositions.append(predicate.get_grounding(pred_args, typed=True, type_hierarchy=type_hierarchy))
         
         # propositional action is related to all these propositions
         for prop in related_propositions:
-            gr_pred_to_related_prop_action_names[prop].append(propositional_action.name)
+            if prop in self.grounded_predicates:
+                gr_pred_to_related_prop_action_names[prop].append(propositional_action.name)
 
         # vice-versa all these propositions are related to propositional action
         prop_action_to_related_gr_pred_names[propositional_action] = [prop.__str__() for prop in related_propositions]
@@ -347,7 +495,7 @@ class ProblemMeta:
         :return: computed dict
         """
         action_name_to_par_type_pairs = {}
-        for action in self.task.actions:
+        for action in self.pddl_task.actions:
             par_list = []
             for par in action.parameters:
                 par_list.append((par.name, par.type_name))
@@ -374,13 +522,13 @@ class ProblemMeta:
         # initialize dict entries for predicates all with empty list
         # -> if no related actions than value is already correct and no in dict.keys()
         # check necessary in self.__compute_and_set... function below
-        for pred in self.task.predicates:
+        for pred in self.pddl_task.predicates:
             self.pred_to_related_actions[pred] = []
 
-        for action in self.task.actions:
+        for action in self.pddl_task.actions:
             self.__compute_and_set_relations_involving_action(action)
 
-        for pred in self.task.predicates:
+        for pred in self.pddl_task.predicates:
             self.pred_to_related_actions[pred] = sorted(self.pred_to_related_actions[pred], key=lambda act_schema: act_schema.name)
 
 
@@ -401,7 +549,7 @@ class ProblemMeta:
             if cond.negated:
                 cond = cond.negate()
             related_predicates.append(cond)
-            predicate = self.task._predicate_dict()[cond.predicate]
+            predicate = self.pddl_task._predicate_dict()[cond.predicate]
             if action not in self.pred_to_related_actions[predicate]:
                 self.pred_to_related_actions[predicate].append(action)
         for eff in action.effects:
@@ -410,9 +558,9 @@ class ProblemMeta:
                 if pred.negated:
                     pred = pred.negate()
                 if pred not in related_predicates:
-                    if pred.predicate in self.task._predicate_dict().keys():
+                    if pred.predicate in self.pddl_task._predicate_dict().keys():
                         related_predicates.append(pred)
-                        predicate = self.task._predicate_dict()[pred.predicate]
+                        predicate = self.pddl_task._predicate_dict()[pred.predicate]
                         if action not in self.pred_to_related_actions[predicate]:
                             self.pred_to_related_actions[predicate].append(action)
 
