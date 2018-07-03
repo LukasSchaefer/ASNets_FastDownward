@@ -6,7 +6,6 @@
 
 #include <vector>
 #include <tuple>
-#include <string.h>
 
 namespace lexicographical_access {
 

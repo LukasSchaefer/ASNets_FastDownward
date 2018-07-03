@@ -286,7 +286,7 @@ def create_pddl_task(options, domain_path, problem_path):
     print("Processing PDDL Translation.")
     if not options.print_all:
         deactivate_prints()
-    pddl_task, _ = translate([domain_path, problem_path])
+    pddl_task, sas_task = translate([domain_path, problem_path])
     normalize(pddl_task)
     prog = pddl_to_prolog(pddl_task)
     model = compute_model(prog)
@@ -298,7 +298,7 @@ def create_pddl_task(options, domain_path, problem_path):
         reactivate_prints()
 
     print("Computing task meta information.")
-    task_meta = ProblemMeta(pddl_task, propositional_actions, grounded_predicates)
+    task_meta = ProblemMeta(pddl_task, sas_task, propositional_actions, grounded_predicates)
     return pddl_task, task_meta
 
 
