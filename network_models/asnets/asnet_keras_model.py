@@ -7,8 +7,7 @@ from keras import regularizers
 from keras import backend as K
 
 import problem_meta
-from utils import masked_softmax
-from softmax_layer import SoftmaxOutputLayer
+from custom_keras_layers.softmax_layer import SoftmaxOutputLayer
 
 
 class ASNet_Model_Builder():
@@ -70,7 +69,6 @@ class ASNet_Model_Builder():
 
         :param action: action schema this module is built for
         :return: keras layer representing the module of the final output layer
-                 DOES NOT COMPUTES THE MASKED SOFTMAX YET
         """
         num_related_predicates = len(self.problem_meta.action_to_related_preds[action])
         mod_name = 'last_layer_actmod_' + re.sub(r"\W+", "", action.name)
@@ -228,7 +226,6 @@ class ASNet_Model_Builder():
             for index in action_schema_list:
                 get_index_of_tensor_layer.arguments = {'index': index, 'hidden_rep_size': self.hidden_representation_size}
                 action_schema_outputs.append(get_index_of_tensor_layer(last_action_module_outputs))
-                # return action_schema_outputs[-1]
             # concatenate outputs
             if not action_schema_outputs:
                 # There were no related propositional actions of the corresponding action schema
@@ -279,6 +276,7 @@ class ASNet_Model_Builder():
                                                propositional_action,
                                                action_index,
                                                related_proposition_ids,
+                                               related_proposition_names,
                                                action_module):
         """
         computes output for action module in first layer of concrete propositional action
@@ -287,6 +285,7 @@ class ASNet_Model_Builder():
         :param action_index: index of the propositional action in problem_meta
         :param related_proposition_ids: ids (= indeces in self.problem_meta.grounded_predicates)
             of propositions related to propositional action
+        :param related_proposition_names: names of propositions related to propositional action
         :param action_module: action module of underlying action schema in layer_index layer
         :return: output tensor of module
         """
@@ -295,14 +294,28 @@ class ASNet_Model_Builder():
         slice_layer_name = "1st_layer_slice_layer_%s" % (re.sub(r"\W+", "", propositional_action.name))
         slice_layer = Lambda(lambda x, start, end: x[:, start: end], name=slice_layer_name)
         # add truth values of related propositions
-        for prop_index in related_proposition_ids:
+        for related_index, prop_index in enumerate(related_proposition_ids):
             if prop_index == -1:
-                # related proposition was pruned -> dummy tensor zeros 
+                # related proposition was pruned -> dummy tensor zeros/ ones 
+                # get name and check if it is initially true or false
+                prop_value = False
+                prop_name = related_proposition_names[related_index]
+                task_init = self.problem_meta.sas_task.init
+                for var, val in enumerate(task_init.values):
+                    fact_name = self.problem_meta.sas_task.variables.value_names[var][val]
+                    if fact_name.startswith("Negated"):
+                        fact_name = fact_name[7:]
+                    if fact_name == prop_name:
+                        prop_value = True
+                        break
                 # get random truth input tensor for shape
                 slice_layer.arguments = {'start': 0, 'end': 1}
                 shape_like_tensor = slice_layer(self.proposition_truth_values)
-                zeros = Lambda(lambda x: K.zeros_like(x))(shape_like_tensor)
-                input_list.append(zeros)
+                if prop_value:
+                    replace_tensor = Lambda(lambda x: K.zeros_like(x))(shape_like_tensor)
+                else:
+                    replace_tensor = Lambda(lambda x: K.ones_like(x))(shape_like_tensor)
+                input_list.append(replace_tensor)
             slice_layer.arguments = {'start': prop_index, 'end': prop_index + 1}
             truth_value = slice_layer(self.proposition_truth_values)
             input_list.append(truth_value)
@@ -311,11 +324,25 @@ class ASNet_Model_Builder():
         for prop_index in related_proposition_ids:
             if prop_index == -1:
                 # related proposition was pruned -> dummy tensor zeros 
-                # get random truth input tensor for shape
+                # get name and check if it is in the goal or not
+                prop_value = False
+                prop_name = related_proposition_names[related_index]
+                task_goal = self.problem_meta.sas_task.goal
+                for var, val in task_goal.pairs:
+                    fact_name = self.problem_meta.sas_task.variables.value_names[var][val]
+                    if fact_name.startswith("Negated"):
+                        fact_name = fact_name[7:]
+                    if fact_name == prop_name:
+                        prop_value = True
+                        break
+                # get random goal input tensor for shape
                 slice_layer.arguments = {'start': 0, 'end': 1}
-                shape_like_tensor = slice_layer(self.proposition_truth_values)
-                zeros = Lambda(lambda x: K.zeros_like(x))(shape_like_tensor)
-                input_list.append(zeros)
+                shape_like_tensor = slice_layer(self.proposition_goal_values)
+                if prop_value:
+                    replace_tensor = Lambda(lambda x: K.zeros_like(x))(shape_like_tensor)
+                else:
+                    replace_tensor = Lambda(lambda x: K.ones_like(x))(shape_like_tensor)
+                input_list.append(replace_tensor)
             else:
                 slice_layer.arguments = {'start': prop_index, 'end': prop_index + 1}
                 goal_value = slice_layer(self.proposition_goal_values)
@@ -430,12 +457,13 @@ class ASNet_Model_Builder():
                     # list of ids (= indeces) of related propositions
                     related_proposition_ids = self.problem_meta.prop_action_to_related_gr_pred_ids[
                         propositional_action]
+                    related_proposition_names = self.problem_meta.prop_action_to_related_gr_pred_names[propositional_action]
 
                     # extract corresponding action module for first layer
                     action_module = action_layers_modules[0][propositional_action.get_underlying_action_name()]
                     # compute output of action module and add to the list for first layer
                     action_layer_outputs.append(self.__get_first_layer_action_module_output(
-                        propositional_action, action_index, related_proposition_ids, action_module))
+                        propositional_action, action_index, related_proposition_ids, related_proposition_names, action_module))
                 else:
                     # compute corresponding action input tensor
                     input_tensor = self.__make_action_module_input(propositional_action, proposition_layers_outputs[layer_index - 1], layer_index)
@@ -480,7 +508,6 @@ class ASNet_Model_Builder():
         if self.print_all:
             print("Computing final output")
         outputs = concatenate(outputs, name="final_outputs_concatenation")
-        # policy_output = masked_softmax(outputs, self.action_applicable_values)
         policy_output = SoftmaxOutputLayer()([outputs, self.action_applicable_values])
         if self.extra_input_size:
             asnet_model = Model(inputs=[self.proposition_truth_values, self.proposition_goal_values,

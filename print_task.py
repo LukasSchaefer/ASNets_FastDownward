@@ -115,11 +115,11 @@ def main(argv):
 
         task_meta = ProblemMeta(pddl_task, sas_task, propositional_actions, grounded_predicates)
 
-        print_propositional_actions(task_meta)
-        print_grounded_predicates(task_meta)
+        # print_propositional_actions(task_meta)
+        # print_grounded_predicates(task_meta)
 
-        print_actions(task_meta)
-        print_predicates(task_meta)
+        # print_actions(task_meta)
+        # print_predicates(task_meta)
 
         assert_correct_len_relatedness_of_propositional_actions(task_meta)
         assert_correct_len_relatedness_of_grounded_predicates(task_meta)

@@ -1,7 +1,23 @@
-from utils import broadcast_to
 from keras import backend as K
 from keras.engine.topology import Layer
 import tensorflow as tf
+
+"""
+(broadcast and softmax mostly taken from https://github.com/qxcv/asnets/blob/master/deepfpg/tf_utils.py
+and wrapped in the keras layer)
+"""
+
+def broadcast_to(pattern, array):
+    """
+    Broacast array to match shape of pattern.
+    """
+    pat_shape = K.shape(pattern)
+    arr_shape = K.shape(array)
+
+    multiples = tf.floordiv(pat_shape, arr_shape)
+    rv = K.tile(array, K.cast(multiples, 'int32'))
+    return rv
+
 
 class SoftmaxOutputLayer(Layer):
     """
