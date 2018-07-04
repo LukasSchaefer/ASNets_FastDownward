@@ -3,6 +3,8 @@
 #include "../policy.h"
 #include "../option_parser.h"
 #include "../plugin.h"
+#include "../task_utils/regression_utils.h"
+#include "../task_utils/successor_generator.h"
 
 using namespace std;
 using utils::ExitCode;
@@ -84,11 +86,19 @@ namespace policy_search {
         // preferences correspond to operator id by index
         assert(operator_ids.size() == operator_prefs.size());
 
+	// check if these are all applicable actions
+	vector<OperatorID> applicable_ops;
+	g_successor_generator->generate_applicable_ops(parent_state, applicable_ops);
+
         // find most probable/ preferenced operator
         int most_probable_op_index = -1;
         float highest_op_probability = 0;
         for (unsigned int index = 0; index < operator_ids.size(); index++) {
             float probability = operator_prefs[index];
+	    if (probability > 0) {
+		OperatorID op_id = operator_ids[index];
+		assert(find(applicable_ops.begin(), applicable_ops.end(), op_id) != applicable_ops.end());
+	    }
             if (probability > highest_op_probability) {
                 highest_op_probability = probability;
                 most_probable_op_index = index;
@@ -99,8 +109,9 @@ namespace policy_search {
         OperatorID op_id = operator_ids[most_probable_op_index];
         OperatorProxy op_proxy  = task_proxy.get_operators()[op_id];
 
-        // reach new state
+	// reach new state
         GlobalState new_state = state_registry.get_successor_state(parent_state, op_proxy);
+	cout << "Policy reached state with id " << new_state.get_id() << " by applying op " << op_proxy.get_name() << endl;
         SearchNode node = search_space.get_node(new_state);
         statistics.inc_generated();
 

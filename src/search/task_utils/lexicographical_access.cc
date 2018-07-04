@@ -19,7 +19,6 @@ std::vector<std::pair<int, int>> get_facts_lexicographically(TaskProxy task_prox
             std::string fact_name = g_fact_names[var_index][val_index];
             // skip fact_names starting with NegatedAtom
             if (fact_name.rfind("NegatedAtom", 0) == 0) {
-		    std::cout << fact_name << " was skipped as it is a NegatedAtom" << std::endl;
                 continue;
             }
             std::tuple<std::string, int, int> fact_triple = std::make_tuple(fact_name, var_index, val_index);

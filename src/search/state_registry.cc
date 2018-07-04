@@ -76,12 +76,14 @@ GlobalState StateRegistry::get_successor_state(const GlobalState &predecessor, c
     assert(!op.is_axiom());
     state_data_pool.push_back(predecessor.get_packed_buffer());
     PackedStateBin *buffer = state_data_pool[state_data_pool.size() - 1];
+
     for (EffectProxy effect : op.get_effects()) {
         if (does_fire(effect, predecessor)) {
             FactPair effect_pair = effect.get_fact().get_pair();
             state_packer.set(buffer, effect_pair.var, effect_pair.value);
         }
     }
+
     axiom_evaluator.evaluate(buffer, state_packer);
     StateID id = insert_id_or_pop_state();
     return lookup_state(id);

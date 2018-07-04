@@ -311,6 +311,7 @@ std::string ASNetSamplingSearch::extract_exploration_sample_entries() {
     const GoalsProxy gps = tp.get_goals();
 
     ostringstream new_entries;
+    new_entries << "# Network-Search Samples~";
 
     if (network_search->found_solution()) {
         new_entries << "GOAL_EXPLORATION~";
@@ -332,6 +333,7 @@ std::string ASNetSamplingSearch::extract_exploration_sample_entries() {
         // add all StateIDs from trajectory to list of explored states
         network_explored_states.insert(network_explored_states.end(), trajectory.begin(), trajectory.end());
 
+	cout << network_explored_states.size() << " states extracted by network search" << endl;
         extract_sample_entries_trajectory(trajectory, sr, ops, new_entries);
     }
 
@@ -357,6 +359,7 @@ std::string ASNetSamplingSearch::extract_teacher_sample_entries() {
     const GoalsProxy gps = tp.get_goals();
 
     ostringstream new_entries;
+    new_entries << "# Teacher-Search Sampled States~";
 
     if (teacher_search->found_solution()) {
         const GlobalState goal_state = teacher_search->get_goal_state();
@@ -425,6 +428,7 @@ SearchStatus ASNetSamplingSearch::step() {
     network_search->search();
     samples << extract_exploration_sample_entries();
     save_plan_intermediate();
+    cout << network_explored_states.size() << " states were explored by the network search" << endl;
 
     if (use_teacher_search) {
         for (StateID & state_id : network_explored_states) {
@@ -444,6 +448,7 @@ SearchStatus ASNetSamplingSearch::step() {
                     }
                     [[fallthrough]];
                 default:
+		    // teacher search found goal
                     samples << extract_teacher_sample_entries();
                     save_plan_intermediate();
             }

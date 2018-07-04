@@ -2,6 +2,7 @@
 
 #include "../plugin.h"
 #include "../task_utils/regression_utils.h"
+#include "../task_utils/successor_generator.h"
 
 
 using namespace std;
@@ -80,12 +81,15 @@ void ASNet::fill_input(const State& state){
     // set action applicable values
     auto act_applic_values = inputs[2].second.matrix<float>();
     const auto operators = task_proxy.get_operators();
+
+    // get all applicable actions
+    vector<OperatorID> applicable_ops;
+    g_successor_generator->generate_applicable_ops(state, applicable_ops);
     idx = 0;
     for (int operator_index : operator_indeces_sorted) {
         // check if operator is applicable
  	OperatorProxy op_proxy = operators[operator_index];
-	RegressionOperator op = RegressionOperator(op_proxy);
-        if (op.is_applicable(state)) {
+	if (find(applicable_ops.begin(), applicable_ops.end(), op_proxy.get_global_operator_id()) != applicable_ops.end()) {
             act_applic_values(0, idx) = 1;
         } else {
             act_applic_values(0, idx) = 0;
@@ -107,23 +111,23 @@ void ASNet::extract_output() {
     // one output probability for each action
     assert(output_c.size() == (int) operator_indeces_sorted.size());
     float sum = 0;
-    for (unsigned index = 0; index < output_c.size(); index++) {
-        float val = output_c(index);
-        operator_preferences[index] = val;
-        sum += val;
+    // operator preferences in sorted order
+    for (unsigned index = 0; index < operator_indeces_sorted.size(); index++) {
+	float val = output_c(index);
+	operator_preferences[index] = val;
+	sum += val;
     }
     /* should be a policy with probabilities summing up to 1.0
        potentially small rounding errors (Should be okay?) */
     assert(std::abs(sum - 1.0) < 0.01 && "Policy output probabilities sum was > 0.01 away from 1.0!");
 
-    /* match operator indeces as in g_operators to OperatorIDs in order of opeartor_indeces_sorted
-       (output probabilities will be in the same order) */
+    // match operator IDs to sorted order
     auto operators = task_proxy.get_operators();
     std::vector<OperatorID> operator_ids;
-    int idx = 0;
-    for (int operator_index : operator_indeces_sorted) {
-        operator_ids.push_back(operators[operator_index].get_global_operator_id());
-        idx++;
+    for (unsigned int sorted_op_index = 0; sorted_op_index < operators.size(); sorted_op_index++) {
+	int original_op_index = operator_indeces_sorted[sorted_op_index];
+	OperatorID op_id = operators[original_op_index].get_global_operator_id();
+        operator_ids.push_back(op_id);
     }
 
     last_policy_output = std::pair<std::vector<OperatorID>, std::vector<float>>(operator_ids, operator_preferences);
