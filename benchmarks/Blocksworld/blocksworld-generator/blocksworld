@@ -1,0 +1,17 @@
+#!/bin/bash
+
+#/usr/local/gnu/bin/bash
+#########################################################
+#
+#########################################################
+
+abspath=$(cd ${0%/*} && echo $PWD/${0##*/})
+path_only=`dirname "$abspath"`
+
+BS="$path_only/bwstates/bwstates"
+TR="$path_only/2pddl/2pddl"
+
+$BS -s 2 -n $1 > states.blo
+$TR -d states.blo -n $1
+
+rm states.blo
