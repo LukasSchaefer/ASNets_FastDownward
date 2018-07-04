@@ -9,6 +9,7 @@
 ^experiments/issue[0-9]*/.*.-microbenchmark/Makefile\.depend$
 ^misc/autodoc/downward-xmlrpc\.secret$
 ^builds/
+^test/
 ^src/CMakeLists.txt.user$
 ^roadmap/Ferber_Msc_Thesis_Src
 ^src/tst.py
@@ -23,7 +24,6 @@
 syntax: glob
 *.sample
 *.meta
-*.pddl
 *.orig
 *.bak
 *.o
