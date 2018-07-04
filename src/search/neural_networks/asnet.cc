@@ -88,8 +88,8 @@ void ASNet::fill_input(const State& state){
     idx = 0;
     for (int operator_index : operator_indeces_sorted) {
         // check if operator is applicable
- 	OperatorProxy op_proxy = operators[operator_index];
-	if (find(applicable_ops.begin(), applicable_ops.end(), op_proxy.get_global_operator_id()) != applicable_ops.end()) {
+        OperatorProxy op_proxy = operators[operator_index];
+        if (find(applicable_ops.begin(), applicable_ops.end(), op_proxy.get_global_operator_id()) != applicable_ops.end()) {
             act_applic_values(0, idx) = 1;
         } else {
             act_applic_values(0, idx) = 0;
