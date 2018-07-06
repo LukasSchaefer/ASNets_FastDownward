@@ -137,8 +137,8 @@ pasnet.add_argument("--epochs", type=int,
 pasnet.add_argument("--problem_epochs", type=int,
                      action="store", default=128,
                      help="Number of epochs of training after sampling for one problem.")
-pasnet.add_argument("--no_accumulating_samples", action="store_true",
-                     help="Flag deactivating accumulation of samples (activating "
+pasnet.add_argument("--accumulate_samples", action="store_true",
+                     help="Flag activating accumulation of samples (deactivating "
                           "deletion in bridge after sample data extraction.)")
 pasnet.add_argument("--delete", action="store_true",
                      help="If flag ist set then all sample and network data is deleted "
@@ -227,9 +227,12 @@ def reactivate_prints():
 def execute_cmd_without_output(cmd):
     """
     Execute cmd subprocess without outputs
+    :param cmd: command to execute
+    :return: retcode of subprocess call
     """
     FNULL = open(os.devnull, 'w')
-    _ = subprocess.call(cmd, stdout=FNULL, stderr=subprocess.STDOUT)
+    retcode = subprocess.call(cmd, stdout=FNULL, stderr=subprocess.STDOUT)
+    return retcode
 
 def parse_key_value_pairs_to_kwargs(pairs):
     kwargs = {}
@@ -379,7 +382,7 @@ def sample(options, directory, domain_path, problem_path, extra_input_size):
     :param domain_path: path to domain file
     :param problem_path: path to problem file to execute sampling on
     :param extra_input_size: size for additional input features per action
-    :return:
+    :return: retcode of call
     """
     cmd = ['python', 'fast-downward.py',
                 "--build", options.build, domain_path, problem_path,
@@ -390,10 +393,16 @@ def sample(options, directory, domain_path, problem_path, extra_input_size):
                             ', network_search=policysearch(p=np(network=asnet(path=' + str(os.path.join(directory, 'asnet.pb')) + ', extra_input_size=' + str(extra_input_size) + ')))' +
                             ', target=' + os.path.join(directory, "sample.data") + ')']
     print('Running sampling search for ' + problem_path + '...')
-    if options.print_all:
-        subprocess.call(cmd)
-    else:
-        execute_cmd_without_output(cmd)
+    try:
+        if options.print_all:
+            retcode = subprocess.call(cmd)
+        else:
+            retcode = execute_cmd_without_output(cmd)
+        if retcode < 0:
+            print("Sampling search was terminated by signal", -retcode, file=sys.stderr)
+    except OSError as e:
+        print("Sampling search execution failed", e, file=sys.stderr)
+    return retcode
 
 
 def fd_evaluate(options, domain_path, problem_path, network_path, extra_input_size):
@@ -441,7 +450,7 @@ def exploration_explored_goal(sample_path):
     sample_file = open(sample_path, 'r')
     sample_lines = [l.strip() for l in sample_file.readlines()]
     # reversed order so that last sampling result is met first
-    # (otherwise if sampling results are accumulated (default) the old results would be met first)
+    # (otherwise if sampling results are accumulated the old results would be met first)
     for line in reversed(sample_lines):
         if line == "GOAL_EXPLORATION":
             sample_file.close()
@@ -468,7 +477,7 @@ def load_data(options, directory, domain_path, problem_path, extra_input_size):
     bridge = ASNetSampleBridge(sample_path=os.path.join(directory, "sample.data"),
                                domain=domain_path, prune=True, forget=options.forget,
                                skip=options.skip, extra_input_size=extra_input_size,
-                               delete=options.no_accumulating_samples)
+                               delete=not options.accumulate_samples)
 
     dtrain, dtest = None, None
     # We create a test set
@@ -544,6 +553,9 @@ def train(options, directory, domain_path, problem_list):
     # problem model dict: problem_path -> problem_asnet_model
     problem_model_dict = {}
 
+    # bool flag to interrupt further epochs
+    stop_training = False
+
     # success_rate = percentage of network exploration runs during sampling which reach a
     #                goal state
     # best success rate over all epochs
@@ -593,7 +605,12 @@ def train(options, directory, domain_path, problem_list):
             # build ASNetSamplingSearch command and execute for sampling -> saves samples in sample.data
             if not os.path.isfile(os.path.join(directory, "sample.data")):
                 open(os.path.join(directory, "sample.data"), 'a')
-            sample(options, directory, domain_path, problem_path, extra_input_size)
+            retcode = sample(options, directory, domain_path, problem_path, extra_input_size)
+            print("Sampling Search retcode:", retcode)
+            if retcode < 0:
+                print("Training process is stopped due to error signal of sampling search call")
+                stop_training = True
+                break
             start_time = timing(start_time, "Sampling search time: %ss")
 
             # extract exploration information for the given problem sampling (out of sample.data)
@@ -631,6 +648,9 @@ def train(options, directory, domain_path, problem_list):
                 os.remove(previous_asnet_weights)
             asnet._store_weights(os.path.join(directory, "asnet_weights.h5"))
             previous_asnet_weights = os.path.join(directory, "asnet_weights.h5")
+
+        if stop_training:
+            break
 
         # compute percentage of successfull explorations
         current_success_rate = (solved_explorations / executed_explorations) * 100

@@ -15,8 +15,6 @@ using namespace std;
 
 namespace asnet_sampling_search {
 
-const string SAMPLE_FILE_MAGIC_WORD = "# MAGIC FIRST LINE ASNET SAMPLING";
-
 template <typename t> void vector_into_stream(vector<t> vec, ostringstream &oss) {
     oss << "[";
     std::move(vec.begin(), vec.end()-1, std::ostream_iterator<t>(oss, ","));
@@ -168,13 +166,15 @@ void ASNetSamplingSearch::network_probs_into_stream(
 */
 void ASNetSamplingSearch::action_opt_values_into_stream(
     const GlobalState &state, vector<int> applicable_values,
-    const OperatorsProxy &ops, ostringstream &action_opts_stream) {
+    StateRegistry &sr, const OperatorsProxy &ops,
+    ostringstream &action_opts_stream) {
     unsigned long number_of_operators = operator_indeces_sorted.size();
     vector<float> action_opt_values;
     action_opt_values.resize(number_of_operators);
 
     // set state as new initial state for new searches
-    set_modified_task_with_new_initial_state(state.get_id());
+    set_modified_task_with_new_initial_state(state.get_id(), sr);
+
     // get modified teacher search using state as the initial state
     shared_ptr<SearchEngine> teacher_search_from_state = get_new_teacher_search_with_modified_task();
     // search and compute plan-cost if solution was found
@@ -200,9 +200,9 @@ void ASNetSamplingSearch::action_opt_values_into_stream(
             OperatorProxy op = ops[unsorted_index];
 
             // get state reached by action
-            GlobalState succ_state = state_registry.get_successor_state(state, op);
+            GlobalState succ_state = sr.get_successor_state(state, op);
             // get modified teacher search using succ_state as the initial state
-            set_modified_task_with_new_initial_state(succ_state.get_id());
+            set_modified_task_with_new_initial_state(succ_state.get_id(), sr);
             shared_ptr<SearchEngine> teacher_search_from_succ_state = get_new_teacher_search_with_modified_task();
             // search and compute plan-cost if solution was found
             teacher_search_from_succ_state->search();
@@ -261,7 +261,7 @@ void ASNetSamplingSearch::action_opt_values_into_stream(
   *                        the teacher-search. Again ordered lexicographically by action-names in a "," separated list.
 */
 void ASNetSamplingSearch::extract_sample_entries_trajectory(
-    const Trajectory &trajectory, const StateRegistry &sr,
+    const Trajectory &trajectory, StateRegistry &sr,
     const OperatorsProxy &ops, ostream &stream) {
     
     // extract fact_goal_values into goal_stream
@@ -269,6 +269,7 @@ void ASNetSamplingSearch::extract_sample_entries_trajectory(
     goal_into_stream(goal_stream);
 
     for (StateID state_id : trajectory) {
+	cout << "Extracting sample stream for state " << state_id << endl;
         GlobalState state = sr.lookup_state(state_id);
 
         // extract fact_values into state_stream
@@ -285,7 +286,7 @@ void ASNetSamplingSearch::extract_sample_entries_trajectory(
 
         // extract action_opt_values into action_opts_stream
         ostringstream action_opts_stream;
-        action_opt_values_into_stream(state, applicable_values, ops, action_opts_stream);
+        action_opt_values_into_stream(state, applicable_values, sr, ops, action_opts_stream);
 
         stream << problem_hash << ";" << goal_stream.str() << ";"
                << state_stream.str() << ";" << applicable_stream.str() << ";"
@@ -304,7 +305,7 @@ void ASNetSamplingSearch::extract_sample_entries_trajectory(
   * For detailed information on the format used to represent a state look above at the comment
 */
 std::string ASNetSamplingSearch::extract_exploration_sample_entries() {
-    const StateRegistry &sr = network_search->get_state_registry();
+    StateRegistry &sr = network_search->get_non_const_state_registry();
     const SearchSpace &ss = network_search->get_search_space();
     const TaskProxy &tp = network_search->get_task_proxy();
     OperatorsProxy ops = tp.get_operators();
@@ -352,7 +353,7 @@ std::string ASNetSamplingSearch::extract_exploration_sample_entries() {
   * For detailed information on the format used to represent a state look above at the comment
 */
 std::string ASNetSamplingSearch::extract_teacher_sample_entries() {
-    const StateRegistry &sr = teacher_search->get_state_registry();
+    StateRegistry &sr = teacher_search->get_non_const_state_registry();
     const SearchSpace &ss = teacher_search->get_search_space();
     const TaskProxy &tp = teacher_search->get_task_proxy();
     OperatorsProxy ops = tp.get_operators();
@@ -365,6 +366,7 @@ std::string ASNetSamplingSearch::extract_teacher_sample_entries() {
         const GlobalState goal_state = teacher_search->get_goal_state();
         Plan plan = teacher_search->get_plan();
         Trajectory trajectory;
+	cout << "Teacher search start extracting trajectory from goal" << endl;
         ss.trace_path(goal_state, trajectory);
 
         extract_sample_entries_trajectory(trajectory, sr, ops, new_entries);
@@ -385,12 +387,9 @@ std::string ASNetSamplingSearch::extract_teacher_sample_entries() {
     return post;
 }
 
-void ASNetSamplingSearch::set_modified_task_with_new_initial_state(StateID state_id) {
-    TaskProxy modified_task_proxy(task_proxy);
-    const successor_generator::SuccessorGenerator successor_generator(modified_task_proxy);
-
+void ASNetSamplingSearch::set_modified_task_with_new_initial_state(StateID state_id, const StateRegistry &sr) {
     // extract state values as new initial state
-    GlobalState init_state = state_registry.lookup_state(state_id);
+    GlobalState init_state = sr.lookup_state(state_id);
     vector<int> init_state_values;
     init_state_values.reserve(init_state.get_values().size());
     for (int val : init_state.get_values()) {
@@ -425,15 +424,15 @@ void ASNetSamplingSearch::initialize() {
 }
 
 SearchStatus ASNetSamplingSearch::step() {
+    cout << "Sampling Search calling network search" << endl;
     network_search->search();
     samples << extract_exploration_sample_entries();
     save_plan_intermediate();
-    cout << network_explored_states.size() << " states were explored by the network search" << endl;
 
     if (use_teacher_search) {
         for (StateID & state_id : network_explored_states) {
             // explore states with teacher policy from state_id onwards
-            set_modified_task_with_new_initial_state(state_id);
+            set_modified_task_with_new_initial_state(state_id, network_search->get_state_registry());
             teacher_search = get_new_teacher_search_with_modified_task();
             teacher_search->search();
             switch (teacher_search->get_status()) {
@@ -473,7 +472,6 @@ void ASNetSamplingSearch::print_statistics() const {
 }
 
 void ASNetSamplingSearch::add_header_samples(ostream &stream) const {
-    stream << SAMPLE_FILE_MAGIC_WORD << endl;
     stream << "# Everything in a line after '#' is a comment" << endl;
     stream << "# (NO_)GOAL_EXPLORATION indicate whether the executed network search exploration reached a goal state (or not)" << endl;
     stream << "# Entry format:<HASH>; <FACT_GOAL_VALUES>; <FACT_VALUES>; <ACTION_APPLICABLE_VALUES>; <ACTION_OPT_VALUES>" << endl;

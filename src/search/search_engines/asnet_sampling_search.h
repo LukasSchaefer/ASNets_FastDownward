@@ -81,13 +81,15 @@ namespace asnet_sampling_search {
                 std::ostringstream &network_probs_stream) const;
         void action_opt_values_into_stream(
                 const GlobalState &state, std::vector<int> applicable_values,
-                const OperatorsProxy &ops, std::ostringstream &action_opts_stream);
+		StateRegistry &sr, const OperatorsProxy &ops,
+		std::ostringstream &action_opts_stream);
         void extract_sample_entries_trajectory(
-                const Trajectory &trajectory, const StateRegistry &sr,
+                const Trajectory &trajectory, StateRegistry &sr,
                 const OperatorsProxy &ops, std::ostream &stream);
         std::string extract_exploration_sample_entries();
         std::string extract_teacher_sample_entries();
-        void set_modified_task_with_new_initial_state(StateID state_id);
+        void set_modified_task_with_new_initial_state(StateID state_id,
+		const StateRegistry &sr);
         std::shared_ptr<SearchEngine> get_new_teacher_search_with_modified_task() const;
         void add_header_samples(std::ostream &stream) const;
         void save_plan_intermediate();

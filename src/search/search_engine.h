@@ -67,6 +67,7 @@ public:
     const GlobalState get_goal_state() const;
     GlobalState get_last_state() const;
     const StateRegistry &get_state_registry() const;
+    StateRegistry &get_non_const_state_registry();
     const SearchSpace &get_search_space() const;
     const TaskProxy &get_task_proxy() const;
     void search();

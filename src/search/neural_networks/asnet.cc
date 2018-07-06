@@ -57,6 +57,7 @@ void ASNet::initialize_output_layers() {
 
 
 void ASNet::fill_input(const State& state){
+    std::cout << "Number of facts in ASNet search class: " << facts_sorted.size() << std::endl;
     const std::vector<int> values = state.get_values();
     auto prop_truth_values = inputs[0].second.matrix<float>();
     auto prop_goal_values = inputs[1].second.matrix<float>();

@@ -204,8 +204,7 @@ class ASNet_Model_Builder():
                     print("Computing output of %s" % propositional_action.name)
                 if layer_index == 0:
                     # list of ids (= indeces) of related propositions
-                    related_proposition_ids = self.problem_meta.prop_action_to_related_gr_pred_ids[
-                        propositional_action]
+                    related_proposition_ids = self.problem_meta.prop_action_to_related_gr_pred_ids[propositional_action]
                     related_proposition_names = self.problem_meta.prop_action_to_related_gr_pred_names[propositional_action]
 
                     first_action_layer_input = FirstActionInputLayer(sas_task=self.problem_meta.sas_task,

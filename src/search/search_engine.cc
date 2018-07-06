@@ -82,6 +82,11 @@ const StateRegistry &SearchEngine::get_state_registry() const {
     return state_registry;
 }
 
+
+StateRegistry &SearchEngine::get_non_const_state_registry() {
+    return state_registry;
+}
+
 const SearchSpace &SearchEngine::get_search_space() const {
     return search_space;
 }
