@@ -59,59 +59,62 @@ class FirstActionInputLayer(Layer):
         if self.extra_input_size:
             additional_input_features = inputs[3]
 
-        # build input list
-        input_list = []
+        # build input lists
+        init_truth_values = []
+        goal_values = []
         # add truth values of related propositions
         for related_index, prop_index in enumerate(self.related_proposition_ids):
             if prop_index == -1:
                 # related proposition was pruned -> dummy tensor zeros/ ones 
                 # get name and check if it is initially true or false
-                prop_value = False
+                truth_value = False
+                negated = False
                 prop_name = self.related_proposition_names[related_index]
                 task_init = self.sas_task.init
                 for var, val in enumerate(task_init.values):
                     fact_name = self.sas_task.variables.value_names[var][val]
                     if fact_name.startswith("Negated"):
                         fact_name = fact_name[7:]
+                        negated = True
                     if fact_name == prop_name:
-                        prop_value = True
+                        truth_value = not negated
                         break
                 # get random truth input tensor for shape
                 shape_like_tensor = proposition_truth_values[:, 0: 1]
-                if prop_value:
-                    replace_tensor = K.zeros_like(shape_like_tensor)
-                else:
+                if truth_value:
                     replace_tensor = K.ones_like(shape_like_tensor)
-                input_list.append(replace_tensor)
-            else:
-                input_list.append(proposition_truth_values[:, prop_index: prop_index + 1])
+                else:
+                    replace_tensor = K.zeros_like(shape_like_tensor)
+                init_truth_values.append(replace_tensor)
 
-        # add goal values of related propositions
-        for prop_index in self.related_proposition_ids:
-            if prop_index == -1:
-                # related proposition was pruned -> dummy tensor zeros 
-                # get name and check if it is in the goal or not
-                prop_value = False
-                prop_name = self.related_proposition_names[related_index]
+                # check if it is a goal fact or not
+                goal_value = False
                 task_goal = self.sas_task.goal
                 for var, val in task_goal.pairs:
                     fact_name = self.sas_task.variables.value_names[var][val]
                     if fact_name.startswith("Negated"):
                         fact_name = fact_name[7:]
                     if fact_name == prop_name:
-                        prop_value = True
+                        goal_value = True
                         break
                 # get random goal input tensor for shape
-                shape_like_tensor = proposition_goal_values[:, 0:1]
-                if prop_value:
-                    replace_tensor = K.zeros_like(shape_like_tensor)
-                else:
+                shape_like_tensor = proposition_goal_values[:, 0: 1]
+                if goal_value:
                     replace_tensor = K.ones_like(shape_like_tensor)
-                input_list.append(replace_tensor)
+                else:
+                    replace_tensor = K.zeros_like(shape_like_tensor)
+                goal_values.append(replace_tensor)
+
             else:
-                input_list.append(proposition_goal_values[:, prop_index: prop_index + 1])
+                # proposition index is not -1 -> was not pruned
+                # -> value can be directly extracted
+                assert prop_index < proposition_truth_values.shape[-1]
+                init_truth_values.append(proposition_truth_values[:, prop_index: prop_index + 1])
+                goal_values.append(proposition_goal_values[:, prop_index: prop_index + 1])
 
         # add value indicating if propositional action is currently applicable
+        input_list = init_truth_values
+        input_list.extend(goal_values)
         input_list.append(action_applicable_values[:, self.action_index : self.action_index + 1])
 
         # add additional input features if existing
