@@ -4,6 +4,7 @@
 #include "utils/system.h"
 #include "utils/timer.h"
 
+#include <string.h>
 #include <iostream>
 
 using namespace std;
@@ -38,7 +39,19 @@ int main(int argc, const char **argv) {
     }
 
     utils::Timer search_timer;
-    engine->search();
+    try {
+	    engine->search();
+    } catch (const char* msg) {
+        if (strcmp(msg, "UNSOLVABLE") == 0) {
+	    utils::exit_with(ExitCode::UNSOLVABLE);
+	} else {
+	    if (strcmp(msg, "UNSOLVED_INCOMPLETE") == 0) {
+	        utils::exit_with(ExitCode::UNSOLVED_INCOMPLETE);
+	    } else {
+		cerr << msg << endl;
+	    }
+	}
+    }
     search_timer.stop();
     utils::g_timer.stop();
 

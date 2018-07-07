@@ -178,9 +178,16 @@ void ASNetSamplingSearch::action_opt_values_into_stream(
     // get modified teacher search using state as the initial state
     shared_ptr<SearchEngine> teacher_search_from_state = get_new_teacher_search_with_modified_task();
     // search and compute plan-cost if solution was found
-    teacher_search_from_state->search();
+    bool no_solution = false;
+    try {
+        teacher_search_from_state->search();
+    } catch (const char* msg) {
+	// task was deemed unsolvable/ unsolved -> set all values for which this is not the case to 1
+	cout << "EXCEPTION CAUGHT" << endl;
+	no_solution = true;
+    }
     int plan_cost_from_state = -1;
-    if (teacher_search_from_state->found_solution()) {
+    if (!no_solution && teacher_search_from_state->found_solution()) {
         plan_cost_from_state = 0;
         // sum up costs on plan
         for (OperatorID op_id : teacher_search_from_state->get_plan()) {
@@ -205,15 +212,22 @@ void ASNetSamplingSearch::action_opt_values_into_stream(
             set_modified_task_with_new_initial_state(succ_state.get_id(), sr);
             shared_ptr<SearchEngine> teacher_search_from_succ_state = get_new_teacher_search_with_modified_task();
             // search and compute plan-cost if solution was found
-            teacher_search_from_succ_state->search();
+	    bool subtask_no_solution = false;
+	    try {
+                teacher_search_from_succ_state->search();
+	    } catch (const char* msg) {
+		// subtask was deemed unsolvable/ unsolved -> set opt value to 0
+		cout << "EXCEPTION CAUGHT" << endl;
+		subtask_no_solution = true;
+	    }
 
-            if (!teacher_search_from_succ_state->found_solution()) {
+            if (subtask_no_solution || !teacher_search_from_succ_state->found_solution()) {
                 // applying action and search does not find a solution -> not good path
                 action_opt_values[op_index] = 0;
                 continue;
             } else {
                 // solution found from succ_state
-                if (teacher_search_from_state->found_solution()) {
+                if (!no_solution && teacher_search_from_state->found_solution()) {
                     // both search found a solution -> compute the cost from succ_state + op.cost() and compare
                     int plan_cost_from_succ_state = op.get_cost();
                     for (OperatorID op_id : teacher_search_from_succ_state->get_plan()) {
@@ -434,7 +448,14 @@ SearchStatus ASNetSamplingSearch::step() {
             // explore states with teacher policy from state_id onwards
             set_modified_task_with_new_initial_state(state_id, network_search->get_state_registry());
             teacher_search = get_new_teacher_search_with_modified_task();
-            teacher_search->search();
+	    try {
+                teacher_search->search();
+	    } catch (const char* msg) {
+		// task was deemed unsolvable/ unsolved -> skip this state
+		cout << "EXCEPTION CAUGHT" << endl;
+		continue;
+	    }
+
             switch (teacher_search->get_status()) {
                 case FAILED:
                     // if search reached dead-end -> don't sample states

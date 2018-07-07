@@ -10,10 +10,8 @@
 #include "../open_lists/standard_scalar_open_list.h"
 #include "../open_lists/tiebreaking_open_list.h"
 #include "../task_utils/successor_generator.h"
-#include "../utils/system.h"
 
 using namespace std;
-using utils::ExitCode;
 
 namespace enforced_hill_climbing_search {
 using GEval = g_evaluator::GEvaluator;
@@ -113,9 +111,9 @@ void EnforcedHillClimbingSearch::initialize() {
     if (dead_end) {
         cout << "Initial state is a dead end, no solution" << endl;
         if (heuristic->dead_ends_are_reliable())
-            utils::exit_with(ExitCode::UNSOLVABLE);
+	    throw "UNSOLVABLE";
         else
-            utils::exit_with(ExitCode::UNSOLVED_INCOMPLETE);
+	    throw "UNSOLVED_INCOMPLETE";
     }
 
     SearchNode node = search_space.get_node(current_eval_context.get_state());
