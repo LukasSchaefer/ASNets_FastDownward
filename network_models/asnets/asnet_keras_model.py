@@ -161,6 +161,10 @@ class ASNet_Model_Builder():
                                                  name=mod_name)
             proposition_input_modules[proposition.__str__()] = input_module
 
+        assert len(action_layers_modules) == self.num_layers + 1
+        assert len(proposition_layers_modules) == self.num_layers
+        assert len(action_input_modules) == len(self.problem_meta.propositional_actions)
+        assert len(proposition_input_modules) == len(self.problem_meta.grounded_predicates)
 
         return action_layers_modules, proposition_layers_modules,\
                action_input_modules, proposition_input_modules
