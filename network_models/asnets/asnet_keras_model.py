@@ -212,13 +212,14 @@ class ASNet_Model_Builder():
                     # list of ids (= indeces) of related propositions
                     related_proposition_ids = self.problem_meta.prop_action_to_related_gr_pred_ids[propositional_action]
                     related_proposition_names = self.problem_meta.prop_action_to_related_gr_pred_names[propositional_action]
-
+                    mod_name = 'first_action_inputmod_' + re.sub(r"\W+", "", propositional_action.name)
                     first_action_layer_input = FirstActionInputLayer(sas_task=self.problem_meta.sas_task,
                                                                      propositional_action=propositional_action,
                                                                      action_index=action_index,
                                                                      related_proposition_ids=related_proposition_ids,
                                                                      related_proposition_names=related_proposition_names,
-                                                                     extra_input_size=self.extra_input_size)
+                                                                     extra_input_size=self.extra_input_size,
+                                                                     name=mod_name)
                     # extract corresponding action module for first layer
                     action_module = action_layers_modules[0][propositional_action.get_underlying_action_name()]
                     # compute output of action module and add to the list for first layer
@@ -278,17 +279,18 @@ class ASNet_Model_Builder():
             # compute corresponding action input tensor
             input_module = action_input_modules[propositional_action.name]
             if last_proposition_layer_output is None:
-                raise ValueError("In last action was no last proposition layer output available!")
+                raise ValueError("In last action layer no proposition layer output was available!")
             input_tensor = input_module(last_proposition_layer_output)
 
             action_module = action_layers_modules[-1][propositional_action.get_underlying_action_name()]
             # compute output of action module and add to the list for output tensors
-            outputs.append(action_module(input_tensor))
+            output = action_module(input_tensor)
+            outputs.append(output)
 
         if self.print_all:
             print("Computing final output")
         outputs = concatenate(outputs, name="final_outputs_concatenation")
-        policy_output = SoftmaxOutputLayer()([outputs, self.action_applicable_values])
+        policy_output = SoftmaxOutputLayer(name="softmax_output_layer")([outputs, self.action_applicable_values])
         if self.extra_input_size:
             asnet_model = Model(inputs=[self.proposition_truth_values, self.proposition_goal_values,
                 self.action_applicable_values, self.additional_input_features], outputs=policy_output,
