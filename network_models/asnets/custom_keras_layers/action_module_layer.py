@@ -1,3 +1,5 @@
+import re
+
 from keras import backend as K
 
 from keras import activations
@@ -14,6 +16,7 @@ class FirstActionInputLayer(Layer):
 
     def __init__(self,
                  sas_task,
+                 propositional_action,
                  action_index,
                  related_proposition_ids,
                  related_proposition_names,
@@ -21,6 +24,7 @@ class FirstActionInputLayer(Layer):
                  **kwargs):
         """
         :param sas_task: SAS task from the problem (used to find out values for pruned variables)
+        :param propositional_action: propositional action this input module is built for
         :param action_index: index of the propositional action in problem_meta
         :param related_proposition_ids: ids (= indeces in self.problem_meta.grounded_predicates)
             of propositions related to propositional action
@@ -28,6 +32,7 @@ class FirstActionInputLayer(Layer):
         :param extra_input_size: size of additional input features (per action) or 0 if there are none
         """
         self.sas_task = sas_task
+        self.propositional_action = propositional_action
         self.action_index = action_index
         self.related_proposition_ids = related_proposition_ids
         self.related_proposition_names = related_proposition_names
@@ -124,7 +129,8 @@ class FirstActionInputLayer(Layer):
             input_list.append(additional_input_features[:, start_index : end_index])
 
         # convert input list to tensor
-        return concatenate(input_list)
+        layer_name = "first_action_input_final_concat_" + re.sub(r"\W+", "", self.propositional_action.name)
+        return concatenate(input_list, name=layer_name)
 
 
     def compute_output_shape(self, input_shape):
@@ -145,17 +151,20 @@ class IntermediateActionInputLayer(Layer):
 
     def __init__(self,
                  hidden_representation_size,
+                 propositional_action,
                  action_index,
                  related_proposition_ids,
                  **kwargs):
         """
         :param hidden_representation_size: hidden representation size used by every
             module (= size of module outputs)
+        :param propositional_action: propositional action this input module is built for
         :param action_index: index of the propositional action in problem_meta
         :param related_proposition_ids: ids (= indeces in self.problem_meta.grounded_predicates)
             of propositions related to propositional action
         """
         self.hidden_representation_size = hidden_representation_size
+        self.propositional_action = propositional_action
         self.action_index = action_index
         self.related_proposition_ids = related_proposition_ids
         super(IntermediateActionInputLayer, self).__init__(**kwargs)
@@ -185,7 +194,8 @@ class IntermediateActionInputLayer(Layer):
 
         # concatenate related output tensors to new input tensor
         if len(related_outputs) > 1:
-            return concatenate(related_outputs)
+            layer_name = "action_input_final_concat_" + re.sub(r"\W+", "", self.propositional_action.name)
+            return concatenate(related_outputs, name=layer_name)
         else:
             return related_outputs[0]
         

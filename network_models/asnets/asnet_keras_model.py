@@ -2,7 +2,7 @@ import os
 import sys
 import re
 from keras.models import Model
-from keras.layers import Input, Dense, Dropout, Lambda, concatenate, GlobalMaxPooling1D
+from keras.layers import Input, concatenate
 from keras import regularizers
 from keras import backend as K
 
@@ -146,6 +146,7 @@ class ASNet_Model_Builder():
             related_proposition_ids = self.problem_meta.prop_action_to_related_gr_pred_ids[propositional_action]
             mod_name = 'action_inputmod_' + re.sub(r"\W+", "", propositional_action.name)
             input_module = IntermediateActionInputLayer(hidden_representation_size=self.hidden_representation_size,
+                                                        propositional_action=propositional_action,
                                                         action_index=propositional_action_id,
                                                         related_proposition_ids=related_proposition_ids,
                                                         name=mod_name)
@@ -157,6 +158,7 @@ class ASNet_Model_Builder():
             related_propositional_action_ids = self.problem_meta.gr_pred_to_related_prop_action_ids[proposition]
             mod_name = 'prop_inputmod_' + re.sub(r"\W+", "", proposition.__str__())
             input_module = PropositionInputLayer(hidden_representation_size=self.hidden_representation_size,
+                                                 proposition=proposition,
                                                  related_propositional_action_ids=related_propositional_action_ids,
                                                  name=mod_name)
             proposition_input_modules[proposition.__str__()] = input_module
@@ -212,6 +214,7 @@ class ASNet_Model_Builder():
                     related_proposition_names = self.problem_meta.prop_action_to_related_gr_pred_names[propositional_action]
 
                     first_action_layer_input = FirstActionInputLayer(sas_task=self.problem_meta.sas_task,
+                                                                     propositional_action=propositional_action,
                                                                      action_index=action_index,
                                                                      related_proposition_ids=related_proposition_ids,
                                                                      related_proposition_names=related_proposition_names,

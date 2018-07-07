@@ -1,3 +1,5 @@
+import re
+
 from keras import backend as K
 
 from keras import activations
@@ -15,16 +17,19 @@ class PropositionInputLayer(Layer):
 
     def __init__(self,
                  hidden_representation_size,
+                 proposition,
                  related_propositional_action_ids,
                  **kwargs):
         """
         :param hidden_representation_size: hidden representation size used by every
             module (= size of module outputs)
+        :param proposition: propostion the input model is built for
         :param related_propositional_action_ids: list of nested lists
             each nested list corresponds to one action schema related to the underlying predicate
             of proposition. All these actions whose ids are in the nested list are related to proposition
         """
         self.hidden_representation_size = hidden_representation_size
+        self.proposition = proposition
         self.related_propositional_action_ids = related_propositional_action_ids
         super(PropositionInputLayer, self).__init__(**kwargs)
 
@@ -74,7 +79,8 @@ class PropositionInputLayer(Layer):
 
         # concatenate all pooled related output tensors to new input tensor for module
         if len(pooled_related_outputs) > 1:
-            return concatenate(pooled_related_outputs)
+            layer_name = "prop_input_final_concat_" + re.sub(r"\W+", "", self.proposition.__str__())
+            return concatenate(pooled_related_outputs, name=layer_name)
         else:
             return pooled_related_outputs[0]
 
