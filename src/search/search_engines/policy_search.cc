@@ -53,10 +53,18 @@ namespace policy_search {
 
         if (dead_end) {
             cout << "Initial state is a dead end, no solution" << endl;
-            if (policy->dead_ends_are_reliable())
-                utils::exit_with(ExitCode::UNSOLVABLE);
-            else
-                utils::exit_with(ExitCode::UNSOLVED_INCOMPLETE);
+            if (use_heuristic_dead_end_detection) {
+                if (dead_end_heuristic->dead_ends_are_reliable()) {
+                    utils::exit_with(ExitCode::UNSOLVABLE);
+                } else{
+                    utils::exit_with(ExitCode::UNSOLVED_INCOMPLETE);
+                }
+            } else {
+                if (policy->dead_ends_are_reliable())
+                    utils::exit_with(ExitCode::UNSOLVABLE);
+                else
+                    utils::exit_with(ExitCode::UNSOLVED_INCOMPLETE);
+            }
         }
 
         SearchNode node = search_space.get_node(current_eval_context.get_state());
