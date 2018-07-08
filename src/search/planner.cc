@@ -40,7 +40,7 @@ int main(int argc, const char **argv) {
 
     utils::Timer search_timer;
     try {
-	    engine->search();
+        engine->search();
     } catch (const char* msg) {
         if (strcmp(msg, "UNSOLVABLE") == 0) {
 	    utils::exit_with(ExitCode::UNSOLVABLE);

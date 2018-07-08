@@ -9,7 +9,6 @@ import sys
 import subprocess
 import time
 
-import numpy as np
 from keras.optimizers import Adam
 from keras import backend as K
 
@@ -133,10 +132,10 @@ pasnet.add_argument("--sort_problems", type=bool,
                           "be sorted by difficulty. Expects certain problem file "
                           "naming.")
 pasnet.add_argument("--epochs", type=int,
-                     action="store", default=300,
+                     action="store", default=50,
                      help="Number of epochs of sampling and training on each problem during training.")
 pasnet.add_argument("--problem_epochs", type=int,
-                     action="store", default=128,
+                     action="store", default=300,
                      help="Number of epochs of training after sampling for one problem.")
 pasnet.add_argument("--accumulate_samples", action="store_true",
                      help="Flag activating accumulation of samples (deactivating "
@@ -204,7 +203,7 @@ pasnet.add_argument("-opt", "--optimizer", type=str,
                     help="Optimizer to be used during training (usually Adam with "
                          "potentially adapted learning rate).")
 pasnet.add_argument("-lr", "--learning_rate", type=float,
-                    action="store", default=0.001,
+                    action="store", default=0.005,
                     help="Learning rate used for (Adam) Optimizer.")
 
 arguments = set()
@@ -540,17 +539,24 @@ def train(options, directory, domain_path, problem_list):
 
     start_time = timing(start_time, "Parsing time: %ss")
 
+    # reuse the built model for each epoch if only a single problem file is given
+    reuse_model = False
+    if len(problem_list) == 1:
+        reuse_model = True
+        print("Only a given problem file found")
+        print("Will reuse the same model over all epochs!")
+
     # remove old sample data
     if os.path.isfile(os.path.join(directory, "sample.data")):
         os.remove(os.path.join(directory, "sample.data"))
 
     # path to previous weight file (or None if not existing)
     previous_asnet_weights = options.weights
+    if previous_asnet_weights is not None:
+        assert os.path.isfile(previous_asnet_weights), "The given weight file was not found"
 
     # asnet model to save weights after final epoch for evaluation
     asnet_model = None
-    # problem model dict: problem_path -> problem_asnet_model
-    problem_model_dict = {}
 
     # bool flag to interrupt further epochs
     stop_training = False
@@ -581,23 +587,22 @@ def train(options, directory, domain_path, problem_list):
                 continue
 
             # clear keras session (for new file)
-            K.clear_session()
+            if not reuse_model:
+                K.clear_session()
 
-            if os.path.isfile(os.path.join(directory, "asnet.pb")):
-                os.remove(os.path.join(directory, "asnet.pb"))
-
-            # access built model if already in dict
-            if problem_path in problem_model_dict.keys():
-                asnet_model = problem_model_dict[problem_path]
-                print("Accessing already built model for %s" % problem_path)
-            else:
+            if not reuse_model or epoch_counter == 0:
+                # only skip this if we reuse the same model and it is not the first epoch
+                # (in first epoch model has to be built either way)
                 _, task_meta = create_pddl_task(options, domain_path, problem_path)
                 start_time = timing(start_time, "PDDL translation time: %ss")
                 asnet_model = create_asnet_model(task_meta, options, extra_input_size, previous_asnet_weights)
                 start_time = timing(start_time, "Keras model creation time: %ss")
-                problem_model_dict[problem_path] = asnet_model
 
             asnet = prepare_and_construct_network_before_loading(options, extra_input_size, asnet_model)
+
+            # if previous asnet.pb file exists -> remove
+            if os.path.isfile(os.path.join(directory, "asnet.pb")):
+                os.remove(os.path.join(directory, "asnet.pb"))
 
             # store protobuf network file for fast-downward sampling
             asnet._store(os.path.join(directory, "asnet"), [NetworkFormat.protobuf])
@@ -629,8 +634,6 @@ def train(options, directory, domain_path, problem_list):
 
             asnet.initialize(None, **options.initialize)
             start_time = timing(start_time, "Network initialization time: %ss")
-
-            # asnet.print_data(dtrain)
 
             asnet.train(dtrain, dtest)
             start_time = timing(start_time, "Network training time: %ss")
