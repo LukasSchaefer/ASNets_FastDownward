@@ -204,7 +204,7 @@ pasnet.add_argument("-opt", "--optimizer", type=str,
                          "potentially adapted learning rate).")
 pasnet.add_argument("-lr", "--learning_rate", type=float,
                     action="store", default=0.001,
-                    help="Learning rate used for (Adam) Optimizer.")
+                    help="Learning rate used for (Adam or SGD) Optimizer.")
 pasnet.add_argument("--loss_just_opt", action="store_true",
                     help="Flag stating that the custom loss only considering optimal actions "
                          "should be used")
@@ -635,6 +635,8 @@ def train(options, directory, domain_path, problem_list):
             executed_explorations += 1
 
             dtrain, dtest = load_data(options, directory, domain_path, problem_path, extra_input_size)
+
+            # asnet.print_data(dtrain)
 
             print("%d / %d network explorations were successfull" % (solved_explorations, executed_explorations))
 
