@@ -92,7 +92,7 @@ class KerasASNet(KerasNetwork):
                 print(y[0][sample_idx])
 
             print()
-            print("Loss:")
+            print("Loss for unifrom probs:")
             uniform_probs = None
             for arr in x[2]:
                 sum = np.sum(arr)
@@ -107,7 +107,7 @@ class KerasASNet(KerasNetwork):
             ones = np.ones(y.shape)
             out = -(y * np.log(uniform_probs) + (ones - y) * np.log(ones - uniform_probs))
             loss = np.sum(out, axis=-1)
-            for sample_idx in range(len(pred)):
+            for sample_idx in range(len(uniform_probs)):
                 print()
                 print("Sample %d:" % sample_idx)
                 print("Uniform Action Probabilities (among all appicable actions):")

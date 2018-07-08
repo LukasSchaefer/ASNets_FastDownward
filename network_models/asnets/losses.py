@@ -19,3 +19,17 @@ def custom_binary_crossentropy(y_true, y_pred):
     y_pred = K.clip(y_pred, K.epsilon(), 1.0 - K.epsilon())
     out = -(y_true * K.log(y_pred) + (ones - y_true) * K.log(ones - y_pred))
     return K.sum(out, axis=-1)
+
+
+def just_opt_custom_binary_crossentropy(y_true, y_pred):
+    """
+    loss variation which only cares about optimal actions (y_true = 1)
+
+    :param y_true: opt-value (binary value 0 or 1) for each action indicating whether the action starts an optimal
+                   plan according to the teacher policy
+    :param y_pred: prediction = probabilities of the network to choose each action for
+                   all actions 
+    """
+    y_pred = K.clip(y_pred, K.epsilon(), 1.0 - K.epsilon())
+    out = - y_true * K.log(y_pred)
+    return K.sum(out, axis=-1)

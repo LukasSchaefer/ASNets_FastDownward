@@ -15,7 +15,7 @@ from keras import backend as K
 sys.path.append("network_models/asnets")
 from problem_meta import ProblemMeta
 from asnet_keras_model import ASNet_Model_Builder
-from losses import custom_binary_crossentropy
+from losses import custom_binary_crossentropy, just_opt_custom_binary_crossentropy
 
 from src.translate.translator import main as translate
 from src.translate.normalize import normalize
@@ -205,6 +205,9 @@ pasnet.add_argument("-opt", "--optimizer", type=str,
 pasnet.add_argument("-lr", "--learning_rate", type=float,
                     action="store", default=0.001,
                     help="Learning rate used for (Adam) Optimizer.")
+pasnet.add_argument("--loss_just_opt", action="store_true",
+                    help="Flag stating that the custom loss only considering optimal actions "
+                         "should be used")
 
 arguments = set()
 for action in pasnet._actions:
@@ -327,7 +330,7 @@ def create_asnet_model(task_meta, options, extra_input_size, weights_path=None):
                              to all weights (included bias vectors)
         - optimizer: optimizer to be used during training
         - learning_rate: learning rate to use for (Adam) Optimizer
-        - loss: loss function to be used during training
+        - loss_just_opt: use loss function only considering opt actions
     :param extra_input_size: size of additional input features per action
                              This usually involves additional heuristic input features
                              like values indicating landmark values for actions (as used
@@ -352,7 +355,10 @@ def create_asnet_model(task_meta, options, extra_input_size, weights_path=None):
         optimizer = SGD(lr=options.learning_rate, momentum=0.7)
     else:
         optimizer = options.optimizer
-    asnet_model.compile(loss=custom_binary_crossentropy, optimizer=optimizer)
+    if options.loss_just_opt:
+        asnet_model.compile(loss=custom_binary_crossentropy, optimizer=optimizer)
+    else:
+        asnet_model.compile(loss=just_opt_custom_binary_crossentropy, optimizer=optimizer)
     if weights_path:
         print("Loading previous weights")
         asnet_model.load_weights(weights_path, by_name=True)
