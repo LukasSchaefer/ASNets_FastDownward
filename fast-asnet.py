@@ -366,11 +366,9 @@ def prepare_and_construct_network_before_loading(options, extra_input_size, mode
     :param model: built keras asnet model
     :return: KerasASNet Network-object
     """
-    network = KerasASNet(extra_input_size=extra_input_size,
-                         model=model,
-                         epochs=options.problem_epochs)
-
-    return network
+    return KerasASNet(extra_input_size=extra_input_size,
+                      model=model,
+                      epochs=options.problem_epochs)
 
 
 def sample(options, directory, domain_path, problem_path, extra_input_size):
@@ -581,6 +579,9 @@ def train(options, directory, domain_path, problem_list):
             if options.dry:
                 continue
 
+            if os.path.isfile(os.path.join(directory, "asnet.pb")):
+                os.remove(os.path.join(directory, "asnet.pb"))
+
             # access built model if already in dict
             if problem_path in problem_model_dict.keys():
                 asnet_model = problem_model_dict[problem_path]
@@ -595,8 +596,6 @@ def train(options, directory, domain_path, problem_list):
             asnet = prepare_and_construct_network_before_loading(options, extra_input_size, asnet_model)
 
             # store protobuf network file for fast-downward sampling
-            if os.path.isfile(os.path.join(directory, "asnet.pb")):
-                os.remove(os.path.join(directory, "asnet.pb"))
             asnet._store(os.path.join(directory, "asnet"), [NetworkFormat.protobuf])
             
             start_time = timing(start_time, "Preparing and storing of the network time: %ss")
