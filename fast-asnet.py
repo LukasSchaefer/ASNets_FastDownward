@@ -9,7 +9,7 @@ import sys
 import subprocess
 import time
 
-from keras.optimizers import Adam
+from keras.optimizers import Adam, SGD
 from keras import backend as K
 
 sys.path.append("network_models/asnets")
@@ -203,7 +203,7 @@ pasnet.add_argument("-opt", "--optimizer", type=str,
                     help="Optimizer to be used during training (usually Adam with "
                          "potentially adapted learning rate).")
 pasnet.add_argument("-lr", "--learning_rate", type=float,
-                    action="store", default=0.005,
+                    action="store", default=0.001,
                     help="Learning rate used for (Adam) Optimizer.")
 
 arguments = set()
@@ -348,6 +348,8 @@ def create_asnet_model(task_meta, options, extra_input_size, weights_path=None):
                                                         extra_input_size)
     if options.optimizer == 'adam':
         optimizer = Adam(lr=options.learning_rate)
+    elif options.optimizer == 'sgd':
+        optimizer = SGD(lr=options.learning_rate, momentum=0.7)
     else:
         optimizer = options.optimizer
     asnet_model.compile(loss=custom_binary_crossentropy, optimizer=optimizer)
