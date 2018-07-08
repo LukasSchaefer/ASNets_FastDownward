@@ -11,6 +11,7 @@ import time
 
 import numpy as np
 from keras.optimizers import Adam
+from keras import backend as K
 
 sys.path.append("network_models/asnets")
 from problem_meta import ProblemMeta
@@ -578,6 +579,9 @@ def train(options, directory, domain_path, problem_list):
                     + str(problem_index + 1) + "/ " + str(len(problem_list)) + ")")
             if options.dry:
                 continue
+
+            # clear keras session (for new file)
+            K.clear_session()
 
             if os.path.isfile(os.path.join(directory, "asnet.pb")):
                 os.remove(os.path.join(directory, "asnet.pb"))
