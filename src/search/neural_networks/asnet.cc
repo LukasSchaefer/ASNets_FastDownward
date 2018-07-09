@@ -57,8 +57,6 @@ void ASNet::initialize_output_layers() {
 
 
 void ASNet::fill_input(const State& state){
-    std::cout << "Number of facts in ASNet search class: " << facts_sorted.size() << std::endl;
-    std::cout << "Number of operators in ASNet search class: " << operator_indeces_sorted.size() << std::endl;
     const std::vector<int> values = state.get_values();
     auto prop_truth_values = inputs[0].second.matrix<float>();
     auto prop_goal_values = inputs[1].second.matrix<float>();
@@ -112,16 +110,11 @@ void ASNet::extract_output() {
     std::vector<float> operator_preferences(output_c.size());
     // one output probability for each action
     assert(output_c.size() == (int) operator_indeces_sorted.size());
-    float sum = 0;
+    
     // operator preferences in sorted order
     for (unsigned index = 0; index < operator_indeces_sorted.size(); index++) {
-	float val = output_c(index);
-	operator_preferences[index] = val;
-	sum += val;
+	operator_preferences[index] = output_c(index);
     }
-    /* should be a policy with probabilities summing up to 1.0
-       potentially small rounding errors (Should be okay?) */
-    assert(std::abs(sum - 1.0) < 0.01 && "Policy output probabilities sum was > 0.01 away from 1.0!");
 
     // match operator IDs to sorted order
     auto operators = task_proxy.get_operators();

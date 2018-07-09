@@ -103,10 +103,6 @@ namespace policy_search {
         float highest_op_probability = 0;
         for (unsigned int index = 0; index < operator_ids.size(); index++) {
             float probability = operator_prefs[index];
-	    if (probability > 0) {
-		OperatorID op_id = operator_ids[index];
-		assert(find(applicable_ops.begin(), applicable_ops.end(), op_id) != applicable_ops.end());
-	    }
             if (probability > highest_op_probability) {
                 highest_op_probability = probability;
                 most_probable_op_index = index;
