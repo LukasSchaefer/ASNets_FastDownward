@@ -1,3 +1,4 @@
+# ehc(ff()) Evaluation Tyreworld 02 -- 15
 INFO     Running translator.
 INFO     translator input: ['test/domain.pddl', 'test/d-02.pddl']
 INFO     translator arguments: []

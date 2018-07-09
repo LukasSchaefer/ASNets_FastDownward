@@ -51,8 +51,8 @@ Training performs EPOCHS (--epochs EPOCHS; default 300) Epochs in which training
 performed for each given problem. Training first builds the network model and then
 executes ASNet sampling via a fast-downward sampling search (using a teacher search;
 default A* with LM-Cut heuristic). This process samples a set of states explored
-which are afterwards used to train the network for the current problem in PROBLEM_EPOCHS
-(--problem_epochs PROBLEM_EPOCHS; default 128) training-epochs. After this process the
+which are afterwards used to train the network for the current problem in TRAIN_EPOCHS
+(--train_epochs TRAIN_EPOCHS; default 300) training-epochs. After this process the
 learned weights are saved and used in the next iteration (epoch or problem).
 This iterative sampling and training mechanism stops after all EPOCHS are performed or
 the early stopping criteria are met.
@@ -130,9 +130,15 @@ pasnet.add_argument("--sort_problems", action="store_true",
                      help="Flag showing whether the problems should be sorted by difficulty. "
                           "Expects certain problem file naming.")
 pasnet.add_argument("--epochs", type=int,
-                     action="store", default=50,
+                     action="store", default=10,
                      help="Number of epochs of sampling and training on each problem during training.")
 pasnet.add_argument("--problem_epochs", type=int,
+                     action="store", default=5,
+                     help="Number of consecutive epochs of sampling and training on each problem during "
+                          "the entire training process before going to the next problem (This is important "
+                          "because whenever a new problem is used trained the keras ASNet model has "
+                          "to be built and cannot be stored -> inefficient to always iterate over problems).")
+pasnet.add_argument("--train_epochs", type=int,
                      action="store", default=300,
                      help="Number of epochs of training after sampling for one problem.")
 pasnet.add_argument("--accumulate_samples", action="store_true",
@@ -374,7 +380,7 @@ def prepare_and_construct_network_before_loading(options, extra_input_size, mode
     """
     return KerasASNet(extra_input_size=extra_input_size,
                       model=model,
-                      epochs=options.problem_epochs)
+                      epochs=options.train_epochs)
 
 
 def sample(options, directory, domain_path, problem_path, extra_input_size):
@@ -457,9 +463,11 @@ def exploration_explored_goal(sample_path):
     # (otherwise if sampling results are accumulated the old results would be met first)
     for line in reversed(sample_lines):
         if line == "GOAL_EXPLORATION":
+            print("EXPLORATION SOLVED THE PROBLEM")
             sample_file.close()
             return True
         elif line == "NO_GOAL_EXPLORATION":
+            print("EXPLORATION DID NOT SOLVE THE PROBLEM")
             sample_file.close()
             return False
     raise ValueError("Sample File %s did not contain information on network exploration!" % sample_path)
@@ -545,13 +553,6 @@ def train(options, directory, domain_path, problem_list):
 
     start_time = timing(start_time, "Parsing time: %ss")
 
-    # reuse the built model for each epoch if only a single problem file is given
-    reuse_model = False
-    if len(problem_list) == 1:
-        reuse_model = True
-        print("Only a given problem file found")
-        print("Will reuse the same model over all epochs!")
-
     # remove old sample data
     if os.path.isfile(os.path.join(directory, "sample.data")):
         os.remove(os.path.join(directory, "sample.data"))
@@ -581,7 +582,6 @@ def train(options, directory, domain_path, problem_list):
     epoch_counter = 0
     while epoch_counter < options.epochs and (current_success_rate < 95 or epochs_since_improvement < 3):
         print()
-        print("Starting Epoch %d" % (epoch_counter + 1))
         # number of explorations reaching a goal state
         solved_explorations = 0
         # number of total explorations executed
@@ -592,81 +592,87 @@ def train(options, directory, domain_path, problem_list):
             if options.dry:
                 continue
 
-            # clear keras session (for new file)
+            # number of explorations reaching a goal state for this problem
+            solved_explorations_problem = 0
+            # number of total explorations executed for this problem
+            executed_explorations_problem = 0
+
+            # clear keras session (for new problem)
             if not reuse_model:
                 K.clear_session()
-
-            if not reuse_model or epoch_counter == 0:
-                # only skip this if we reuse the same model and it is not the first epoch
-                # (in first epoch model has to be built either way)
-                _, task_meta = create_pddl_task(options, domain_path, problem_path)
-                start_time = timing(start_time, "PDDL translation time: %ss")
-                asnet_model = create_asnet_model(task_meta, options, extra_input_size, previous_asnet_weights)
-                start_time = timing(start_time, "Keras model creation time: %ss")
-
-            asnet = prepare_and_construct_network_before_loading(options, extra_input_size, asnet_model)
-
-            # if previous asnet.pb file exists -> remove
-            if os.path.isfile(os.path.join(directory, "asnet.pb")):
-                os.remove(os.path.join(directory, "asnet.pb"))
-
-            # store protobuf network file for fast-downward sampling
-            asnet._store(os.path.join(directory, "asnet"), [NetworkFormat.protobuf])
             
-            start_time = timing(start_time, "Preparing and storing of the network time: %ss")
+            print("Starting problem epochs in epoch %d" % (epoch_counter + 1))
+            problem_epoch = 0
+            while problem_epoch < options.problem_epochs:
+                if problem_epoch == 0:
+                    # build the model in first problem_epoch
+                    print("Building keras ASNet model")
+                    _, task_meta = create_pddl_task(options, domain_path, problem_path)
+                    start_time = timing(start_time, "PDDL translation time: %ss")
+                    asnet_model = create_asnet_model(task_meta, options, extra_input_size, previous_asnet_weights)
+                    start_time = timing(start_time, "Keras model creation time: %ss")
+
+                    asnet = prepare_and_construct_network_before_loading(options, extra_input_size, asnet_model)
+
+                # if previous asnet.pb file exists -> remove
+                if os.path.isfile(os.path.join(directory, "asnet.pb")):
+                    os.remove(os.path.join(directory, "asnet.pb"))
+
+                # store protobuf network file for fast-downward sampling
+                asnet._store(os.path.join(directory, "asnet"), [NetworkFormat.protobuf])
+            
+                start_time = timing(start_time, "Preparing and storing of the network time: %ss")
 
 
-            # build ASNetSamplingSearch command and execute for sampling -> saves samples in sample.data
-            if not os.path.isfile(os.path.join(directory, "sample.data")):
-                open(os.path.join(directory, "sample.data"), 'a')
-            retcode = sample(options, directory, domain_path, problem_path, extra_input_size)
-            print("Sampling Search retcode:", retcode)
-            if retcode < 0:
-                print("Training process is stopped due to error signal of sampling search call")
-                stop_training = True
-                break
-            start_time = timing(start_time, "Sampling search time: %ss")
+                # build ASNetSamplingSearch command and execute for sampling -> saves samples in sample.data
+                if not os.path.isfile(os.path.join(directory, "sample.data")):
+                    open(os.path.join(directory, "sample.data"), 'a')
+                retcode = sample(options, directory, domain_path, problem_path, extra_input_size)
+                print("Sampling Search retcode:", retcode)
+                if retcode < 0:
+                    raise ValueError("Training process is stopped due to error signal of sampling search call with retcode %d" % retcode)
+                start_time = timing(start_time, "Sampling search time: %ss")
 
-            # extract exploration information for the given problem sampling (out of sample.data)
-            if exploration_explored_goal(os.path.join(directory, "sample.data")):
-                solved_explorations += 1
-            executed_explorations += 1
+                # extract exploration information for the given problem sampling (out of sample.data)
+                if exploration_explored_goal(os.path.join(directory, "sample.data")):
+                    solved_explorations += 1
+                    solved_explorations_problem += 1
+                executed_explorations += 1
+                executed_explorations_problem += 1
 
-            dtrain, dtest = load_data(options, directory, domain_path, problem_path, extra_input_size)
+                dtrain, dtest = load_data(options, directory, domain_path, problem_path, extra_input_size)
 
-            # asnet.print_data(dtrain)
+                start_time = timing(start_time, "Loading data time: %ss")
 
-            print("%d / %d network explorations were successfull" % (solved_explorations, executed_explorations))
+                asnet.initialize(None, **options.initialize)
+                start_time = timing(start_time, "Network initialization time: %ss")
 
-            start_time = timing(start_time, "Loading data time: %ss")
+                asnet.train(dtrain, dtest)
+                start_time = timing(start_time, "Network training time: %ss")
 
-            asnet.initialize(None, **options.initialize)
-            start_time = timing(start_time, "Network initialization time: %ss")
+                if dtest:
+                    asnet.evaluate(dtest)
+                    start_time = timing(start_time, "Network evaluation time: %ss")
 
-            asnet.train(dtrain, dtest)
-            start_time = timing(start_time, "Network training time: %ss")
+                    asnet.analyse(prefix=options.prefix)
+                    start_time = timing(start_time, "Network analysis time: %ss")
 
-            if dtest:
-                asnet.evaluate(dtest)
-                start_time = timing(start_time, "Network evaluation time: %ss")
+                asnet.finalize(**options.finalize)
+                _ = timing(start_time, "Network finalization time: %ss")
 
-                asnet.analyse(prefix=options.prefix)
-                start_time = timing(start_time, "Network analysis time: %ss")
+                if (problem_epoch + 1) == options.problem_epochs:
+                    # saving weights for next problem instance in last problem epoch
+                    print("Storing weights in %s" % os.path.join(directory, "asnet_weights.h5"))
+                    if previous_asnet_weights is not None:
+                        os.remove(previous_asnet_weights)
+                    asnet._store_weights(os.path.join(directory, "asnet_weights.h5"))
+                    previous_asnet_weights = os.path.join(directory, "asnet_weights.h5")
 
-            asnet.finalize(**options.finalize)
-            _ = timing(start_time, "Network finalization time: %ss")
+                problem_epoch += 1
 
-            # saving weights for next problem instance
-            print("Storing weights in %s" % os.path.join(directory, "asnet_weights.h5"))
-            if previous_asnet_weights is not None:
-                os.remove(previous_asnet_weights)
-            asnet._store_weights(os.path.join(directory, "asnet_weights.h5"))
-            previous_asnet_weights = os.path.join(directory, "asnet_weights.h5")
+            print("%d / %d network explorations were successfull for this problem" % (solved_explorations_problem, executed_explorations_problem))
 
-        if stop_training:
-            break
-
-        # compute percentage of successfull explorations
+        # compute percentage of successfull explorations in epoch
         current_success_rate = (solved_explorations / executed_explorations) * 100
         print("Epochs success rate: %d" % current_success_rate)
 
@@ -682,9 +688,9 @@ def train(options, directory, domain_path, problem_list):
 
         epoch_counter+= 1
         
-    if (current_success_rate >= 99.9 and epochs_since_improvement >= 5):
+    if (current_success_rate >= 95 and epochs_since_improvement >= 3):
         print("EARLY TRAINING TERMINATION:")
-        print("The success rate is with %d%% >= 99.9%% and there were no significant improvements of the success rate for %d epochs." % (current_success_rate, epochs_since_improvement))
+        print("The success rate is with %d%% >= 95%% and there were no significant improvements of the success rate for %d epochs." % (current_success_rate, epochs_since_improvement))
 
     # delete remaining weights and model and sample data
     if options.delete:
