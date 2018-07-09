@@ -582,11 +582,14 @@ def train(options, directory, domain_path, problem_list):
     epoch_counter = 0
     while epoch_counter < options.epochs and (current_success_rate < 95 or epochs_since_improvement < 3):
         print()
+        print("Starting epoch %d" % (epoch_counter + 1))
+
         # number of explorations reaching a goal state
         solved_explorations = 0
         # number of total explorations executed
         executed_explorations = 0
         for problem_index, problem_path in enumerate(problem_list):
+            print()
             print("Processing problem file " + str(problem_path) + " ("
                     + str(problem_index + 1) + "/ " + str(len(problem_list)) + ")")
             if options.dry:
@@ -598,22 +601,28 @@ def train(options, directory, domain_path, problem_list):
             executed_explorations_problem = 0
 
             # clear keras session (for new problem)
-            if not reuse_model:
-                K.clear_session()
-            
+            K.clear_session()
+
+            # build the model for the problem
+            print("Building keras ASNet model")
+            _, task_meta = create_pddl_task(options, domain_path, problem_path)
+            start_time = timing(start_time, "PDDL translation time: %ss")
+            asnet_model = create_asnet_model(task_meta, options, extra_input_size, previous_asnet_weights)
+            start_time = timing(start_time, "Keras model creation time: %ss")
+
+            # construct and prepare training network class
+            asnet = prepare_and_construct_network_before_loading(options, extra_input_size, asnet_model)
+            start_time = timing(start_time, "Building and preparing the network time: %ss")
+
+            # initialize training network class
+            asnet.initialize(None, **options.initialize)
+            start_time = timing(start_time, "Network initialization time: %ss")
+
             print("Starting problem epochs in epoch %d" % (epoch_counter + 1))
             problem_epoch = 0
             while problem_epoch < options.problem_epochs:
-                if problem_epoch == 0:
-                    # build the model in first problem_epoch
-                    print("Building keras ASNet model")
-                    _, task_meta = create_pddl_task(options, domain_path, problem_path)
-                    start_time = timing(start_time, "PDDL translation time: %ss")
-                    asnet_model = create_asnet_model(task_meta, options, extra_input_size, previous_asnet_weights)
-                    start_time = timing(start_time, "Keras model creation time: %ss")
-
-                    asnet = prepare_and_construct_network_before_loading(options, extra_input_size, asnet_model)
-
+                print()
+                print("Starting problem epoch %d / %d" % (problem_epoch + 1, options.problem_epochs))
                 # if previous asnet.pb file exists -> remove
                 if os.path.isfile(os.path.join(directory, "asnet.pb")):
                     os.remove(os.path.join(directory, "asnet.pb"))
@@ -644,9 +653,6 @@ def train(options, directory, domain_path, problem_list):
 
                 start_time = timing(start_time, "Loading data time: %ss")
 
-                asnet.initialize(None, **options.initialize)
-                start_time = timing(start_time, "Network initialization time: %ss")
-
                 asnet.train(dtrain, dtest)
                 start_time = timing(start_time, "Network training time: %ss")
 
@@ -657,18 +663,18 @@ def train(options, directory, domain_path, problem_list):
                     asnet.analyse(prefix=options.prefix)
                     start_time = timing(start_time, "Network analysis time: %ss")
 
-                asnet.finalize(**options.finalize)
-                _ = timing(start_time, "Network finalization time: %ss")
-
-                if (problem_epoch + 1) == options.problem_epochs:
-                    # saving weights for next problem instance in last problem epoch
-                    print("Storing weights in %s" % os.path.join(directory, "asnet_weights.h5"))
-                    if previous_asnet_weights is not None:
-                        os.remove(previous_asnet_weights)
-                    asnet._store_weights(os.path.join(directory, "asnet_weights.h5"))
-                    previous_asnet_weights = os.path.join(directory, "asnet_weights.h5")
-
                 problem_epoch += 1
+
+            # after last problem epoch -> finalize network
+            asnet.finalize(**options.finalize)
+            _ = timing(start_time, "Network finalization time: %ss")
+
+            # saving weights for next problem instance in last problem epoch
+            print("Storing weights in %s" % os.path.join(directory, "asnet_weights.h5"))
+            if previous_asnet_weights is not None:
+                os.remove(previous_asnet_weights)
+            asnet._store_weights(os.path.join(directory, "asnet_weights.h5"))
+            previous_asnet_weights = os.path.join(directory, "asnet_weights.h5")
 
             print("%d / %d network explorations were successfull for this problem" % (solved_explorations_problem, executed_explorations_problem))
 
