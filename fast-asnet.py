@@ -141,6 +141,9 @@ pasnet.add_argument("--problem_epochs", type=int,
 pasnet.add_argument("--train_epochs", type=int,
                      action="store", default=256,
                      help="Number of epochs of training after sampling for one problem.")
+pasnet.add_argument("--time_limit", type=int,
+                     action="store", default=7200,
+                     help="Time limitation for training only in seconds (default 2h).")
 pasnet.add_argument("--accumulate_samples", action="store_true",
                      help="Flag activating accumulation of samples (deactivating "
                           "deletion in bridge after sample data extraction.)")
@@ -521,6 +524,25 @@ def timing(old_time, msg):
     print(msg % (new_time-old_time))
     return new_time
 
+def duration_format(duration):
+    """
+    :param duration: time duration in seconds
+    :return: string resembling duration with hours, minutes and seconds
+    """
+    seconds = int(duration)
+    minutes = int(duration / 60)
+    hours = int(minutes / 60)
+    if hours > 0:
+        minutes = minutes - hours * 60
+        seconds = seconds - hours * 3600 - minutes * 60
+        return "%dh %dmin %ds" % (hours, minutes, seconds)
+    elif minutes > 0:
+        seconds = seconds - minutes * 60
+        return "%dmin %ds" % (minutes, seconds)
+    else:
+        return "%ds" % seconds
+
+
 
 def train(options, directory, domain_path, problem_list):
     """
@@ -583,6 +605,14 @@ def train(options, directory, domain_path, problem_list):
     while epoch_counter < options.epochs and (current_success_rate < 95 or epochs_since_improvement < 3):
         print()
         print("Starting epoch %d" % (epoch_counter + 1))
+
+        current_time = time.time()
+        training_time = current_time - begin_train_time
+        duration_string = duration_format(training_time)
+        print("Training already takes %s" % duration_string)
+        if training_time > options.time_limit:
+            print("Training is taking over 2h -> training is stopped now!")
+            break
 
         # number of explorations reaching a goal state
         solved_explorations = 0
