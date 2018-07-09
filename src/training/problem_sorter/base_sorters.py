@@ -131,9 +131,9 @@ class DifficultySorter(ProblemSorter):
                                       ProblemSorter.arguments)
 
     patterns_difficulty = [
-        (re.compile("difficulty(-)?(\d)+"), 1),
-        (re.compile("diff(-)?(\d)+"),1),
-        (re.compile("d(-)?(\d)+"), 1),
+        (re.compile("difficulty(-)?(\d+)"), 1),
+        (re.compile("diff(-)?(\d+)"),1),
+        (re.compile("d(-)?(\d+)"), 1),
 
     ]
 

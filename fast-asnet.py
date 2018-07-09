@@ -126,11 +126,9 @@ pasnet.add_argument("-t", "--train", action="store_true",
                      help="Flag indicating that training should be executed.")
 pasnet.add_argument("-e", "--evaluate", action="store_true",
                      help="Flag indicating that evaluation should be executed.")
-pasnet.add_argument("--sort_problems", type=bool,
-                     action="store", default=False,
-                     help="Boolean value indicating whether the problems should "
-                          "be sorted by difficulty. Expects certain problem file "
-                          "naming.")
+pasnet.add_argument("--sort_problems", action="store_true",
+                     help="Flag showing whether the problems should be sorted by difficulty. "
+                          "Expects certain problem file naming.")
 pasnet.add_argument("--epochs", type=int,
                      action="store", default=50,
                      help="Number of epochs of sampling and training on each problem during training.")
@@ -581,7 +579,7 @@ def train(options, directory, domain_path, problem_list):
     epochs_since_improvement = 0
 
     epoch_counter = 0
-    while epoch_counter < options.epochs and (current_success_rate < 99.9 or epochs_since_improvement < 5):
+    while epoch_counter < options.epochs and (current_success_rate < 95 or epochs_since_improvement < 3):
         print()
         print("Starting Epoch %d" % (epoch_counter + 1))
         # number of explorations reaching a goal state
@@ -686,8 +684,7 @@ def train(options, directory, domain_path, problem_list):
         
     if (current_success_rate >= 99.9 and epochs_since_improvement >= 5):
         print("EARLY TRAINING TERMINATION:")
-        print("The success rate is with %d% >= 99.9% and there were no significant "
-              "improvements of the success rate for %d epochs." % (current_success_rate, epochs_since_improvement))
+        print("The success rate is with %d%% >= 99.9%% and there were no significant improvements of the success rate for %d epochs." % (current_success_rate, epochs_since_improvement))
 
     # delete remaining weights and model and sample data
     if options.delete:
@@ -741,9 +738,6 @@ def evaluate(options, directory, domain_path, problem_list):
     if asnet_weights is None:
         print("WARNING: Evaluation is started without given weights! Will use randomly initialized weights.")
 
-    # problem model dict: problem_path -> problem_asnet_model
-    problem_model_dict = {}
-
     # solved evaluation counter
     solved_problems = 0
 
@@ -752,20 +746,17 @@ def evaluate(options, directory, domain_path, problem_list):
                 + str(problem_index + 1) + "/ " + str(len(problem_list)) + ")")
         if options.dry:
             continue
+        problem_eval_time = time.time()
+        # clear tensorflow session to remove computational graph of last model
+        K.clear_session()
 
-        # access built model if already in dict
-        if problem_path in problem_model_dict.keys():
-            asnet_model = problem_model_dict[problem_path]
-            print("Accessing already built model for %s" % problem_path)
-        else:
-            _, task_meta = create_pddl_task(options, domain_path, problem_path)
-            start_time = timing(start_time, "PDDL translation time: %ss")
-            asnet_model = create_asnet_model(task_meta, options, extra_input_size, asnet_weights)
-            start_time = timing(start_time, "Keras model creation time: %ss")
-            problem_model_dict[problem_path] = asnet_model
+        _, task_meta = create_pddl_task(options, domain_path, problem_path)
+        start_time = timing(start_time, "PDDL translation time: %ss")
+        asnet_model = create_asnet_model(task_meta, options, extra_input_size, asnet_weights)
+        start_time = timing(start_time, "Keras model creation time: %ss")
 
         # store protobuf network file for fast-downward search
-        network_file = "asnet.pb"
+        network_file = os.path.join(directory, "asnet.pb")
         if os.path.isfile(network_file):
             os.remove(network_file)
         store_keras_model_as_protobuf(asnet_model, file=network_file)
@@ -779,6 +770,7 @@ def evaluate(options, directory, domain_path, problem_list):
             print("Problem was SOLVED")
         else:
             print("Problem was NOT SOLVED")
+        _ = timing(problem_eval_time, "Problem evaluation time for problem " +problem_path + ": %ss")
 
     # delete remaining model file
     if options.delete:

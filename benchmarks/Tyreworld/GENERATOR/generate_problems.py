@@ -17,10 +17,15 @@ def main(argv):
         print("Only use positive, valid intervals which do not include more than 50 (natural) numbers")
 
     for n in range(n_from, n_to + 1):
-        print("Generating ../p" + str(n) + ".pddl tyreworld problem file")
+        if n < 10:
+            difficulty_string = "0" + str(n)
+        else:
+            difficulty_string = str(n)
+
+        problem_file = "../d-" + difficulty_string + ".pddl"
+        print("Generating " + problem_file + " tyreworld problem file")
         cmd = ("./tyreworld", "-n", str(n))
 
-        problem_file = "../p" + str(n) + ".pddl"
 
         with open(problem_file, 'w') as f:
             out = check_output(cmd)
