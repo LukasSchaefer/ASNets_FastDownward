@@ -1,0 +1,84 @@
+Parsing time: 4.0531158447265625e-06s
+Evaluating problem file test/p8.pddl (1/ 24)
+Processing PDDL Translation.
+Computing task meta information.
+PDDL task actions: 592
+SAS task operators: 592
+PDDL task propositions: 368
+SAS task facts: 368
+PDDL translation time: 0.5750529766082764s
+Building the ASNet keras model...
+Loading previous weights
+Keras model creation time: 169.16052532196045s
+Converted 134 variables to const ops.
+Network saving time: 16.515331506729126s
+Running network policy search for test/p8.pddl...
+Network search evaluation time: 55.02518129348755s
+Problem was SOLVED
+Evaluating problem file test/p15.pddl (2/ 24)
+Processing PDDL Translation.
+Computing task meta information.
+PDDL task actions: 1943
+SAS task operators: 1943
+PDDL task propositions: 1103
+SAS task facts: 1103
+PDDL translation time: 3.26973032951355s
+Building the ASNet keras model...
+Loading previous weights
+Keras model creation time: 614.2024028301239s
+Converted 134 variables to const ops.
+Network saving time: 60.78444862365723s
+Running network policy search for test/p15.pddl...
+Network search evaluation time: 209.78827118873596s
+Problem was SOLVED
+Evaluating problem file test/p10.pddl (3/ 24)
+Processing PDDL Translation.
+Computing task meta information.
+PDDL task actions: 898
+SAS task operators: 898
+PDDL task propositions: 538
+SAS task facts: 538
+PDDL translation time: 3.368372678756714s
+Building the ASNet keras model...
+Loading previous weights
+Keras model creation time: 265.68178272247314s
+Converted 134 variables to const ops.
+Network saving time: 25.670360565185547s
+Running network policy search for test/p10.pddl...
+Network search evaluation time: 87.83913230895996s
+Problem was SOLVED
+Evaluating problem file test/p21.pddl (4/ 24)
+Processing PDDL Translation.
+Computing task meta information.
+PDDL task actions: 3725
+SAS task operators: 3725
+PDDL task propositions: 2045
+SAS task facts: 2045
+PDDL translation time: 23.65807867050171s
+Building the ASNet keras model...
+Loading previous weights
+Keras model creation time: 1346.2726452350616s
+Converted 134 variables to const ops.
+Network saving time: 150.5417947769165s
+Running network policy search for test/p21.pddl...
+
+# Error:
+Using TensorFlow backend.
+INFO:tensorflow:Froze 134 variables.
+INFO:tensorflow:Froze 134 variables.
+INFO:tensorflow:Froze 134 variables.
+INFO:tensorflow:Froze 134 variables.
+Traceback (most recent call last):
+  File "fast-asnet.py", line 812, in <module>
+    main(sys.argv)
+  File "fast-asnet.py", line 806, in main
+    evaluate(options, directory, domain_path, problem_list)
+  File "fast-asnet.py", line 767, in evaluate
+    solved_problem = fd_evaluate(options, domain_path, problem_path, network_file, extra_input_size)
+  File "fast-asnet.py", line 431, in fd_evaluate
+    p = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+  File "/usr/lib64/python3.6/subprocess.py", line 709, in __init__
+    restore_signals, start_new_session)
+  File "/usr/lib64/python3.6/subprocess.py", line 1275, in _execute_child
+    restore_signals, start_new_session, preexec_fn)
+OSError: [Errno 12] Cannot allocate memory
