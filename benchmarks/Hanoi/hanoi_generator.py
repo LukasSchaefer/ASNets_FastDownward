@@ -47,8 +47,13 @@ def generate_file(N):
     s += "  (:goal \n    (and %s )\n  )" % k
     s += "\n)"
 
-    print("Generating p" + str(N) + ".pddl hanoi problem file")
-    problem_file = "p" + str(N) + ".pddl"
+
+    if N < 10:
+        diff_string = "0" + str(N)
+    else:
+        diff_string = str(N)
+    problem_file = "d-" + diff_string + ".pddl"
+    print("Generating " + problem_file + " hanoi problem file")
     with open(problem_file, 'w') as f:
         f.write(s)
 
