@@ -139,7 +139,7 @@ pasnet.add_argument("--problem_epochs", type=int,
                           "because whenever a new problem is used trained the keras ASNet model has "
                           "to be built and cannot be stored -> inefficient to always iterate over problems).")
 pasnet.add_argument("--train_epochs", type=int,
-                     action="store", default=300,
+                     action="store", default=256,
                      help="Number of epochs of training after sampling for one problem.")
 pasnet.add_argument("--accumulate_samples", action="store_true",
                      help="Flag activating accumulation of samples (deactivating "
