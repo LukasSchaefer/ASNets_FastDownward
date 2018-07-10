@@ -1,7 +1,4 @@
-
-
-
-(define (problem tireworld-6)
+(define (problem tyreworld-6)
 (:domain tyreworld)
 (:objects 
 wrench jack pump - tool

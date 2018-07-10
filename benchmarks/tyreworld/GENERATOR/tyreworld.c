@@ -96,7 +96,7 @@ int main( int argc, char *argv[] )
 
   /* header
    */
-  printf("(define (problem tireworld-%d)", gobjects);
+  printf("(define (problem tyreworld-%d)", gobjects);
   printf("\n(:domain tyreworld)");
 
   printf("\n(:objects ");
