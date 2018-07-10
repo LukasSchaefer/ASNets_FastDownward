@@ -1,0 +1,1 @@
+Try to share weights among different diff-groups with separate domains (might work as only constants seem to be different)
