@@ -2,14 +2,11 @@
 (:domain tyreworld)
 (:objects 
 wrench jack pump - tool
-the-hub1 the-hub2 the-hub3 the-hub4 
-- hub
-nuts1 nuts2 nuts3 nuts4 
-- nut
+the-hub1 the-hub2 the-hub3 the-hub4 - hub
+nuts1 nuts2 nuts3 nuts4 - nut
 
 boot - container
-r1 w1 r2 w2 r3 w3 r4 w4 
-- wheel
+r1 w1 r2 w2 r3 w3 r4 w4 - wheel
 )
 (:init
 (in jack boot)
