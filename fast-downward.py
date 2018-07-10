@@ -2,11 +2,12 @@
 # -*- coding: utf-8 -*-
 
 if __name__ == "__main__":
-    import os
+    # import os
 
-    import build
+    # import build
 
     from driver.main import main
 
-    config = build.load_build_configs(os.path.dirname(__file__))
-    main(release_build=config.pop("DEFAULT"), debug_build=config.pop("DEBUG"))
+    # config = build.load_build_configs(os.path.dirname(__file__))
+    # main(release_build=config.pop("DEFAULT"), debug_build=config.pop("DEBUG"))
+    main(release_build="release64dynamic", debug_build="debug64dynamic")
