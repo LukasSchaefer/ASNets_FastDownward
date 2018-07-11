@@ -1,12 +1,10 @@
 (define (problem tyreworld-1)
 (:domain tyreworld)
-(:objects 
-wrench jack pump - tool
-the-hub1 - hub
-nuts1 - nut
-
-boot - container
-r1 w1 - wheel
+(:objects wrench jack pump - tool
+	  the-hub1 - hub
+	  nuts1 - nut
+	  boot - container
+	  r1 w1 - wheel
 )
 (:init
 (in jack boot)
