@@ -3,9 +3,12 @@
 
 import sys
 
+from keras.optimizers import Adam
+
 sys.path.append("network_models/asnets")
 from problem_meta import ProblemMeta
 from asnet_keras_model import ASNet_Model_Builder
+from losses import custom_binary_crossentropy, just_opt_custom_binary_crossentropy
 
 from src.translate.translator import main as translate
 from src.translate.normalize import normalize
