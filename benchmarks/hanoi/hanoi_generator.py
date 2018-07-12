@@ -28,7 +28,7 @@ def generate_file(N):
             k += "(smaller d%i d%i)" % (i,j)
         k += "\n"
 
-    k += "    (clear p1)(clear p2)(clear d1)\n    "
+    k += "    (clear peg1)(clear peg2)(clear d1)\n    "
     for i in range(1,N+1):
         k += "(disk d%i)"%i
     k += "\n    "

@@ -9,7 +9,7 @@
     (smaller d1 d2)(smaller d1 d3)
     (smaller d2 d3)
     
-    (clear p1)(clear p2)(clear d1)
+    (clear peg1)(clear peg2)(clear d1)
     (disk d1)(disk d2)(disk d3)
     (on d1 d2)(on d2 d3)(on d3 peg3)
   )

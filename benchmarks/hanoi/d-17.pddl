@@ -37,7 +37,7 @@
     (smaller d15 d16)(smaller d15 d17)
     (smaller d16 d17)
     
-    (clear p1)(clear p2)(clear d1)
+    (clear peg1)(clear peg2)(clear d1)
     (disk d1)(disk d2)(disk d3)(disk d4)(disk d5)(disk d6)(disk d7)(disk d8)(disk d9)(disk d10)(disk d11)(disk d12)(disk d13)(disk d14)(disk d15)(disk d16)(disk d17)
     (on d1 d2)(on d2 d3)(on d3 d4)(on d4 d5)(on d5 d6)(on d6 d7)(on d7 d8)(on d8 d9)(on d9 d10)(on d10 d11)(on d11 d12)(on d12 d13)(on d13 d14)(on d14 d15)(on d15 d16)(on d16 d17)(on d17 peg3)
   )

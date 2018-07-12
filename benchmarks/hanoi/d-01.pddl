@@ -5,7 +5,7 @@
     (smaller d1 peg1)(smaller d1 peg2)(smaller d1 peg3)
 
     
-    (clear p1)(clear p2)(clear d1)
+    (clear peg1)(clear peg2)(clear d1)
     (disk d1)
     (on d1 peg3)
   )
