@@ -1,0 +1,265 @@
+#! /usr/bin/env python
+# -*- coding: utf-8 -*-
+
+# script to extract training statistics out of training log files
+
+import re
+import sys
+import os
+
+
+class ProblemTrainingParsed:
+    def  __init__(problem_name):
+        self.problem_name = problem_name
+        # nested list with
+        # first list corresponds to epochs
+        # second list corresponds for problem epochs in this epoch
+        # second list contains the loss values for each training epoch
+        self.loss_values_by_epochs = []
+        # same structure as loss values with values being pairs of format
+        # (act_name, probability) for action with act_name being chosen in the
+        # network search of the sampling search with probability
+        self.chosen_act_id_and_prob = []
+        # #epochs list-entries with each being the time it took to create the
+        # keras model
+        self.model_creation_times = []
+        # list of nested lists corresponding to epochs containing time it took
+        # to complete the sampling search for each problem epoch
+        self.sampling_search_times = []
+        # list of nested lists corresponding to epochs containing time it took
+        # to complete the training run for each problem epoch
+        self.training_epoch_times = []
+        # list of ints indicating how many of the network searches in the problem epochs
+        # of the respective epoch were successfull = reaching a goal
+        self.successfull_explorations = []
+
+    
+    def parse_model_creation(log_lines, log_line_index, current_epoch):
+        """
+        :param log_lines: list of all lines of the log file
+        :param log_line_index: indicating which line from log_lines should be processed next
+        :param current_epoch: index number of current epoch
+        """
+        line = log_lines[log_line_index].strip()
+        match = re.match(r'Keras model creation time: ([0-9]+\.[0-9]*)s', line)
+        while not match:
+            log_line_index += 1
+            line = log_lines[log_line_index].strip()
+            match = re.match(r'Keras model creation time: ([0-9]+\.[0-9]*)s', line)
+        self.model_creation_times.append(match.group(1))
+        assert len(self.model_creation_times) == (current_epoch + 1)
+        log_line_index += 1
+        return log_line_index
+
+
+    def parse_problem_epoch(log_lines, log_line_index, current_epoch, problem_epoch):
+        """
+        Beginning at line "Starting problem epoch x / y"
+
+        :param log_lines: list of all lines of the log file
+        :param log_line_index: indicating which line from log_lines should be processed next
+        :param current_epoch: index number of current epoch
+        :param problem_epoch: index number of problem epoch
+        """
+        problem_epoch_losses = []
+        problem_epoch_act_name_probs = []
+
+        log_line_index += 1
+        line = log_lines[log_line_index].strip()
+        # jump over translation and starting procedure/ prints of sampling search
+        while line != 'Conducting policy search':
+            log_line_index += 1
+            line = log_lines[log_line_index].strip()
+        log_line_index += 1
+        # now on "Policy reached state with id ..."
+        line = log_lines[log_line_index].strip()
+        get_op_prob_string = r'Policy reached state with id #[0-9]+ by applying op ([a-zA-Z0-9-\s]+) which had probability ([0-9]+\.[0-9]*)'
+        match = re.match(get_op_prob_string, line)
+        while match:
+            act_pair = (match.group(1), float(match.group(2)))
+            problem_epoch_act_name_probs.append(act_pair)
+            log_line_index += 1
+            line = log_lines[log_line_index].strip()
+            match = re.match(get_op_prob_string, line)
+
+        self.chosen_act_id_and_prob[-1].append(problem_epoch_act_name_probs)
+
+        # extract sampling search total time
+        line = log_lines[log_line_index].strip()
+        sampling_search_string = r'Sampling search time: ([0-9]+\.[0-9]*)s'
+        match = re.match(sampling_search_string, line)
+        while not match:
+            log_line_index += 1
+            line = log_lines[log_line_index].strip()
+            match = re.match(sampling_search_string, line)
+
+        self.sampling_search_times[-1].append(float(match.group(1)))
+
+        # extract all losses
+        # jump to first "1/1 [=====...] ... - loss: x" line
+        log_line_index += 6
+        line = log_lines[log_line_index].strip()
+        loss_string = r'[\w\W]* - loss: ([0-9]+\.[0-9]*)'
+        match = re.match(loss_string, line)
+        while match:
+            loss = match.group(1)
+            problem_epoch_losses.append(loss)
+            # go to next loss-line
+            log_line_index += 3
+            line = log_lines[log_line_index].strip()
+            match = re.match(loss_string, line)
+        self.loss_values_by_epochs[-1].append(problem_epoch_losses)
+        
+        # last loss processed -> jumped over the training time
+        log_line_index -= 2
+        line = log_lines[log_line_index].strip()
+        training_time_string = r'Network training time: ([0-9]+\.[0-9]*)s'
+        match = re.match(training_time_string, line)
+        self.training_epoch_times[-1].append(float(match.group(1)))
+
+        log_line_index += 1
+        return log_line_index
+
+
+    def parse_epoch(log_lines, log_line_index, current_epoch):
+        """
+        Starts at "Building keras ASNet model" line
+        Finishes at empty line after "x / y network explorations were successfull for this problem"
+
+        :param log_lines: list of all lines of the log file
+        :param log_line_index: indicating which line from log_lines should be processed next
+        :param current_epoch: index number of current epoch
+        """
+        # initialize values with new list for epoch
+        self.loss_values_by_epochs.append([])
+        self.chosen_act_id_and_prob.append([])
+        self.sampling_search_times.append([])
+        self.training_epoch_times.append([])
+
+        line = log_lines[log_line_index].strip()
+        assert line == 'Building keras ASNet model'
+        log_line_index += 1
+        log_line_index = parse_model_creation(log_lines, log_line_index, current_epoch)
+
+        # jump to start of problem epoch
+        log_line_index += 4
+        line = log_lines[log_line_index].strip()
+        match = re.match(r'Starting problem epoch (\d) / \d', line)
+        assert match
+        while match:
+            log_line_index = parse_problem_epoch(log_lines, log_line_index, current_epoch, int(match.group(1)) - 1)
+            line = log_lines[log_line_index].strip()
+            if line == '':
+                log_line_index += 1
+                line = log_lines[log_line_index].strip()
+            match = re.match(r'Starting problem epoch \d / \d', line)
+
+        log_line_index += 2
+        # on "x / y network explorations were successfull for this problem"
+        line = log_lines[log_line_index].strip()
+        match = re.match(r'(\d) / \d network explorations were successfull for this problem', line)
+        assert match
+        self.successfull_explorations.append(int(match.group(1)))
+        log_line_index += 1
+        return log_line_index
+
+
+class TrainingParser:
+    def __init__(log_lines, domain_name):
+        """
+        :param log_lines: list of all lines of the log file
+        :param domain_name: name of domain the training was run for
+        """
+        self.log_lines = log_lines
+        self.domain_name = domain_name
+        self.log_line_index = 0
+        self.current_epoch = -1
+        # dict accessing parsed problems by problem name
+        self.parsed_problems = {}
+
+
+    def parse_epoch():
+        """
+        Parse exactly one epoch of the log file
+        Starts with the line just AFTER "Starting epoch x"
+        Ends on the line "Starting epoch x" or "Saving final weights ..."
+        """
+        line = self.log_lines[self.log_line_index].strip()
+        if line.startswith('Training already takes'):
+            # epoch is not executed because time limitation was reached
+            self.log_line_index += 2
+            return
+        # first follows an empty line
+        assert line == ""
+        self.log_line_index += 1
+        line = self.log_lines[self.log_line_index].strip()
+        match = re.match(r'Processing problem file benchmarks\/' + self.domain_name + r'\/training\/([a-zA-Z0-9-_]*\.pddl)\s', line)
+        while match:
+            problem_name = match.group(1)
+            self.log_line_index += 1
+            if problem_name not in self.parsed_problems.keys():
+                parsed_problem = ProblemTrainingParsed(problem_file_name)
+                self.log_line_index = parsed_problem.parse_epoch(self.log_lines, self.log_line_index, self.current_epoch)
+                self.parsed_problems[problem_name] = parsed_problem
+            else:
+                parsed_problem = self.parsed_problems[problem_name]
+                self.log_line_index = parsed_problem.parse_epoch(self.log_lines, self.log_line_index, self.current_epoch)
+            line = self.log_lines[self.log_line_index].strip()
+            if line = '':
+                self.log_line_index += 1
+                line = self.log_lines[self.log_line_index].strip()               
+            else:
+                assert line.startswith('Epochs success rate:')
+                self.log_line_index += 2
+                line = self.log_lines[self.log_line_index].strip()               
+            match = re.match(r'Processing problem file benchmarks\/' + self.domain_name + r'\/training\/([a-zA-Z0-9-_]*\.pddl)\s', line)
+
+
+    def parse():
+        """
+        Parse entire logfile
+        """
+        line = self.log_lines[self.log_line_index].strip()
+        if line == '' or line.startswith('Parsing time'):
+            self.log_line_index += 1
+            continue
+
+        starting_epoch_string = r'Starting epoch ([0-9]*)'
+        match = re.match(starting_epoch_string, line)
+        while match:
+            self.log_line_index += 1
+            epoch = int(match.group(1))
+            self.current_epoch += 1
+            assert (self.current_epoch + 1) == epoch, "Epoch counter seems wrong! Was %d but expected to be" % (self.current_epoch, epoch - 1)
+            self.parse_epoch()
+            line = self.log_lines[self.log_line_index].strip()
+            match = re.match(starting_epoch_string, line)
+        # Last epoch is finished -> done
+        line = self.log_lines[self.log_line_index].strip()
+        assert line.startswith('Saving final weights in')
+        self.log_line_index += 1
+        line = self.log_lines[self.log_line_index].strip()
+        match = re.match(r'Entire training time: ([0-9]+\.[0-9]*)s', line)
+        if match:
+            self.entire_training_time = float(match.group(1))
+        else:
+            print("No entire training time given!")
+        self.number_of_epochs = self.current_epoch + 1
+
+
+def main(argv):
+    if len(argv) != 3:
+        print("Usage: ./training_parser.py <path/to/training.log <Domain-name>>"
+        sys.exit()
+    training_log_path = argv[1]
+    domain_name = argv[2]
+
+    log_file = open(training_log_path, 'r')
+    log_lines = [l.strip() for l in log_file.readlines()]
+
+    parser = TrainingParser(log_lines, domain_name)
+    parser.parse()
+
+
+if __name__ == "__main__":
+    main(sys.argv)

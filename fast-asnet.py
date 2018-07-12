@@ -413,8 +413,8 @@ def sample(options, directory, domain_path, problem_path, extra_input_size):
             retcode = execute_cmd_without_output(cmd)
         if retcode < 0:
             print("Sampling search was terminated by signal", -retcode, file=sys.stderr)
-    except OSError as e:
-        print("Sampling search execution failed", e, file=sys.stderr)
+    except (OSError, SystemExit) as e:
+        print("Sampling search exitted with systemexit or oserror", e, file=sys.stderr)
     return retcode
 
 
