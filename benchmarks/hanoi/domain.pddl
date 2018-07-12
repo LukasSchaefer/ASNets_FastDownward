@@ -1,5 +1,5 @@
 
-(define (domain hanoi-domain)
+(define (domain hanoi)
 (:requirements :strips)
 (:predicates (clear ?x)
              (on ?x ?y)
