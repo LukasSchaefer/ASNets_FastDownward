@@ -8,7 +8,7 @@ def generate_file(N):
     s = "(define (problem hanoi-{0})\n".format(N)
 
     # Domain
-    s += "  (:domain hanoi-domain)\n"
+    s += "  (:domain hanoi)\n"
 
     # Objects
     k = ""
