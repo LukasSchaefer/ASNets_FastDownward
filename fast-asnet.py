@@ -719,7 +719,6 @@ def train(options, directory, domain_path, problem_list):
             epochs_since_improvement = 0
 
         if current_success_rate > best_success_rate:
-            print("This is the new best success rate!")
             best_success_rate = current_success_rate
 
         epoch_counter+= 1

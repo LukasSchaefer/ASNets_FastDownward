@@ -115,7 +115,7 @@ namespace policy_search {
 
         // reach new state
         GlobalState new_state = state_registry.get_successor_state(parent_state, op_proxy);
-        cout << "Policy reached state with id " << new_state.get_id() << " by applying op " << op_proxy.get_name() << "which had probability " << highest_op_probability << endl;
+        cout << "Policy reached state with id " << new_state.get_id() << " by applying op " << op_proxy.get_name() << " which had probability " << highest_op_probability << endl;
         SearchNode node = search_space.get_node(new_state);
         statistics.inc_generated();
 
