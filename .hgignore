@@ -25,6 +25,7 @@ syntax: glob
 *.sample
 *.meta
 *.orig
+*.pb
 *.bak
 *.o
 *.pyc
