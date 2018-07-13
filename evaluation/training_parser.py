@@ -11,6 +11,7 @@ import os
 class ProblemTrainingParsed:
     def  __init__(self, problem_name):
         self.problem_name = problem_name
+        self.epochs = 0
         # nested list with
         # first list corresponds to epochs
         # second list corresponds for problem epochs in this epoch
@@ -131,6 +132,7 @@ class ProblemTrainingParsed:
         :param current_epoch: index number of current epoch
         """
         # initialize values with new list for epoch
+        self.epochs += 1
         self.loss_values_by_epochs.append([])
         self.chosen_act_name_and_prob.append([])
         self.sampling_search_times.append([])
@@ -191,8 +193,9 @@ class ProblemTrainingParsed:
         print("model creation time: %ss" % self.model_creation_times[epoch_index])
         for problem_epoch_index in range(len(self.sampling_search_times[epoch_index])):
             self.dump_problem_epoch(epoch_index, problem_epoch_index)
-        print("In the epoch %d for problem %s %d explorations in the sampling searches reached a goal"\
-                % (epoch_index + 1, self.problem_name, self.successfull_explorations[epoch_index]))
+        if len(self.successfull_explorations) > epoch_index:
+            print("In the epoch %d for problem %s %d explorations in the sampling searches reached a goal"\
+                    % (epoch_index + 1, self.problem_name, self.successfull_explorations[epoch_index]))
 
     
     def dump(self):
@@ -226,11 +229,6 @@ class TrainingParser:
         # starts at "Training already taskes ..."
         self.log_line_index += 1
         line = self.log_lines[self.log_line_index].strip()
-        if line == "Training is taking over 2h -> training is stopped now!":
-            # epoch is not executed because time limitation was reached
-            self.log_line_index += 1
-            self.current_epoch -= 1
-            return
         # first follows an empty line
         assert line == ""
         self.log_line_index += 1
@@ -250,6 +248,8 @@ class TrainingParser:
             if line == '':
                 self.log_line_index += 1
                 line = self.log_lines[self.log_line_index].strip()               
+            elif line.startswith('Saving final weights in'):
+                return
             else:
                 assert line.startswith('Epochs success rate:')
                 self.log_line_index += 2
@@ -301,10 +301,11 @@ class TrainingParser:
         print("Training log data for domain %s:" % self.domain_name)
         print("printing the data chronological")
         for epoch_index in range(self.current_epoch + 1):
-            print("Epoch %d:" % epoch_index)
+            print("Epoch %d:" % (epoch_index + 1))
             for parsed_problem in self.parsed_problems.values():
-                parsed_problem.dump_epoch(epoch_index)
-                print()
+                if parsed_problem.epochs > epoch_index:
+                    parsed_problem.dump_epoch(epoch_index)
+                    print()
 
 
 def main(argv):
