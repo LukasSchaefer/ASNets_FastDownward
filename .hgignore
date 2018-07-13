@@ -34,7 +34,6 @@ syntax: glob
 *.ist
 *.bbl
 *.blg
-*.log
 *.toc
 *.out
 *.synctex.gz

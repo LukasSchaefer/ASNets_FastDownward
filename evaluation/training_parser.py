@@ -9,7 +9,7 @@ import os
 
 
 class ProblemTrainingParsed:
-    def  __init__(problem_name):
+    def  __init__(self, problem_name):
         self.problem_name = problem_name
         # nested list with
         # first list corresponds to epochs
@@ -34,7 +34,7 @@ class ProblemTrainingParsed:
         self.successfull_explorations = []
 
     
-    def parse_model_creation(log_lines, log_line_index, current_epoch):
+    def parse_model_creation(self, log_lines, log_line_index, current_epoch):
         """
         :param log_lines: list of all lines of the log file
         :param log_line_index: indicating which line from log_lines should be processed next
@@ -52,7 +52,7 @@ class ProblemTrainingParsed:
         return log_line_index
 
 
-    def parse_problem_epoch(log_lines, log_line_index, current_epoch, problem_epoch):
+    def parse_problem_epoch(self, log_lines, log_line_index, current_epoch, problem_epoch):
         """
         Beginning at line "Starting problem epoch x / y"
 
@@ -121,7 +121,7 @@ class ProblemTrainingParsed:
         return log_line_index
 
 
-    def parse_epoch(log_lines, log_line_index, current_epoch):
+    def parse_epoch(self, log_lines, log_line_index, current_epoch):
         """
         Starts at "Building keras ASNet model" line
         Finishes at empty line after "x / y network explorations were successfull for this problem"
@@ -139,20 +139,19 @@ class ProblemTrainingParsed:
         line = log_lines[log_line_index].strip()
         assert line == 'Building keras ASNet model'
         log_line_index += 1
-        log_line_index = parse_model_creation(log_lines, log_line_index, current_epoch)
+        log_line_index = self.parse_model_creation(log_lines, log_line_index, current_epoch)
 
         # jump to start of problem epoch
         log_line_index += 4
         line = log_lines[log_line_index].strip()
         match = re.match(r'Starting problem epoch (\d) / \d', line)
-        assert match
         while match:
-            log_line_index = parse_problem_epoch(log_lines, log_line_index, current_epoch, int(match.group(1)) - 1)
+            log_line_index = self.parse_problem_epoch(log_lines, log_line_index, current_epoch, int(match.group(1)) - 1)
             line = log_lines[log_line_index].strip()
             if line == '':
                 log_line_index += 1
                 line = log_lines[log_line_index].strip()
-            match = re.match(r'Starting problem epoch \d / \d', line)
+            match = re.match(r'Starting problem epoch (\d) / \d', line)
 
         log_line_index += 2
         # on "x / y network explorations were successfull for this problem"
@@ -165,7 +164,7 @@ class ProblemTrainingParsed:
 
 
 class TrainingParser:
-    def __init__(log_lines, domain_name):
+    def __init__(self, log_lines, domain_name):
         """
         :param log_lines: list of all lines of the log file
         :param domain_name: name of domain the training was run for
@@ -178,16 +177,18 @@ class TrainingParser:
         self.parsed_problems = {}
 
 
-    def parse_epoch():
+    def parse_epoch(self):
         """
         Parse exactly one epoch of the log file
         Starts with the line just AFTER "Starting epoch x"
         Ends on the line "Starting epoch x" or "Saving final weights ..."
         """
+        # starts at "Training already taskes ..."
+        self.log_line_index += 1
         line = self.log_lines[self.log_line_index].strip()
-        if line.startswith('Training already takes'):
+        if line == "Training is taking over 2h -> training is stopped now!":
             # epoch is not executed because time limitation was reached
-            self.log_line_index += 2
+            self.log_line_index += 1
             return
         # first follows an empty line
         assert line == ""
@@ -198,14 +199,14 @@ class TrainingParser:
             problem_name = match.group(1)
             self.log_line_index += 1
             if problem_name not in self.parsed_problems.keys():
-                parsed_problem = ProblemTrainingParsed(problem_file_name)
+                parsed_problem = ProblemTrainingParsed(problem_name)
                 self.log_line_index = parsed_problem.parse_epoch(self.log_lines, self.log_line_index, self.current_epoch)
                 self.parsed_problems[problem_name] = parsed_problem
             else:
                 parsed_problem = self.parsed_problems[problem_name]
                 self.log_line_index = parsed_problem.parse_epoch(self.log_lines, self.log_line_index, self.current_epoch)
             line = self.log_lines[self.log_line_index].strip()
-            if line = '':
+            if line == '':
                 self.log_line_index += 1
                 line = self.log_lines[self.log_line_index].strip()               
             else:
@@ -215,14 +216,14 @@ class TrainingParser:
             match = re.match(r'Processing problem file benchmarks\/' + self.domain_name + r'\/training\/([a-zA-Z0-9-_]*\.pddl)\s', line)
 
 
-    def parse():
+    def parse(self):
         """
         Parse entire logfile
         """
         line = self.log_lines[self.log_line_index].strip()
-        if line == '' or line.startswith('Parsing time'):
+        while line == '' or line.startswith('Parsing time'):
             self.log_line_index += 1
-            continue
+            line = self.log_lines[self.log_line_index].strip()
 
         starting_epoch_string = r'Starting epoch ([0-9]*)'
         match = re.match(starting_epoch_string, line)
@@ -249,8 +250,8 @@ class TrainingParser:
 
 def main(argv):
     if len(argv) != 3:
-        print("Usage: ./training_parser.py <path/to/training.log <Domain-name>>"
-        sys.exit()
+        print("Usage: ./training_parser.py <path/to/training.log> <Domain-name>")
+        sys.exit(1)
     training_log_path = argv[1]
     domain_name = argv[2]
 
