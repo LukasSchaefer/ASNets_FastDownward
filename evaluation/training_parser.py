@@ -19,7 +19,7 @@ class ProblemTrainingParsed:
         # same structure as loss values with values being pairs of format
         # (act_name, probability) for action with act_name being chosen in the
         # network search of the sampling search with probability
-        self.chosen_act_id_and_prob = []
+        self.chosen_act_name_and_prob = []
         # #epochs list-entries with each being the time it took to create the
         # keras model
         self.model_creation_times = []
@@ -82,7 +82,7 @@ class ProblemTrainingParsed:
             line = log_lines[log_line_index].strip()
             match = re.match(get_op_prob_string, line)
 
-        self.chosen_act_id_and_prob[-1].append(problem_epoch_act_name_probs)
+        self.chosen_act_name_and_prob[-1].append(problem_epoch_act_name_probs)
 
         # extract sampling search total time
         line = log_lines[log_line_index].strip()
@@ -102,7 +102,7 @@ class ProblemTrainingParsed:
         loss_string = r'[\w\W]* - loss: ([0-9]+\.[0-9]*)'
         match = re.match(loss_string, line)
         while match:
-            loss = match.group(1)
+            loss = float(match.group(1))
             problem_epoch_losses.append(loss)
             # go to next loss-line
             log_line_index += 3
@@ -132,7 +132,7 @@ class ProblemTrainingParsed:
         """
         # initialize values with new list for epoch
         self.loss_values_by_epochs.append([])
-        self.chosen_act_id_and_prob.append([])
+        self.chosen_act_name_and_prob.append([])
         self.sampling_search_times.append([])
         self.training_epoch_times.append([])
 
@@ -167,6 +167,42 @@ class ProblemTrainingParsed:
         return log_line_index
 
 
+        # list of ints indicating how many of the network searches in the problem epochs
+        # of the respective epoch were successfull = reaching a goal
+        self.successfull_explorations = []
+
+
+    def dump_problem_epoch(self, epoch_index, problem_epoch_index):
+        print("problem epoch data for epoch %d, problem epoch %d" % (epoch_index + 1, problem_epoch_index + 1))
+        print("\tsampling search time: %ss" % self.sampling_search_times[epoch_index][problem_epoch_index])
+        print("\tduring this search the following actions were chosen:")
+        for act_name, probability in self.chosen_act_name_and_prob[epoch_index][problem_epoch_index]:
+            print("\t\t%s was chosen with probability %f" % (act_name, probability))
+        print("\ttraining time: %ss" % self.training_epoch_times[epoch_index][problem_epoch_index])
+        print("\tduring the training the following losses were computed:")
+        losses = self.loss_values_by_epochs[epoch_index][problem_epoch_index]
+        # for loss in losses:
+        #     print("\t\tloss: %f" % loss)
+        print("\tOverall the loss development was %f -> %f" % (losses[0], losses[-1]))
+
+
+    def dump_epoch(self, epoch_index):
+        print("Training data for problem %s in epoch %d:" % (self.problem_name, epoch_index + 1))
+        print("model creation time: %ss" % self.model_creation_times[epoch_index])
+        for problem_epoch_index in range(len(self.sampling_search_times[epoch_index])):
+            self.dump_problem_epoch(epoch_index, problem_epoch_index)
+        print("In the epoch %d for problem %s %d explorations in the sampling searches reached a goal"\
+                % (epoch_index + 1, self.problem_name, self.successfull_explorations[epoch_index]))
+
+    
+    def dump(self):
+        print("Training log for problem: %s" % self.problem_name)
+        for epoch_index in range(len(self.sampling_search_times)):
+            self.dump_epoch(epoch_index)
+            print()
+            print()
+
+
 class TrainingParser:
     def __init__(self, log_lines, domain_name):
         """
@@ -193,6 +229,7 @@ class TrainingParser:
         if line == "Training is taking over 2h -> training is stopped now!":
             # epoch is not executed because time limitation was reached
             self.log_line_index += 1
+            self.current_epoch -= 1
             return
         # first follows an empty line
         assert line == ""
@@ -252,6 +289,24 @@ class TrainingParser:
         self.number_of_epochs = self.current_epoch + 1
 
 
+    def dump_per_problem(self):
+        print("Training log data for domain %s:" % self.domain_name)
+        print("printing the data problem-wise")
+        for parsed_problem in self.parsed_problems.values():
+            parsed_problem.dump()
+            print()
+
+
+    def dump_chronological(self):
+        print("Training log data for domain %s:" % self.domain_name)
+        print("printing the data chronological")
+        for epoch_index in range(self.current_epoch + 1):
+            print("Epoch %d:" % epoch_index)
+            for parsed_problem in self.parsed_problems.values():
+                parsed_problem.dump_epoch(epoch_index)
+                print()
+
+
 def main(argv):
     if len(argv) != 3:
         print("Usage: ./training_parser.py <path/to/training.log> <Domain-name>")
@@ -264,6 +319,7 @@ def main(argv):
 
     parser = TrainingParser(log_lines, domain_name)
     parser.parse()
+    parser.dump_chronological()
 
 
 if __name__ == "__main__":
