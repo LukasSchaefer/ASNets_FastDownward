@@ -602,6 +602,8 @@ def train(options, directory, domain_path, problem_list):
     epochs_since_improvement = 0
 
     epoch_counter = 0
+    
+    end_training = False
     while epoch_counter < options.epochs and (current_success_rate < 95 or epochs_since_improvement < 3):
         print()
         print("Starting epoch %d" % (epoch_counter + 1))
@@ -610,9 +612,6 @@ def train(options, directory, domain_path, problem_list):
         training_time = current_time - begin_train_time
         duration_string = duration_format(training_time)
         print("Training already takes %s" % duration_string)
-        if training_time > options.time_limit:
-            print("Training is taking over 2h -> training is stopped now!")
-            break
 
         # number of explorations reaching a goal state
         solved_explorations = 0
@@ -652,6 +651,15 @@ def train(options, directory, domain_path, problem_list):
             problem_epoch = 0
             while problem_epoch < options.problem_epochs:
                 print()
+
+                # check if time limit for training is reached
+                training_time = current_time - begin_train_time
+                duration_string = duration_format(options.time_limit)
+                if training_time > options.time_limit:
+                    print("Training is taking over " + duration_string + " -> training is stopped now!")
+                    end_training = True
+                    break
+
                 print("Starting problem epoch %d / %d" % (problem_epoch + 1, options.problem_epochs))
                 # if previous asnet.pb file exists -> remove
                 if os.path.isfile(os.path.join(directory, "asnet.pb")):
@@ -694,6 +702,10 @@ def train(options, directory, domain_path, problem_list):
 
                 problem_epoch += 1
 
+            # training time limit reached -> end early
+            if end_training:
+                break
+
             # after last problem epoch -> finalize network
             asnet.finalize(**options.finalize)
             _ = timing(start_time, "Network finalization time: %ss")
@@ -706,6 +718,10 @@ def train(options, directory, domain_path, problem_list):
             previous_asnet_weights = os.path.join(directory, "asnet_weights.h5")
 
             print("%d / %d network explorations were successfull for this problem" % (solved_explorations_problem, executed_explorations_problem))
+
+        # time limit reached -> end early
+        if end_training:
+            break
 
         # compute percentage of successfull explorations in epoch
         current_success_rate = (solved_explorations / executed_explorations) * 100

@@ -152,6 +152,10 @@ class ProblemTrainingParsed:
                 log_line_index += 1
                 line = log_lines[log_line_index].strip()
             match = re.match(r'Starting problem epoch (\d) / \d', line)
+        
+        if line.startswith("Training is taking over "):
+            # early stopping at this point
+            return log_line_index + 1
 
         log_line_index += 2
         # on "x / y network explorations were successfull for this problem"

@@ -1,3 +1,0 @@
-Tyreworld weights obtained by first
-training some time on p2.pddl
-than train some epochs on p2.pddl - p5.pddl (takes already unreasonably long)
