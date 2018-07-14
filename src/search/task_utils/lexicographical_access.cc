@@ -21,6 +21,10 @@ std::vector<std::pair<int, int>> get_facts_lexicographically(TaskProxy task_prox
             if (fact_name.rfind("NegatedAtom", 0) == 0) {
                 continue;
             }
+	    // skip unnamed facts
+	    if (fact_name == "<none of those>") {
+		continue;
+	    }
             std::tuple<std::string, int, int> fact_triple = std::make_tuple(fact_name, var_index, val_index);
             facts_with_names.push_back(fact_triple);
         }
