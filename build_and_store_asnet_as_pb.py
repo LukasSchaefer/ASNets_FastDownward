@@ -65,8 +65,11 @@ def main(argv):
     weights_path = argv[5]
     network_path = argv[6]
 
+    print("Creating PDDL task for %s" % problem_path)
     task_meta = create_pddl_task(domain_path, problem_path)
+    print("Building model for %s" % problem_path)
     asnet_model = build_asnet_model(task_meta, number_of_layers, loss_just_opt, weights_path)
+    print("Storing model for %s as protobuf-file" % problem_path)
     store_keras_model_as_protobuf(asnet_model, file=network_path)
 
 
