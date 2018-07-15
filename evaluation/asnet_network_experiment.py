@@ -65,7 +65,7 @@ exp.add_suite(BENCHMARK, SUITE)
 #                                  layer_num, str(loss_just_opt), weights_path, network_path])
 
 # DOMAIN_NAME & MODEL_NAME will later be replaced in FastDownwardASNetRun
-network_path = BENCHMARK_TRAINING + '/DOMAIN_NAME/training/MODEL_NAME'
+network_path = 'NETWORK_PATH'
 exp.add_algorithm('asnet_search', REPO, 'default',
                   ['--search', 'policysearch(p=np(network=asnet(path=' + network_path + ')))'],
                   build_options=['release64dynamic'],
