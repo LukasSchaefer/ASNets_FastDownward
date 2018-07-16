@@ -148,7 +148,10 @@ class Task(object):
                     mapping[type].append(object.name)
                 if type not in self.type_hierarchy:
                     break
-                type = self.type_hierarchy[type]
+                new_type = self.type_hierarchy[type]
+                if new_type == type:
+                    break
+                type = new_type
         return mapping
 
     def add_axiom(self, parameters, condition):
