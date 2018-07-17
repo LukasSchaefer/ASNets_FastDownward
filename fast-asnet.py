@@ -18,7 +18,6 @@ from asnet_keras_model import ASNet_Model_Builder
 from losses import custom_binary_crossentropy, just_opt_custom_binary_crossentropy
 
 from src.translate.translator import main as translate
-from src.translate.normalize import normalize
 from src.translate.instantiate import instantiate, get_fluent_predicates
 from src.translate.build_model import compute_model
 from src.translate.pddl_to_prolog import translate as pddl_to_prolog
@@ -300,7 +299,6 @@ def create_pddl_task(options, domain_path, problem_path):
     if not options.print_all:
         deactivate_prints()
     pddl_task, sas_task = translate([domain_path, problem_path])
-    normalize(pddl_task)
     prog = pddl_to_prolog(pddl_task)
     model = compute_model(prog)
     _, grounded_predicates, propositional_actions, _, _ = instantiate(pddl_task, model)
@@ -400,10 +398,10 @@ def sample(options, directory, domain_path, problem_path, extra_input_size):
     cmd = ['python', 'fast-downward.py',
                 "--build", options.build, domain_path, problem_path,
                 '--search', 'asnet_sampling_search(search=' + options.teacher_search +
-                            ', trajectory_limit=' + str(options.trajectory_limit) +
                             ', use_non_goal_teacher_paths=' + str(not options.use_only_goal_teacher_paths) +
                             ', use_teacher_search=' + str(not options.use_no_teacher_search) +
-                            ', network_search=policysearch(p=np(network=asnet(path=' + str(os.path.join(directory, 'asnet.pb')) + ', extra_input_size=' + str(extra_input_size) + ')))' +
+                            ', network_search=policysearch(p=np(network=asnet(path=' + str(os.path.join(directory, 'asnet.pb')) +
+                            ', extra_input_size=' + str(extra_input_size) + ')),trajectory_limit=' + str(options.trajectory_limit) + ')' +
                             ', target=' + os.path.join(directory, "sample.data") + ')']
     print('Running sampling search for ' + problem_path + '...')
     try:
@@ -415,6 +413,7 @@ def sample(options, directory, domain_path, problem_path, extra_input_size):
             print("Sampling search was terminated by signal", -retcode, file=sys.stderr)
     except (OSError, SystemExit) as e:
         print("Sampling search terminated with OSError or Systemexit", e, file=sys.stderr)
+        return 0
     return retcode
 
 
@@ -716,6 +715,10 @@ def train(options, directory, domain_path, problem_list):
                 os.remove(previous_asnet_weights)
             asnet._store_weights(os.path.join(directory, "asnet_weights.h5"))
             previous_asnet_weights = os.path.join(directory, "asnet_weights.h5")
+
+            # remove existing sampling data from last problem
+            if os.path.isfile(os.path.join(directory, "sample.data")):
+                os.remove(os.path.join(directory, "sample.data"))
 
             print("%d / %d network explorations were successfull for this problem" % (solved_explorations_problem, executed_explorations_problem))
 

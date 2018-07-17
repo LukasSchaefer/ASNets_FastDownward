@@ -23,15 +23,14 @@ template <typename t> void vector_into_stream(vector<t> vec, ostringstream &oss)
 
 ASNetSamplingSearch::ASNetSamplingSearch(const Options &opts)
 : SearchEngine(opts),
-search_parse_tree(prepare_search_parse_tree(opts.get_unparsed_config())),
-problem_hash(opts.get<string>("hash")),
-target_location(opts.get<string>("target")),
-exploration_trajectory_limit(opts.get<int>("trajectory_limit")),
-use_non_goal_teacher_paths(opts.get<bool>("use_non_goal_teacher_paths")),
-use_teacher_search(opts.get<bool>("use_teacher_search")),
-facts_sorted(lexicographical_access::get_facts_lexicographically(task_proxy)),
-operator_indeces_sorted(lexicographical_access::get_operator_indeces_lexicographically(task_proxy)),
-network_search(opts.get<shared_ptr<SearchEngine>>("network_search")) {
+  search_parse_tree(prepare_search_parse_tree(opts.get_unparsed_config())),
+  problem_hash(opts.get<string>("hash")),
+  target_location(opts.get<string>("target")),
+  use_non_goal_teacher_paths(opts.get<bool>("use_non_goal_teacher_paths")),
+  use_teacher_search(opts.get<bool>("use_teacher_search")),
+  facts_sorted(lexicographical_access::get_facts_lexicographically(task_proxy)),
+  operator_indeces_sorted(lexicographical_access::get_operator_indeces_lexicographically(task_proxy)),
+  network_search(opts.get<shared_ptr<SearchEngine>>("network_search")) {
 }
 
 options::ParseTree ASNetSamplingSearch::prepare_search_parse_tree(
@@ -46,18 +45,6 @@ options::ParseTree ASNetSamplingSearch::prepare_search_parse_tree(
   * are ordered lexicographically by fact-names in a "," separated list form.
 */
 void ASNetSamplingSearch::goal_into_stream(ostringstream &goal_stream) const {
-    unsigned long number_of_facts = facts_sorted.size();
-    vector<int> fact_goal_values;
-    fact_goal_values.resize(number_of_facts);
-    for (unsigned int fact_index = 0; fact_index < number_of_facts; fact_index++) {
-        if (std::find(g_goal.begin(), g_goal.end(), facts_sorted[fact_index]) != g_goal.end()) {
-            // fact_index th fact is a goal
-            fact_goal_values[fact_index] = 1;
-        } else {
-            // fact_index th fact is not a goal
-            fact_goal_values[fact_index] = 0;
-        }
-    }
     vector_into_stream<int>(fact_goal_values, goal_stream);
 }
 
@@ -434,6 +421,18 @@ void ASNetSamplingSearch::initialize() {
     // set teacher_search
     OptionParser engine_parser(search_parse_tree, false);
     teacher_search = engine_parser.start_parsing<shared_ptr<SearchEngine>>();
+    // set goal values
+    unsigned long number_of_facts = facts_sorted.size();
+    fact_goal_values.resize(number_of_facts);
+    for (unsigned int fact_index = 0; fact_index < number_of_facts; fact_index++) {
+        if (std::find(g_goal.begin(), g_goal.end(), facts_sorted[fact_index]) != g_goal.end()) {
+            // fact_index th fact is a goal
+            fact_goal_values[fact_index] = 1;
+        } else {
+            // fact_index th fact is not a goal
+            fact_goal_values[fact_index] = 0;
+        }
+    }
     cout << "done." << endl;
 }
 
@@ -540,9 +539,6 @@ void ASNetSamplingSearch::add_sampling_options(OptionParser &parser) {
     parser.add_option<std::string> ("hash",
         "MD5 hash of the input problem. This can be used to "
         "differentiate which problems created which entries.", "None");
-    parser.add_option<int> ("trajectory_limit",
-        "Int to represent the length limit for explored trajectories during "
-        "network policy exploration", "300");
     parser.add_option<bool> ("use_non_goal_teacher_paths",
         "Bool value indicating whether paths/ trajectories of the teacher search "
         "not reaching a goal state should be sampled", "true");

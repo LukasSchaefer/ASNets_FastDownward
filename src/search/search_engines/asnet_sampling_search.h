@@ -41,14 +41,15 @@ namespace asnet_sampling_search {
         const std::string problem_hash;
         const std::string target_location;
 
-        // limit for explored trajectories during network policy exploration
-        const int exploration_trajectory_limit;
         /* if true -> sample even teacher trajectories/ paths which did not reach a goal
            otherwise only sample states along plans, so trajectories/ paths leading to a goal state */
         const bool use_non_goal_teacher_paths;
 
         // if false -> only sample using the network search
         const bool use_teacher_search;
+
+        // the fact_goal_values should be stored (equal for all samples)
+        vector<int> fact_goal_values;
 
         /* vector of entries of form (variable_index, value_index) for each fact in lexicographical ordering
            of their names */
