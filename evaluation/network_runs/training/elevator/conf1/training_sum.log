@@ -1,0 +1,117 @@
+Training log data for domain elevator:
+printing the data chronological
+Epoch 1:
+Training data for problem d-01.pddl in epoch 1:
+model creation time: 109.71423840522766s
+problem epoch data for epoch 1, problem epoch 1
+	sampling search time: 979.8085172176361s
+	during this search the following actions were chosen:
+		move-down-slow slow0-0 n4 n1 was chosen with probability 0.109999
+		move-down-slow slow0-0 n1 n0 was chosen with probability 0.109980
+		move-down-fast fast1 n6 n0 was chosen with probability 0.064012
+		move-up-slow slow1-0 n4 n8 was chosen with probability 0.059330
+		move-down-slow slow1-0 n8 n7 was chosen with probability 0.096986
+		move-down-slow slow1-0 n7 n4 was chosen with probability 0.098355
+	training time: 893.9017524719238s
+	during the training the following losses were computed:
+	Overall the loss development was 8.897800 -> 3.218400
+problem epoch data for epoch 1, problem epoch 2
+	sampling search time: 450.5614523887634s
+	during this search the following actions were chosen:
+		move-down-slow slow0-0 n4 n1 was chosen with probability 0.476843
+		board p1 slow0-0 n1 n0 n1 was chosen with probability 0.888757
+		leave p1 slow0-0 n1 n1 n0 was chosen with probability 0.607446
+	training time: 219.9593367576599s
+	during the training the following losses were computed:
+	Overall the loss development was 2.417000 -> 2.309800
+problem epoch data for epoch 1, problem epoch 3
+	sampling search time: 584.7403042316437s
+	during this search the following actions were chosen:
+		move-down-slow slow0-0 n4 n1 was chosen with probability 0.504352
+		board p1 slow0-0 n1 n0 n1 was chosen with probability 0.987082
+		move-down-slow slow0-0 n1 n0 was chosen with probability 0.501522
+		leave p1 slow0-0 n0 n1 n0 was chosen with probability 0.501697
+		board p1 slow0-0 n0 n0 n1 was chosen with probability 0.539240
+	training time: 227.38496899604797s
+	during the training the following losses were computed:
+	Overall the loss development was 2.280200 -> 2.240600
+problem epoch data for epoch 1, problem epoch 4
+	sampling search time: 449.41386699676514s
+	during this search the following actions were chosen:
+		move-down-slow slow0-0 n4 n1 was chosen with probability 0.504830
+		board p1 slow0-0 n1 n0 n1 was chosen with probability 0.988834
+		leave p1 slow0-0 n1 n1 n0 was chosen with probability 0.502133
+	training time: 220.2599494457245s
+	during the training the following losses were computed:
+	Overall the loss development was 2.270300 -> 2.244200
+problem epoch data for epoch 1, problem epoch 5
+	sampling search time: 553.1759068965912s
+	during this search the following actions were chosen:
+		move-down-slow slow0-0 n4 n1 was chosen with probability 0.502496
+		board p1 slow0-0 n1 n0 n1 was chosen with probability 0.990927
+		move-down-slow slow0-0 n1 n0 was chosen with probability 0.500006
+		board p3 slow0-0 n0 n1 n2 was chosen with probability 0.504525
+		leave p3 slow0-0 n0 n2 n1 was chosen with probability 0.334436
+	training time: 220.05127239227295s
+	during the training the following losses were computed:
+	Overall the loss development was 2.244100 -> 2.224700
+In the epoch 1 for problem d-01.pddl 0 explorations in the sampling searches reached a goal
+
+Epoch 2:
+Training data for problem d-01.pddl in epoch 2:
+model creation time: 113.95283675193787s
+problem epoch data for epoch 2, problem epoch 1
+	sampling search time: 597.4574763774872s
+	during this search the following actions were chosen:
+		move-down-slow slow0-0 n4 n1 was chosen with probability 0.504070
+		board p1 slow0-0 n1 n0 n1 was chosen with probability 0.992533
+		move-down-slow slow0-0 n1 n0 was chosen with probability 0.499815
+		board p3 slow0-0 n0 n1 n2 was chosen with probability 0.505416
+		move-up-slow slow0-0 n0 n2 was chosen with probability 0.335306
+		leave p1 slow0-0 n2 n2 n1 was chosen with probability 0.502931
+		board p1 slow0-0 n2 n1 n2 was chosen with probability 0.523865
+	training time: 604.0993685722351s
+	during the training the following losses were computed:
+	Overall the loss development was 2.195100 -> 2.175900
+problem epoch data for epoch 2, problem epoch 2
+	sampling search time: 448.80459809303284s
+	during this search the following actions were chosen:
+		move-down-slow slow0-0 n4 n1 was chosen with probability 0.506362
+		board p1 slow0-0 n1 n0 n1 was chosen with probability 0.993555
+		leave p1 slow0-0 n1 n1 n0 was chosen with probability 0.500932
+	training time: 227.98338890075684s
+	during the training the following losses were computed:
+	Overall the loss development was 2.205500 -> 2.197000
+problem epoch data for epoch 2, problem epoch 3
+	sampling search time: 449.4085760116577s
+	during this search the following actions were chosen:
+		move-down-slow slow0-0 n4 n1 was chosen with probability 0.505038
+		board p1 slow0-0 n1 n0 n1 was chosen with probability 0.994154
+		leave p1 slow0-0 n1 n1 n0 was chosen with probability 0.500793
+	training time: 227.47722172737122s
+	during the training the following losses were computed:
+	Overall the loss development was 2.197000 -> 2.189800
+problem epoch data for epoch 2, problem epoch 4
+	sampling search time: 448.99132204055786s
+	during this search the following actions were chosen:
+		move-down-slow slow0-0 n4 n1 was chosen with probability 0.506096
+		board p1 slow0-0 n1 n0 n1 was chosen with probability 0.994845
+		leave p1 slow0-0 n1 n1 n0 was chosen with probability 0.501261
+	training time: 228.28290247917175s
+	during the training the following losses were computed:
+	Overall the loss development was 2.189800 -> 2.183700
+problem epoch data for epoch 2, problem epoch 5
+	sampling search time: 450.1422233581543s
+	during this search the following actions were chosen:
+		move-down-slow slow0-0 n4 n1 was chosen with probability 0.505822
+		board p1 slow0-0 n1 n0 n1 was chosen with probability 0.995244
+		leave p1 slow0-0 n1 n1 n0 was chosen with probability 0.503524
+	training time: 227.4831738471985s
+	during the training the following losses were computed:
+	Overall the loss development was 2.183600 -> 2.178200
+In the epoch 2 for problem d-01.pddl 0 explorations in the sampling searches reached a goal
+
+Epoch 3:
+Training data for problem d-01.pddl in epoch 3:
+model creation time: 116.85602855682373s
+

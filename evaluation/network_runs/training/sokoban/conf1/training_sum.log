@@ -1,0 +1,176 @@
+Training log data for domain sokoban:
+printing the data chronological
+Epoch 1:
+Training data for problem d-01.pddl in epoch 1:
+model creation time: 30.983216524124146s
+problem epoch data for epoch 1, problem epoch 1
+	sampling search time: 9.710703372955322s
+	during this search the following actions were chosen:
+	training time: 132.20469069480896s
+	during the training the following losses were computed:
+	Overall the loss development was 2.648000 -> 2.220300
+problem epoch data for epoch 1, problem epoch 2
+	sampling search time: 9.186173677444458s
+	during this search the following actions were chosen:
+	training time: 37.1338746547699s
+	during the training the following losses were computed:
+	Overall the loss development was 2.220000 -> 2.185400
+problem epoch data for epoch 1, problem epoch 3
+	sampling search time: 9.154291868209839s
+	during this search the following actions were chosen:
+	training time: 36.95147371292114s
+	during the training the following losses were computed:
+	Overall the loss development was 2.185300 -> 2.173200
+problem epoch data for epoch 1, problem epoch 4
+	sampling search time: 9.371644973754883s
+	during this search the following actions were chosen:
+	training time: 37.02356553077698s
+	during the training the following losses were computed:
+	Overall the loss development was 2.173200 -> 2.166800
+problem epoch data for epoch 1, problem epoch 5
+	sampling search time: 9.684123039245605s
+	during this search the following actions were chosen:
+	training time: 37.07133960723877s
+	during the training the following losses were computed:
+	Overall the loss development was 2.166800 -> 2.163500
+In the epoch 1 for problem d-01.pddl 0 explorations in the sampling searches reached a goal
+
+Training data for problem d-02.pddl in epoch 1:
+model creation time: 66.91044449806213s
+problem epoch data for epoch 1, problem epoch 1
+	sampling search time: 343.23173213005066s
+	during this search the following actions were chosen:
+		move player-01 pos-11-03 pos-11-04 dir-down was chosen with probability 0.500216
+		move player-01 pos-11-04 pos-10-04 dir-left was chosen with probability 0.500228
+		move player-01 pos-10-04 pos-11-04 dir-right was chosen with probability 0.500235
+	training time: 567.8444612026215s
+	during the training the following losses were computed:
+	Overall the loss development was 2.239000 -> 2.216500
+problem epoch data for epoch 1, problem epoch 2
+	sampling search time: 345.00764060020447s
+	during this search the following actions were chosen:
+		move player-01 pos-11-03 pos-11-04 dir-down was chosen with probability 0.504764
+		move player-01 pos-11-04 pos-10-04 dir-left was chosen with probability 0.501777
+		move player-01 pos-10-04 pos-11-04 dir-right was chosen with probability 0.500262
+	training time: 372.0167946815491s
+	during the training the following losses were computed:
+	Overall the loss development was 2.355500 -> 2.208600
+problem epoch data for epoch 1, problem epoch 3
+	sampling search time: 446.96963596343994s
+	during this search the following actions were chosen:
+		move player-01 pos-11-03 pos-11-04 dir-down was chosen with probability 0.501402
+		move player-01 pos-11-04 pos-10-04 dir-left was chosen with probability 0.500476
+		move player-01 pos-10-04 pos-09-04 dir-left was chosen with probability 0.500021
+		move player-01 pos-09-04 pos-10-04 dir-right was chosen with probability 0.334099
+	training time: 372.4120056629181s
+	during the training the following losses were computed:
+	Overall the loss development was 2.347300 -> 2.206200
+problem epoch data for epoch 1, problem epoch 4
+	sampling search time: 447.63957500457764s
+	during this search the following actions were chosen:
+		move player-01 pos-11-03 pos-11-04 dir-down was chosen with probability 0.501153
+		move player-01 pos-11-04 pos-10-04 dir-left was chosen with probability 0.500961
+		move player-01 pos-10-04 pos-09-04 dir-left was chosen with probability 0.500414
+		move player-01 pos-09-04 pos-10-04 dir-right was chosen with probability 0.334422
+	training time: 372.31179332733154s
+	during the training the following losses were computed:
+	Overall the loss development was 2.069700 -> 2.204900
+problem epoch data for epoch 1, problem epoch 5
+	sampling search time: 448.34143447875977s
+	during this search the following actions were chosen:
+		move player-01 pos-11-03 pos-11-04 dir-down was chosen with probability 0.501089
+		move player-01 pos-11-04 pos-10-04 dir-left was chosen with probability 0.501205
+		move player-01 pos-10-04 pos-09-04 dir-left was chosen with probability 0.500433
+		move player-01 pos-09-04 pos-10-04 dir-right was chosen with probability 0.334685
+	training time: 372.5753631591797s
+	during the training the following losses were computed:
+	Overall the loss development was 2.068300 -> 2.204200
+In the epoch 1 for problem d-02.pddl 0 explorations in the sampling searches reached a goal
+
+Epoch 2:
+Training data for problem d-01.pddl in epoch 2:
+model creation time: 33.29047417640686s
+problem epoch data for epoch 2, problem epoch 1
+	sampling search time: 10.437676668167114s
+	during this search the following actions were chosen:
+	training time: 136.9717116355896s
+	during the training the following losses were computed:
+	Overall the loss development was 2.522100 -> 2.149800
+problem epoch data for epoch 2, problem epoch 2
+	sampling search time: 9.378339052200317s
+	during this search the following actions were chosen:
+	training time: 38.31497311592102s
+	during the training the following losses were computed:
+	Overall the loss development was 2.170300 -> 2.167100
+problem epoch data for epoch 2, problem epoch 3
+	sampling search time: 9.403824806213379s
+	during this search the following actions were chosen:
+	training time: 38.3974130153656s
+	during the training the following losses were computed:
+	Overall the loss development was 2.167100 -> 2.165100
+problem epoch data for epoch 2, problem epoch 4
+	sampling search time: 9.45838975906372s
+	during this search the following actions were chosen:
+	training time: 38.41480731964111s
+	during the training the following losses were computed:
+	Overall the loss development was 2.165000 -> 2.163700
+problem epoch data for epoch 2, problem epoch 5
+	sampling search time: 9.357511043548584s
+	during this search the following actions were chosen:
+	training time: 38.30349540710449s
+	during the training the following losses were computed:
+	Overall the loss development was 2.163700 -> 2.162600
+In the epoch 2 for problem d-01.pddl 0 explorations in the sampling searches reached a goal
+
+Training data for problem d-02.pddl in epoch 2:
+model creation time: 67.85172748565674s
+problem epoch data for epoch 2, problem epoch 1
+	sampling search time: 343.6335036754608s
+	during this search the following actions were chosen:
+		move player-01 pos-11-03 pos-11-04 dir-down was chosen with probability 0.500327
+		move player-01 pos-11-04 pos-10-04 dir-left was chosen with probability 0.500685
+		move player-01 pos-10-04 pos-11-04 dir-right was chosen with probability 0.500047
+	training time: 573.6234817504883s
+	during the training the following losses were computed:
+	Overall the loss development was 2.375600 -> 2.206500
+problem epoch data for epoch 2, problem epoch 2
+	sampling search time: 239.4964940547943s
+	during this search the following actions were chosen:
+		move player-01 pos-11-03 pos-11-04 dir-down was chosen with probability 0.500359
+		move player-01 pos-11-04 pos-11-03 dir-up was chosen with probability 0.500242
+	training time: 374.4409644603729s
+	during the training the following losses were computed:
+	Overall the loss development was 2.373800 -> 2.203900
+problem epoch data for epoch 2, problem epoch 3
+	sampling search time: 344.13169050216675s
+	during this search the following actions were chosen:
+		move player-01 pos-11-03 pos-11-04 dir-down was chosen with probability 0.500710
+		move player-01 pos-11-04 pos-10-04 dir-left was chosen with probability 0.500218
+		move player-01 pos-10-04 pos-11-04 dir-right was chosen with probability 0.500426
+	training time: 374.8583929538727s
+	during the training the following losses were computed:
+	Overall the loss development was 2.067200 -> 2.203200
+problem epoch data for epoch 2, problem epoch 4
+	sampling search time: 343.6927206516266s
+	during this search the following actions were chosen:
+		move player-01 pos-11-03 pos-11-04 dir-down was chosen with probability 0.501092
+		move player-01 pos-11-04 pos-10-04 dir-left was chosen with probability 0.500991
+		move player-01 pos-10-04 pos-11-04 dir-right was chosen with probability 0.500407
+	training time: 375.0962746143341s
+	during the training the following losses were computed:
+	Overall the loss development was 2.342400 -> 2.202400
+problem epoch data for epoch 2, problem epoch 5
+	sampling search time: 343.8779754638672s
+	during this search the following actions were chosen:
+		move player-01 pos-11-03 pos-11-04 dir-down was chosen with probability 0.500896
+		move player-01 pos-11-04 pos-10-04 dir-left was chosen with probability 0.501271
+		move player-01 pos-10-04 pos-11-04 dir-right was chosen with probability 0.500353
+	training time: 375.38343048095703s
+	during the training the following losses were computed:
+	Overall the loss development was 2.065900 -> 2.202000
+In the epoch 2 for problem d-02.pddl 0 explorations in the sampling searches reached a goal
+
+Epoch 3:
+Training data for problem d-01.pddl in epoch 3:
+model creation time: 33.369300365448s
+

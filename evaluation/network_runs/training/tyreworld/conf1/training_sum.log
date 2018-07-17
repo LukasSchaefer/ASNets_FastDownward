@@ -1,0 +1,420 @@
+Training log data for domain tyreworld:
+printing the data chronological
+Epoch 1:
+Training data for problem d-01.pddl in epoch 1:
+model creation time: 7.8778276443481445s
+problem epoch data for epoch 1, problem epoch 1
+	sampling search time: 3.0604021549224854s
+	during this search the following actions were chosen:
+	training time: 55.885538816452026s
+	during the training the following losses were computed:
+	Overall the loss development was 4.792800 -> 2.072600
+problem epoch data for epoch 1, problem epoch 2
+	sampling search time: 4.233272314071655s
+	during this search the following actions were chosen:
+	training time: 26.09254002571106s
+	during the training the following losses were computed:
+	Overall the loss development was 1.895200 -> 1.673900
+problem epoch data for epoch 1, problem epoch 3
+	sampling search time: 4.146582841873169s
+	during this search the following actions were chosen:
+	training time: 26.098402738571167s
+	during the training the following losses were computed:
+	Overall the loss development was 1.677900 -> 1.607800
+problem epoch data for epoch 1, problem epoch 4
+	sampling search time: 4.186758756637573s
+	during this search the following actions were chosen:
+	training time: 26.092140913009644s
+	during the training the following losses were computed:
+	Overall the loss development was 1.608100 -> 1.579800
+problem epoch data for epoch 1, problem epoch 5
+	sampling search time: 4.0745415687561035s
+	during this search the following actions were chosen:
+	training time: 26.095308780670166s
+	during the training the following losses were computed:
+	Overall the loss development was 1.579700 -> 1.566300
+In the epoch 1 for problem d-01.pddl 4 explorations in the sampling searches reached a goal
+
+Training data for problem d-02.pddl in epoch 1:
+model creation time: 18.328039169311523s
+problem epoch data for epoch 1, problem epoch 1
+	sampling search time: 169.6135070323944s
+	during this search the following actions were chosen:
+	training time: 98.19909811019897s
+	during the training the following losses were computed:
+	Overall the loss development was 2.515200 -> 2.678800
+problem epoch data for epoch 1, problem epoch 2
+	sampling search time: 199.43299913406372s
+	during this search the following actions were chosen:
+	training time: 26.485816478729248s
+	during the training the following losses were computed:
+	Overall the loss development was 2.911000 -> 2.902400
+problem epoch data for epoch 1, problem epoch 3
+	sampling search time: 156.33955717086792s
+	during this search the following actions were chosen:
+	training time: 25.902661323547363s
+	during the training the following losses were computed:
+	Overall the loss development was 1.860300 -> 1.855500
+problem epoch data for epoch 1, problem epoch 4
+	sampling search time: 168.4686884880066s
+	during this search the following actions were chosen:
+	training time: 25.950857400894165s
+	during the training the following losses were computed:
+	Overall the loss development was 2.794800 -> 2.760400
+problem epoch data for epoch 1, problem epoch 5
+	sampling search time: 198.62003993988037s
+	during this search the following actions were chosen:
+	training time: 38.89100122451782s
+	during the training the following losses were computed:
+	Overall the loss development was 2.050200 -> 2.881600
+In the epoch 1 for problem d-02.pddl 5 explorations in the sampling searches reached a goal
+
+Epoch 2:
+Training data for problem d-01.pddl in epoch 2:
+model creation time: 9.387037515640259s
+problem epoch data for epoch 2, problem epoch 1
+	sampling search time: 4.133653879165649s
+	during this search the following actions were chosen:
+	training time: 57.70866847038269s
+	during the training the following losses were computed:
+	Overall the loss development was 1.316600 -> 1.308900
+problem epoch data for epoch 2, problem epoch 2
+	sampling search time: 4.400727987289429s
+	during this search the following actions were chosen:
+	training time: 26.094882488250732s
+	during the training the following losses were computed:
+	Overall the loss development was 1.551400 -> 1.548500
+problem epoch data for epoch 2, problem epoch 3
+	sampling search time: 4.549970388412476s
+	during this search the following actions were chosen:
+	training time: 26.08993911743164s
+	during the training the following losses were computed:
+	Overall the loss development was 1.330200 -> 1.327200
+problem epoch data for epoch 2, problem epoch 4
+	sampling search time: 4.390026807785034s
+	during this search the following actions were chosen:
+	training time: 26.09180450439453s
+	during the training the following losses were computed:
+	Overall the loss development was 1.544400 -> 1.540700
+problem epoch data for epoch 2, problem epoch 5
+	sampling search time: 4.405300617218018s
+	during this search the following actions were chosen:
+	training time: 26.088419675827026s
+	during the training the following losses were computed:
+	Overall the loss development was 1.813100 -> 1.811700
+In the epoch 2 for problem d-01.pddl 5 explorations in the sampling searches reached a goal
+
+Training data for problem d-02.pddl in epoch 2:
+model creation time: 18.773149490356445s
+problem epoch data for epoch 2, problem epoch 1
+	sampling search time: 171.86298179626465s
+	during this search the following actions were chosen:
+	training time: 84.23108410835266s
+	during the training the following losses were computed:
+	Overall the loss development was 2.839300 -> 2.502100
+problem epoch data for epoch 2, problem epoch 2
+	sampling search time: 195.00553250312805s
+	during this search the following actions were chosen:
+	training time: 38.97451734542847s
+	during the training the following losses were computed:
+	Overall the loss development was 2.503800 -> 3.002100
+problem epoch data for epoch 2, problem epoch 3
+	sampling search time: 202.05011129379272s
+	during this search the following actions were chosen:
+	training time: 25.904296398162842s
+	during the training the following losses were computed:
+	Overall the loss development was 2.787600 -> 2.786100
+problem epoch data for epoch 2, problem epoch 4
+	sampling search time: 171.71983814239502s
+	during this search the following actions were chosen:
+	training time: 25.907020568847656s
+	during the training the following losses were computed:
+	Overall the loss development was 2.099800 -> 2.096600
+problem epoch data for epoch 2, problem epoch 5
+	sampling search time: 208.18197679519653s
+	during this search the following actions were chosen:
+	training time: 25.90611433982849s
+	during the training the following losses were computed:
+	Overall the loss development was 3.141700 -> 3.137100
+In the epoch 2 for problem d-02.pddl 4 explorations in the sampling searches reached a goal
+
+Epoch 3:
+Training data for problem d-01.pddl in epoch 3:
+model creation time: 9.483701467514038s
+problem epoch data for epoch 3, problem epoch 1
+	sampling search time: 4.3654022216796875s
+	during this search the following actions were chosen:
+	training time: 57.325236320495605s
+	during the training the following losses were computed:
+	Overall the loss development was 1.405100 -> 1.400400
+problem epoch data for epoch 3, problem epoch 2
+	sampling search time: 4.140143394470215s
+	during this search the following actions were chosen:
+	training time: 26.09882402420044s
+	during the training the following losses were computed:
+	Overall the loss development was 1.581200 -> 1.579400
+problem epoch data for epoch 3, problem epoch 3
+	sampling search time: 4.195254325866699s
+	during this search the following actions were chosen:
+	training time: 26.095778703689575s
+	during the training the following losses were computed:
+	Overall the loss development was 1.539700 -> 1.538800
+problem epoch data for epoch 3, problem epoch 4
+	sampling search time: 4.572127342224121s
+	during this search the following actions were chosen:
+	training time: 26.095062494277954s
+	during the training the following losses were computed:
+	Overall the loss development was 1.323800 -> 1.322700
+problem epoch data for epoch 3, problem epoch 5
+	sampling search time: 4.096831560134888s
+	during this search the following actions were chosen:
+	training time: 26.093469858169556s
+	during the training the following losses were computed:
+	Overall the loss development was 1.543300 -> 1.541800
+In the epoch 3 for problem d-01.pddl 5 explorations in the sampling searches reached a goal
+
+Training data for problem d-02.pddl in epoch 3:
+model creation time: 18.40405583381653s
+problem epoch data for epoch 3, problem epoch 1
+	sampling search time: 182.1795482635498s
+	during this search the following actions were chosen:
+	training time: 84.76690983772278s
+	during the training the following losses were computed:
+	Overall the loss development was 3.212300 -> 2.873100
+problem epoch data for epoch 3, problem epoch 2
+	sampling search time: 164.10807871818542s
+	during this search the following actions were chosen:
+	training time: 25.90603470802307s
+	during the training the following losses were computed:
+	Overall the loss development was 2.489100 -> 2.475900
+problem epoch data for epoch 3, problem epoch 3
+	sampling search time: 195.26969599723816s
+	during this search the following actions were chosen:
+	training time: 43.207173585891724s
+	during the training the following losses were computed:
+	Overall the loss development was 4.023900 -> 3.112500
+problem epoch data for epoch 3, problem epoch 4
+	sampling search time: 178.8141746520996s
+	during this search the following actions were chosen:
+	training time: 25.904407262802124s
+	during the training the following losses were computed:
+	Overall the loss development was 2.026400 -> 2.024900
+problem epoch data for epoch 3, problem epoch 5
+	sampling search time: 194.06199407577515s
+	during this search the following actions were chosen:
+	training time: 41.55973744392395s
+	during the training the following losses were computed:
+	Overall the loss development was 4.087900 -> 3.122200
+In the epoch 3 for problem d-02.pddl 4 explorations in the sampling searches reached a goal
+
+Epoch 4:
+Training data for problem d-01.pddl in epoch 4:
+model creation time: 9.518216609954834s
+problem epoch data for epoch 4, problem epoch 1
+	sampling search time: 4.268083810806274s
+	during this search the following actions were chosen:
+	training time: 57.79485893249512s
+	during the training the following losses were computed:
+	Overall the loss development was 1.196100 -> 1.192500
+problem epoch data for epoch 4, problem epoch 2
+	sampling search time: 4.360839605331421s
+	during this search the following actions were chosen:
+	training time: 26.09174942970276s
+	during the training the following losses were computed:
+	Overall the loss development was 1.541400 -> 1.539900
+problem epoch data for epoch 4, problem epoch 3
+	sampling search time: 4.041855573654175s
+	during this search the following actions were chosen:
+	training time: 26.09161639213562s
+	during the training the following losses were computed:
+	Overall the loss development was 1.710000 -> 1.708500
+problem epoch data for epoch 4, problem epoch 4
+	sampling search time: 4.577372312545776s
+	during this search the following actions were chosen:
+	training time: 26.09515690803528s
+	during the training the following losses were computed:
+	Overall the loss development was 1.679800 -> 1.679700
+problem epoch data for epoch 4, problem epoch 5
+	sampling search time: 4.586316823959351s
+	during this search the following actions were chosen:
+	training time: 26.09817337989807s
+	during the training the following losses were computed:
+	Overall the loss development was 1.507900 -> 1.506400
+In the epoch 4 for problem d-01.pddl 5 explorations in the sampling searches reached a goal
+
+Training data for problem d-02.pddl in epoch 4:
+model creation time: 18.509277820587158s
+problem epoch data for epoch 4, problem epoch 1
+	sampling search time: 172.29665780067444s
+	during this search the following actions were chosen:
+	training time: 84.1359646320343s
+	during the training the following losses were computed:
+	Overall the loss development was 3.009300 -> 2.561700
+problem epoch data for epoch 4, problem epoch 2
+	sampling search time: 191.49576687812805s
+	during this search the following actions were chosen:
+	training time: 26.8341326713562s
+	during the training the following losses were computed:
+	Overall the loss development was 2.536700 -> 2.531800
+problem epoch data for epoch 4, problem epoch 3
+	sampling search time: 189.9248504638672s
+	during this search the following actions were chosen:
+	training time: 25.905924558639526s
+	during the training the following losses were computed:
+	Overall the loss development was 1.892800 -> 1.891300
+problem epoch data for epoch 4, problem epoch 4
+	sampling search time: 188.18757796287537s
+	during this search the following actions were chosen:
+	training time: 25.909050941467285s
+	during the training the following losses were computed:
+	Overall the loss development was 2.839800 -> 2.837200
+problem epoch data for epoch 4, problem epoch 5
+	sampling search time: 153.46323490142822s
+	during this search the following actions were chosen:
+	training time: 25.904887676239014s
+	during the training the following losses were computed:
+	Overall the loss development was 1.899500 -> 1.898700
+In the epoch 4 for problem d-02.pddl 4 explorations in the sampling searches reached a goal
+
+Epoch 5:
+Training data for problem d-01.pddl in epoch 5:
+model creation time: 9.542605876922607s
+problem epoch data for epoch 5, problem epoch 1
+	sampling search time: 4.58397650718689s
+	during this search the following actions were chosen:
+	training time: 57.75466227531433s
+	during the training the following losses were computed:
+	Overall the loss development was 1.425700 -> 1.422400
+problem epoch data for epoch 5, problem epoch 2
+	sampling search time: 4.097694158554077s
+	during this search the following actions were chosen:
+	training time: 26.09845471382141s
+	during the training the following losses were computed:
+	Overall the loss development was 1.540900 -> 1.539700
+problem epoch data for epoch 5, problem epoch 3
+	sampling search time: 4.150206804275513s
+	during this search the following actions were chosen:
+	training time: 26.101555109024048s
+	during the training the following losses were computed:
+	Overall the loss development was 1.542000 -> 1.541500
+problem epoch data for epoch 5, problem epoch 4
+	sampling search time: 4.129180192947388s
+	during this search the following actions were chosen:
+	training time: 26.09576177597046s
+	during the training the following losses were computed:
+	Overall the loss development was 1.541600 -> 1.541100
+problem epoch data for epoch 5, problem epoch 5
+	sampling search time: 4.183966159820557s
+	during this search the following actions were chosen:
+	training time: 26.08730387687683s
+	during the training the following losses were computed:
+	Overall the loss development was 1.782700 -> 1.780800
+In the epoch 5 for problem d-01.pddl 5 explorations in the sampling searches reached a goal
+
+Training data for problem d-02.pddl in epoch 5:
+model creation time: 18.99040961265564s
+problem epoch data for epoch 5, problem epoch 1
+	sampling search time: 181.56453657150269s
+	during this search the following actions were chosen:
+	training time: 84.70587348937988s
+	during the training the following losses were computed:
+	Overall the loss development was 3.303400 -> 2.806500
+problem epoch data for epoch 5, problem epoch 2
+	sampling search time: 151.81377363204956s
+	during this search the following actions were chosen:
+	training time: 25.903552293777466s
+	during the training the following losses were computed:
+	Overall the loss development was 1.884300 -> 1.880200
+problem epoch data for epoch 5, problem epoch 3
+	sampling search time: 196.93225717544556s
+	during this search the following actions were chosen:
+	training time: 38.88197088241577s
+	during the training the following losses were computed:
+	Overall the loss development was 3.764400 -> 3.485500
+problem epoch data for epoch 5, problem epoch 4
+	sampling search time: 152.99597001075745s
+	during this search the following actions were chosen:
+	training time: 25.901551961898804s
+	during the training the following losses were computed:
+	Overall the loss development was 1.887600 -> 1.884900
+problem epoch data for epoch 5, problem epoch 5
+	sampling search time: 134.29636669158936s
+	during this search the following actions were chosen:
+	training time: 38.866461515426636s
+	during the training the following losses were computed:
+	Overall the loss development was 3.720100 -> 3.006700
+In the epoch 5 for problem d-02.pddl 4 explorations in the sampling searches reached a goal
+
+Epoch 6:
+Training data for problem d-01.pddl in epoch 6:
+model creation time: 9.501254558563232s
+problem epoch data for epoch 6, problem epoch 1
+	sampling search time: 4.33271336555481s
+	during this search the following actions were chosen:
+	training time: 57.84204077720642s
+	during the training the following losses were computed:
+	Overall the loss development was 1.164100 -> 1.161100
+problem epoch data for epoch 6, problem epoch 2
+	sampling search time: 4.146043300628662s
+	during this search the following actions were chosen:
+	training time: 26.09922432899475s
+	during the training the following losses were computed:
+	Overall the loss development was 1.781300 -> 1.780400
+problem epoch data for epoch 6, problem epoch 3
+	sampling search time: 4.428276062011719s
+	during this search the following actions were chosen:
+	training time: 26.092867612838745s
+	during the training the following losses were computed:
+	Overall the loss development was 1.542200 -> 1.541500
+problem epoch data for epoch 6, problem epoch 4
+	sampling search time: 4.382275342941284s
+	during this search the following actions were chosen:
+	training time: 26.097224950790405s
+	during the training the following losses were computed:
+	Overall the loss development was 1.541500 -> 1.541200
+problem epoch data for epoch 6, problem epoch 5
+	sampling search time: 4.069875001907349s
+	during this search the following actions were chosen:
+	training time: 26.09898042678833s
+	during the training the following losses were computed:
+	Overall the loss development was 1.729200 -> 1.727400
+In the epoch 6 for problem d-01.pddl 5 explorations in the sampling searches reached a goal
+
+Training data for problem d-02.pddl in epoch 6:
+model creation time: 18.17583727836609s
+problem epoch data for epoch 6, problem epoch 1
+	sampling search time: 187.00992679595947s
+	during this search the following actions were chosen:
+	training time: 84.9590232372284s
+	during the training the following losses were computed:
+	Overall the loss development was 3.216000 -> 2.789200
+problem epoch data for epoch 6, problem epoch 2
+	sampling search time: 191.03835725784302s
+	during this search the following actions were chosen:
+	training time: 38.893786907196045s
+	during the training the following losses were computed:
+	Overall the loss development was 1.919100 -> 2.529400
+problem epoch data for epoch 6, problem epoch 3
+	sampling search time: 187.0839946269989s
+	during this search the following actions were chosen:
+	training time: 25.905613899230957s
+	during the training the following losses were computed:
+	Overall the loss development was 2.143700 -> 2.142900
+problem epoch data for epoch 6, problem epoch 4
+	sampling search time: 178.00857591629028s
+	during this search the following actions were chosen:
+	training time: 25.9052894115448s
+	during the training the following losses were computed:
+	Overall the loss development was 2.193200 -> 2.192700
+problem epoch data for epoch 6, problem epoch 5
+	sampling search time: 131.51821041107178s
+	during this search the following actions were chosen:
+	training time: 25.905424118041992s
+	during the training the following losses were computed:
+	Overall the loss development was 2.784400 -> 2.783200
+In the epoch 6 for problem d-02.pddl 5 explorations in the sampling searches reached a goal
+
+Epoch 7:
+Training data for problem d-01.pddl in epoch 7:
+model creation time: 9.65396785736084s
+

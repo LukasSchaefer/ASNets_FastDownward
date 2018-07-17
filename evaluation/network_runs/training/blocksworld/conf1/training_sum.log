@@ -1,0 +1,2062 @@
+Training log data for domain blocksworld:
+printing the data chronological
+Epoch 1:
+Training data for problem d-4-0.pddl in epoch 1:
+model creation time: 8.904406547546387s
+problem epoch data for epoch 1, problem epoch 1
+	sampling search time: 2.2015888690948486s
+	during this search the following actions were chosen:
+		pick-up a was chosen with probability 0.252247
+		stack a b was chosen with probability 0.276580
+		unstack a b was chosen with probability 0.413541
+	training time: 54.14249277114868s
+	during the training the following losses were computed:
+	Overall the loss development was 1.396000 -> 0.293900
+problem epoch data for epoch 1, problem epoch 2
+	sampling search time: 2.25455641746521s
+	during this search the following actions were chosen:
+		pick-up b was chosen with probability 0.331613
+		stack b a was chosen with probability 0.993908
+		pick-up c was chosen with probability 0.988888
+		stack c b was chosen with probability 0.997822
+		pick-up d was chosen with probability 0.999367
+		stack d c was chosen with probability 0.999987
+	training time: 26.031882286071777s
+	during the training the following losses were computed:
+	Overall the loss development was 0.328300 -> 0.241100
+problem epoch data for epoch 1, problem epoch 3
+	sampling search time: 2.5103774070739746s
+	during this search the following actions were chosen:
+		pick-up b was chosen with probability 0.332043
+		stack b a was chosen with probability 0.996127
+		pick-up c was chosen with probability 0.994692
+		stack c b was chosen with probability 0.998471
+		pick-up d was chosen with probability 0.999747
+		stack d c was chosen with probability 0.999992
+	training time: 26.028425455093384s
+	during the training the following losses were computed:
+	Overall the loss development was 0.240900 -> 0.209000
+problem epoch data for epoch 1, problem epoch 4
+	sampling search time: 2.252568006515503s
+	during this search the following actions were chosen:
+		pick-up b was chosen with probability 0.332090
+		stack b a was chosen with probability 0.996334
+		pick-up c was chosen with probability 0.995412
+		stack c b was chosen with probability 0.999182
+		pick-up d was chosen with probability 0.999815
+		stack d c was chosen with probability 0.999998
+	training time: 26.028780937194824s
+	during the training the following losses were computed:
+	Overall the loss development was 0.209000 -> 0.194000
+problem epoch data for epoch 1, problem epoch 5
+	sampling search time: 2.2473769187927246s
+	during this search the following actions were chosen:
+		pick-up b was chosen with probability 0.332352
+		stack b a was chosen with probability 0.996567
+		pick-up c was chosen with probability 0.995736
+		stack c b was chosen with probability 0.999500
+		pick-up d was chosen with probability 0.999921
+		stack d c was chosen with probability 0.999999
+	training time: 26.028809309005737s
+	during the training the following losses were computed:
+	Overall the loss development was 0.194000 -> 0.186100
+In the epoch 1 for problem d-4-0.pddl 4 explorations in the sampling searches reached a goal
+
+Training data for problem d-4-2.pddl in epoch 1:
+model creation time: 9.8376784324646s
+problem epoch data for epoch 1, problem epoch 1
+	sampling search time: 2.300560712814331s
+	during this search the following actions were chosen:
+		pick-up a was chosen with probability 0.979787
+		stack a c was chosen with probability 0.868022
+		pick-up d was chosen with probability 0.977514
+		stack d a was chosen with probability 0.994429
+	training time: 55.01305294036865s
+	during the training the following losses were computed:
+	Overall the loss development was 2.059100 -> 0.040700
+problem epoch data for epoch 1, problem epoch 2
+	sampling search time: 2.2498371601104736s
+	during this search the following actions were chosen:
+		unstack c b was chosen with probability 0.992010
+		stack c d was chosen with probability 0.993582
+		pick-up b was chosen with probability 0.993991
+		stack b c was chosen with probability 0.999675
+		pick-up a was chosen with probability 0.997950
+		stack a b was chosen with probability 0.999796
+	training time: 26.030648469924927s
+	during the training the following losses were computed:
+	Overall the loss development was 0.040800 -> 0.034600
+problem epoch data for epoch 1, problem epoch 3
+	sampling search time: 2.516972541809082s
+	during this search the following actions were chosen:
+		unstack c b was chosen with probability 0.994613
+		stack c d was chosen with probability 0.999085
+		pick-up b was chosen with probability 0.996697
+		stack b c was chosen with probability 0.999957
+		pick-up a was chosen with probability 0.999063
+		stack a b was chosen with probability 0.999974
+	training time: 26.033040761947632s
+	during the training the following losses were computed:
+	Overall the loss development was 0.034600 -> 0.032300
+problem epoch data for epoch 1, problem epoch 4
+	sampling search time: 2.327683925628662s
+	during this search the following actions were chosen:
+		unstack c b was chosen with probability 0.994808
+		stack c d was chosen with probability 0.998662
+		pick-up b was chosen with probability 0.996948
+		stack b c was chosen with probability 0.999926
+		pick-up a was chosen with probability 0.999268
+		stack a b was chosen with probability 0.999967
+	training time: 26.033053159713745s
+	during the training the following losses were computed:
+	Overall the loss development was 0.032300 -> 0.030600
+problem epoch data for epoch 1, problem epoch 5
+	sampling search time: 2.502729892730713s
+	during this search the following actions were chosen:
+		unstack c b was chosen with probability 0.995053
+		stack c d was chosen with probability 0.998237
+		pick-up b was chosen with probability 0.997117
+		stack b c was chosen with probability 0.999880
+		pick-up a was chosen with probability 0.999412
+		stack a b was chosen with probability 0.999961
+	training time: 26.03746747970581s
+	during the training the following losses were computed:
+	Overall the loss development was 0.030600 -> 0.029400
+In the epoch 1 for problem d-4-2.pddl 4 explorations in the sampling searches reached a goal
+
+Training data for problem d-4-1.pddl in epoch 1:
+model creation time: 9.499243021011353s
+problem epoch data for epoch 1, problem epoch 1
+	sampling search time: 2.2440683841705322s
+	during this search the following actions were chosen:
+	training time: 54.926873445510864s
+	during the training the following losses were computed:
+	Overall the loss development was 1.389700 -> 0.043800
+problem epoch data for epoch 1, problem epoch 2
+	sampling search time: 2.41326642036438s
+	during this search the following actions were chosen:
+	training time: 26.023367404937744s
+	during the training the following losses were computed:
+	Overall the loss development was 0.043800 -> 0.038800
+problem epoch data for epoch 1, problem epoch 3
+	sampling search time: 2.61808705329895s
+	during this search the following actions were chosen:
+	training time: 26.021113634109497s
+	during the training the following losses were computed:
+	Overall the loss development was 0.038800 -> 0.036200
+problem epoch data for epoch 1, problem epoch 4
+	sampling search time: 2.6191952228546143s
+	during this search the following actions were chosen:
+	training time: 26.021390676498413s
+	during the training the following losses were computed:
+	Overall the loss development was 0.036200 -> 0.034600
+problem epoch data for epoch 1, problem epoch 5
+	sampling search time: 2.6081383228302s
+	during this search the following actions were chosen:
+	training time: 26.018320560455322s
+	during the training the following losses were computed:
+	Overall the loss development was 0.034600 -> 0.033400
+In the epoch 1 for problem d-4-1.pddl 4 explorations in the sampling searches reached a goal
+
+Training data for problem d-5-2.pddl in epoch 1:
+model creation time: 14.677038431167603s
+problem epoch data for epoch 1, problem epoch 1
+	sampling search time: 4.757607460021973s
+	during this search the following actions were chosen:
+	training time: 67.68056225776672s
+	during the training the following losses were computed:
+	Overall the loss development was 2.394300 -> 0.395200
+problem epoch data for epoch 1, problem epoch 2
+	sampling search time: 4.461153030395508s
+	during this search the following actions were chosen:
+	training time: 25.947914361953735s
+	during the training the following losses were computed:
+	Overall the loss development was 0.291800 -> 0.223500
+problem epoch data for epoch 1, problem epoch 3
+	sampling search time: 4.461450815200806s
+	during this search the following actions were chosen:
+	training time: 25.946430683135986s
+	during the training the following losses were computed:
+	Overall the loss development was 0.409800 -> 0.303500
+problem epoch data for epoch 1, problem epoch 4
+	sampling search time: 4.326596975326538s
+	during this search the following actions were chosen:
+	training time: 25.93903660774231s
+	during the training the following losses were computed:
+	Overall the loss development was 0.183300 -> 0.173900
+problem epoch data for epoch 1, problem epoch 5
+	sampling search time: 4.559008359909058s
+	during this search the following actions were chosen:
+	training time: 25.939586877822876s
+	during the training the following losses were computed:
+	Overall the loss development was 0.173900 -> 0.169100
+In the epoch 1 for problem d-5-2.pddl 3 explorations in the sampling searches reached a goal
+
+Training data for problem d-5-0.pddl in epoch 1:
+model creation time: 14.348687648773193s
+problem epoch data for epoch 1, problem epoch 1
+	sampling search time: 4.493647336959839s
+	during this search the following actions were chosen:
+		unstack c e was chosen with probability 0.999966
+		put-down c was chosen with probability 0.999614
+		unstack e b was chosen with probability 0.711595
+		put-down e was chosen with probability 0.998961
+		unstack b a was chosen with probability 0.728571
+		stack b d was chosen with probability 0.511760
+		pick-up e was chosen with probability 0.999799
+		stack e b was chosen with probability 0.996903
+	training time: 68.17304182052612s
+	during the training the following losses were computed:
+	Overall the loss development was 2.614500 -> 0.337800
+problem epoch data for epoch 1, problem epoch 2
+	sampling search time: 3.9344253540039062s
+	during this search the following actions were chosen:
+		unstack c e was chosen with probability 0.999967
+		put-down c was chosen with probability 0.990665
+		pick-up d was chosen with probability 0.512539
+		stack d c was chosen with probability 0.996393
+		unstack e b was chosen with probability 0.999978
+		put-down e was chosen with probability 0.980358
+		unstack b a was chosen with probability 0.988551
+		stack b d was chosen with probability 0.970834
+		pick-up e was chosen with probability 0.965290
+		stack e b was chosen with probability 0.981054
+		pick-up a was chosen with probability 0.998603
+		stack a e was chosen with probability 0.991718
+	training time: 25.98195195198059s
+	during the training the following losses were computed:
+	Overall the loss development was 0.182700 -> 0.168100
+problem epoch data for epoch 1, problem epoch 3
+	sampling search time: 3.7005739212036133s
+	during this search the following actions were chosen:
+		unstack c e was chosen with probability 0.999675
+		put-down c was chosen with probability 0.999678
+		unstack e b was chosen with probability 0.500561
+		put-down e was chosen with probability 0.999920
+		pick-up d was chosen with probability 0.820554
+		stack d c was chosen with probability 0.999530
+		unstack b a was chosen with probability 0.997528
+		stack b d was chosen with probability 0.999243
+		pick-up e was chosen with probability 0.997595
+		stack e b was chosen with probability 0.999539
+		pick-up a was chosen with probability 0.999996
+		stack a e was chosen with probability 0.999391
+	training time: 25.97527837753296s
+	during the training the following losses were computed:
+	Overall the loss development was 0.160300 -> 0.144500
+problem epoch data for epoch 1, problem epoch 4
+	sampling search time: 3.930945634841919s
+	during this search the following actions were chosen:
+		unstack c e was chosen with probability 0.999797
+		put-down c was chosen with probability 0.999706
+		pick-up d was chosen with probability 0.500700
+		stack d c was chosen with probability 0.999620
+		unstack e b was chosen with probability 0.999953
+		put-down e was chosen with probability 0.997753
+		unstack b a was chosen with probability 0.993838
+		stack b d was chosen with probability 0.999357
+		pick-up e was chosen with probability 0.994859
+		stack e b was chosen with probability 0.999611
+		pick-up a was chosen with probability 0.999996
+		stack a e was chosen with probability 0.999372
+	training time: 25.981481552124023s
+	during the training the following losses were computed:
+	Overall the loss development was 0.164400 -> 0.159800
+problem epoch data for epoch 1, problem epoch 5
+	sampling search time: 3.723562479019165s
+	during this search the following actions were chosen:
+		unstack c e was chosen with probability 0.999568
+		put-down c was chosen with probability 0.999643
+		unstack e b was chosen with probability 0.500962
+		put-down e was chosen with probability 0.999765
+		pick-up d was chosen with probability 0.913777
+		stack d c was chosen with probability 0.999722
+		unstack b a was chosen with probability 0.995751
+		stack b d was chosen with probability 0.999510
+		pick-up e was chosen with probability 0.996719
+		stack e b was chosen with probability 0.999723
+		pick-up a was chosen with probability 0.999996
+		stack a e was chosen with probability 0.999460
+	training time: 25.984061241149902s
+	during the training the following losses were computed:
+	Overall the loss development was 0.145200 -> 0.137200
+In the epoch 1 for problem d-5-0.pddl 4 explorations in the sampling searches reached a goal
+
+Training data for problem d-5-1.pddl in epoch 1:
+model creation time: 14.56032133102417s
+problem epoch data for epoch 1, problem epoch 1
+	sampling search time: 3.836709499359131s
+	during this search the following actions were chosen:
+		pick-up c was chosen with probability 0.998696
+		stack c b was chosen with probability 0.983792
+		pick-up e was chosen with probability 0.599810
+		put-down e was chosen with probability 0.992949
+	training time: 68.01890087127686s
+	during the training the following losses were computed:
+	Overall the loss development was 1.684000 -> 0.160900
+problem epoch data for epoch 1, problem epoch 2
+	sampling search time: 3.654989004135132s
+	during this search the following actions were chosen:
+		unstack b a was chosen with probability 0.997472
+		put-down b was chosen with probability 0.506346
+		unstack a d was chosen with probability 0.999999
+		stack a e was chosen with probability 0.998353
+		pick-up b was chosen with probability 0.986167
+		stack b a was chosen with probability 0.990455
+		pick-up c was chosen with probability 0.997980
+		stack c b was chosen with probability 0.998623
+		pick-up d was chosen with probability 0.999773
+		stack d c was chosen with probability 0.995697
+	training time: 25.983009815216064s
+	during the training the following losses were computed:
+	Overall the loss development was 0.160800 -> 0.154300
+problem epoch data for epoch 1, problem epoch 3
+	sampling search time: 3.5948448181152344s
+	during this search the following actions were chosen:
+		unstack b a was chosen with probability 0.995868
+		put-down b was chosen with probability 0.500284
+	training time: 25.98309874534607s
+	during the training the following losses were computed:
+	Overall the loss development was 0.154300 -> 0.151200
+problem epoch data for epoch 1, problem epoch 4
+	sampling search time: 3.592636823654175s
+	during this search the following actions were chosen:
+		unstack b a was chosen with probability 0.996132
+		put-down b was chosen with probability 0.500487
+	training time: 25.986818075180054s
+	during the training the following losses were computed:
+	Overall the loss development was 0.151200 -> 0.148600
+problem epoch data for epoch 1, problem epoch 5
+	sampling search time: 3.6196060180664062s
+	during this search the following actions were chosen:
+		unstack b a was chosen with probability 0.996124
+		put-down b was chosen with probability 0.499748
+	training time: 25.98094868659973s
+	during the training the following losses were computed:
+	Overall the loss development was 0.148600 -> 0.146400
+In the epoch 1 for problem d-5-1.pddl 4 explorations in the sampling searches reached a goal
+
+Epoch 2:
+Training data for problem d-4-0.pddl in epoch 2:
+model creation time: 9.799112558364868s
+problem epoch data for epoch 2, problem epoch 1
+	sampling search time: 2.543297529220581s
+	during this search the following actions were chosen:
+		pick-up b was chosen with probability 0.325108
+		stack b a was chosen with probability 0.999021
+		pick-up c was chosen with probability 0.997917
+		stack c b was chosen with probability 0.999339
+		pick-up d was chosen with probability 0.999804
+		stack d c was chosen with probability 0.999832
+	training time: 55.46273398399353s
+	during the training the following losses were computed:
+	Overall the loss development was 0.206200 -> 0.178800
+problem epoch data for epoch 2, problem epoch 2
+	sampling search time: 2.2581980228424072s
+	during this search the following actions were chosen:
+		pick-up b was chosen with probability 0.332757
+		stack b a was chosen with probability 0.997423
+		pick-up c was chosen with probability 0.996178
+		stack c b was chosen with probability 0.999224
+		pick-up d was chosen with probability 0.999997
+		stack d c was chosen with probability 0.999953
+	training time: 26.027065992355347s
+	during the training the following losses were computed:
+	Overall the loss development was 0.178800 -> 0.177100
+problem epoch data for epoch 2, problem epoch 3
+	sampling search time: 2.5107951164245605s
+	during this search the following actions were chosen:
+		pick-up b was chosen with probability 0.332896
+		stack b a was chosen with probability 0.997176
+		pick-up c was chosen with probability 0.996240
+		stack c b was chosen with probability 0.999374
+		pick-up d was chosen with probability 0.999993
+		stack d c was chosen with probability 0.999966
+	training time: 26.029579162597656s
+	during the training the following losses were computed:
+	Overall the loss development was 0.177100 -> 0.176600
+problem epoch data for epoch 2, problem epoch 4
+	sampling search time: 2.5207371711730957s
+	during this search the following actions were chosen:
+		pick-up b was chosen with probability 0.332915
+		stack b a was chosen with probability 0.997152
+		pick-up c was chosen with probability 0.996263
+		stack c b was chosen with probability 0.999383
+		pick-up d was chosen with probability 0.999998
+		stack d c was chosen with probability 0.999983
+	training time: 26.03050994873047s
+	during the training the following losses were computed:
+	Overall the loss development was 0.176600 -> 0.176500
+problem epoch data for epoch 2, problem epoch 5
+	sampling search time: 2.536203145980835s
+	during this search the following actions were chosen:
+		pick-up b was chosen with probability 0.332920
+		stack b a was chosen with probability 0.997341
+		pick-up c was chosen with probability 0.996219
+		stack c b was chosen with probability 0.999274
+		pick-up d was chosen with probability 0.999999
+		stack d c was chosen with probability 0.999991
+	training time: 26.030049085617065s
+	during the training the following losses were computed:
+	Overall the loss development was 0.176500 -> 0.176400
+In the epoch 2 for problem d-4-0.pddl 5 explorations in the sampling searches reached a goal
+
+Training data for problem d-4-2.pddl in epoch 2:
+model creation time: 9.694618940353394s
+problem epoch data for epoch 2, problem epoch 1
+	sampling search time: 2.3364861011505127s
+	during this search the following actions were chosen:
+		pick-up a was chosen with probability 0.996299
+		stack a c was chosen with probability 0.689914
+		pick-up d was chosen with probability 0.998534
+		stack d a was chosen with probability 0.989757
+	training time: 55.20906043052673s
+	during the training the following losses were computed:
+	Overall the loss development was 2.618500 -> 0.040400
+problem epoch data for epoch 2, problem epoch 2
+	sampling search time: 2.511838436126709s
+	during this search the following actions were chosen:
+		unstack c b was chosen with probability 0.988262
+		stack c d was chosen with probability 0.993502
+		pick-up b was chosen with probability 0.990409
+		stack b c was chosen with probability 0.998176
+		pick-up a was chosen with probability 0.994467
+		stack a b was chosen with probability 0.998872
+	training time: 26.03116250038147s
+	during the training the following losses were computed:
+	Overall the loss development was 0.041300 -> 0.032500
+problem epoch data for epoch 2, problem epoch 3
+	sampling search time: 2.5127151012420654s
+	during this search the following actions were chosen:
+		unstack c b was chosen with probability 0.993399
+		stack c d was chosen with probability 0.998819
+		pick-up b was chosen with probability 0.995277
+		stack b c was chosen with probability 0.999831
+		pick-up a was chosen with probability 0.997725
+		stack a b was chosen with probability 0.999910
+	training time: 26.030642986297607s
+	during the training the following losses were computed:
+	Overall the loss development was 0.032500 -> 0.030300
+problem epoch data for epoch 2, problem epoch 4
+	sampling search time: 2.2977962493896484s
+	during this search the following actions were chosen:
+		unstack c b was chosen with probability 0.994372
+		stack c d was chosen with probability 0.998437
+		pick-up b was chosen with probability 0.996367
+		stack b c was chosen with probability 0.999787
+		pick-up a was chosen with probability 0.998200
+		stack a b was chosen with probability 0.999899
+	training time: 26.022859811782837s
+	during the training the following losses were computed:
+	Overall the loss development was 0.030300 -> 0.029100
+problem epoch data for epoch 2, problem epoch 5
+	sampling search time: 2.5274410247802734s
+	during this search the following actions were chosen:
+		unstack c b was chosen with probability 0.994928
+		stack c d was chosen with probability 0.998181
+		pick-up b was chosen with probability 0.996950
+		stack b c was chosen with probability 0.999726
+		pick-up a was chosen with probability 0.998429
+		stack a b was chosen with probability 0.999902
+	training time: 26.032735347747803s
+	during the training the following losses were computed:
+	Overall the loss development was 0.029100 -> 0.028200
+In the epoch 2 for problem d-4-2.pddl 4 explorations in the sampling searches reached a goal
+
+Training data for problem d-4-1.pddl in epoch 2:
+model creation time: 9.719082593917847s
+problem epoch data for epoch 2, problem epoch 1
+	sampling search time: 2.2454822063446045s
+	during this search the following actions were chosen:
+	training time: 54.88025522232056s
+	during the training the following losses were computed:
+	Overall the loss development was 1.300500 -> 0.043600
+problem epoch data for epoch 2, problem epoch 2
+	sampling search time: 2.405812978744507s
+	during this search the following actions were chosen:
+	training time: 26.013837337493896s
+	during the training the following losses were computed:
+	Overall the loss development was 0.043600 -> 0.038300
+problem epoch data for epoch 2, problem epoch 3
+	sampling search time: 2.6364641189575195s
+	during this search the following actions were chosen:
+	training time: 26.01382803916931s
+	during the training the following losses were computed:
+	Overall the loss development was 0.038300 -> 0.036100
+problem epoch data for epoch 2, problem epoch 4
+	sampling search time: 2.5989441871643066s
+	during this search the following actions were chosen:
+	training time: 26.018381118774414s
+	during the training the following losses were computed:
+	Overall the loss development was 0.036100 -> 0.034700
+problem epoch data for epoch 2, problem epoch 5
+	sampling search time: 2.375685930252075s
+	during this search the following actions were chosen:
+	training time: 26.012224435806274s
+	during the training the following losses were computed:
+	Overall the loss development was 0.034700 -> 0.033600
+In the epoch 2 for problem d-4-1.pddl 4 explorations in the sampling searches reached a goal
+
+Training data for problem d-5-2.pddl in epoch 2:
+model creation time: 14.36594557762146s
+problem epoch data for epoch 2, problem epoch 1
+	sampling search time: 5.0789244174957275s
+	during this search the following actions were chosen:
+	training time: 67.61494588851929s
+	during the training the following losses were computed:
+	Overall the loss development was 2.656800 -> 0.496300
+problem epoch data for epoch 2, problem epoch 2
+	sampling search time: 4.529059410095215s
+	during this search the following actions were chosen:
+	training time: 25.94197177886963s
+	during the training the following losses were computed:
+	Overall the loss development was 0.474300 -> 0.337100
+problem epoch data for epoch 2, problem epoch 3
+	sampling search time: 4.510229587554932s
+	during this search the following actions were chosen:
+	training time: 25.940471649169922s
+	during the training the following losses were computed:
+	Overall the loss development was 0.337000 -> 0.325300
+problem epoch data for epoch 2, problem epoch 4
+	sampling search time: 4.324739456176758s
+	during this search the following actions were chosen:
+	training time: 25.937154531478882s
+	during the training the following losses were computed:
+	Overall the loss development was 0.325300 -> 0.308000
+problem epoch data for epoch 2, problem epoch 5
+	sampling search time: 4.319791793823242s
+	during this search the following actions were chosen:
+	training time: 25.92760944366455s
+	during the training the following losses were computed:
+	Overall the loss development was 0.394000 -> 0.288100
+In the epoch 2 for problem d-5-2.pddl 0 explorations in the sampling searches reached a goal
+
+Training data for problem d-5-0.pddl in epoch 2:
+model creation time: 14.347698211669922s
+problem epoch data for epoch 2, problem epoch 1
+	sampling search time: 3.7997541427612305s
+	during this search the following actions were chosen:
+		unstack c e was chosen with probability 0.999969
+	training time: 67.79267835617065s
+	during the training the following losses were computed:
+	Overall the loss development was 0.553900 -> 0.154700
+problem epoch data for epoch 2, problem epoch 2
+	sampling search time: 3.809091806411743s
+	during this search the following actions were chosen:
+		unstack c e was chosen with probability 0.999138
+		put-down c was chosen with probability 0.999996
+		unstack e b was chosen with probability 0.500383
+		put-down e was chosen with probability 0.997328
+		pick-up d was chosen with probability 0.995765
+		stack d c was chosen with probability 0.999483
+		unstack b a was chosen with probability 0.999766
+		stack b d was chosen with probability 0.999950
+		pick-up e was chosen with probability 0.996815
+		stack e b was chosen with probability 0.999909
+	training time: 25.978244304656982s
+	during the training the following losses were computed:
+	Overall the loss development was 0.154700 -> 0.146900
+problem epoch data for epoch 2, problem epoch 3
+	sampling search time: 3.9622201919555664s
+	during this search the following actions were chosen:
+		unstack c e was chosen with probability 0.999036
+		put-down c was chosen with probability 0.999998
+		unstack e b was chosen with probability 0.500579
+		put-down e was chosen with probability 0.997778
+		pick-up d was chosen with probability 0.993743
+		stack d c was chosen with probability 0.999323
+		unstack b a was chosen with probability 0.998769
+		stack b d was chosen with probability 0.999798
+		pick-up e was chosen with probability 0.996001
+		stack e b was chosen with probability 0.999732
+	training time: 25.980451107025146s
+	during the training the following losses were computed:
+	Overall the loss development was 0.146900 -> 0.141800
+problem epoch data for epoch 2, problem epoch 4
+	sampling search time: 3.8994081020355225s
+	during this search the following actions were chosen:
+		unstack c e was chosen with probability 0.998442
+		put-down c was chosen with probability 0.999997
+		pick-up d was chosen with probability 0.500296
+		stack d c was chosen with probability 0.997453
+		unstack e b was chosen with probability 0.997002
+		put-down e was chosen with probability 0.997752
+		unstack b a was chosen with probability 0.997024
+		stack b d was chosen with probability 0.999314
+		pick-up e was chosen with probability 0.993387
+		stack e b was chosen with probability 0.999119
+	training time: 25.9830539226532s
+	during the training the following losses were computed:
+	Overall the loss development was 0.161400 -> 0.156000
+problem epoch data for epoch 2, problem epoch 5
+	sampling search time: 3.852945566177368s
+	during this search the following actions were chosen:
+		unstack c e was chosen with probability 0.999040
+		put-down c was chosen with probability 0.999983
+		unstack e b was chosen with probability 0.507079
+		put-down e was chosen with probability 0.995410
+		unstack b a was chosen with probability 0.553901
+		put-down b was chosen with probability 0.948185
+		pick-up a was chosen with probability 0.249975
+		put-down a was chosen with probability 0.476498
+	training time: 25.947075128555298s
+	during the training the following losses were computed:
+	Overall the loss development was 0.753400 -> 0.351400
+In the epoch 2 for problem d-5-0.pddl 4 explorations in the sampling searches reached a goal
+
+Training data for problem d-5-1.pddl in epoch 2:
+model creation time: 14.852832078933716s
+problem epoch data for epoch 2, problem epoch 1
+	sampling search time: 3.7714765071868896s
+	during this search the following actions were chosen:
+		pick-up c was chosen with probability 0.997309
+		stack c b was chosen with probability 0.999335
+		unstack c b was chosen with probability 0.999628
+	training time: 68.4975016117096s
+	during the training the following losses were computed:
+	Overall the loss development was 1.657600 -> 0.189600
+problem epoch data for epoch 2, problem epoch 2
+	sampling search time: 3.6861038208007812s
+	during this search the following actions were chosen:
+		unstack b a was chosen with probability 0.997045
+		put-down b was chosen with probability 0.501839
+		unstack a d was chosen with probability 0.861268
+		stack a e was chosen with probability 0.997718
+		pick-up b was chosen with probability 0.997562
+		stack b a was chosen with probability 0.997475
+		pick-up c was chosen with probability 0.998449
+		stack c b was chosen with probability 0.996357
+		pick-up d was chosen with probability 0.999719
+		stack d c was chosen with probability 0.997555
+	training time: 25.979268789291382s
+	during the training the following losses were computed:
+	Overall the loss development was 0.191300 -> 0.168100
+problem epoch data for epoch 2, problem epoch 3
+	sampling search time: 3.6072399616241455s
+	during this search the following actions were chosen:
+		unstack b a was chosen with probability 0.996442
+		put-down b was chosen with probability 0.501674
+		unstack a d was chosen with probability 0.999716
+		stack a e was chosen with probability 0.999116
+		pick-up b was chosen with probability 0.998147
+		stack b a was chosen with probability 0.999401
+		pick-up c was chosen with probability 0.998962
+		stack c b was chosen with probability 0.999263
+		pick-up d was chosen with probability 0.999929
+		stack d c was chosen with probability 0.999991
+	training time: 25.98312020301819s
+	during the training the following losses were computed:
+	Overall the loss development was 0.168100 -> 0.161600
+problem epoch data for epoch 2, problem epoch 4
+	sampling search time: 3.86362361907959s
+	during this search the following actions were chosen:
+		unstack b a was chosen with probability 0.995569
+		put-down b was chosen with probability 0.502443
+		unstack a d was chosen with probability 0.999987
+		stack a e was chosen with probability 0.998917
+		pick-up b was chosen with probability 0.996802
+		stack b a was chosen with probability 0.999526
+		pick-up c was chosen with probability 0.999151
+		stack c b was chosen with probability 0.999233
+		pick-up d was chosen with probability 0.999954
+	training time: 25.983347177505493s
+	during the training the following losses were computed:
+	Overall the loss development was 0.161600 -> 0.156300
+problem epoch data for epoch 2, problem epoch 5
+	sampling search time: 3.8347525596618652s
+	during this search the following actions were chosen:
+		unstack b a was chosen with probability 0.996502
+		put-down b was chosen with probability 0.499726
+		unstack a d was chosen with probability 0.999997
+		stack a e was chosen with probability 0.998708
+		pick-up b was chosen with probability 0.997137
+		stack b a was chosen with probability 0.999558
+		pick-up c was chosen with probability 0.999337
+		stack c b was chosen with probability 0.999057
+		pick-up d was chosen with probability 0.999978
+	training time: 25.98274064064026s
+	during the training the following losses were computed:
+	Overall the loss development was 0.156300 -> 0.151800
+In the epoch 2 for problem d-5-1.pddl 4 explorations in the sampling searches reached a goal
+
+Epoch 3:
+Training data for problem d-4-0.pddl in epoch 3:
+model creation time: 9.599690675735474s
+problem epoch data for epoch 3, problem epoch 1
+	sampling search time: 2.5210044384002686s
+	during this search the following actions were chosen:
+		pick-up b was chosen with probability 0.327587
+		stack b a was chosen with probability 0.998400
+		pick-up c was chosen with probability 0.997623
+		stack c b was chosen with probability 0.998855
+		pick-up d was chosen with probability 0.999978
+	training time: 54.97125601768494s
+	during the training the following losses were computed:
+	Overall the loss development was 0.210400 -> 0.178200
+problem epoch data for epoch 3, problem epoch 2
+	sampling search time: 2.509213924407959s
+	during this search the following actions were chosen:
+		pick-up b was chosen with probability 0.332834
+		stack b a was chosen with probability 0.997264
+		pick-up c was chosen with probability 0.995901
+		stack c b was chosen with probability 0.999367
+		pick-up d was chosen with probability 0.999999
+		stack d c was chosen with probability 0.999995
+	training time: 26.031509160995483s
+	during the training the following losses were computed:
+	Overall the loss development was 0.178200 -> 0.176600
+problem epoch data for epoch 3, problem epoch 3
+	sampling search time: 2.5021603107452393s
+	during this search the following actions were chosen:
+		pick-up b was chosen with probability 0.332912
+		stack b a was chosen with probability 0.997326
+		pick-up c was chosen with probability 0.996165
+		stack c b was chosen with probability 0.999248
+		pick-up d was chosen with probability 0.999999
+		stack d c was chosen with probability 0.999990
+	training time: 26.031925678253174s
+	during the training the following losses were computed:
+	Overall the loss development was 0.176600 -> 0.176500
+problem epoch data for epoch 3, problem epoch 4
+	sampling search time: 2.5269012451171875s
+	during this search the following actions were chosen:
+		pick-up b was chosen with probability 0.332920
+		stack b a was chosen with probability 0.997460
+		pick-up c was chosen with probability 0.996186
+		stack c b was chosen with probability 0.999193
+		pick-up d was chosen with probability 0.999999
+		stack d c was chosen with probability 0.999990
+	training time: 26.027137279510498s
+	during the training the following losses were computed:
+	Overall the loss development was 0.176500 -> 0.176400
+problem epoch data for epoch 3, problem epoch 5
+	sampling search time: 2.3258750438690186s
+	during this search the following actions were chosen:
+		pick-up b was chosen with probability 0.332919
+		stack b a was chosen with probability 0.997460
+		pick-up c was chosen with probability 0.996173
+		stack c b was chosen with probability 0.999166
+	training time: 26.029085159301758s
+	during the training the following losses were computed:
+	Overall the loss development was 0.176400 -> 0.176400
+In the epoch 3 for problem d-4-0.pddl 5 explorations in the sampling searches reached a goal
+
+Training data for problem d-4-2.pddl in epoch 3:
+model creation time: 9.948154926300049s
+problem epoch data for epoch 3, problem epoch 1
+	sampling search time: 2.5450870990753174s
+	during this search the following actions were chosen:
+		pick-up a was chosen with probability 0.996271
+		stack a c was chosen with probability 0.690691
+		pick-up d was chosen with probability 0.998441
+		stack d a was chosen with probability 0.989293
+	training time: 55.21636176109314s
+	during the training the following losses were computed:
+	Overall the loss development was 2.605000 -> 0.039600
+problem epoch data for epoch 3, problem epoch 2
+	sampling search time: 2.4961700439453125s
+	during this search the following actions were chosen:
+		unstack c b was chosen with probability 0.991600
+		stack c d was chosen with probability 0.993895
+		pick-up b was chosen with probability 0.988800
+		stack b c was chosen with probability 0.998176
+		pick-up a was chosen with probability 0.996318
+		stack a b was chosen with probability 0.999238
+	training time: 26.030746459960938s
+	during the training the following losses were computed:
+	Overall the loss development was 0.040300 -> 0.032100
+problem epoch data for epoch 3, problem epoch 3
+	sampling search time: 2.510596990585327s
+	during this search the following actions were chosen:
+		unstack c b was chosen with probability 0.993990
+		stack c d was chosen with probability 0.998950
+		pick-up b was chosen with probability 0.995920
+		stack b c was chosen with probability 0.999769
+		pick-up a was chosen with probability 0.998407
+		stack a b was chosen with probability 0.999917
+	training time: 26.031378269195557s
+	during the training the following losses were computed:
+	Overall the loss development was 0.032100 -> 0.029700
+problem epoch data for epoch 3, problem epoch 4
+	sampling search time: 2.255784034729004s
+	during this search the following actions were chosen:
+		unstack c b was chosen with probability 0.994594
+		stack c d was chosen with probability 0.998659
+		pick-up b was chosen with probability 0.996712
+		stack b c was chosen with probability 0.999672
+		pick-up a was chosen with probability 0.998661
+		stack a b was chosen with probability 0.999893
+	training time: 26.02913999557495s
+	during the training the following losses were computed:
+	Overall the loss development was 0.029700 -> 0.028300
+problem epoch data for epoch 3, problem epoch 5
+	sampling search time: 2.531939744949341s
+	during this search the following actions were chosen:
+		unstack c b was chosen with probability 0.995230
+		stack c d was chosen with probability 0.998330
+		pick-up b was chosen with probability 0.996933
+		stack b c was chosen with probability 0.999561
+		pick-up a was chosen with probability 0.998740
+		stack a b was chosen with probability 0.999896
+	training time: 26.032718658447266s
+	during the training the following losses were computed:
+	Overall the loss development was 0.028300 -> 0.027600
+In the epoch 3 for problem d-4-2.pddl 4 explorations in the sampling searches reached a goal
+
+Training data for problem d-4-1.pddl in epoch 3:
+model creation time: 9.633274793624878s
+problem epoch data for epoch 3, problem epoch 1
+	sampling search time: 2.5003788471221924s
+	during this search the following actions were chosen:
+	training time: 54.95193123817444s
+	during the training the following losses were computed:
+	Overall the loss development was 1.215200 -> 0.042800
+problem epoch data for epoch 3, problem epoch 2
+	sampling search time: 2.3842737674713135s
+	during this search the following actions were chosen:
+	training time: 26.020774364471436s
+	during the training the following losses were computed:
+	Overall the loss development was 0.042700 -> 0.037500
+problem epoch data for epoch 3, problem epoch 3
+	sampling search time: 2.4279816150665283s
+	during this search the following actions were chosen:
+	training time: 26.020138263702393s
+	during the training the following losses were computed:
+	Overall the loss development was 0.037500 -> 0.035300
+problem epoch data for epoch 3, problem epoch 4
+	sampling search time: 2.5938947200775146s
+	during this search the following actions were chosen:
+	training time: 26.01556158065796s
+	during the training the following losses were computed:
+	Overall the loss development was 0.035300 -> 0.034000
+problem epoch data for epoch 3, problem epoch 5
+	sampling search time: 2.617818832397461s
+	during this search the following actions were chosen:
+	training time: 26.01837420463562s
+	during the training the following losses were computed:
+	Overall the loss development was 0.034000 -> 0.033000
+In the epoch 3 for problem d-4-1.pddl 4 explorations in the sampling searches reached a goal
+
+Training data for problem d-5-2.pddl in epoch 3:
+model creation time: 14.382355451583862s
+problem epoch data for epoch 3, problem epoch 1
+	sampling search time: 4.661157131195068s
+	during this search the following actions were chosen:
+	training time: 68.08236265182495s
+	during the training the following losses were computed:
+	Overall the loss development was 2.515600 -> 0.442700
+problem epoch data for epoch 3, problem epoch 2
+	sampling search time: 4.6896162033081055s
+	during this search the following actions were chosen:
+	training time: 25.94360589981079s
+	during the training the following losses were computed:
+	Overall the loss development was 0.421800 -> 0.313400
+problem epoch data for epoch 3, problem epoch 3
+	sampling search time: 4.1942126750946045s
+	during this search the following actions were chosen:
+	training time: 25.9388587474823s
+	during the training the following losses were computed:
+	Overall the loss development was 0.313300 -> 0.303200
+problem epoch data for epoch 3, problem epoch 4
+	sampling search time: 4.527879953384399s
+	during this search the following actions were chosen:
+	training time: 25.94151020050049s
+	during the training the following losses were computed:
+	Overall the loss development was 0.303200 -> 0.296600
+problem epoch data for epoch 3, problem epoch 5
+	sampling search time: 4.305798768997192s
+	during this search the following actions were chosen:
+	training time: 25.983342170715332s
+	during the training the following losses were computed:
+	Overall the loss development was 0.150400 -> 0.133400
+In the epoch 3 for problem d-5-2.pddl 3 explorations in the sampling searches reached a goal
+
+Training data for problem d-5-0.pddl in epoch 3:
+model creation time: 14.760243892669678s
+problem epoch data for epoch 3, problem epoch 1
+	sampling search time: 4.284688711166382s
+	during this search the following actions were chosen:
+	training time: 67.84135913848877s
+	during the training the following losses were computed:
+	Overall the loss development was 3.035800 -> 0.338600
+problem epoch data for epoch 3, problem epoch 2
+	sampling search time: 4.037249326705933s
+	during this search the following actions were chosen:
+		unstack c e was chosen with probability 0.994852
+		put-down c was chosen with probability 0.999995
+		unstack e b was chosen with probability 0.503867
+		put-down e was chosen with probability 0.933426
+		pick-up d was chosen with probability 0.947699
+		stack d c was chosen with probability 0.993181
+		unstack b a was chosen with probability 0.985442
+		stack b d was chosen with probability 0.993844
+		pick-up e was chosen with probability 0.948855
+		stack e b was chosen with probability 0.990827
+		pick-up a was chosen with probability 0.997796
+		stack a e was chosen with probability 0.995733
+	training time: 25.984207153320312s
+	during the training the following losses were computed:
+	Overall the loss development was 0.168900 -> 0.146500
+problem epoch data for epoch 3, problem epoch 3
+	sampling search time: 4.024548292160034s
+	during this search the following actions were chosen:
+		unstack c e was chosen with probability 0.999712
+	training time: 25.97911238670349s
+	during the training the following losses were computed:
+	Overall the loss development was 0.146400 -> 0.140000
+problem epoch data for epoch 3, problem epoch 4
+	sampling search time: 3.8848488330841064s
+	during this search the following actions were chosen:
+		unstack c e was chosen with probability 0.999483
+		put-down c was chosen with probability 0.999998
+		unstack e b was chosen with probability 0.500685
+		put-down e was chosen with probability 0.997583
+		pick-up d was chosen with probability 0.990669
+		stack d c was chosen with probability 0.998615
+		unstack b a was chosen with probability 0.996535
+		stack b d was chosen with probability 0.999267
+		pick-up e was chosen with probability 0.992111
+		stack e b was chosen with probability 0.999087
+		pick-up a was chosen with probability 0.999992
+		stack a e was chosen with probability 0.999924
+	training time: 25.982248067855835s
+	during the training the following losses were computed:
+	Overall the loss development was 0.140000 -> 0.136000
+problem epoch data for epoch 3, problem epoch 5
+	sampling search time: 3.69577956199646s
+	during this search the following actions were chosen:
+		unstack c e was chosen with probability 0.998899
+		put-down c was chosen with probability 0.999996
+		pick-up d was chosen with probability 0.499831
+		stack d c was chosen with probability 0.998978
+		unstack e b was chosen with probability 0.998639
+		put-down e was chosen with probability 0.996700
+		unstack b a was chosen with probability 0.995628
+		stack b d was chosen with probability 0.999069
+		pick-up e was chosen with probability 0.992758
+		stack e b was chosen with probability 0.998891
+		pick-up a was chosen with probability 0.999988
+		stack a e was chosen with probability 0.999878
+	training time: 25.98509931564331s
+	during the training the following losses were computed:
+	Overall the loss development was 0.155300 -> 0.150700
+In the epoch 3 for problem d-5-0.pddl 4 explorations in the sampling searches reached a goal
+
+Training data for problem d-5-1.pddl in epoch 3:
+model creation time: 14.517617225646973s
+problem epoch data for epoch 3, problem epoch 1
+	sampling search time: 3.7690489292144775s
+	during this search the following actions were chosen:
+		pick-up c was chosen with probability 0.995575
+		stack c b was chosen with probability 0.984377
+		unstack c b was chosen with probability 0.953037
+	training time: 67.8504626750946s
+	during the training the following losses were computed:
+	Overall the loss development was 1.360000 -> 0.169400
+problem epoch data for epoch 3, problem epoch 2
+	sampling search time: 3.837766408920288s
+	during this search the following actions were chosen:
+		unstack b a was chosen with probability 0.997449
+		put-down b was chosen with probability 0.503522
+		unstack a d was chosen with probability 0.925326
+		stack a e was chosen with probability 0.989646
+		pick-up b was chosen with probability 0.999323
+		stack b a was chosen with probability 0.985623
+		pick-up c was chosen with probability 0.998189
+		stack c b was chosen with probability 0.995780
+		pick-up d was chosen with probability 0.999696
+		stack d c was chosen with probability 0.999472
+	training time: 25.983227729797363s
+	during the training the following losses were computed:
+	Overall the loss development was 0.166400 -> 0.152500
+problem epoch data for epoch 3, problem epoch 3
+	sampling search time: 3.849397897720337s
+	during this search the following actions were chosen:
+		unstack b a was chosen with probability 0.997390
+		put-down b was chosen with probability 0.500741
+		unstack a d was chosen with probability 0.999650
+		stack a e was chosen with probability 0.998247
+		pick-up b was chosen with probability 0.999226
+		stack b a was chosen with probability 0.997687
+		pick-up c was chosen with probability 0.998379
+		stack c b was chosen with probability 0.997372
+		pick-up d was chosen with probability 0.999857
+		stack d c was chosen with probability 0.999938
+	training time: 25.980895042419434s
+	during the training the following losses were computed:
+	Overall the loss development was 0.152500 -> 0.148200
+problem epoch data for epoch 3, problem epoch 4
+	sampling search time: 3.626157522201538s
+	during this search the following actions were chosen:
+		unstack b a was chosen with probability 0.996844
+		put-down b was chosen with probability 0.500977
+		unstack a d was chosen with probability 0.999918
+		stack a e was chosen with probability 0.998460
+		pick-up b was chosen with probability 0.998181
+		stack b a was chosen with probability 0.998616
+		pick-up c was chosen with probability 0.998343
+		stack c b was chosen with probability 0.997177
+		pick-up d was chosen with probability 0.999794
+		stack d c was chosen with probability 0.999952
+	training time: 25.9780330657959s
+	during the training the following losses were computed:
+	Overall the loss development was 0.148200 -> 0.145200
+problem epoch data for epoch 3, problem epoch 5
+	sampling search time: 3.6206395626068115s
+	during this search the following actions were chosen:
+		unstack b a was chosen with probability 0.996509
+		put-down b was chosen with probability 0.501209
+		unstack a d was chosen with probability 0.999950
+		stack a e was chosen with probability 0.998610
+		pick-up b was chosen with probability 0.997129
+		stack b a was chosen with probability 0.999081
+		pick-up c was chosen with probability 0.997785
+		stack c b was chosen with probability 0.996735
+		pick-up d was chosen with probability 0.999688
+		stack d c was chosen with probability 0.999955
+	training time: 25.989752292633057s
+	during the training the following losses were computed:
+	Overall the loss development was 0.145200 -> 0.143000
+In the epoch 3 for problem d-5-1.pddl 4 explorations in the sampling searches reached a goal
+
+Epoch 4:
+Training data for problem d-4-0.pddl in epoch 4:
+model creation time: 9.725289106369019s
+problem epoch data for epoch 4, problem epoch 1
+	sampling search time: 2.3201401233673096s
+	during this search the following actions were chosen:
+		pick-up b was chosen with probability 0.331601
+		stack b a was chosen with probability 0.998799
+		pick-up c was chosen with probability 0.997254
+		stack c b was chosen with probability 0.995067
+		pick-up d was chosen with probability 0.999650
+		stack d c was chosen with probability 0.999955
+	training time: 55.31462359428406s
+	during the training the following losses were computed:
+	Overall the loss development was 0.200600 -> 0.177800
+problem epoch data for epoch 4, problem epoch 2
+	sampling search time: 2.2966723442077637s
+	during this search the following actions were chosen:
+		pick-up b was chosen with probability 0.332871
+		stack b a was chosen with probability 0.997368
+		pick-up c was chosen with probability 0.996246
+		stack c b was chosen with probability 0.999246
+		pick-up d was chosen with probability 0.999999
+		stack d c was chosen with probability 0.999987
+	training time: 26.022892236709595s
+	during the training the following losses were computed:
+	Overall the loss development was 0.177700 -> 0.176500
+problem epoch data for epoch 4, problem epoch 3
+	sampling search time: 2.4995739459991455s
+	during this search the following actions were chosen:
+		pick-up b was chosen with probability 0.332919
+		stack b a was chosen with probability 0.997479
+		pick-up c was chosen with probability 0.996182
+		stack c b was chosen with probability 0.999167
+	training time: 26.031773805618286s
+	during the training the following losses were computed:
+	Overall the loss development was 0.176500 -> 0.176400
+problem epoch data for epoch 4, problem epoch 4
+	sampling search time: 2.4951095581054688s
+	during this search the following actions were chosen:
+		pick-up b was chosen with probability 0.332919
+		stack b a was chosen with probability 0.997488
+		pick-up c was chosen with probability 0.996184
+		stack c b was chosen with probability 0.999152
+	training time: 26.028160572052002s
+	during the training the following losses were computed:
+	Overall the loss development was 0.176400 -> 0.176400
+problem epoch data for epoch 4, problem epoch 5
+	sampling search time: 2.4982035160064697s
+	during this search the following actions were chosen:
+		pick-up b was chosen with probability 0.332921
+		stack b a was chosen with probability 0.997482
+		pick-up c was chosen with probability 0.996183
+		stack c b was chosen with probability 0.999154
+	training time: 26.031625032424927s
+	during the training the following losses were computed:
+	Overall the loss development was 0.176400 -> 0.176400
+In the epoch 4 for problem d-4-0.pddl 5 explorations in the sampling searches reached a goal
+
+Training data for problem d-4-2.pddl in epoch 4:
+model creation time: 9.702891826629639s
+problem epoch data for epoch 4, problem epoch 1
+	sampling search time: 2.3567543029785156s
+	during this search the following actions were chosen:
+		pick-up a was chosen with probability 0.996341
+		stack a c was chosen with probability 0.689608
+		pick-up d was chosen with probability 0.998369
+		stack d a was chosen with probability 0.989726
+	training time: 55.57319760322571s
+	during the training the following losses were computed:
+	Overall the loss development was 2.614500 -> 0.040000
+problem epoch data for epoch 4, problem epoch 2
+	sampling search time: 2.2891433238983154s
+	during this search the following actions were chosen:
+		unstack c b was chosen with probability 0.991137
+		stack c d was chosen with probability 0.994056
+		pick-up b was chosen with probability 0.989150
+		stack b c was chosen with probability 0.998244
+		pick-up a was chosen with probability 0.996300
+		stack a b was chosen with probability 0.999338
+	training time: 26.030416250228882s
+	during the training the following losses were computed:
+	Overall the loss development was 0.040400 -> 0.032000
+problem epoch data for epoch 4, problem epoch 3
+	sampling search time: 2.523803472518921s
+	during this search the following actions were chosen:
+		unstack c b was chosen with probability 0.993519
+		stack c d was chosen with probability 0.998917
+		pick-up b was chosen with probability 0.996183
+		stack b c was chosen with probability 0.999719
+		pick-up a was chosen with probability 0.998272
+		stack a b was chosen with probability 0.999886
+	training time: 26.035013914108276s
+	during the training the following losses were computed:
+	Overall the loss development was 0.032000 -> 0.029300
+problem epoch data for epoch 4, problem epoch 4
+	sampling search time: 2.5209176540374756s
+	during this search the following actions were chosen:
+		unstack c b was chosen with probability 0.994706
+		stack c d was chosen with probability 0.998471
+		pick-up b was chosen with probability 0.996842
+		stack b c was chosen with probability 0.999576
+		pick-up a was chosen with probability 0.998753
+		stack a b was chosen with probability 0.999858
+	training time: 26.028146743774414s
+	during the training the following losses were computed:
+	Overall the loss development was 0.029300 -> 0.028000
+problem epoch data for epoch 4, problem epoch 5
+	sampling search time: 2.506303310394287s
+	during this search the following actions were chosen:
+		unstack c b was chosen with probability 0.995402
+		stack c d was chosen with probability 0.998079
+		pick-up b was chosen with probability 0.997029
+		stack b c was chosen with probability 0.999447
+		pick-up a was chosen with probability 0.998869
+		stack a b was chosen with probability 0.999879
+	training time: 26.031973361968994s
+	during the training the following losses were computed:
+	Overall the loss development was 0.028000 -> 0.027300
+In the epoch 4 for problem d-4-2.pddl 4 explorations in the sampling searches reached a goal
+
+Training data for problem d-4-1.pddl in epoch 4:
+model creation time: 9.547271728515625s
+problem epoch data for epoch 4, problem epoch 1
+	sampling search time: 2.4816579818725586s
+	during this search the following actions were chosen:
+	training time: 54.768714427948s
+	during the training the following losses were computed:
+	Overall the loss development was 1.218200 -> 0.043600
+problem epoch data for epoch 4, problem epoch 2
+	sampling search time: 2.6461853981018066s
+	during this search the following actions were chosen:
+	training time: 26.01770782470703s
+	during the training the following losses were computed:
+	Overall the loss development was 0.043600 -> 0.037500
+problem epoch data for epoch 4, problem epoch 3
+	sampling search time: 2.397944688796997s
+	during this search the following actions were chosen:
+	training time: 26.019150733947754s
+	during the training the following losses were computed:
+	Overall the loss development was 0.037500 -> 0.034800
+problem epoch data for epoch 4, problem epoch 4
+	sampling search time: 2.6498923301696777s
+	during this search the following actions were chosen:
+	training time: 26.013413906097412s
+	during the training the following losses were computed:
+	Overall the loss development was 0.034800 -> 0.033000
+problem epoch data for epoch 4, problem epoch 5
+	sampling search time: 2.6230170726776123s
+	during this search the following actions were chosen:
+	training time: 26.02111053466797s
+	during the training the following losses were computed:
+	Overall the loss development was 0.033000 -> 0.031800
+In the epoch 4 for problem d-4-1.pddl 4 explorations in the sampling searches reached a goal
+
+Training data for problem d-5-2.pddl in epoch 4:
+model creation time: 14.575812816619873s
+problem epoch data for epoch 4, problem epoch 1
+	sampling search time: 5.073258399963379s
+	during this search the following actions were chosen:
+	training time: 67.60386276245117s
+	during the training the following losses were computed:
+	Overall the loss development was 2.799900 -> 0.501400
+problem epoch data for epoch 4, problem epoch 2
+	sampling search time: 4.45719838142395s
+	during this search the following actions were chosen:
+	training time: 25.926663160324097s
+	during the training the following losses were computed:
+	Overall the loss development was 0.763200 -> 0.337600
+problem epoch data for epoch 4, problem epoch 3
+	sampling search time: 4.632542133331299s
+	during this search the following actions were chosen:
+	training time: 25.925200700759888s
+	during the training the following losses were computed:
+	Overall the loss development was 0.318800 -> 0.298200
+problem epoch data for epoch 4, problem epoch 4
+	sampling search time: 4.570080518722534s
+	during this search the following actions were chosen:
+	training time: 25.975041151046753s
+	during the training the following losses were computed:
+	Overall the loss development was 0.169300 -> 0.145300
+problem epoch data for epoch 4, problem epoch 5
+	sampling search time: 4.909897327423096s
+	during this search the following actions were chosen:
+	training time: 25.92499351501465s
+	during the training the following losses were computed:
+	Overall the loss development was 2.258100 -> 0.335200
+In the epoch 4 for problem d-5-2.pddl 2 explorations in the sampling searches reached a goal
+
+Training data for problem d-5-0.pddl in epoch 4:
+model creation time: 14.745485305786133s
+problem epoch data for epoch 4, problem epoch 1
+	sampling search time: 4.289303779602051s
+	during this search the following actions were chosen:
+	training time: 67.88450980186462s
+	during the training the following losses were computed:
+	Overall the loss development was 1.196400 -> 0.318800
+problem epoch data for epoch 4, problem epoch 2
+	sampling search time: 3.6975581645965576s
+	during this search the following actions were chosen:
+		unstack c e was chosen with probability 0.999999
+		put-down c was chosen with probability 0.999990
+		pick-up d was chosen with probability 0.500403
+		stack d c was chosen with probability 0.994206
+		unstack e b was chosen with probability 0.999154
+		put-down e was chosen with probability 0.995017
+		unstack b a was chosen with probability 0.998867
+		stack b d was chosen with probability 0.997983
+		pick-up e was chosen with probability 0.994208
+		stack e b was chosen with probability 0.996689
+	training time: 25.985100030899048s
+	during the training the following losses were computed:
+	Overall the loss development was 0.189700 -> 0.178100
+problem epoch data for epoch 4, problem epoch 3
+	sampling search time: 3.696646213531494s
+	during this search the following actions were chosen:
+		unstack c e was chosen with probability 0.999859
+		put-down c was chosen with probability 0.999849
+		pick-up d was chosen with probability 0.508624
+		stack d c was chosen with probability 0.998899
+		unstack e b was chosen with probability 0.997974
+		put-down e was chosen with probability 0.996736
+		unstack b a was chosen with probability 0.999236
+		stack b d was chosen with probability 0.998744
+		pick-up e was chosen with probability 0.993527
+		stack e b was chosen with probability 0.998289
+		pick-up a was chosen with probability 0.999999
+		stack a e was chosen with probability 0.999597
+	training time: 25.991046905517578s
+	during the training the following losses were computed:
+	Overall the loss development was 0.178100 -> 0.168900
+problem epoch data for epoch 4, problem epoch 4
+	sampling search time: 3.9865200519561768s
+	during this search the following actions were chosen:
+		unstack c e was chosen with probability 0.998620
+		put-down c was chosen with probability 0.999265
+		unstack e b was chosen with probability 0.500673
+		put-down e was chosen with probability 0.996911
+		pick-up d was chosen with probability 0.604748
+		stack d c was chosen with probability 0.999602
+		unstack b a was chosen with probability 0.999265
+		stack b d was chosen with probability 0.998529
+		pick-up e was chosen with probability 0.993108
+		stack e b was chosen with probability 0.998105
+		pick-up a was chosen with probability 0.999988
+		stack a e was chosen with probability 0.999370
+	training time: 25.986938953399658s
+	during the training the following losses were computed:
+	Overall the loss development was 0.180200 -> 0.144500
+problem epoch data for epoch 4, problem epoch 5
+	sampling search time: 4.028602600097656s
+	during this search the following actions were chosen:
+		unstack c e was chosen with probability 0.997682
+		put-down c was chosen with probability 0.999144
+		pick-up d was chosen with probability 0.501362
+		stack d c was chosen with probability 0.999341
+		unstack e b was chosen with probability 0.996302
+		put-down e was chosen with probability 0.997612
+		unstack b a was chosen with probability 0.998019
+		stack b d was chosen with probability 0.998565
+		pick-up e was chosen with probability 0.995434
+		stack e b was chosen with probability 0.997871
+		pick-up a was chosen with probability 0.999987
+		stack a e was chosen with probability 0.998726
+	training time: 25.989002227783203s
+	during the training the following losses were computed:
+	Overall the loss development was 0.163700 -> 0.157600
+In the epoch 4 for problem d-5-0.pddl 5 explorations in the sampling searches reached a goal
+
+Training data for problem d-5-1.pddl in epoch 4:
+model creation time: 14.718553066253662s
+problem epoch data for epoch 4, problem epoch 1
+	sampling search time: 3.550525665283203s
+	during this search the following actions were chosen:
+		pick-up c was chosen with probability 0.997128
+		stack c b was chosen with probability 0.998701
+		unstack c b was chosen with probability 0.994305
+	training time: 67.89465546607971s
+	during the training the following losses were computed:
+	Overall the loss development was 1.490800 -> 0.173200
+problem epoch data for epoch 4, problem epoch 2
+	sampling search time: 3.825258493423462s
+	during this search the following actions were chosen:
+		unstack b a was chosen with probability 0.998354
+		stack b c was chosen with probability 0.501123
+		unstack a d was chosen with probability 0.977995
+		stack a e was chosen with probability 0.995438
+		unstack b c was chosen with probability 0.999387
+		stack b a was chosen with probability 0.992944
+		pick-up c was chosen with probability 0.995914
+		stack c b was chosen with probability 0.996433
+		pick-up d was chosen with probability 0.999884
+		stack d c was chosen with probability 0.999376
+	training time: 25.987292289733887s
+	during the training the following losses were computed:
+	Overall the loss development was 0.192600 -> 0.185800
+problem epoch data for epoch 4, problem epoch 3
+	sampling search time: 3.642474889755249s
+	during this search the following actions were chosen:
+		unstack b a was chosen with probability 0.997125
+		stack b c was chosen with probability 0.498876
+		unstack a d was chosen with probability 0.988461
+		stack a e was chosen with probability 0.997491
+		unstack b c was chosen with probability 0.999537
+		stack b a was chosen with probability 0.999177
+		pick-up c was chosen with probability 0.995609
+		stack c b was chosen with probability 0.999112
+		pick-up d was chosen with probability 0.999719
+		stack d c was chosen with probability 0.999931
+	training time: 25.984248876571655s
+	during the training the following losses were computed:
+	Overall the loss development was 0.185800 -> 0.181400
+problem epoch data for epoch 4, problem epoch 4
+	sampling search time: 3.6055500507354736s
+	during this search the following actions were chosen:
+		unstack b a was chosen with probability 0.996605
+		put-down b was chosen with probability 0.499859
+		unstack a d was chosen with probability 0.766088
+		stack a e was chosen with probability 0.989708
+		pick-up b was chosen with probability 0.994008
+		stack b a was chosen with probability 0.999542
+		pick-up c was chosen with probability 0.995233
+		stack c b was chosen with probability 0.999090
+		pick-up d was chosen with probability 0.999532
+		stack d c was chosen with probability 0.999944
+	training time: 25.985589504241943s
+	during the training the following losses were computed:
+	Overall the loss development was 0.174100 -> 0.151200
+problem epoch data for epoch 4, problem epoch 5
+	sampling search time: 3.7433907985687256s
+	during this search the following actions were chosen:
+		unstack b a was chosen with probability 0.996174
+		put-down b was chosen with probability 0.500321
+		unstack a d was chosen with probability 0.998812
+		stack a e was chosen with probability 0.997177
+		pick-up b was chosen with probability 0.996316
+		stack b a was chosen with probability 0.999862
+		pick-up c was chosen with probability 0.996106
+		stack c b was chosen with probability 0.999310
+		pick-up d was chosen with probability 0.999589
+		stack d c was chosen with probability 0.999985
+	training time: 25.982378482818604s
+	during the training the following losses were computed:
+	Overall the loss development was 0.151200 -> 0.148200
+In the epoch 4 for problem d-5-1.pddl 4 explorations in the sampling searches reached a goal
+
+Epoch 5:
+Training data for problem d-4-0.pddl in epoch 5:
+model creation time: 9.79148006439209s
+problem epoch data for epoch 5, problem epoch 1
+	sampling search time: 2.507847309112549s
+	during this search the following actions were chosen:
+		pick-up b was chosen with probability 0.323103
+		stack b a was chosen with probability 0.997854
+		pick-up c was chosen with probability 0.997167
+		stack c b was chosen with probability 0.998441
+		pick-up d was chosen with probability 0.999685
+		stack d c was chosen with probability 0.999981
+	training time: 55.433149337768555s
+	during the training the following losses were computed:
+	Overall the loss development was 0.209000 -> 0.178100
+problem epoch data for epoch 5, problem epoch 2
+	sampling search time: 2.327216625213623s
+	during this search the following actions were chosen:
+		pick-up b was chosen with probability 0.332732
+		stack b a was chosen with probability 0.997451
+		pick-up c was chosen with probability 0.996694
+		stack c b was chosen with probability 0.999227
+		pick-up d was chosen with probability 0.999999
+		stack d c was chosen with probability 0.999984
+	training time: 26.03235387802124s
+	during the training the following losses were computed:
+	Overall the loss development was 0.178100 -> 0.176700
+problem epoch data for epoch 5, problem epoch 3
+	sampling search time: 2.296701192855835s
+	during this search the following actions were chosen:
+		pick-up b was chosen with probability 0.332876
+		stack b a was chosen with probability 0.997484
+		pick-up c was chosen with probability 0.996303
+		stack c b was chosen with probability 0.999149
+	training time: 26.037798166275024s
+	during the training the following losses were computed:
+	Overall the loss development was 0.176700 -> 0.176500
+problem epoch data for epoch 5, problem epoch 4
+	sampling search time: 2.5390512943267822s
+	during this search the following actions were chosen:
+		pick-up b was chosen with probability 0.332913
+		stack b a was chosen with probability 0.997517
+		pick-up c was chosen with probability 0.996193
+		stack c b was chosen with probability 0.999148
+	training time: 26.036530017852783s
+	during the training the following losses were computed:
+	Overall the loss development was 0.176500 -> 0.176500
+problem epoch data for epoch 5, problem epoch 5
+	sampling search time: 2.508152723312378s
+	during this search the following actions were chosen:
+		pick-up b was chosen with probability 0.332918
+		stack b a was chosen with probability 0.997486
+		pick-up c was chosen with probability 0.996172
+		stack c b was chosen with probability 0.999140
+	training time: 26.02748203277588s
+	during the training the following losses were computed:
+	Overall the loss development was 0.176500 -> 0.176400
+In the epoch 5 for problem d-4-0.pddl 5 explorations in the sampling searches reached a goal
+
+Training data for problem d-4-2.pddl in epoch 5:
+model creation time: 9.69511103630066s
+problem epoch data for epoch 5, problem epoch 1
+	sampling search time: 2.564361810684204s
+	during this search the following actions were chosen:
+		pick-up a was chosen with probability 0.996283
+		stack a c was chosen with probability 0.692574
+		pick-up d was chosen with probability 0.998332
+		stack d a was chosen with probability 0.992288
+	training time: 55.201016426086426s
+	during the training the following losses were computed:
+	Overall the loss development was 2.669700 -> 0.037900
+problem epoch data for epoch 5, problem epoch 2
+	sampling search time: 2.334000825881958s
+	during this search the following actions were chosen:
+		unstack c b was chosen with probability 0.991983
+		stack c d was chosen with probability 0.995538
+		pick-up b was chosen with probability 0.993753
+		stack b c was chosen with probability 0.998438
+		pick-up a was chosen with probability 0.996855
+		stack a b was chosen with probability 0.999342
+	training time: 26.0336856842041s
+	during the training the following losses were computed:
+	Overall the loss development was 0.038100 -> 0.031900
+problem epoch data for epoch 5, problem epoch 3
+	sampling search time: 2.5338332653045654s
+	during this search the following actions were chosen:
+		unstack c b was chosen with probability 0.993648
+		stack c d was chosen with probability 0.999044
+		pick-up b was chosen with probability 0.996550
+		stack b c was chosen with probability 0.999700
+		pick-up a was chosen with probability 0.998484
+		stack a b was chosen with probability 0.999837
+	training time: 26.02976894378662s
+	during the training the following losses were computed:
+	Overall the loss development was 0.031900 -> 0.029600
+problem epoch data for epoch 5, problem epoch 4
+	sampling search time: 2.278897762298584s
+	during this search the following actions were chosen:
+		unstack c b was chosen with probability 0.994692
+		stack c d was chosen with probability 0.998550
+		pick-up b was chosen with probability 0.996926
+		stack b c was chosen with probability 0.999523
+		pick-up a was chosen with probability 0.998787
+		stack a b was chosen with probability 0.999801
+	training time: 26.032204151153564s
+	during the training the following losses were computed:
+	Overall the loss development was 0.029600 -> 0.028100
+problem epoch data for epoch 5, problem epoch 5
+	sampling search time: 2.3340938091278076s
+	during this search the following actions were chosen:
+		unstack c b was chosen with probability 0.995274
+		stack c d was chosen with probability 0.998198
+		pick-up b was chosen with probability 0.997126
+		stack b c was chosen with probability 0.999406
+		pick-up a was chosen with probability 0.998959
+		stack a b was chosen with probability 0.999834
+	training time: 26.031673431396484s
+	during the training the following losses were computed:
+	Overall the loss development was 0.028100 -> 0.027300
+In the epoch 5 for problem d-4-2.pddl 4 explorations in the sampling searches reached a goal
+
+Training data for problem d-4-1.pddl in epoch 5:
+model creation time: 9.883681535720825s
+problem epoch data for epoch 5, problem epoch 1
+	sampling search time: 2.5021817684173584s
+	during this search the following actions were chosen:
+	training time: 54.98157072067261s
+	during the training the following losses were computed:
+	Overall the loss development was 1.186400 -> 0.041900
+problem epoch data for epoch 5, problem epoch 2
+	sampling search time: 2.3598411083221436s
+	during this search the following actions were chosen:
+	training time: 26.0201735496521s
+	during the training the following losses were computed:
+	Overall the loss development was 0.041900 -> 0.036900
+problem epoch data for epoch 5, problem epoch 3
+	sampling search time: 2.60802960395813s
+	during this search the following actions were chosen:
+	training time: 26.030237436294556s
+	during the training the following losses were computed:
+	Overall the loss development was 0.036800 -> 0.034700
+problem epoch data for epoch 5, problem epoch 4
+	sampling search time: 2.6139748096466064s
+	during this search the following actions were chosen:
+	training time: 26.025145769119263s
+	during the training the following losses were computed:
+	Overall the loss development was 0.034700 -> 0.033200
+problem epoch data for epoch 5, problem epoch 5
+	sampling search time: 2.6217827796936035s
+	during this search the following actions were chosen:
+	training time: 26.024384021759033s
+	during the training the following losses were computed:
+	Overall the loss development was 0.033200 -> 0.032200
+In the epoch 5 for problem d-4-1.pddl 4 explorations in the sampling searches reached a goal
+
+Training data for problem d-5-2.pddl in epoch 5:
+model creation time: 14.628791809082031s
+problem epoch data for epoch 5, problem epoch 1
+	sampling search time: 4.834910154342651s
+	during this search the following actions were chosen:
+	training time: 68.07264399528503s
+	during the training the following losses were computed:
+	Overall the loss development was 2.709700 -> 0.389600
+problem epoch data for epoch 5, problem epoch 2
+	sampling search time: 3.786155939102173s
+	during this search the following actions were chosen:
+	training time: 25.97358989715576s
+	during the training the following losses were computed:
+	Overall the loss development was 0.255500 -> 0.142200
+problem epoch data for epoch 5, problem epoch 3
+	sampling search time: 4.703794240951538s
+	during this search the following actions were chosen:
+	training time: 25.92959976196289s
+	during the training the following losses were computed:
+	Overall the loss development was 1.930700 -> 0.350600
+problem epoch data for epoch 5, problem epoch 4
+	sampling search time: 4.523574590682983s
+	during this search the following actions were chosen:
+	training time: 25.939703226089478s
+	during the training the following losses were computed:
+	Overall the loss development was 0.348500 -> 0.338900
+problem epoch data for epoch 5, problem epoch 5
+	sampling search time: 4.318593502044678s
+	during this search the following actions were chosen:
+	training time: 25.944823265075684s
+	during the training the following losses were computed:
+	Overall the loss development was 0.338900 -> 0.334300
+In the epoch 5 for problem d-5-2.pddl 0 explorations in the sampling searches reached a goal
+
+Training data for problem d-5-0.pddl in epoch 5:
+model creation time: 14.193607330322266s
+problem epoch data for epoch 5, problem epoch 1
+	sampling search time: 4.122859001159668s
+	during this search the following actions were chosen:
+	training time: 68.05296182632446s
+	during the training the following losses were computed:
+	Overall the loss development was 1.076400 -> 0.150000
+problem epoch data for epoch 5, problem epoch 2
+	sampling search time: 4.08044695854187s
+	during this search the following actions were chosen:
+		unstack c e was chosen with probability 0.999999
+		put-down c was chosen with probability 0.999875
+		unstack e b was chosen with probability 0.500207
+		put-down e was chosen with probability 0.999097
+		pick-up d was chosen with probability 0.994059
+		stack d c was chosen with probability 0.998855
+		unstack b a was chosen with probability 0.994545
+		stack b d was chosen with probability 0.998098
+		pick-up e was chosen with probability 0.994496
+		stack e b was chosen with probability 0.997525
+	training time: 25.978344678878784s
+	during the training the following losses were computed:
+	Overall the loss development was 0.150000 -> 0.144300
+problem epoch data for epoch 5, problem epoch 3
+	sampling search time: 4.069167852401733s
+	during this search the following actions were chosen:
+		unstack c e was chosen with probability 0.999971
+		put-down c was chosen with probability 0.999461
+		pick-up d was chosen with probability 0.501874
+		stack d c was chosen with probability 0.997801
+		unstack e b was chosen with probability 0.996312
+		put-down e was chosen with probability 0.994253
+		unstack b a was chosen with probability 0.994945
+		stack b d was chosen with probability 0.998516
+		pick-up e was chosen with probability 0.996567
+		stack e b was chosen with probability 0.998372
+		pick-up a was chosen with probability 0.999999
+		stack a e was chosen with probability 0.998514
+	training time: 25.98922872543335s
+	during the training the following losses were computed:
+	Overall the loss development was 0.163900 -> 0.156600
+problem epoch data for epoch 5, problem epoch 4
+	sampling search time: 3.683509588241577s
+	during this search the following actions were chosen:
+		unstack c e was chosen with probability 0.999875
+		put-down c was chosen with probability 0.999278
+		unstack e b was chosen with probability 0.500683
+		put-down e was chosen with probability 0.996543
+		pick-up d was chosen with probability 0.673700
+		stack d c was chosen with probability 0.998509
+		unstack b a was chosen with probability 0.999212
+		stack b d was chosen with probability 0.999162
+		pick-up e was chosen with probability 0.996118
+		stack e b was chosen with probability 0.999267
+		pick-up a was chosen with probability 0.999998
+		stack a e was chosen with probability 0.999570
+	training time: 25.982667684555054s
+	during the training the following losses were computed:
+	Overall the loss development was 0.161300 -> 0.134900
+problem epoch data for epoch 5, problem epoch 5
+	sampling search time: 3.679220676422119s
+	during this search the following actions were chosen:
+		unstack c e was chosen with probability 0.999286
+		put-down c was chosen with probability 0.999230
+		pick-up d was chosen with probability 0.501132
+		stack d c was chosen with probability 0.996165
+		unstack e b was chosen with probability 0.997630
+		put-down e was chosen with probability 0.996606
+		unstack b a was chosen with probability 0.996818
+		stack b d was chosen with probability 0.998934
+		pick-up e was chosen with probability 0.994520
+		stack e b was chosen with probability 0.999084
+		pick-up a was chosen with probability 0.999997
+		stack a e was chosen with probability 0.999191
+	training time: 25.980823040008545s
+	during the training the following losses were computed:
+	Overall the loss development was 0.154400 -> 0.150300
+In the epoch 5 for problem d-5-0.pddl 5 explorations in the sampling searches reached a goal
+
+Training data for problem d-5-1.pddl in epoch 5:
+model creation time: 14.722428560256958s
+problem epoch data for epoch 5, problem epoch 1
+	sampling search time: 3.585066556930542s
+	during this search the following actions were chosen:
+		pick-up c was chosen with probability 0.997858
+		stack c b was chosen with probability 0.994689
+		unstack c b was chosen with probability 0.718566
+	training time: 68.39394903182983s
+	during the training the following losses were computed:
+	Overall the loss development was 1.676100 -> 0.177000
+problem epoch data for epoch 5, problem epoch 2
+	sampling search time: 3.8439559936523438s
+	during this search the following actions were chosen:
+		unstack b a was chosen with probability 0.999800
+		put-down b was chosen with probability 0.510449
+		unstack a d was chosen with probability 0.903852
+		stack a e was chosen with probability 0.983622
+		pick-up b was chosen with probability 0.997566
+		stack b a was chosen with probability 0.994332
+		pick-up c was chosen with probability 0.998744
+		stack c b was chosen with probability 0.996617
+		pick-up d was chosen with probability 0.999732
+		stack d c was chosen with probability 0.999268
+	training time: 25.98660659790039s
+	during the training the following losses were computed:
+	Overall the loss development was 0.176400 -> 0.155200
+problem epoch data for epoch 5, problem epoch 3
+	sampling search time: 3.6283421516418457s
+	during this search the following actions were chosen:
+		unstack b a was chosen with probability 0.999235
+		put-down b was chosen with probability 0.501013
+		unstack a d was chosen with probability 0.998275
+		stack a e was chosen with probability 0.996164
+		pick-up b was chosen with probability 0.998824
+		stack b a was chosen with probability 0.999413
+		pick-up c was chosen with probability 0.998876
+		stack c b was chosen with probability 0.999507
+		pick-up d was chosen with probability 0.999572
+		stack d c was chosen with probability 0.999936
+	training time: 25.97841739654541s
+	during the training the following losses were computed:
+	Overall the loss development was 0.155200 -> 0.149700
+problem epoch data for epoch 5, problem epoch 4
+	sampling search time: 3.885443687438965s
+	during this search the following actions were chosen:
+		unstack b a was chosen with probability 0.997651
+		put-down b was chosen with probability 0.502115
+		unstack a d was chosen with probability 0.998845
+		stack a e was chosen with probability 0.996360
+		pick-up b was chosen with probability 0.998078
+		stack b a was chosen with probability 0.999227
+		pick-up c was chosen with probability 0.997741
+		stack c b was chosen with probability 0.999391
+		pick-up d was chosen with probability 0.998719
+		stack d c was chosen with probability 0.999896
+	training time: 25.98412585258484s
+	during the training the following losses were computed:
+	Overall the loss development was 0.149700 -> 0.146100
+problem epoch data for epoch 5, problem epoch 5
+	sampling search time: 3.6149330139160156s
+	during this search the following actions were chosen:
+		unstack b a was chosen with probability 0.997741
+		put-down b was chosen with probability 0.500399
+		unstack a d was chosen with probability 0.999252
+		stack a e was chosen with probability 0.997047
+		pick-up b was chosen with probability 0.997599
+		stack b a was chosen with probability 0.999241
+		pick-up c was chosen with probability 0.997606
+		stack c b was chosen with probability 0.999305
+		pick-up d was chosen with probability 0.998830
+		stack d c was chosen with probability 0.999857
+	training time: 25.982962369918823s
+	during the training the following losses were computed:
+	Overall the loss development was 0.146000 -> 0.143400
+In the epoch 5 for problem d-5-1.pddl 4 explorations in the sampling searches reached a goal
+
+Epoch 6:
+Training data for problem d-4-0.pddl in epoch 6:
+model creation time: 9.794878244400024s
+problem epoch data for epoch 6, problem epoch 1
+	sampling search time: 2.298868179321289s
+	during this search the following actions were chosen:
+		pick-up b was chosen with probability 0.327511
+		stack b a was chosen with probability 0.997855
+		pick-up c was chosen with probability 0.997985
+		stack c b was chosen with probability 0.998682
+		pick-up d was chosen with probability 0.998859
+		stack d c was chosen with probability 0.999798
+	training time: 55.25477051734924s
+	during the training the following losses were computed:
+	Overall the loss development was 0.202400 -> 0.177100
+problem epoch data for epoch 6, problem epoch 2
+	sampling search time: 2.5224735736846924s
+	during this search the following actions were chosen:
+		pick-up b was chosen with probability 0.332871
+		stack b a was chosen with probability 0.997426
+		pick-up c was chosen with probability 0.996342
+		stack c b was chosen with probability 0.999220
+		pick-up d was chosen with probability 0.999999
+		stack d c was chosen with probability 0.999986
+	training time: 26.03755760192871s
+	during the training the following losses were computed:
+	Overall the loss development was 0.177100 -> 0.176500
+problem epoch data for epoch 6, problem epoch 3
+	sampling search time: 2.5165562629699707s
+	during this search the following actions were chosen:
+		pick-up b was chosen with probability 0.332918
+		stack b a was chosen with probability 0.997464
+		pick-up c was chosen with probability 0.996172
+		stack c b was chosen with probability 0.999154
+	training time: 26.035676956176758s
+	during the training the following losses were computed:
+	Overall the loss development was 0.176500 -> 0.176500
+problem epoch data for epoch 6, problem epoch 4
+	sampling search time: 2.5568630695343018s
+	during this search the following actions were chosen:
+		pick-up b was chosen with probability 0.332917
+		stack b a was chosen with probability 0.997488
+		pick-up c was chosen with probability 0.996192
+		stack c b was chosen with probability 0.999146
+	training time: 26.03212332725525s
+	during the training the following losses were computed:
+	Overall the loss development was 0.176500 -> 0.176400
+problem epoch data for epoch 6, problem epoch 5
+	sampling search time: 2.524277448654175s
+	during this search the following actions were chosen:
+		pick-up b was chosen with probability 0.332921
+		stack b a was chosen with probability 0.997514
+		pick-up c was chosen with probability 0.996150
+		stack c b was chosen with probability 0.999150
+	training time: 26.029083251953125s
+	during the training the following losses were computed:
+	Overall the loss development was 0.176400 -> 0.176400
+In the epoch 6 for problem d-4-0.pddl 5 explorations in the sampling searches reached a goal
+
+Training data for problem d-4-2.pddl in epoch 6:
+model creation time: 9.605445384979248s
+problem epoch data for epoch 6, problem epoch 1
+	sampling search time: 2.561501979827881s
+	during this search the following actions were chosen:
+		pick-up a was chosen with probability 0.996308
+		stack a c was chosen with probability 0.695357
+		pick-up d was chosen with probability 0.998435
+		stack d a was chosen with probability 0.992770
+	training time: 55.16963529586792s
+	during the training the following losses were computed:
+	Overall the loss development was 2.694400 -> 0.038700
+problem epoch data for epoch 6, problem epoch 2
+	sampling search time: 2.516035318374634s
+	during this search the following actions were chosen:
+		unstack c b was chosen with probability 0.991836
+		stack c d was chosen with probability 0.995551
+		pick-up b was chosen with probability 0.991655
+		stack b c was chosen with probability 0.998038
+		pick-up a was chosen with probability 0.996380
+		stack a b was chosen with probability 0.999125
+	training time: 26.031259298324585s
+	during the training the following losses were computed:
+	Overall the loss development was 0.039000 -> 0.031500
+problem epoch data for epoch 6, problem epoch 3
+	sampling search time: 2.294165849685669s
+	during this search the following actions were chosen:
+		unstack c b was chosen with probability 0.993620
+		stack c d was chosen with probability 0.998958
+		pick-up b was chosen with probability 0.996507
+		stack b c was chosen with probability 0.999751
+		pick-up a was chosen with probability 0.998071
+		stack a b was chosen with probability 0.999834
+	training time: 26.02889347076416s
+	during the training the following losses were computed:
+	Overall the loss development was 0.031500 -> 0.029200
+problem epoch data for epoch 6, problem epoch 4
+	sampling search time: 2.5167081356048584s
+	during this search the following actions were chosen:
+		unstack c b was chosen with probability 0.994517
+		stack c d was chosen with probability 0.998613
+		pick-up b was chosen with probability 0.997230
+		stack b c was chosen with probability 0.999660
+		pick-up a was chosen with probability 0.998319
+		stack a b was chosen with probability 0.999827
+	training time: 26.028409957885742s
+	during the training the following losses were computed:
+	Overall the loss development was 0.029200 -> 0.028100
+problem epoch data for epoch 6, problem epoch 5
+	sampling search time: 2.522984743118286s
+	during this search the following actions were chosen:
+		unstack c b was chosen with probability 0.994732
+		stack c d was chosen with probability 0.998341
+		pick-up b was chosen with probability 0.997338
+		stack b c was chosen with probability 0.999574
+		pick-up a was chosen with probability 0.998449
+		stack a b was chosen with probability 0.999874
+	training time: 26.030701398849487s
+	during the training the following losses were computed:
+	Overall the loss development was 0.028100 -> 0.027300
+In the epoch 6 for problem d-4-2.pddl 4 explorations in the sampling searches reached a goal
+
+Training data for problem d-4-1.pddl in epoch 6:
+model creation time: 9.613276720046997s
+problem epoch data for epoch 6, problem epoch 1
+	sampling search time: 2.295897960662842s
+	during this search the following actions were chosen:
+	training time: 55.087241649627686s
+	during the training the following losses were computed:
+	Overall the loss development was 1.473900 -> 0.045800
+problem epoch data for epoch 6, problem epoch 2
+	sampling search time: 2.615109443664551s
+	during this search the following actions were chosen:
+	training time: 26.024751663208008s
+	during the training the following losses were computed:
+	Overall the loss development was 0.045700 -> 0.039000
+problem epoch data for epoch 6, problem epoch 3
+	sampling search time: 2.353444814682007s
+	during this search the following actions were chosen:
+	training time: 26.014756202697754s
+	during the training the following losses were computed:
+	Overall the loss development was 0.039000 -> 0.036300
+problem epoch data for epoch 6, problem epoch 4
+	sampling search time: 2.618469476699829s
+	during this search the following actions were chosen:
+	training time: 26.028714656829834s
+	during the training the following losses were computed:
+	Overall the loss development was 0.036300 -> 0.034600
+problem epoch data for epoch 6, problem epoch 5
+	sampling search time: 2.4098939895629883s
+	during this search the following actions were chosen:
+	training time: 26.019781351089478s
+	during the training the following losses were computed:
+	Overall the loss development was 0.034500 -> 0.033300
+In the epoch 6 for problem d-4-1.pddl 4 explorations in the sampling searches reached a goal
+
+Training data for problem d-5-2.pddl in epoch 6:
+model creation time: 14.335090160369873s
+problem epoch data for epoch 6, problem epoch 1
+	sampling search time: 5.0501790046691895s
+	during this search the following actions were chosen:
+	training time: 67.25935530662537s
+	during the training the following losses were computed:
+	Overall the loss development was 2.666800 -> 0.467100
+problem epoch data for epoch 6, problem epoch 2
+	sampling search time: 4.465139865875244s
+	during this search the following actions were chosen:
+	training time: 25.935689210891724s
+	during the training the following losses were computed:
+	Overall the loss development was 0.434100 -> 0.307100
+problem epoch data for epoch 6, problem epoch 3
+	sampling search time: 4.1737120151519775s
+	during this search the following actions were chosen:
+	training time: 25.939167737960815s
+	during the training the following losses were computed:
+	Overall the loss development was 0.307000 -> 0.299300
+problem epoch data for epoch 6, problem epoch 4
+	sampling search time: 4.521613836288452s
+	during this search the following actions were chosen:
+	training time: 25.93993616104126s
+	during the training the following losses were computed:
+	Overall the loss development was 0.299300 -> 0.295500
+problem epoch data for epoch 6, problem epoch 5
+	sampling search time: 4.342198848724365s
+	during this search the following actions were chosen:
+	training time: 25.975340604782104s
+	during the training the following losses were computed:
+	Overall the loss development was 0.149900 -> 0.135400
+In the epoch 6 for problem d-5-2.pddl 3 explorations in the sampling searches reached a goal
+
+Training data for problem d-5-0.pddl in epoch 6:
+model creation time: 14.359207391738892s
+problem epoch data for epoch 6, problem epoch 1
+	sampling search time: 3.948195457458496s
+	during this search the following actions were chosen:
+		unstack c e was chosen with probability 0.998988
+		put-down c was chosen with probability 0.875656
+		pick-up d was chosen with probability 0.904379
+		stack d c was chosen with probability 0.796526
+		unstack e b was chosen with probability 0.540772
+		stack e d was chosen with probability 0.462606
+		unstack b a was chosen with probability 0.914470
+		put-down b was chosen with probability 0.463001
+		pick-up b was chosen with probability 0.691194
+	training time: 67.99490070343018s
+	during the training the following losses were computed:
+	Overall the loss development was 1.039000 -> 0.278900
+problem epoch data for epoch 6, problem epoch 2
+	sampling search time: 4.142603874206543s
+	during this search the following actions were chosen:
+		unstack c e was chosen with probability 0.999992
+		put-down c was chosen with probability 0.999041
+		unstack e b was chosen with probability 0.503543
+		put-down e was chosen with probability 0.999547
+		unstack b a was chosen with probability 0.999603
+		put-down b was chosen with probability 0.655945
+		pick-up a was chosen with probability 0.249988
+		put-down a was chosen with probability 0.519418
+	training time: 25.951806783676147s
+	during the training the following losses were computed:
+	Overall the loss development was 0.872600 -> 0.366800
+problem epoch data for epoch 6, problem epoch 3
+	sampling search time: 3.905226945877075s
+	during this search the following actions were chosen:
+		unstack c e was chosen with probability 0.999996
+		put-down c was chosen with probability 0.999896
+		pick-up d was chosen with probability 0.504253
+		stack d c was chosen with probability 0.998151
+		unstack e b was chosen with probability 0.997905
+		put-down e was chosen with probability 0.997124
+		unstack b a was chosen with probability 0.987977
+		stack b d was chosen with probability 0.997327
+		pick-up e was chosen with probability 0.997433
+		stack e b was chosen with probability 0.998523
+	training time: 25.98031783103943s
+	during the training the following losses were computed:
+	Overall the loss development was 0.176700 -> 0.166900
+problem epoch data for epoch 6, problem epoch 4
+	sampling search time: 3.723794937133789s
+	during this search the following actions were chosen:
+		unstack c e was chosen with probability 0.999974
+		put-down c was chosen with probability 0.999856
+		unstack e b was chosen with probability 0.500316
+		put-down e was chosen with probability 0.998830
+		unstack b a was chosen with probability 0.514818
+		put-down b was chosen with probability 0.690101
+		pick-up a was chosen with probability 0.250000
+		put-down a was chosen with probability 0.944386
+	training time: 25.945908069610596s
+	during the training the following losses were computed:
+	Overall the loss development was 0.531900 -> 0.358900
+problem epoch data for epoch 6, problem epoch 5
+	sampling search time: 3.9128236770629883s
+	during this search the following actions were chosen:
+		unstack c e was chosen with probability 0.999862
+		put-down c was chosen with probability 0.999656
+		pick-up d was chosen with probability 0.503590
+		stack d c was chosen with probability 0.998519
+		unstack e b was chosen with probability 0.998506
+		put-down e was chosen with probability 0.999051
+		unstack b a was chosen with probability 0.989369
+		stack b d was chosen with probability 0.997472
+		pick-up e was chosen with probability 0.997756
+		stack e b was chosen with probability 0.999112
+	training time: 25.97817325592041s
+	during the training the following losses were computed:
+	Overall the loss development was 0.172800 -> 0.163500
+In the epoch 6 for problem d-5-0.pddl 2 explorations in the sampling searches reached a goal
+
+Training data for problem d-5-1.pddl in epoch 6:
+model creation time: 14.184514284133911s
+problem epoch data for epoch 6, problem epoch 1
+	sampling search time: 3.7686069011688232s
+	during this search the following actions were chosen:
+		pick-up c was chosen with probability 0.993005
+		stack c b was chosen with probability 0.999610
+		unstack c b was chosen with probability 0.645599
+	training time: 67.65826654434204s
+	during the training the following losses were computed:
+	Overall the loss development was 1.916100 -> 0.172300
+problem epoch data for epoch 6, problem epoch 2
+	sampling search time: 3.864112138748169s
+	during this search the following actions were chosen:
+		unstack b a was chosen with probability 0.997243
+		put-down b was chosen with probability 0.504554
+		unstack a d was chosen with probability 0.999913
+		stack a e was chosen with probability 0.989120
+		pick-up b was chosen with probability 0.983192
+		stack b a was chosen with probability 0.994626
+		pick-up c was chosen with probability 0.991135
+		stack c b was chosen with probability 0.991959
+		pick-up d was chosen with probability 0.998042
+		stack d c was chosen with probability 0.999276
+	training time: 25.979695558547974s
+	during the training the following losses were computed:
+	Overall the loss development was 0.165100 -> 0.157600
+problem epoch data for epoch 6, problem epoch 3
+	sampling search time: 3.6427724361419678s
+	during this search the following actions were chosen:
+		unstack b a was chosen with probability 0.994170
+		put-down b was chosen with probability 0.499895
+		unstack a d was chosen with probability 0.999926
+		stack a e was chosen with probability 0.997651
+		pick-up b was chosen with probability 0.995423
+		stack b a was chosen with probability 0.998915
+		pick-up c was chosen with probability 0.995854
+		stack c b was chosen with probability 0.998900
+		pick-up d was chosen with probability 0.998415
+		stack d c was chosen with probability 0.999989
+	training time: 25.980450868606567s
+	during the training the following losses were computed:
+	Overall the loss development was 0.157600 -> 0.153600
+problem epoch data for epoch 6, problem epoch 4
+	sampling search time: 3.6188671588897705s
+	during this search the following actions were chosen:
+		unstack b a was chosen with probability 0.994234
+		put-down b was chosen with probability 0.499981
+		unstack a d was chosen with probability 0.999919
+		stack a e was chosen with probability 0.998430
+		pick-up b was chosen with probability 0.995432
+		stack b a was chosen with probability 0.998633
+		pick-up c was chosen with probability 0.995921
+		stack c b was chosen with probability 0.999175
+		pick-up d was chosen with probability 0.998675
+		stack d c was chosen with probability 0.999997
+	training time: 25.98169708251953s
+	during the training the following losses were computed:
+	Overall the loss development was 0.153600 -> 0.150700
+problem epoch data for epoch 6, problem epoch 5
+	sampling search time: 3.9032230377197266s
+	during this search the following actions were chosen:
+		unstack b a was chosen with probability 0.994933
+		put-down b was chosen with probability 0.499258
+		unstack a d was chosen with probability 0.999925
+		stack a e was chosen with probability 0.998099
+		pick-up b was chosen with probability 0.995474
+		stack b a was chosen with probability 0.997774
+		pick-up c was chosen with probability 0.996257
+		stack c b was chosen with probability 0.999093
+		pick-up d was chosen with probability 0.998998
+		stack d c was chosen with probability 0.999997
+	training time: 25.97828221321106s
+	during the training the following losses were computed:
+	Overall the loss development was 0.150700 -> 0.148300
+In the epoch 6 for problem d-5-1.pddl 4 explorations in the sampling searches reached a goal
+
+Epoch 7:
+Training data for problem d-4-0.pddl in epoch 7:
+model creation time: 10.16191291809082s
+

@@ -102,17 +102,16 @@ class ProblemTrainingParsed:
         line = log_lines[log_line_index].strip()
         loss_string = r'[\w\W]* - loss: ([0-9]+\.[0-9]*)'
         match = re.match(loss_string, line)
-        while match:
-            loss = float(match.group(1))
-            problem_epoch_losses.append(loss)
-            # go to next loss-line
-            log_line_index += 3
+        while match or line == '' or line.startswith('Epoch '):
+            if match:
+                loss = float(match.group(1))
+                problem_epoch_losses.append(loss)
+            # go to next line
+            log_line_index += 1
             line = log_lines[log_line_index].strip()
             match = re.match(loss_string, line)
         self.loss_values_by_epochs[-1].append(problem_epoch_losses)
         
-        # last loss processed -> jumped over the training time
-        log_line_index -= 2
         line = log_lines[log_line_index].strip()
         training_time_string = r'Network training time: ([0-9]+\.[0-9]*)s'
         match = re.match(training_time_string, line)
@@ -153,13 +152,15 @@ class ProblemTrainingParsed:
             if line == '':
                 log_line_index += 1
                 line = log_lines[log_line_index].strip()
+            elif line.startswith('Network finalization time:'):
+                log_line_index += 2
+                break
             match = re.match(r'Starting problem epoch (\d) / \d', line)
         
         if line.startswith("Training is taking over "):
             # early stopping at this point
             return log_line_index + 1
 
-        log_line_index += 2
         # on "x / y network explorations were successfull for this problem"
         line = log_lines[log_line_index].strip()
         match = re.match(r'(\d) / \d network explorations were successfull for this problem', line)
@@ -167,11 +168,6 @@ class ProblemTrainingParsed:
         self.successfull_explorations.append(int(match.group(1)))
         log_line_index += 1
         return log_line_index
-
-
-        # list of ints indicating how many of the network searches in the problem epochs
-        # of the respective epoch were successfull = reaching a goal
-        self.successfull_explorations = []
 
 
     def dump_problem_epoch(self, epoch_index, problem_epoch_index):
@@ -245,6 +241,10 @@ class TrainingParser:
                 parsed_problem = self.parsed_problems[problem_name]
                 self.log_line_index = parsed_problem.parse_epoch(self.log_lines, self.log_line_index, self.current_epoch)
             line = self.log_lines[self.log_line_index].strip()
+            if line.startswith('Epochs success rate:'):
+                self.log_line_index += 1
+                line = self.log_lines[self.log_line_index].strip()
+
             if line == '':
                 self.log_line_index += 1
                 line = self.log_lines[self.log_line_index].strip()               

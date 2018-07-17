@@ -57,6 +57,10 @@ def main(argv):
             if os.path.isfile(network_path):
                 continue
 
+            too_large_problems = ['d-24.pddl', 'd-28.pddl']
+            if domain == 'elevator' and problem_name in too_large_problems:
+                continue
+
             problem_path = os.path.join(domain_benchmark_dir, problem_name)
             problem_name = problem_name[:-5]
 

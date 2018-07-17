@@ -1,0 +1,41 @@
+Training log data for domain floortile:
+printing the data chronological
+Epoch 1:
+Training data for problem d-01-4-3-2.pddl in epoch 1:
+model creation time: 43.034353256225586s
+problem epoch data for epoch 1, problem epoch 1
+	sampling search time: 2488.363044023514s
+	during this search the following actions were chosen:
+	training time: 218.8527488708496s
+	during the training the following losses were computed:
+	Overall the loss development was 4.741900 -> 1.834100
+problem epoch data for epoch 1, problem epoch 2
+	sampling search time: 5925.431399106979s
+	during this search the following actions were chosen:
+	training time: 144.54841256141663s
+	during the training the following losses were computed:
+	Overall the loss development was 2.427600 -> 1.579900
+problem epoch data for epoch 1, problem epoch 3
+	sampling search time: 6631.517167568207s
+	during this search the following actions were chosen:
+	training time: 127.36548209190369s
+	during the training the following losses were computed:
+	Overall the loss development was 2.343800 -> 1.604700
+problem epoch data for epoch 1, problem epoch 4
+	sampling search time: 6182.8111255168915s
+	during this search the following actions were chosen:
+	training time: 143.8055591583252s
+	during the training the following losses were computed:
+	Overall the loss development was 3.141100 -> 1.606400
+problem epoch data for epoch 1, problem epoch 5
+	sampling search time: 5700.11780500412s
+	during this search the following actions were chosen:
+	training time: 128.12081599235535s
+	during the training the following losses were computed:
+	Overall the loss development was 1.490700 -> 1.444400
+In the epoch 1 for problem d-01-4-3-2.pddl 1 explorations in the sampling searches reached a goal
+
+Epoch 2:
+Training data for problem d-01-4-3-2.pddl in epoch 2:
+model creation time: 45.69289445877075s
+
