@@ -101,15 +101,14 @@ class ProblemTrainingParsed:
         log_line_index += 6
         line = log_lines[log_line_index].strip()
         loss_string = r'[\w\W]* - loss: ([0-9]+\.[0-9]*)'
-        match = re.match(loss_string, line)
-        while match or line == '' or line.startswith('Epoch '):
+        while not line.startswith('Network training time'):
+            match = re.match(loss_string, line)
             if match:
                 loss = float(match.group(1))
                 problem_epoch_losses.append(loss)
             # go to next line
             log_line_index += 1
             line = log_lines[log_line_index].strip()
-            match = re.match(loss_string, line)
         self.loss_values_by_epochs[-1].append(problem_epoch_losses)
         
         line = log_lines[log_line_index].strip()
@@ -179,8 +178,8 @@ class ProblemTrainingParsed:
         print("\ttraining time: %ss" % self.training_epoch_times[epoch_index][problem_epoch_index])
         print("\tduring the training the following losses were computed:")
         losses = self.loss_values_by_epochs[epoch_index][problem_epoch_index]
-        # for loss in losses:
-        #     print("\t\tloss: %f" % loss)
+        for loss in losses:
+            print("\t\tloss: %f" % loss)
         print("\tOverall the loss development was %f -> %f" % (losses[0], losses[-1]))
 
 
