@@ -9,7 +9,8 @@ import keras.backend as K
 asnetsfastdownward_dir = os.path.dirname(os.path.realpath(__file__))
 
 # domains = ['blocksworld', 'floortile', 'tyreworld', 'sokoban', 'parcprinter', 'hanoi', 'elevator', 'turnandopen']
-domains = ['elevator', 'turnandopen']
+# domains = ['elevator', 'turnandopen']
+domains = ['hanoi']
 configurations = {}
 conf1 = ('False', '2', '"astar(lmcut(),transform=asnet_sampling_transform())"')
 configurations['conf1'] = conf1
@@ -47,7 +48,6 @@ def main(argv):
         domain_file_path = os.path.join(domain_benchmark_dir, 'domain.pddl')
         files = [f for f in os.listdir(domain_benchmark_dir) if os.path.isfile(os.path.join(domain_benchmark_dir, f))]
         for problem_name in files:
-            K.clear_session()
             if not problem_name.endswith('.pddl'):
                 continue
 

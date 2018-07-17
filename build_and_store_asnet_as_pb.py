@@ -4,6 +4,7 @@
 import sys
 
 from keras.optimizers import Adam
+import keras.backend as K
 
 sys.path.append("network_models/asnets")
 from problem_meta import ProblemMeta
@@ -65,6 +66,7 @@ def main(argv):
     weights_path = argv[5]
     network_path = argv[6]
 
+    K.clear_session()
     print("Creating PDDL task for %s" % problem_path)
     task_meta = create_pddl_task(domain_path, problem_path)
     print("Building model for %s" % problem_path)
