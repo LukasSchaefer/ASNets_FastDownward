@@ -8,8 +8,8 @@ import keras.backend as K
 
 asnetsfastdownward_dir = os.path.dirname(os.path.realpath(__file__))
 
-domains = ['blocksworld', 'floortile', 'tyreworld', 'sokoban', 'parcprinter', 'hanoi', 'elevator', 'turnandopen']
-
+# domains = ['blocksworld', 'floortile', 'tyreworld', 'sokoban', 'parcprinter', 'hanoi', 'elevator', 'turnandopen']
+domains = ['elevator', 'turnandopen']
 configurations = {}
 conf1 = ('False', '2', '"astar(lmcut(),transform=asnet_sampling_transform())"')
 configurations['conf1'] = conf1
@@ -53,11 +53,14 @@ def main(argv):
             if problem_name == 'domain.pddl':
                 continue
             # file should be a problem of the given domain
+            network_path = os.path.join(asnetsfastdownward_dir, 'evaluation/network_runs/evaluation/protobuf_networks/' + domain + '/' + conf + '/' + problem_name + '.pb')
+            if os.path.isfile(network_path):
+                continue
+
             problem_path = os.path.join(domain_benchmark_dir, problem_name)
             problem_name = problem_name[:-5]
 
             weights_path = os.path.join(asnetsfastdownward_dir, 'evaluation/network_runs/training/' + domain + '/' + conf + '/asnet_final_weights.h5')
-            network_path = os.path.join(asnetsfastdownward_dir, 'evaluation/network_runs/evaluation/protobuf_networks/' + domain + '/' + conf + '/' + problem_name + '.pb')
             current_time = time.time()
             build_pb(['blub', domain_file_path, problem_path, layers, just_opt_loss, weights_path, network_path])
             network_build_time = time.time() - current_time

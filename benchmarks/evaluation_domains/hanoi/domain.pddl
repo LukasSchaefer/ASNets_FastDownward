@@ -1,4 +1,5 @@
-(define (domain hanoi-domain)
+
+(define (domain hanoi)
 (:requirements :strips)
 (:predicates (clear ?x)
              (on ?x ?y)
@@ -6,7 +7,7 @@
 
 (:action move
 :parameters (?disc ?from ?to)
-:precondition (and (smaller ?to ?disc) 
+:precondition (and (smaller ?disc ?to) 
                    (on ?disc ?from) 
                    (clear ?disc) 
                    (clear ?to))

@@ -1,5 +1,5 @@
 (define (problem hanoi-5)
-  (:domain hanoi-domain)
+  (:domain hanoi)
   (:objects peg1 peg2 peg3 d1 d2 d3 d4 d5 )
   (:init 
     (smaller d1 peg1)(smaller d1 peg2)(smaller d1 peg3)
@@ -13,7 +13,7 @@
     (smaller d3 d4)(smaller d3 d5)
     (smaller d4 d5)
     
-    (clear p1)(clear p2)(clear d1)
+    (clear peg1)(clear peg2)(clear d1)
     (disk d1)(disk d2)(disk d3)(disk d4)(disk d5)
     (on d1 d2)(on d2 d3)(on d3 d4)(on d4 d5)(on d5 peg3)
   )
