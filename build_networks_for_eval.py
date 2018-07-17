@@ -50,19 +50,21 @@ def main(argv):
             K.clear_session()
             if not problem_name.endswith('.pddl'):
                 continue
-            if problem_name == 'domain.pddl':
+
+            problem_path = os.path.join(domain_benchmark_dir, problem_name)
+            problem_name = problem_name[:-5]
+
+            if problem_name == 'domain':
                 continue
+
             # file should be a problem of the given domain
             network_path = os.path.join(asnetsfastdownward_dir, 'evaluation/network_runs/evaluation/protobuf_networks/' + domain + '/' + conf + '/' + problem_name + '.pb')
             if os.path.isfile(network_path):
                 continue
 
-            too_large_problems = ['d-24.pddl', 'd-28.pddl']
+            too_large_problems = ['d-24', 'd-25', 'd-26', 'd-27', 'd-28', 'd-29', 'd-30']
             if domain == 'elevator' and problem_name in too_large_problems:
                 continue
-
-            problem_path = os.path.join(domain_benchmark_dir, problem_name)
-            problem_name = problem_name[:-5]
 
             weights_path = os.path.join(asnetsfastdownward_dir, 'evaluation/network_runs/training/' + domain + '/' + conf + '/asnet_final_weights.h5')
             current_time = time.time()
