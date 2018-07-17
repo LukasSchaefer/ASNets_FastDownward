@@ -49,7 +49,7 @@ namespace asnet_sampling_search {
         const bool use_teacher_search;
 
         // the fact_goal_values should be stored (equal for all samples)
-        vector<int> fact_goal_values;
+	std::vector<int> fact_goal_values;
 
         /* vector of entries of form (variable_index, value_index) for each fact in lexicographical ordering
            of their names */
