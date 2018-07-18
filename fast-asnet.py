@@ -143,8 +143,8 @@ pasnet.add_argument("--train_epochs", type=int,
 pasnet.add_argument("--time_limit", type=int,
                      action="store", default=7200,
                      help="Time limitation for training only in seconds (default 2h).")
-pasnet.add_argument("--accumulate_samples", action="store_true",
-                     help="Flag activating accumulation of samples (deactivating "
+pasnet.add_argument("--no_sample_accumulating", action="store_true",
+                     help="Flag deactivating accumulation of samples for one problem (activating "
                           "deletion in bridge after sample data extraction.)")
 pasnet.add_argument("--delete", action="store_true",
                      help="If flag ist set then all sample and network data is deleted "
@@ -491,7 +491,7 @@ def load_data(options, directory, domain_path, problem_path, extra_input_size):
     bridge = ASNetSampleBridge(sample_path=os.path.join(directory, "sample.data"),
                                domain=domain_path, prune=True, forget=options.forget,
                                skip=options.skip, extra_input_size=extra_input_size,
-                               delete=not options.accumulate_samples)
+                               delete=options.no_sample_accumulating)
 
     dtrain, dtest = None, None
     # We create a test set
