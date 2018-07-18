@@ -213,6 +213,8 @@ class TrainingParser:
         self.current_epoch = -1
         # dict accessing parsed problems by problem name
         self.parsed_problems = {}
+        # success rates per epoch
+        self.success_rates = []
 
 
     def parse_epoch(self):
@@ -241,6 +243,9 @@ class TrainingParser:
                 self.log_line_index = parsed_problem.parse_epoch(self.log_lines, self.log_line_index, self.current_epoch)
             line = self.log_lines[self.log_line_index].strip()
             if line.startswith('Epochs success rate:'):
+                match = re.match(r'Epochs success rate: (\d+)', line)
+                success_rate = int(match.group(1))
+                self.success_rates.append(success_rate)
                 self.log_line_index += 1
                 line = self.log_lines[self.log_line_index].strip()
 
@@ -251,6 +256,9 @@ class TrainingParser:
                 return
             else:
                 assert line.startswith('Epochs success rate:')
+                match = re.match(r'Epochs success rate: (\d+)', line)
+                success_rate = int(match.group(1))
+                self.success_rates.append(success_rate)
                 self.log_line_index += 2
                 line = self.log_lines[self.log_line_index].strip()               
             match = re.match(r'Processing problem file benchmarks\/' + self.domain_name + r'\/training\/([a-zA-Z0-9-_]*\.pddl)\s', line)
@@ -277,6 +285,7 @@ class TrainingParser:
             match = re.match(starting_epoch_string, line)
         # Last epoch is finished -> done
         line = self.log_lines[self.log_line_index].strip()
+        print(line)
         assert line.startswith('Saving final weights in')
         self.log_line_index += 1
         line = self.log_lines[self.log_line_index].strip()
@@ -305,6 +314,8 @@ class TrainingParser:
                 if parsed_problem.epochs > epoch_index:
                     parsed_problem.dump_epoch(epoch_index)
                     print()
+            if epoch_index < len(self.success_rates):
+                print("Success rate: %d" % (self.success_rates[epoch_index]))
 
 
 def main(argv):
