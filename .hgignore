@@ -20,8 +20,14 @@
 ^tmp/*
 ^output.sas.*
 ^CMakeLists.txt
+^evaluation/network_runs/evaluation/protobuf_networks/.*
+^benchmarks/.*asnet_final_weights.h5
+^benchmarks/.*asnet_weights.h5
+^benchmarks/.*asnet.pb
+^benchmarks/.*sample.data
 
 syntax: glob
+*training.log
 *.sample
 *.meta
 *.orig
