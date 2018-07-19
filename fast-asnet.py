@@ -132,13 +132,13 @@ pasnet.add_argument("--epochs", type=int,
                      action="store", default=10,
                      help="Number of epochs of sampling and training on each problem during training.")
 pasnet.add_argument("--problem_epochs", type=int,
-                     action="store", default=5,
+                     action="store", default=3,
                      help="Number of consecutive epochs of sampling and training on each problem during "
                           "the entire training process before going to the next problem (This is important "
                           "because whenever a new problem is used trained the keras ASNet model has "
                           "to be built and cannot be stored -> inefficient to always iterate over problems).")
 pasnet.add_argument("--train_epochs", type=int,
-                     action="store", default=256,
+                     action="store", default=100,
                      help="Number of epochs of training after sampling for one problem.")
 pasnet.add_argument("--time_limit", type=int,
                      action="store", default=7200,

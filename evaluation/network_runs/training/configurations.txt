@@ -1,6 +1,3 @@
 conf1: default loss, 2 layers, astar_lmcut teacher
 conf2: default loss, 2 layers, astar_add teacher
-conf3: default loss, 2 layers, ehc_ff teacher
-conf4: default loss, 4 layers, astar_lmcut teacher
-conf5: default loss, 4 layers, astar_add teacher
-conf6: default loss, 4 layers, ehc_ff teacher
+conf3: default loss, 2 layers, GBFS FF teacher (FF preferred)

@@ -9,8 +9,8 @@ import keras.backend as K
 asnetsfastdownward_dir = os.path.dirname(os.path.realpath(__file__))
 
 # domains = ['blocksworld', 'floortile', 'tyreworld', 'sokoban', 'parcprinter', 'hanoi', 'elevator', 'turnandopen']
-# domains = ['elevator', 'turnandopen']
-domains = ['hanoi']
+domains = ['blocksworld']
+
 configurations = {}
 conf1 = ('False', '2', '"astar(lmcut(),transform=asnet_sampling_transform())"')
 configurations['conf1'] = conf1
@@ -58,20 +58,24 @@ def main(argv):
                 continue
 
             # file should be a problem of the given domain
-            network_path = os.path.join(asnetsfastdownward_dir, 'evaluation/network_runs/evaluation/protobuf_networks/' + domain + '/' + conf + '/' + problem_name + '.pb')
+            # network_path = os.path.join(asnetsfastdownward_dir, 'evaluation/network_runs/evaluation/protobuf_networks/' + domain + '/accumulate_samples/' + conf + '/' + problem_name + '.pb')
+            network_path = os.path.join(asnetsfastdownward_dir, 'evaluation/network_runs/evaluation/protobuf_networks/' + domain + '_single/' + conf + '/' + problem_name + '.pb')
             if os.path.isfile(network_path):
                 continue
 
-            too_large_problems = ['d-24', 'd-25', 'd-26', 'd-27', 'd-28', 'd-29', 'd-30']
+            too_large_problems = ['d-19', 'd-22', 'd-23', 'd-24', 'd-25', 'd-26', 'd-27', 'd-28', 'd-29', 'd-30']
             if domain == 'elevator' and problem_name in too_large_problems:
                 continue
 
-            weights_path = os.path.join(asnetsfastdownward_dir, 'evaluation/network_runs/training/' + domain + '/' + conf + '/asnet_final_weights.h5')
+            # weights_path = os.path.join(asnetsfastdownward_dir, 'evaluation/network_runs/training/' + domain + '/accumulate_samples/' + conf + '/asnet_final_weights.h5')
+            weights_path = os.path.join(asnetsfastdownward_dir, 'evaluation/network_runs/training/' + domain + '_single/' + conf + '/asnet_final_weights.h5')
+            assert os.path.isfile(weights_path)
+
             current_time = time.time()
             build_pb(['blub', domain_file_path, problem_path, layers, just_opt_loss, weights_path, network_path])
             network_build_time = time.time() - current_time
 
-            log_path = os.path.join(asnetsfastdownward_dir, 'evaluation/network_runs/evaluation/protobuf_networks/' + domain + '/' + conf + '/' + problem_name + '.log')
+            log_path = os.path.join(asnetsfastdownward_dir, 'evaluation/network_runs/evaluation/protobuf_networks/' + domain + '_single/' + conf + '/' + problem_name + '.log')
             f = open(log_path, 'w')
             f.write("Model building & saving time: %f" % network_build_time)
             f.close()

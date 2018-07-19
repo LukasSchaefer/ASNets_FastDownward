@@ -313,9 +313,9 @@ class TrainingParser:
             for parsed_problem in self.parsed_problems.values():
                 if parsed_problem.epochs > epoch_index:
                     parsed_problem.dump_epoch(epoch_index)
-                    print()
             if epoch_index < len(self.success_rates):
                 print("Success rate: %d" % (self.success_rates[epoch_index]))
+            print()
 
 
 def main(argv):
