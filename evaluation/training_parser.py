@@ -230,7 +230,7 @@ class TrainingParser:
         assert line == ""
         self.log_line_index += 1
         line = self.log_lines[self.log_line_index].strip()
-        match = re.match(r'Processing problem file benchmarks\/' + self.domain_name + r'\/training\/([a-zA-Z0-9-_]*\.pddl)\s', line)
+        match = re.match(r'Processing problem file benchmarks[\d]*\/' + self.domain_name + r'\/training\/([a-zA-Z0-9-_]*\.pddl)\s', line)
         while match:
             problem_name = match.group(1)
             self.log_line_index += 1
@@ -254,6 +254,9 @@ class TrainingParser:
                 line = self.log_lines[self.log_line_index].strip()               
             elif line.startswith('Saving final weights in'):
                 return
+            elif line == 'EARLY TRAINING TERMINATION:':
+                self.log_line_index += 2
+                return
             else:
                 assert line.startswith('Epochs success rate:')
                 match = re.match(r'Epochs success rate: (\d+)', line)
@@ -261,7 +264,7 @@ class TrainingParser:
                 self.success_rates.append(success_rate)
                 self.log_line_index += 2
                 line = self.log_lines[self.log_line_index].strip()               
-            match = re.match(r'Processing problem file benchmarks\/' + self.domain_name + r'\/training\/([a-zA-Z0-9-_]*\.pddl)\s', line)
+            match = re.match(r'Processing problem file benchmarks[\d]*\/' + self.domain_name + r'\/training\/([a-zA-Z0-9-_]*\.pddl)\s', line)
 
 
     def parse(self):
@@ -285,7 +288,6 @@ class TrainingParser:
             match = re.match(starting_epoch_string, line)
         # Last epoch is finished -> done
         line = self.log_lines[self.log_line_index].strip()
-        print(line)
         assert line.startswith('Saving final weights in')
         self.log_line_index += 1
         line = self.log_lines[self.log_line_index].strip()
