@@ -25,9 +25,13 @@
 ^benchmarks/.*asnet_weights.h5
 ^benchmarks/.*asnet.pb
 ^benchmarks/.*sample.data
+^benchmarks2/.*
+^benchmarks3/.*
+^run_training[\d]*.sh
 
 syntax: glob
 *training.log
+*.h5
 *.sample
 *.meta
 *.orig
