@@ -160,6 +160,9 @@ pasnet.add_argument("--teacher_search", type=str,
                     action="store", default="astar(lmcut(), transform=asnet_sampling_transform())",
                     help="Teacher search configuration to use during ASNet "
                          "Sampling Search.")
+pasnet.add_argument("--heuristic", type=str,
+                    action="store", default="",
+                    help="Heuristic function which can be defined for teacher search.")
 pasnet.add_argument("--trajectory_limit", type=int,
                     action="store", default=300,
                     help="Limit for explorated sample trajectories.")
@@ -181,7 +184,7 @@ pasnet.add_argument("-hsize", "--hidden_rep_size", type=int,
                     help="Hidden representation size used for every module (= size of "
                          "module outputs)")
 pasnet.add_argument("-act", "--activation", type=str,
-                    action="store", default='relu',
+                    action="store", default='elu',
                     help="Name of activation function to be used in all modules of all "
                          "layers but the last output layer")
 pasnet.add_argument("-drop", "--dropout", type=float,
@@ -395,14 +398,25 @@ def sample(options, directory, domain_path, problem_path, extra_input_size):
     :param extra_input_size: size for additional input features per action
     :return: retcode of call
     """
-    cmd = ['python', 'fast-downward.py',
-                "--build", options.build, domain_path, problem_path,
-                '--search', 'asnet_sampling_search(search=' + options.teacher_search +
-                            ', use_non_goal_teacher_paths=' + str(not options.use_only_goal_teacher_paths) +
-                            ', use_teacher_search=' + str(not options.use_no_teacher_search) +
-                            ', network_search=policysearch(p=np(network=asnet(path=' + str(os.path.join(directory, 'asnet.pb')) +
-                            ', extra_input_size=' + str(extra_input_size) + ')),trajectory_limit=' + str(options.trajectory_limit) + ')' +
-                            ', target=' + os.path.join(directory, "sample.data") + ')']
+    if options.heuristic == "":
+        cmd = ['python', 'fast-downward.py',
+                    "--build", options.build, domain_path, problem_path,
+                    '--search', 'asnet_sampling_search(search=' + options.teacher_search +
+                                ', use_non_goal_teacher_paths=' + str(not options.use_only_goal_teacher_paths) +
+                                ', use_teacher_search=' + str(not options.use_no_teacher_search) +
+                                ', network_search=policysearch(p=np(network=asnet(path=' + str(os.path.join(directory, 'asnet.pb')) +
+                                ', extra_input_size=' + str(extra_input_size) + ')),trajectory_limit=' + str(options.trajectory_limit) + ')' +
+                                ', target=' + os.path.join(directory, "sample.data") + ')']
+    else:
+        cmd = ['python', 'fast-downward.py',
+                    "--build", options.build, domain_path, problem_path,
+                    '--heuristic', options.heuristic,
+                    '--search', 'asnet_sampling_search(search=' + options.teacher_search +
+                                ', use_non_goal_teacher_paths=' + str(not options.use_only_goal_teacher_paths) +
+                                ', use_teacher_search=' + str(not options.use_no_teacher_search) +
+                                ', network_search=policysearch(p=np(network=asnet(path=' + str(os.path.join(directory, 'asnet.pb')) +
+                                ', extra_input_size=' + str(extra_input_size) + ')),trajectory_limit=' + str(options.trajectory_limit) + ')' +
+                                ', target=' + os.path.join(directory, "sample.data") + ')']
     print('Running sampling search for ' + problem_path + '...')
     try:
         if options.print_all:
