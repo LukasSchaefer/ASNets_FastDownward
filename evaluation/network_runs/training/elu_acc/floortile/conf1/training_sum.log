@@ -6,6 +6,13 @@ model creation time: 56.388293743133545s
 problem epoch data for epoch 1, problem epoch 1
 	sampling search time: 6232.4831392765045s
 	during this search the following actions were chosen:
+		up robot2 tile_2-2 tile_3-2 was chosen with probability 0.134899
+		up robot1 tile_0-1 tile_1-1 was chosen with probability 0.125102
+		up robot1 tile_1-1 tile_2-1 was chosen with probability 0.132429
+		up robot1 tile_2-1 tile_3-1 was chosen with probability 0.143680
+		up robot1 tile_3-1 tile_4-1 was chosen with probability 0.129881
+		right robot2 tile_3-2 tile_3-3 was chosen with probability 0.121300
+		left robot2 tile_3-3 tile_3-2 was chosen with probability 0.126284
 	training time: 248.9217598438263s
 	during the training the following losses were computed:
 		loss: 4.953200
@@ -112,6 +119,27 @@ problem epoch data for epoch 1, problem epoch 1
 problem epoch data for epoch 1, problem epoch 2
 	sampling search time: 6542.536611795425s
 	during this search the following actions were chosen:
+		up robot1 tile_0-1 tile_1-1 was chosen with probability 0.409233
+		left robot2 tile_2-2 tile_2-1 was chosen with probability 0.626580
+		up robot2 tile_2-1 tile_3-1 was chosen with probability 0.686061
+		up robot1 tile_1-1 tile_2-1 was chosen with probability 0.491432
+		paint-up robot2 tile_4-1 tile_3-1 black was chosen with probability 0.877104
+		right robot2 tile_3-1 tile_3-2 was chosen with probability 0.887891
+		paint-up robot1 tile_3-1 tile_2-1 white was chosen with probability 0.536262
+		right robot2 tile_3-2 tile_3-3 was chosen with probability 0.698342
+		paint-up robot2 tile_4-3 tile_3-3 black was chosen with probability 0.532699
+		down robot2 tile_3-3 tile_2-3 was chosen with probability 0.449730
+		right robot1 tile_2-1 tile_2-2 was chosen with probability 0.976118
+		up robot1 tile_2-2 tile_3-2 was chosen with probability 0.725453
+		paint-up robot1 tile_4-2 tile_3-2 white was chosen with probability 0.603874
+		right robot1 tile_3-2 tile_3-3 was chosen with probability 0.545620
+		left robot2 tile_2-3 tile_2-2 was chosen with probability 0.589579
+		down robot1 tile_3-3 tile_2-3 was chosen with probability 0.577874
+		paint-up robot1 tile_3-3 tile_2-3 white was chosen with probability 0.689933
+		paint-up robot2 tile_3-2 tile_2-2 black was chosen with probability 0.980391
+		down robot2 tile_2-2 tile_1-2 was chosen with probability 0.892779
+		right robot2 tile_1-2 tile_1-3 was chosen with probability 0.371768
+		left robot2 tile_1-3 tile_1-2 was chosen with probability 0.797480
 	training time: 235.00836563110352s
 	during the training the following losses were computed:
 		loss: 2.476800
@@ -218,6 +246,18 @@ problem epoch data for epoch 1, problem epoch 2
 problem epoch data for epoch 1, problem epoch 3
 	sampling search time: 6360.220709562302s
 	during this search the following actions were chosen:
+		up robot1 tile_0-1 tile_1-1 was chosen with probability 0.392307
+		left robot2 tile_2-2 tile_2-1 was chosen with probability 0.363111
+		up robot2 tile_2-1 tile_3-1 was chosen with probability 0.964114
+		paint-up robot2 tile_4-1 tile_3-1 black was chosen with probability 0.503692
+		right robot2 tile_3-1 tile_3-2 was chosen with probability 0.522597
+		right robot2 tile_3-2 tile_3-3 was chosen with probability 0.542573
+		up robot1 tile_1-1 tile_2-1 was chosen with probability 0.508350
+		paint-up robot1 tile_3-1 tile_2-1 white was chosen with probability 0.498743
+		paint-up robot2 tile_4-3 tile_3-3 black was chosen with probability 0.504601
+		right robot1 tile_2-1 tile_2-2 was chosen with probability 0.495539
+		right robot1 tile_2-2 tile_2-3 was chosen with probability 0.380174
+		left robot1 tile_2-3 tile_2-2 was chosen with probability 0.544172
 	training time: 74.21128439903259s
 	during the training the following losses were computed:
 		loss: 2.241200

@@ -12,6 +12,7 @@ problem epoch data for epoch 1, problem epoch 1
 		stack c b was chosen with probability 0.381543
 		pick-up a was chosen with probability 0.755266
 		stack a c was chosen with probability 0.601523
+		unstack a c was chosen with probability 1.000000
 	training time: 39.77301740646362s
 	during the training the following losses were computed:
 		loss: 1.212200
@@ -345,6 +346,16 @@ model creation time: 11.258219480514526s
 problem epoch data for epoch 1, problem epoch 1
 	sampling search time: 2.6697981357574463s
 	during this search the following actions were chosen:
+		unstack b c was chosen with probability 1.000000
+		put-down b was chosen with probability 0.999812
+		unstack c a was chosen with probability 0.997530
+		put-down c was chosen with probability 0.992909
+		unstack a d was chosen with probability 0.996299
+		stack a b was chosen with probability 0.987767
+		pick-up c was chosen with probability 0.989244
+		stack c a was chosen with probability 0.993636
+		pick-up d was chosen with probability 0.997901
+		stack d c was chosen with probability 0.998827
 	training time: 40.18522357940674s
 	during the training the following losses were computed:
 		loss: 0.150600
@@ -678,6 +689,16 @@ model creation time: 10.700311660766602s
 problem epoch data for epoch 1, problem epoch 1
 	sampling search time: 2.6903536319732666s
 	during this search the following actions were chosen:
+		unstack b c was chosen with probability 1.000000
+		put-down b was chosen with probability 0.999290
+		unstack c a was chosen with probability 0.996544
+		put-down c was chosen with probability 0.995222
+		unstack a d was chosen with probability 0.999543
+		stack a b was chosen with probability 0.995265
+		pick-up c was chosen with probability 0.994344
+		stack c a was chosen with probability 0.998843
+		pick-up d was chosen with probability 0.998945
+		stack d c was chosen with probability 0.999757
 	training time: 40.75283169746399s
 	during the training the following losses were computed:
 		loss: 0.031400
@@ -896,6 +917,16 @@ problem epoch data for epoch 1, problem epoch 2
 problem epoch data for epoch 1, problem epoch 3
 	sampling search time: 2.638448476791382s
 	during this search the following actions were chosen:
+		unstack b c was chosen with probability 1.000000
+		put-down b was chosen with probability 0.999038
+		unstack c a was chosen with probability 0.997477
+		put-down c was chosen with probability 0.996047
+		unstack a d was chosen with probability 0.998425
+		stack a b was chosen with probability 0.996536
+		pick-up c was chosen with probability 0.996128
+		stack c a was chosen with probability 0.998447
+		pick-up d was chosen with probability 0.999221
+		stack d c was chosen with probability 0.999823
 	training time: 10.141264915466309s
 	during the training the following losses were computed:
 		loss: 0.090400
@@ -1124,6 +1155,7 @@ problem epoch data for epoch 2, problem epoch 2
 		stack a c was chosen with probability 0.534855
 		pick-up d was chosen with probability 0.839650
 		stack d a was chosen with probability 0.659925
+		unstack d a was chosen with probability 1.000000
 	training time: 10.18249225616455s
 	during the training the following losses were computed:
 		loss: 0.782400
@@ -1684,6 +1716,8 @@ model creation time: 10.880595207214355s
 problem epoch data for epoch 2, problem epoch 1
 	sampling search time: 2.5795321464538574s
 	during this search the following actions were chosen:
+		unstack b c was chosen with probability 1.000000
+		stack b c was chosen with probability 0.970324
 	training time: 40.24707007408142s
 	during the training the following losses were computed:
 		loss: 1.389500
@@ -1790,6 +1824,16 @@ problem epoch data for epoch 2, problem epoch 1
 problem epoch data for epoch 2, problem epoch 2
 	sampling search time: 2.6108946800231934s
 	during this search the following actions were chosen:
+		unstack b c was chosen with probability 1.000000
+		put-down b was chosen with probability 0.989660
+		unstack c a was chosen with probability 0.990700
+		put-down c was chosen with probability 0.941796
+		unstack a d was chosen with probability 0.999990
+		stack a b was chosen with probability 0.973940
+		pick-up c was chosen with probability 0.991875
+		stack c a was chosen with probability 0.974057
+		pick-up d was chosen with probability 0.993617
+		stack d c was chosen with probability 0.987647
 	training time: 10.162405967712402s
 	during the training the following losses were computed:
 		loss: 0.053800
@@ -2692,6 +2736,8 @@ model creation time: 11.136451244354248s
 problem epoch data for epoch 3, problem epoch 1
 	sampling search time: 2.6099941730499268s
 	during this search the following actions were chosen:
+		unstack b c was chosen with probability 1.000000
+		stack b c was chosen with probability 0.979833
 	training time: 40.62799024581909s
 	during the training the following losses were computed:
 		loss: 1.538200
@@ -2798,6 +2844,16 @@ problem epoch data for epoch 3, problem epoch 1
 problem epoch data for epoch 3, problem epoch 2
 	sampling search time: 2.6518502235412598s
 	during this search the following actions were chosen:
+		unstack b c was chosen with probability 1.000000
+		put-down b was chosen with probability 0.982654
+		unstack c a was chosen with probability 0.985280
+		put-down c was chosen with probability 0.821714
+		unstack a d was chosen with probability 0.999994
+		stack a b was chosen with probability 0.907370
+		pick-up c was chosen with probability 0.989540
+		stack c a was chosen with probability 0.935698
+		pick-up d was chosen with probability 0.991773
+		stack d c was chosen with probability 0.961809
 	training time: 10.152623891830444s
 	during the training the following losses were computed:
 		loss: 0.078700
@@ -2904,6 +2960,16 @@ problem epoch data for epoch 3, problem epoch 2
 problem epoch data for epoch 3, problem epoch 3
 	sampling search time: 2.6608448028564453s
 	during this search the following actions were chosen:
+		unstack b c was chosen with probability 1.000000
+		put-down b was chosen with probability 0.997667
+		unstack c a was chosen with probability 0.997788
+		put-down c was chosen with probability 0.982969
+		unstack a d was chosen with probability 1.000000
+		stack a b was chosen with probability 0.992445
+		pick-up c was chosen with probability 0.996308
+		stack c a was chosen with probability 0.994740
+		pick-up d was chosen with probability 0.997293
+		stack d c was chosen with probability 0.997685
 	training time: 10.18334674835205s
 	during the training the following losses were computed:
 		loss: 0.040800
@@ -3359,6 +3425,7 @@ problem epoch data for epoch 4, problem epoch 1
 		stack a c was chosen with probability 0.768024
 		pick-up d was chosen with probability 0.900608
 		stack d a was chosen with probability 0.927717
+		unstack d a was chosen with probability 1.000000
 	training time: 40.630711793899536s
 	during the training the following losses were computed:
 		loss: 1.441900
@@ -3577,6 +3644,10 @@ problem epoch data for epoch 4, problem epoch 2
 problem epoch data for epoch 4, problem epoch 3
 	sampling search time: 2.598846912384033s
 	during this search the following actions were chosen:
+		unstack b c was chosen with probability 1.000000
+		put-down b was chosen with probability 0.876971
+		unstack c a was chosen with probability 0.634583
+		stack c a was chosen with probability 0.994757
 	training time: 10.14383840560913s
 	during the training the following losses were computed:
 		loss: 0.298000
@@ -3686,6 +3757,16 @@ model creation time: 11.172744750976562s
 problem epoch data for epoch 4, problem epoch 1
 	sampling search time: 2.665736675262451s
 	during this search the following actions were chosen:
+		unstack b c was chosen with probability 1.000000
+		put-down b was chosen with probability 0.998020
+		unstack c a was chosen with probability 0.985452
+		put-down c was chosen with probability 0.977434
+		unstack a d was chosen with probability 0.999209
+		stack a b was chosen with probability 0.990814
+		pick-up c was chosen with probability 0.996337
+		stack c a was chosen with probability 0.998198
+		pick-up d was chosen with probability 0.998042
+		stack d c was chosen with probability 0.998571
 	training time: 40.28760552406311s
 	during the training the following losses were computed:
 		loss: 0.040200
@@ -3792,6 +3873,16 @@ problem epoch data for epoch 4, problem epoch 1
 problem epoch data for epoch 4, problem epoch 2
 	sampling search time: 2.645994186401367s
 	during this search the following actions were chosen:
+		unstack b c was chosen with probability 1.000000
+		put-down b was chosen with probability 0.997728
+		unstack c a was chosen with probability 0.997036
+		put-down c was chosen with probability 0.995727
+		unstack a d was chosen with probability 0.999624
+		stack a b was chosen with probability 0.996467
+		pick-up c was chosen with probability 0.994777
+		stack c a was chosen with probability 0.999168
+		pick-up d was chosen with probability 0.998345
+		stack d c was chosen with probability 0.999452
 	training time: 10.148982524871826s
 	during the training the following losses were computed:
 		loss: 0.030000
@@ -3898,6 +3989,16 @@ problem epoch data for epoch 4, problem epoch 2
 problem epoch data for epoch 4, problem epoch 3
 	sampling search time: 2.6484270095825195s
 	during this search the following actions were chosen:
+		unstack b c was chosen with probability 1.000000
+		put-down b was chosen with probability 0.998670
+		unstack c a was chosen with probability 0.997391
+		put-down c was chosen with probability 0.997225
+		unstack a d was chosen with probability 0.999595
+		stack a b was chosen with probability 0.996200
+		pick-up c was chosen with probability 0.994518
+		stack c a was chosen with probability 0.998615
+		pick-up d was chosen with probability 0.998148
+		stack d c was chosen with probability 0.999684
 	training time: 10.155441999435425s
 	during the training the following losses were computed:
 		loss: 0.028300
@@ -4353,6 +4454,7 @@ problem epoch data for epoch 5, problem epoch 1
 		stack a c was chosen with probability 0.720864
 		pick-up d was chosen with probability 0.986708
 		stack d a was chosen with probability 0.951649
+		unstack d a was chosen with probability 1.000000
 	training time: 40.21166682243347s
 	during the training the following losses were computed:
 		loss: 1.975000
@@ -4686,6 +4788,10 @@ model creation time: 11.189699649810791s
 problem epoch data for epoch 5, problem epoch 1
 	sampling search time: 2.6434547901153564s
 	during this search the following actions were chosen:
+		unstack b c was chosen with probability 1.000000
+		put-down b was chosen with probability 0.903161
+		unstack c a was chosen with probability 0.885805
+		stack c a was chosen with probability 0.982213
 	training time: 40.646159648895264s
 	during the training the following losses were computed:
 		loss: 0.420200
@@ -4792,6 +4898,16 @@ problem epoch data for epoch 5, problem epoch 1
 problem epoch data for epoch 5, problem epoch 2
 	sampling search time: 2.67718768119812s
 	during this search the following actions were chosen:
+		unstack b c was chosen with probability 1.000000
+		put-down b was chosen with probability 0.998477
+		unstack c a was chosen with probability 0.993203
+		put-down c was chosen with probability 0.989188
+		unstack a d was chosen with probability 0.999418
+		stack a b was chosen with probability 0.992273
+		pick-up c was chosen with probability 0.996823
+		stack c a was chosen with probability 0.998053
+		pick-up d was chosen with probability 0.998162
+		stack d c was chosen with probability 0.998444
 	training time: 10.166471719741821s
 	during the training the following losses were computed:
 		loss: 0.038500
@@ -4898,6 +5014,16 @@ problem epoch data for epoch 5, problem epoch 2
 problem epoch data for epoch 5, problem epoch 3
 	sampling search time: 2.662811279296875s
 	during this search the following actions were chosen:
+		unstack b c was chosen with probability 1.000000
+		put-down b was chosen with probability 0.998435
+		unstack c a was chosen with probability 0.993880
+		put-down c was chosen with probability 0.992795
+		unstack a d was chosen with probability 0.999326
+		stack a b was chosen with probability 0.995410
+		pick-up c was chosen with probability 0.997020
+		stack c a was chosen with probability 0.998861
+		pick-up d was chosen with probability 0.998341
+		stack d c was chosen with probability 0.999109
 	training time: 10.158986806869507s
 	during the training the following losses were computed:
 		loss: 0.036200
@@ -5353,6 +5479,7 @@ problem epoch data for epoch 6, problem epoch 1
 		stack a c was chosen with probability 0.755783
 		pick-up d was chosen with probability 0.977640
 		stack d a was chosen with probability 0.961535
+		unstack d a was chosen with probability 1.000000
 	training time: 40.52365803718567s
 	during the training the following losses were computed:
 		loss: 1.922300
@@ -5686,6 +5813,10 @@ model creation time: 11.183834075927734s
 problem epoch data for epoch 6, problem epoch 1
 	sampling search time: 2.5500266551971436s
 	during this search the following actions were chosen:
+		unstack b c was chosen with probability 1.000000
+		put-down b was chosen with probability 0.919060
+		unstack c a was chosen with probability 0.963931
+		stack c a was chosen with probability 0.987665
 	training time: 40.51070046424866s
 	during the training the following losses were computed:
 		loss: 0.445500
@@ -5792,6 +5923,16 @@ problem epoch data for epoch 6, problem epoch 1
 problem epoch data for epoch 6, problem epoch 2
 	sampling search time: 2.6543407440185547s
 	during this search the following actions were chosen:
+		unstack b c was chosen with probability 1.000000
+		put-down b was chosen with probability 0.999295
+		unstack c a was chosen with probability 0.995848
+		put-down c was chosen with probability 0.987553
+		unstack a d was chosen with probability 0.999451
+		stack a b was chosen with probability 0.990974
+		pick-up c was chosen with probability 0.997980
+		stack c a was chosen with probability 0.997436
+		pick-up d was chosen with probability 0.998590
+		stack d c was chosen with probability 0.998026
 	training time: 10.152210235595703s
 	during the training the following losses were computed:
 		loss: 0.039800
@@ -5898,6 +6039,16 @@ problem epoch data for epoch 6, problem epoch 2
 problem epoch data for epoch 6, problem epoch 3
 	sampling search time: 2.666640043258667s
 	during this search the following actions were chosen:
+		unstack b c was chosen with probability 1.000000
+		put-down b was chosen with probability 0.999003
+		unstack c a was chosen with probability 0.994833
+		put-down c was chosen with probability 0.992312
+		unstack a d was chosen with probability 0.999210
+		stack a b was chosen with probability 0.994694
+		pick-up c was chosen with probability 0.997246
+		stack c a was chosen with probability 0.998555
+		pick-up d was chosen with probability 0.998389
+		stack d c was chosen with probability 0.998909
 	training time: 10.174563646316528s
 	during the training the following losses were computed:
 		loss: 0.037200
@@ -6353,6 +6504,7 @@ problem epoch data for epoch 7, problem epoch 1
 		stack a c was chosen with probability 0.761467
 		pick-up d was chosen with probability 0.986267
 		stack d a was chosen with probability 0.974603
+		unstack d a was chosen with probability 1.000000
 	training time: 40.46496796607971s
 	during the training the following losses were computed:
 		loss: 2.075000
@@ -6686,6 +6838,10 @@ model creation time: 11.228132724761963s
 problem epoch data for epoch 7, problem epoch 1
 	sampling search time: 2.5808863639831543s
 	during this search the following actions were chosen:
+		unstack b c was chosen with probability 1.000000
+		put-down b was chosen with probability 0.942120
+		unstack c a was chosen with probability 0.968688
+		stack c a was chosen with probability 0.988814
 	training time: 40.49149942398071s
 	during the training the following losses were computed:
 		loss: 0.452300
@@ -6792,6 +6948,16 @@ problem epoch data for epoch 7, problem epoch 1
 problem epoch data for epoch 7, problem epoch 2
 	sampling search time: 2.62802791595459s
 	during this search the following actions were chosen:
+		unstack b c was chosen with probability 1.000000
+		put-down b was chosen with probability 0.998735
+		unstack c a was chosen with probability 0.995871
+		put-down c was chosen with probability 0.986250
+		unstack a d was chosen with probability 0.999314
+		stack a b was chosen with probability 0.990541
+		pick-up c was chosen with probability 0.998615
+		stack c a was chosen with probability 0.997208
+		pick-up d was chosen with probability 0.998978
+		stack d c was chosen with probability 0.997692
 	training time: 10.163956642150879s
 	during the training the following losses were computed:
 		loss: 0.040200
@@ -6898,6 +7064,16 @@ problem epoch data for epoch 7, problem epoch 2
 problem epoch data for epoch 7, problem epoch 3
 	sampling search time: 2.6476452350616455s
 	during this search the following actions were chosen:
+		unstack b c was chosen with probability 1.000000
+		put-down b was chosen with probability 0.998233
+		unstack c a was chosen with probability 0.995443
+		put-down c was chosen with probability 0.990757
+		unstack a d was chosen with probability 0.999090
+		stack a b was chosen with probability 0.994897
+		pick-up c was chosen with probability 0.997758
+		stack c a was chosen with probability 0.998505
+		pick-up d was chosen with probability 0.998721
+		stack d c was chosen with probability 0.998782
 	training time: 10.163854360580444s
 	during the training the following losses were computed:
 		loss: 0.037100
@@ -7353,6 +7529,7 @@ problem epoch data for epoch 8, problem epoch 1
 		stack a c was chosen with probability 0.761661
 		pick-up d was chosen with probability 0.987817
 		stack d a was chosen with probability 0.976082
+		unstack d a was chosen with probability 1.000000
 	training time: 40.320438861846924s
 	during the training the following losses were computed:
 		loss: 2.109600
@@ -8032,6 +8209,7 @@ problem epoch data for epoch 9, problem epoch 1
 		stack a c was chosen with probability 0.756562
 		pick-up d was chosen with probability 0.989219
 		stack d a was chosen with probability 0.980067
+		unstack d a was chosen with probability 1.000000
 	training time: 40.28139138221741s
 	during the training the following losses were computed:
 		loss: 2.166300
@@ -8704,6 +8882,8 @@ model creation time: 11.110054969787598s
 problem epoch data for epoch 9, problem epoch 1
 	sampling search time: 2.6355483531951904s
 	during this search the following actions were chosen:
+		unstack b c was chosen with probability 1.000000
+		stack b c was chosen with probability 0.984523
 	training time: 40.26175045967102s
 	during the training the following losses were computed:
 		loss: 1.693000
@@ -8810,6 +8990,16 @@ problem epoch data for epoch 9, problem epoch 1
 problem epoch data for epoch 9, problem epoch 2
 	sampling search time: 2.619529962539673s
 	during this search the following actions were chosen:
+		unstack b c was chosen with probability 1.000000
+		put-down b was chosen with probability 0.922609
+		unstack c a was chosen with probability 0.990314
+		put-down c was chosen with probability 0.847331
+		unstack a d was chosen with probability 0.999978
+		stack a b was chosen with probability 0.935783
+		pick-up c was chosen with probability 0.989742
+		stack c a was chosen with probability 0.930470
+		pick-up d was chosen with probability 0.991617
+		stack d c was chosen with probability 0.933621
 	training time: 10.15833067893982s
 	during the training the following losses were computed:
 		loss: 0.078300
@@ -9377,6 +9567,7 @@ problem epoch data for epoch 10, problem epoch 1
 		stack a c was chosen with probability 0.742939
 		pick-up d was chosen with probability 0.973731
 		stack d a was chosen with probability 0.983291
+		unstack d a was chosen with probability 1.000000
 	training time: 40.657041788101196s
 	during the training the following losses were computed:
 		loss: 2.011700
@@ -9710,6 +9901,10 @@ model creation time: 11.533990144729614s
 problem epoch data for epoch 10, problem epoch 1
 	sampling search time: 2.645026206970215s
 	during this search the following actions were chosen:
+		unstack b c was chosen with probability 1.000000
+		put-down b was chosen with probability 0.920342
+		unstack c a was chosen with probability 0.982776
+		stack c a was chosen with probability 0.991476
 	training time: 40.12664818763733s
 	during the training the following losses were computed:
 		loss: 0.477500
@@ -9816,6 +10011,16 @@ problem epoch data for epoch 10, problem epoch 1
 problem epoch data for epoch 10, problem epoch 2
 	sampling search time: 2.4306163787841797s
 	during this search the following actions were chosen:
+		unstack b c was chosen with probability 1.000000
+		put-down b was chosen with probability 0.994300
+		unstack c a was chosen with probability 0.996593
+		put-down c was chosen with probability 0.981494
+		unstack a d was chosen with probability 0.998618
+		stack a b was chosen with probability 0.993153
+		pick-up c was chosen with probability 0.998465
+		stack c a was chosen with probability 0.995078
+		pick-up d was chosen with probability 0.998733
+		stack d c was chosen with probability 0.996210
 	training time: 10.102499008178711s
 	during the training the following losses were computed:
 		loss: 0.042000
@@ -9922,6 +10127,16 @@ problem epoch data for epoch 10, problem epoch 2
 problem epoch data for epoch 10, problem epoch 3
 	sampling search time: 2.506956100463867s
 	during this search the following actions were chosen:
+		unstack b c was chosen with probability 1.000000
+		put-down b was chosen with probability 0.994940
+		unstack c a was chosen with probability 0.995744
+		put-down c was chosen with probability 0.988819
+		unstack a d was chosen with probability 0.998817
+		stack a b was chosen with probability 0.996689
+		pick-up c was chosen with probability 0.998066
+		stack c a was chosen with probability 0.997396
+		pick-up d was chosen with probability 0.998810
+		stack d c was chosen with probability 0.997962
 	training time: 10.10118842124939s
 	during the training the following losses were computed:
 		loss: 0.038700

@@ -74,7 +74,7 @@ class ProblemTrainingParsed:
         log_line_index += 1
         # now on "Policy reached state with id ..."
         line = log_lines[log_line_index].strip()
-        get_op_prob_string = r'Policy reached state with id #[0-9]+ by applying op ([a-zA-Z0-9-\s]+) which had probability ([0-9]+\.[0-9]*)'
+        get_op_prob_string = r'Policy reached state with id #[0-9]+ by applying op ([a-zA-Z0-9-_\s]+) which had probability ([0-9]+\.?[0-9]*)'
         match = re.match(get_op_prob_string, line)
         while match:
             act_pair = (match.group(1), float(match.group(2)))

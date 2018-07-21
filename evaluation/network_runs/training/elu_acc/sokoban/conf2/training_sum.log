@@ -6,6 +6,9 @@ model creation time: 32.074591398239136s
 problem epoch data for epoch 1, problem epoch 1
 	sampling search time: 10.079863548278809s
 	during this search the following actions were chosen:
+		move player-01 pos-6-3 pos-6-2 dir-up was chosen with probability 1.000000
+		move player-01 pos-6-2 pos-5-2 dir-left was chosen with probability 0.582222
+		move player-01 pos-5-2 pos-6-2 dir-right was chosen with probability 0.584565
 	training time: 117.33059930801392s
 	during the training the following losses were computed:
 		loss: 2.659600
@@ -112,6 +115,9 @@ problem epoch data for epoch 1, problem epoch 1
 problem epoch data for epoch 1, problem epoch 2
 	sampling search time: 10.008572340011597s
 	during this search the following actions were chosen:
+		move player-01 pos-6-3 pos-6-2 dir-up was chosen with probability 1.000000
+		move player-01 pos-6-2 pos-5-2 dir-left was chosen with probability 0.510592
+		move player-01 pos-5-2 pos-6-2 dir-right was chosen with probability 0.519074
 	training time: 17.581255197525024s
 	during the training the following losses were computed:
 		loss: 2.392700
@@ -218,6 +224,9 @@ problem epoch data for epoch 1, problem epoch 2
 problem epoch data for epoch 1, problem epoch 3
 	sampling search time: 10.100273609161377s
 	during this search the following actions were chosen:
+		move player-01 pos-6-3 pos-6-2 dir-up was chosen with probability 1.000000
+		move player-01 pos-6-2 pos-5-2 dir-left was chosen with probability 0.500472
+		move player-01 pos-5-2 pos-6-2 dir-right was chosen with probability 0.512315
 	training time: 17.570542097091675s
 	during the training the following losses were computed:
 		loss: 2.336400
@@ -959,6 +968,8 @@ model creation time: 33.44172406196594s
 problem epoch data for epoch 2, problem epoch 1
 	sampling search time: 9.67513108253479s
 	during this search the following actions were chosen:
+		move player-01 pos-6-3 pos-6-2 dir-up was chosen with probability 1.000000
+		move player-01 pos-6-2 pos-6-3 dir-down was chosen with probability 0.503435
 	training time: 118.68212604522705s
 	during the training the following losses were computed:
 		loss: 2.413600
@@ -1065,6 +1076,8 @@ problem epoch data for epoch 2, problem epoch 1
 problem epoch data for epoch 2, problem epoch 2
 	sampling search time: 9.843956232070923s
 	during this search the following actions were chosen:
+		move player-01 pos-6-3 pos-6-2 dir-up was chosen with probability 1.000000
+		move player-01 pos-6-2 pos-6-3 dir-down was chosen with probability 0.500937
 	training time: 18.226027488708496s
 	during the training the following losses were computed:
 		loss: 2.262000
@@ -1171,6 +1184,17 @@ problem epoch data for epoch 2, problem epoch 2
 problem epoch data for epoch 2, problem epoch 3
 	sampling search time: 13.114787817001343s
 	during this search the following actions were chosen:
+		move player-01 pos-6-3 pos-6-2 dir-up was chosen with probability 1.000000
+		move player-01 pos-6-2 pos-5-2 dir-left was chosen with probability 0.500490
+		move player-01 pos-5-2 pos-4-2 dir-left was chosen with probability 0.500645
+		push-to-nongoal player-01 stone-01 pos-4-2 pos-4-3 pos-4-4 dir-down was chosen with probability 0.514415
+		push-to-nongoal player-01 stone-01 pos-4-3 pos-4-4 pos-4-5 dir-down was chosen with probability 0.508351
+		move player-01 pos-4-4 pos-3-4 dir-left was chosen with probability 0.340204
+		move player-01 pos-3-4 pos-3-5 dir-down was chosen with probability 0.334180
+		push-to-nongoal player-01 stone-01 pos-3-5 pos-4-5 pos-5-5 dir-right was chosen with probability 0.304133
+		move player-01 pos-4-5 pos-3-5 dir-left was chosen with probability 0.333885
+		move player-01 pos-3-5 pos-3-6 dir-down was chosen with probability 0.251244
+		move player-01 pos-3-6 pos-3-5 dir-up was chosen with probability 0.334036
 	training time: 21.799954652786255s
 	during the training the following losses were computed:
 		loss: 2.500500
@@ -1916,6 +1940,8 @@ model creation time: 33.95251822471619s
 problem epoch data for epoch 3, problem epoch 1
 	sampling search time: 9.634444952011108s
 	during this search the following actions were chosen:
+		move player-01 pos-6-3 pos-6-2 dir-up was chosen with probability 1.000000
+		move player-01 pos-6-2 pos-6-3 dir-down was chosen with probability 0.500195
 	training time: 119.38327169418335s
 	during the training the following losses were computed:
 		loss: 2.377900
@@ -2022,6 +2048,8 @@ problem epoch data for epoch 3, problem epoch 1
 problem epoch data for epoch 3, problem epoch 2
 	sampling search time: 9.54698395729065s
 	during this search the following actions were chosen:
+		move player-01 pos-6-3 pos-6-2 dir-up was chosen with probability 1.000000
+		move player-01 pos-6-2 pos-6-3 dir-down was chosen with probability 0.501284
 	training time: 17.889689207077026s
 	during the training the following losses were computed:
 		loss: 2.248800
@@ -2128,6 +2156,8 @@ problem epoch data for epoch 3, problem epoch 2
 problem epoch data for epoch 3, problem epoch 3
 	sampling search time: 9.752370357513428s
 	during this search the following actions were chosen:
+		move player-01 pos-6-3 pos-6-2 dir-up was chosen with probability 1.000000
+		move player-01 pos-6-2 pos-6-3 dir-down was chosen with probability 0.500630
 	training time: 18.084112644195557s
 	during the training the following losses were computed:
 		loss: 2.246100
@@ -2870,6 +2900,8 @@ model creation time: 34.2205593585968s
 problem epoch data for epoch 4, problem epoch 1
 	sampling search time: 9.798553943634033s
 	during this search the following actions were chosen:
+		move player-01 pos-6-3 pos-6-2 dir-up was chosen with probability 1.000000
+		move player-01 pos-6-2 pos-6-3 dir-down was chosen with probability 0.500070
 	training time: 121.02943563461304s
 	during the training the following losses were computed:
 		loss: 2.383300
@@ -2976,6 +3008,8 @@ problem epoch data for epoch 4, problem epoch 1
 problem epoch data for epoch 4, problem epoch 2
 	sampling search time: 9.815407276153564s
 	during this search the following actions were chosen:
+		move player-01 pos-6-3 pos-6-2 dir-up was chosen with probability 1.000000
+		move player-01 pos-6-2 pos-6-3 dir-down was chosen with probability 0.501883
 	training time: 17.885141372680664s
 	during the training the following losses were computed:
 		loss: 2.245600
@@ -3082,6 +3116,8 @@ problem epoch data for epoch 4, problem epoch 2
 problem epoch data for epoch 4, problem epoch 3
 	sampling search time: 9.80812954902649s
 	during this search the following actions were chosen:
+		move player-01 pos-6-3 pos-6-2 dir-up was chosen with probability 1.000000
+		move player-01 pos-6-2 pos-6-3 dir-down was chosen with probability 0.500743
 	training time: 17.769833087921143s
 	during the training the following losses were computed:
 		loss: 2.244100
@@ -3824,6 +3860,8 @@ model creation time: 33.695534229278564s
 problem epoch data for epoch 5, problem epoch 1
 	sampling search time: 10.118213176727295s
 	during this search the following actions were chosen:
+		move player-01 pos-6-3 pos-6-2 dir-up was chosen with probability 1.000000
+		move player-01 pos-6-2 pos-6-3 dir-down was chosen with probability 0.500048
 	training time: 125.25167512893677s
 	during the training the following losses were computed:
 		loss: 2.386100
@@ -3930,6 +3968,8 @@ problem epoch data for epoch 5, problem epoch 1
 problem epoch data for epoch 5, problem epoch 2
 	sampling search time: 10.270175218582153s
 	during this search the following actions were chosen:
+		move player-01 pos-6-3 pos-6-2 dir-up was chosen with probability 1.000000
+		move player-01 pos-6-2 pos-6-3 dir-down was chosen with probability 0.502466
 	training time: 20.072367668151855s
 	during the training the following losses were computed:
 		loss: 2.245600
@@ -4036,6 +4076,8 @@ problem epoch data for epoch 5, problem epoch 2
 problem epoch data for epoch 5, problem epoch 3
 	sampling search time: 10.486392498016357s
 	during this search the following actions were chosen:
+		move player-01 pos-6-3 pos-6-2 dir-up was chosen with probability 1.000000
+		move player-01 pos-6-2 pos-6-3 dir-down was chosen with probability 0.500942
 	training time: 20.14915156364441s
 	during the training the following losses were computed:
 		loss: 2.243900
@@ -4777,6 +4819,8 @@ model creation time: 34.00600624084473s
 problem epoch data for epoch 6, problem epoch 1
 	sampling search time: 10.958704233169556s
 	during this search the following actions were chosen:
+		move player-01 pos-6-3 pos-6-2 dir-up was chosen with probability 1.000000
+		move player-01 pos-6-2 pos-6-3 dir-down was chosen with probability 0.500018
 	training time: 142.0600996017456s
 	during the training the following losses were computed:
 		loss: 2.386300
@@ -4883,6 +4927,8 @@ problem epoch data for epoch 6, problem epoch 1
 problem epoch data for epoch 6, problem epoch 2
 	sampling search time: 10.499266386032104s
 	during this search the following actions were chosen:
+		move player-01 pos-6-3 pos-6-2 dir-up was chosen with probability 1.000000
+		move player-01 pos-6-2 pos-6-3 dir-down was chosen with probability 0.501985
 	training time: 19.503618478775024s
 	during the training the following losses were computed:
 		loss: 2.246000
@@ -4989,6 +5035,8 @@ problem epoch data for epoch 6, problem epoch 2
 problem epoch data for epoch 6, problem epoch 3
 	sampling search time: 10.290534973144531s
 	during this search the following actions were chosen:
+		move player-01 pos-6-3 pos-6-2 dir-up was chosen with probability 1.000000
+		move player-01 pos-6-2 pos-6-3 dir-down was chosen with probability 0.500838
 	training time: 20.34712791442871s
 	during the training the following losses were computed:
 		loss: 2.243900

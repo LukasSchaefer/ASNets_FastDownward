@@ -6,6 +6,12 @@ model creation time: 8.33426284790039s
 problem epoch data for epoch 1, problem epoch 1
 	sampling search time: 3.5389628410339355s
 	during this search the following actions were chosen:
+		open boot was chosen with probability 1.000000
+		fetch wrench boot was chosen with probability 0.220828
+		loosen nuts1 the-hub1 was chosen with probability 0.220655
+		fetch jack boot was chosen with probability 0.186282
+		jack-up the-hub1 was chosen with probability 0.170435
+		jack-down the-hub1 was chosen with probability 0.193791
 	training time: 42.895082235336304s
 	during the training the following losses were computed:
 		loss: 4.624600
@@ -112,6 +118,25 @@ problem epoch data for epoch 1, problem epoch 1
 problem epoch data for epoch 1, problem epoch 2
 	sampling search time: 4.185907602310181s
 	during this search the following actions were chosen:
+		open boot was chosen with probability 1.000000
+		fetch pump boot was chosen with probability 0.288787
+		inflate r1 was chosen with probability 0.556109
+		fetch r1 boot was chosen with probability 0.336652
+		fetch wrench boot was chosen with probability 0.488203
+		fetch jack boot was chosen with probability 0.500167
+		loosen nuts1 the-hub1 was chosen with probability 0.939086
+		jack-up the-hub1 was chosen with probability 0.969536
+		undo nuts1 the-hub1 was chosen with probability 0.977566
+		remove-wheel w1 the-hub1 was chosen with probability 0.974712
+		put-away w1 boot was chosen with probability 0.512120
+		put-on-wheel r1 the-hub1 was chosen with probability 0.958829
+		do-up nuts1 the-hub1 was chosen with probability 0.944081
+		jack-down the-hub1 was chosen with probability 0.795599
+		put-away jack boot was chosen with probability 0.423082
+		tighten nuts1 the-hub1 was chosen with probability 0.682170
+		put-away wrench boot was chosen with probability 0.573678
+		put-away pump boot was chosen with probability 0.974538
+		close boot was chosen with probability 0.798376
 	training time: 10.116130590438843s
 	during the training the following losses were computed:
 		loss: 2.851600
@@ -218,6 +243,25 @@ problem epoch data for epoch 1, problem epoch 2
 problem epoch data for epoch 1, problem epoch 3
 	sampling search time: 6.141974449157715s
 	during this search the following actions were chosen:
+		open boot was chosen with probability 1.000000
+		fetch pump boot was chosen with probability 0.261885
+		inflate r1 was chosen with probability 0.255839
+		put-away pump boot was chosen with probability 0.257111
+		fetch r1 boot was chosen with probability 0.340266
+		fetch wrench boot was chosen with probability 0.503805
+		fetch jack boot was chosen with probability 0.498446
+		loosen nuts1 the-hub1 was chosen with probability 0.972755
+		jack-up the-hub1 was chosen with probability 0.987196
+		undo nuts1 the-hub1 was chosen with probability 0.995280
+		remove-wheel w1 the-hub1 was chosen with probability 0.994689
+		put-on-wheel r1 the-hub1 was chosen with probability 0.503649
+		put-away w1 boot was chosen with probability 0.754922
+		do-up nuts1 the-hub1 was chosen with probability 0.975663
+		jack-down the-hub1 was chosen with probability 0.991571
+		put-away jack boot was chosen with probability 0.499566
+		tighten nuts1 the-hub1 was chosen with probability 0.991412
+		put-away wrench boot was chosen with probability 0.993993
+		close boot was chosen with probability 0.913989
 	training time: 10.138896942138672s
 	during the training the following losses were computed:
 		loss: 2.229200
@@ -327,6 +371,36 @@ model creation time: 27.76593780517578s
 problem epoch data for epoch 1, problem epoch 1
 	sampling search time: 149.15923619270325s
 	during this search the following actions were chosen:
+		open boot was chosen with probability 1.000000
+		fetch pump boot was chosen with probability 0.357989
+		inflate r1 was chosen with probability 0.262475
+		inflate r2 was chosen with probability 0.243336
+		put-away pump boot was chosen with probability 0.384080
+		fetch wrench boot was chosen with probability 0.272467
+		fetch jack boot was chosen with probability 0.224367
+		loosen nuts1 the-hub1 was chosen with probability 0.271244
+		loosen nuts2 the-hub2 was chosen with probability 0.340978
+		fetch r1 boot was chosen with probability 0.345325
+		fetch r2 boot was chosen with probability 0.555625
+		jack-up the-hub1 was chosen with probability 0.456183
+		undo nuts1 the-hub1 was chosen with probability 0.959780
+		remove-wheel w1 the-hub1 was chosen with probability 0.977664
+		put-on-wheel r1 the-hub1 was chosen with probability 0.509165
+		do-up nuts1 the-hub1 was chosen with probability 0.682340
+		put-away w1 boot was chosen with probability 0.620871
+		jack-down the-hub1 was chosen with probability 0.830828
+		tighten nuts1 the-hub1 was chosen with probability 0.802385
+		jack-up the-hub2 was chosen with probability 0.411236
+		undo nuts2 the-hub2 was chosen with probability 0.921768
+		remove-wheel w2 the-hub2 was chosen with probability 0.963578
+		put-on-wheel r2 the-hub2 was chosen with probability 0.491902
+		do-up nuts2 the-hub2 was chosen with probability 0.731530
+		put-away w2 boot was chosen with probability 0.487049
+		jack-down the-hub2 was chosen with probability 0.918861
+		tighten nuts2 the-hub2 was chosen with probability 0.710289
+		put-away jack boot was chosen with probability 0.642599
+		put-away wrench boot was chosen with probability 0.989013
+		close boot was chosen with probability 0.919046
 	training time: 76.65961718559265s
 	during the training the following losses were computed:
 		loss: 3.101600
@@ -433,6 +507,36 @@ problem epoch data for epoch 1, problem epoch 1
 problem epoch data for epoch 1, problem epoch 2
 	sampling search time: 240.24096012115479s
 	during this search the following actions were chosen:
+		open boot was chosen with probability 1.000000
+		fetch r1 boot was chosen with probability 0.206846
+		fetch jack boot was chosen with probability 0.256804
+		fetch wrench boot was chosen with probability 0.363404
+		loosen nuts1 the-hub1 was chosen with probability 0.269312
+		fetch pump boot was chosen with probability 0.269681
+		fetch r2 boot was chosen with probability 0.211204
+		loosen nuts2 the-hub2 was chosen with probability 0.254563
+		jack-up the-hub1 was chosen with probability 0.260380
+		inflate r1 was chosen with probability 0.333789
+		undo nuts1 the-hub1 was chosen with probability 0.509882
+		remove-wheel w1 the-hub1 was chosen with probability 0.528404
+		put-away w1 boot was chosen with probability 0.349020
+		put-on-wheel r1 the-hub1 was chosen with probability 0.533685
+		inflate r2 was chosen with probability 0.522421
+		do-up nuts1 the-hub1 was chosen with probability 0.544452
+		put-away pump boot was chosen with probability 0.504290
+		jack-down the-hub1 was chosen with probability 0.992322
+		jack-up the-hub2 was chosen with probability 0.513800
+		tighten nuts1 the-hub1 was chosen with probability 0.502744
+		undo nuts2 the-hub2 was chosen with probability 0.994202
+		remove-wheel w2 the-hub2 was chosen with probability 0.993856
+		put-away w2 boot was chosen with probability 0.507243
+		put-on-wheel r2 the-hub2 was chosen with probability 0.993404
+		do-up nuts2 the-hub2 was chosen with probability 0.981439
+		jack-down the-hub2 was chosen with probability 0.993711
+		tighten nuts2 the-hub2 was chosen with probability 0.502694
+		put-away jack boot was chosen with probability 0.510960
+		put-away wrench boot was chosen with probability 0.994570
+		close boot was chosen with probability 0.937297
 	training time: 18.445640802383423s
 	during the training the following losses were computed:
 		loss: 2.779600
@@ -639,6 +743,36 @@ problem epoch data for epoch 1, problem epoch 2
 problem epoch data for epoch 1, problem epoch 3
 	sampling search time: 227.48408341407776s
 	during this search the following actions were chosen:
+		open boot was chosen with probability 1.000000
+		fetch r1 boot was chosen with probability 0.205874
+		fetch jack boot was chosen with probability 0.254094
+		fetch wrench boot was chosen with probability 0.349299
+		fetch pump boot was chosen with probability 0.254866
+		loosen nuts1 the-hub1 was chosen with probability 0.204099
+		fetch r2 boot was chosen with probability 0.208726
+		inflate r1 was chosen with probability 0.254263
+		loosen nuts2 the-hub2 was chosen with probability 0.344327
+		inflate r2 was chosen with probability 0.338569
+		put-away pump boot was chosen with probability 0.339241
+		jack-up the-hub1 was chosen with probability 0.499074
+		undo nuts1 the-hub1 was chosen with probability 0.997551
+		remove-wheel w1 the-hub1 was chosen with probability 0.996512
+		put-on-wheel r1 the-hub1 was chosen with probability 0.505039
+		do-up nuts1 the-hub1 was chosen with probability 0.498852
+		jack-down the-hub1 was chosen with probability 0.519887
+		tighten nuts1 the-hub1 was chosen with probability 0.419973
+		jack-up the-hub2 was chosen with probability 0.676425
+		undo nuts2 the-hub2 was chosen with probability 0.569870
+		remove-wheel w2 the-hub2 was chosen with probability 0.638729
+		put-on-wheel r2 the-hub2 was chosen with probability 0.333631
+		put-away w1 boot was chosen with probability 0.332929
+		put-away w2 boot was chosen with probability 0.503498
+		do-up nuts2 the-hub2 was chosen with probability 0.981919
+		jack-down the-hub2 was chosen with probability 0.993662
+		tighten nuts2 the-hub2 was chosen with probability 0.509262
+		put-away jack boot was chosen with probability 0.514651
+		put-away wrench boot was chosen with probability 0.994000
+		close boot was chosen with probability 0.915829
 	training time: 19.665112257003784s
 	during the training the following losses were computed:
 		loss: 2.888800
@@ -851,6 +985,25 @@ model creation time: 15.564159393310547s
 problem epoch data for epoch 2, problem epoch 1
 	sampling search time: 6.308847665786743s
 	during this search the following actions were chosen:
+		open boot was chosen with probability 1.000000
+		fetch r1 boot was chosen with probability 0.598211
+		fetch jack boot was chosen with probability 0.351555
+		fetch pump boot was chosen with probability 0.518378
+		inflate r1 was chosen with probability 0.508491
+		fetch wrench boot was chosen with probability 0.506896
+		loosen nuts1 the-hub1 was chosen with probability 0.520296
+		jack-up the-hub1 was chosen with probability 0.653072
+		undo nuts1 the-hub1 was chosen with probability 0.539230
+		remove-wheel w1 the-hub1 was chosen with probability 0.571835
+		put-away w1 boot was chosen with probability 0.379404
+		put-on-wheel r1 the-hub1 was chosen with probability 0.522207
+		put-away pump boot was chosen with probability 0.554615
+		do-up nuts1 the-hub1 was chosen with probability 0.982732
+		jack-down the-hub1 was chosen with probability 0.995581
+		put-away jack boot was chosen with probability 0.589493
+		tighten nuts1 the-hub1 was chosen with probability 0.992227
+		put-away wrench boot was chosen with probability 0.996544
+		close boot was chosen with probability 0.920708
 	training time: 61.80651521682739s
 	during the training the following losses were computed:
 		loss: 1.338700
@@ -957,6 +1110,25 @@ problem epoch data for epoch 2, problem epoch 1
 problem epoch data for epoch 2, problem epoch 2
 	sampling search time: 6.222225666046143s
 	during this search the following actions were chosen:
+		open boot was chosen with probability 1.000000
+		fetch pump boot was chosen with probability 0.256561
+		fetch r1 boot was chosen with probability 0.253815
+		fetch jack boot was chosen with probability 0.335783
+		fetch wrench boot was chosen with probability 0.506398
+		loosen nuts1 the-hub1 was chosen with probability 0.500024
+		inflate r1 was chosen with probability 0.506541
+		jack-up the-hub1 was chosen with probability 0.501763
+		undo nuts1 the-hub1 was chosen with probability 0.505789
+		remove-wheel w1 the-hub1 was chosen with probability 0.502377
+		put-away w1 boot was chosen with probability 0.335117
+		put-on-wheel r1 the-hub1 was chosen with probability 0.507078
+		put-away pump boot was chosen with probability 0.510863
+		do-up nuts1 the-hub1 was chosen with probability 0.983779
+		jack-down the-hub1 was chosen with probability 0.994957
+		put-away jack boot was chosen with probability 0.500577
+		tighten nuts1 the-hub1 was chosen with probability 0.995935
+		put-away wrench boot was chosen with probability 0.994280
+		close boot was chosen with probability 0.958172
 	training time: 10.339867353439331s
 	during the training the following losses were computed:
 		loss: 1.486500
@@ -1063,6 +1235,25 @@ problem epoch data for epoch 2, problem epoch 2
 problem epoch data for epoch 2, problem epoch 3
 	sampling search time: 6.150446653366089s
 	during this search the following actions were chosen:
+		open boot was chosen with probability 1.000000
+		fetch pump boot was chosen with probability 0.258376
+		inflate r1 was chosen with probability 0.255280
+		put-away pump boot was chosen with probability 0.301502
+		fetch r1 boot was chosen with probability 0.340027
+		fetch jack boot was chosen with probability 0.499995
+		fetch wrench boot was chosen with probability 0.992910
+		loosen nuts1 the-hub1 was chosen with probability 0.993819
+		jack-up the-hub1 was chosen with probability 0.995475
+		undo nuts1 the-hub1 was chosen with probability 0.998727
+		remove-wheel w1 the-hub1 was chosen with probability 0.997999
+		put-on-wheel r1 the-hub1 was chosen with probability 0.499140
+		put-away w1 boot was chosen with probability 0.582629
+		do-up nuts1 the-hub1 was chosen with probability 0.981842
+		jack-down the-hub1 was chosen with probability 0.994029
+		put-away jack boot was chosen with probability 0.498757
+		tighten nuts1 the-hub1 was chosen with probability 0.996184
+		put-away wrench boot was chosen with probability 0.993359
+		close boot was chosen with probability 0.961869
 	training time: 10.350135803222656s
 	during the training the following losses were computed:
 		loss: 1.594600
@@ -1172,6 +1363,36 @@ model creation time: 24.56058120727539s
 problem epoch data for epoch 2, problem epoch 1
 	sampling search time: 270.01948499679565s
 	during this search the following actions were chosen:
+		open boot was chosen with probability 1.000000
+		fetch wrench boot was chosen with probability 0.341567
+		loosen nuts1 the-hub1 was chosen with probability 0.244059
+		fetch jack boot was chosen with probability 0.384797
+		loosen nuts2 the-hub2 was chosen with probability 0.462695
+		fetch pump boot was chosen with probability 0.394173
+		inflate r1 was chosen with probability 0.281345
+		jack-up the-hub1 was chosen with probability 0.299373
+		undo nuts1 the-hub1 was chosen with probability 0.554727
+		remove-wheel w1 the-hub1 was chosen with probability 0.447520
+		put-away w1 boot was chosen with probability 0.416402
+		fetch r1 boot was chosen with probability 0.578453
+		put-on-wheel r1 the-hub1 was chosen with probability 0.687099
+		do-up nuts1 the-hub1 was chosen with probability 0.643857
+		inflate r2 was chosen with probability 0.586122
+		put-away pump boot was chosen with probability 0.755940
+		jack-down the-hub1 was chosen with probability 0.683112
+		tighten nuts1 the-hub1 was chosen with probability 0.489204
+		jack-up the-hub2 was chosen with probability 0.669425
+		undo nuts2 the-hub2 was chosen with probability 0.746041
+		remove-wheel w2 the-hub2 was chosen with probability 0.660920
+		put-away w2 boot was chosen with probability 0.674070
+		fetch r2 boot was chosen with probability 0.951511
+		put-on-wheel r2 the-hub2 was chosen with probability 0.973477
+		do-up nuts2 the-hub2 was chosen with probability 0.982346
+		jack-down the-hub2 was chosen with probability 0.983478
+		tighten nuts2 the-hub2 was chosen with probability 0.622118
+		put-away jack boot was chosen with probability 0.648171
+		put-away wrench boot was chosen with probability 0.984422
+		close boot was chosen with probability 0.953618
 	training time: 118.35242509841919s
 	during the training the following losses were computed:
 		loss: 3.951200
@@ -1378,6 +1599,36 @@ problem epoch data for epoch 2, problem epoch 1
 problem epoch data for epoch 2, problem epoch 2
 	sampling search time: 168.04698252677917s
 	during this search the following actions were chosen:
+		open boot was chosen with probability 1.000000
+		fetch r1 boot was chosen with probability 0.211417
+		fetch r2 boot was chosen with probability 0.257859
+		fetch pump boot was chosen with probability 0.342111
+		inflate r1 was chosen with probability 0.261727
+		inflate r2 was chosen with probability 0.336999
+		put-away pump boot was chosen with probability 0.384846
+		fetch wrench boot was chosen with probability 0.500482
+		loosen nuts1 the-hub1 was chosen with probability 0.333822
+		fetch jack boot was chosen with probability 0.514658
+		loosen nuts2 the-hub2 was chosen with probability 0.505883
+		jack-up the-hub1 was chosen with probability 0.499208
+		undo nuts1 the-hub1 was chosen with probability 0.997847
+		remove-wheel w1 the-hub1 was chosen with probability 0.997578
+		put-on-wheel r1 the-hub1 was chosen with probability 0.498452
+		do-up nuts1 the-hub1 was chosen with probability 0.541748
+		put-away w1 boot was chosen with probability 0.513684
+		jack-down the-hub1 was chosen with probability 0.996596
+		tighten nuts1 the-hub1 was chosen with probability 0.512634
+		jack-up the-hub2 was chosen with probability 0.992795
+		undo nuts2 the-hub2 was chosen with probability 0.996101
+		remove-wheel w2 the-hub2 was chosen with probability 0.996127
+		put-on-wheel r2 the-hub2 was chosen with probability 0.504789
+		do-up nuts2 the-hub2 was chosen with probability 0.578212
+		put-away w2 boot was chosen with probability 0.505899
+		jack-down the-hub2 was chosen with probability 0.992839
+		tighten nuts2 the-hub2 was chosen with probability 0.500326
+		put-away jack boot was chosen with probability 0.503180
+		put-away wrench boot was chosen with probability 0.994366
+		close boot was chosen with probability 0.909231
 	training time: 19.76129913330078s
 	during the training the following losses were computed:
 		loss: 2.062400
@@ -1584,6 +1835,36 @@ problem epoch data for epoch 2, problem epoch 2
 problem epoch data for epoch 2, problem epoch 3
 	sampling search time: 223.9948296546936s
 	during this search the following actions were chosen:
+		open boot was chosen with probability 1.000000
+		fetch r1 boot was chosen with probability 0.206608
+		fetch wrench boot was chosen with probability 0.256120
+		fetch jack boot was chosen with probability 0.205242
+		loosen nuts1 the-hub1 was chosen with probability 0.264878
+		jack-up the-hub1 was chosen with probability 0.257247
+		undo nuts1 the-hub1 was chosen with probability 0.256863
+		remove-wheel w1 the-hub1 was chosen with probability 0.264966
+		put-on-wheel r1 the-hub1 was chosen with probability 0.214783
+		put-away w1 boot was chosen with probability 0.219253
+		fetch pump boot was chosen with probability 0.275124
+		inflate r1 was chosen with probability 0.225419
+		inflate r2 was chosen with probability 0.276866
+		put-away pump boot was chosen with probability 0.290837
+		loosen nuts2 the-hub2 was chosen with probability 0.362753
+		do-up nuts1 the-hub1 was chosen with probability 0.509610
+		fetch r2 boot was chosen with probability 0.503077
+		jack-down the-hub1 was chosen with probability 0.996730
+		jack-up the-hub2 was chosen with probability 0.505023
+		tighten nuts1 the-hub1 was chosen with probability 0.502894
+		undo nuts2 the-hub2 was chosen with probability 0.997161
+		remove-wheel w2 the-hub2 was chosen with probability 0.996848
+		put-on-wheel r2 the-hub2 was chosen with probability 0.509744
+		put-away w2 boot was chosen with probability 0.497016
+		do-up nuts2 the-hub2 was chosen with probability 0.980721
+		jack-down the-hub2 was chosen with probability 0.993486
+		put-away jack boot was chosen with probability 0.501473
+		tighten nuts2 the-hub2 was chosen with probability 0.993950
+		put-away wrench boot was chosen with probability 0.995397
+		close boot was chosen with probability 0.917093
 	training time: 20.670695304870605s
 	during the training the following losses were computed:
 		loss: 2.782700
@@ -1796,6 +2077,25 @@ model creation time: 9.97868037223816s
 problem epoch data for epoch 3, problem epoch 1
 	sampling search time: 4.355161666870117s
 	during this search the following actions were chosen:
+		open boot was chosen with probability 1.000000
+		fetch r1 boot was chosen with probability 0.342508
+		fetch wrench boot was chosen with probability 0.335226
+		fetch pump boot was chosen with probability 0.337929
+		fetch jack boot was chosen with probability 0.348101
+		loosen nuts1 the-hub1 was chosen with probability 0.500298
+		inflate r1 was chosen with probability 0.502518
+		jack-up the-hub1 was chosen with probability 0.513878
+		undo nuts1 the-hub1 was chosen with probability 0.510500
+		remove-wheel w1 the-hub1 was chosen with probability 0.581643
+		put-away w1 boot was chosen with probability 0.429131
+		put-on-wheel r1 the-hub1 was chosen with probability 0.573610
+		put-away pump boot was chosen with probability 0.585574
+		do-up nuts1 the-hub1 was chosen with probability 0.987151
+		jack-down the-hub1 was chosen with probability 0.993393
+		put-away jack boot was chosen with probability 0.529621
+		tighten nuts1 the-hub1 was chosen with probability 0.992994
+		put-away wrench boot was chosen with probability 0.996251
+		close boot was chosen with probability 0.920588
 	training time: 43.519896268844604s
 	during the training the following losses were computed:
 		loss: 1.410200
@@ -1902,6 +2202,25 @@ problem epoch data for epoch 3, problem epoch 1
 problem epoch data for epoch 3, problem epoch 2
 	sampling search time: 4.862145900726318s
 	during this search the following actions were chosen:
+		open boot was chosen with probability 1.000000
+		fetch r1 boot was chosen with probability 0.254905
+		fetch jack boot was chosen with probability 0.339059
+		fetch wrench boot was chosen with probability 0.505250
+		loosen nuts1 the-hub1 was chosen with probability 0.514289
+		fetch pump boot was chosen with probability 0.510751
+		inflate r1 was chosen with probability 0.503941
+		jack-up the-hub1 was chosen with probability 0.505332
+		undo nuts1 the-hub1 was chosen with probability 0.504274
+		remove-wheel w1 the-hub1 was chosen with probability 0.499865
+		put-away w1 boot was chosen with probability 0.336296
+		put-on-wheel r1 the-hub1 was chosen with probability 0.506388
+		put-away pump boot was chosen with probability 0.508264
+		do-up nuts1 the-hub1 was chosen with probability 0.984805
+		jack-down the-hub1 was chosen with probability 0.994980
+		put-away jack boot was chosen with probability 0.500578
+		tighten nuts1 the-hub1 was chosen with probability 0.997056
+		put-away wrench boot was chosen with probability 0.995634
+		close boot was chosen with probability 0.960224
 	training time: 10.119532346725464s
 	during the training the following losses were computed:
 		loss: 1.398900
@@ -2008,6 +2327,25 @@ problem epoch data for epoch 3, problem epoch 2
 problem epoch data for epoch 3, problem epoch 3
 	sampling search time: 4.242313623428345s
 	during this search the following actions were chosen:
+		open boot was chosen with probability 1.000000
+		fetch pump boot was chosen with probability 0.258937
+		inflate r1 was chosen with probability 0.252518
+		put-away pump boot was chosen with probability 0.292762
+		fetch r1 boot was chosen with probability 0.342854
+		fetch jack boot was chosen with probability 0.501495
+		fetch wrench boot was chosen with probability 0.988471
+		loosen nuts1 the-hub1 was chosen with probability 0.992777
+		jack-up the-hub1 was chosen with probability 0.996648
+		undo nuts1 the-hub1 was chosen with probability 0.998828
+		remove-wheel w1 the-hub1 was chosen with probability 0.998257
+		put-on-wheel r1 the-hub1 was chosen with probability 0.500262
+		put-away w1 boot was chosen with probability 0.540648
+		do-up nuts1 the-hub1 was chosen with probability 0.984070
+		jack-down the-hub1 was chosen with probability 0.994510
+		put-away jack boot was chosen with probability 0.500353
+		tighten nuts1 the-hub1 was chosen with probability 0.997403
+		put-away wrench boot was chosen with probability 0.995358
+		close boot was chosen with probability 0.966536
 	training time: 10.182947397232056s
 	during the training the following losses were computed:
 		loss: 1.650700
@@ -2117,6 +2455,36 @@ model creation time: 23.71593475341797s
 problem epoch data for epoch 3, problem epoch 1
 	sampling search time: 206.61821794509888s
 	during this search the following actions were chosen:
+		open boot was chosen with probability 1.000000
+		fetch wrench boot was chosen with probability 0.316051
+		loosen nuts1 the-hub1 was chosen with probability 0.217636
+		fetch jack boot was chosen with probability 0.370557
+		loosen nuts2 the-hub2 was chosen with probability 0.352454
+		fetch pump boot was chosen with probability 0.288246
+		inflate r1 was chosen with probability 0.223156
+		jack-up the-hub1 was chosen with probability 0.280873
+		undo nuts1 the-hub1 was chosen with probability 0.419666
+		remove-wheel w1 the-hub1 was chosen with probability 0.343096
+		put-away w1 boot was chosen with probability 0.336343
+		inflate r2 was chosen with probability 0.440091
+		put-away pump boot was chosen with probability 0.511910
+		fetch r1 boot was chosen with probability 0.769540
+		put-on-wheel r1 the-hub1 was chosen with probability 0.810576
+		do-up nuts1 the-hub1 was chosen with probability 0.754524
+		fetch r2 boot was chosen with probability 0.634382
+		jack-down the-hub1 was chosen with probability 0.940223
+		jack-up the-hub2 was chosen with probability 0.568867
+		undo nuts2 the-hub2 was chosen with probability 0.611652
+		remove-wheel w2 the-hub2 was chosen with probability 0.631791
+		put-away w2 boot was chosen with probability 0.385737
+		put-on-wheel r2 the-hub2 was chosen with probability 0.611025
+		do-up nuts2 the-hub2 was chosen with probability 0.637659
+		jack-down the-hub2 was chosen with probability 0.518604
+		put-away jack boot was chosen with probability 0.333865
+		tighten nuts1 the-hub1 was chosen with probability 0.499284
+		tighten nuts2 the-hub2 was chosen with probability 0.992603
+		put-away wrench boot was chosen with probability 0.986267
+		close boot was chosen with probability 0.955151
 	training time: 93.4792685508728s
 	during the training the following losses were computed:
 		loss: 2.301400
@@ -2323,6 +2691,36 @@ problem epoch data for epoch 3, problem epoch 1
 problem epoch data for epoch 3, problem epoch 2
 	sampling search time: 292.7555899620056s
 	during this search the following actions were chosen:
+		open boot was chosen with probability 1.000000
+		fetch r1 boot was chosen with probability 0.205590
+		fetch wrench boot was chosen with probability 0.252772
+		loosen nuts1 the-hub1 was chosen with probability 0.202725
+		fetch pump boot was chosen with probability 0.254288
+		inflate r1 was chosen with probability 0.207656
+		fetch jack boot was chosen with probability 0.254898
+		jack-up the-hub1 was chosen with probability 0.254154
+		fetch r2 boot was chosen with probability 0.262899
+		inflate r2 was chosen with probability 0.333849
+		put-away pump boot was chosen with probability 0.353551
+		loosen nuts2 the-hub2 was chosen with probability 0.499859
+		undo nuts1 the-hub1 was chosen with probability 0.998220
+		remove-wheel w1 the-hub1 was chosen with probability 0.997892
+		put-away w1 boot was chosen with probability 0.505357
+		put-on-wheel r1 the-hub1 was chosen with probability 0.988945
+		do-up nuts1 the-hub1 was chosen with probability 0.986919
+		jack-down the-hub1 was chosen with probability 0.996550
+		jack-up the-hub2 was chosen with probability 0.503320
+		undo nuts2 the-hub2 was chosen with probability 0.500603
+		remove-wheel w2 the-hub2 was chosen with probability 0.510556
+		put-away w2 boot was chosen with probability 0.334787
+		put-on-wheel r2 the-hub2 was chosen with probability 0.499818
+		do-up nuts2 the-hub2 was chosen with probability 0.496620
+		jack-down the-hub2 was chosen with probability 0.508534
+		put-away jack boot was chosen with probability 0.335786
+		tighten nuts1 the-hub1 was chosen with probability 0.499355
+		tighten nuts2 the-hub2 was chosen with probability 0.996238
+		put-away wrench boot was chosen with probability 0.995627
+		close boot was chosen with probability 0.944210
 	training time: 91.96252131462097s
 	during the training the following losses were computed:
 		loss: 2.553200
@@ -2529,6 +2927,36 @@ problem epoch data for epoch 3, problem epoch 2
 problem epoch data for epoch 3, problem epoch 3
 	sampling search time: 215.50165176391602s
 	during this search the following actions were chosen:
+		open boot was chosen with probability 1.000000
+		fetch r1 boot was chosen with probability 0.206265
+		fetch jack boot was chosen with probability 0.253637
+		fetch r2 boot was chosen with probability 0.330741
+		fetch pump boot was chosen with probability 0.494326
+		inflate r1 was chosen with probability 0.331225
+		inflate r2 was chosen with probability 0.499693
+		put-away pump boot was chosen with probability 0.541900
+		fetch wrench boot was chosen with probability 0.970308
+		loosen nuts1 the-hub1 was chosen with probability 0.496404
+		loosen nuts2 the-hub2 was chosen with probability 0.498389
+		jack-up the-hub1 was chosen with probability 0.499336
+		undo nuts1 the-hub1 was chosen with probability 0.998224
+		remove-wheel w1 the-hub1 was chosen with probability 0.997809
+		put-on-wheel r1 the-hub1 was chosen with probability 0.501768
+		do-up nuts1 the-hub1 was chosen with probability 0.572737
+		jack-down the-hub1 was chosen with probability 0.509506
+		put-away w1 boot was chosen with probability 0.444518
+		tighten nuts1 the-hub1 was chosen with probability 0.502373
+		jack-up the-hub2 was chosen with probability 0.995341
+		undo nuts2 the-hub2 was chosen with probability 0.997260
+		remove-wheel w2 the-hub2 was chosen with probability 0.996784
+		put-away w2 boot was chosen with probability 0.503120
+		put-on-wheel r2 the-hub2 was chosen with probability 0.996328
+		do-up nuts2 the-hub2 was chosen with probability 0.980219
+		jack-down the-hub2 was chosen with probability 0.992421
+		tighten nuts2 the-hub2 was chosen with probability 0.509124
+		put-away jack boot was chosen with probability 0.500647
+		put-away wrench boot was chosen with probability 0.995721
+		close boot was chosen with probability 0.931857
 	training time: 19.252477407455444s
 	during the training the following losses were computed:
 		loss: 2.462900
@@ -2741,6 +3169,25 @@ model creation time: 64.04385495185852s
 problem epoch data for epoch 4, problem epoch 1
 	sampling search time: 4.088023662567139s
 	during this search the following actions were chosen:
+		open boot was chosen with probability 1.000000
+		fetch r1 boot was chosen with probability 0.427350
+		fetch wrench boot was chosen with probability 0.341520
+		loosen nuts1 the-hub1 was chosen with probability 0.333397
+		fetch pump boot was chosen with probability 0.513117
+		inflate r1 was chosen with probability 0.514827
+		put-away pump boot was chosen with probability 0.503336
+		fetch jack boot was chosen with probability 0.998655
+		jack-up the-hub1 was chosen with probability 0.998440
+		undo nuts1 the-hub1 was chosen with probability 0.999069
+		remove-wheel w1 the-hub1 was chosen with probability 0.998980
+		put-away w1 boot was chosen with probability 0.613686
+		put-on-wheel r1 the-hub1 was chosen with probability 0.998266
+		do-up nuts1 the-hub1 was chosen with probability 0.982397
+		jack-down the-hub1 was chosen with probability 0.993059
+		tighten nuts1 the-hub1 was chosen with probability 0.501214
+		put-away jack boot was chosen with probability 0.500280
+		put-away wrench boot was chosen with probability 0.996835
+		close boot was chosen with probability 0.939379
 	training time: 43.89550709724426s
 	during the training the following losses were computed:
 		loss: 1.193200
@@ -2847,6 +3294,25 @@ problem epoch data for epoch 4, problem epoch 1
 problem epoch data for epoch 4, problem epoch 2
 	sampling search time: 4.0513916015625s
 	during this search the following actions were chosen:
+		open boot was chosen with probability 1.000000
+		fetch pump boot was chosen with probability 0.256071
+		inflate r1 was chosen with probability 0.258059
+		put-away pump boot was chosen with probability 0.324687
+		fetch r1 boot was chosen with probability 0.339250
+		fetch wrench boot was chosen with probability 0.500540
+		fetch jack boot was chosen with probability 0.502858
+		loosen nuts1 the-hub1 was chosen with probability 0.972803
+		jack-up the-hub1 was chosen with probability 0.997720
+		undo nuts1 the-hub1 was chosen with probability 0.998765
+		remove-wheel w1 the-hub1 was chosen with probability 0.998040
+		put-on-wheel r1 the-hub1 was chosen with probability 0.499473
+		put-away w1 boot was chosen with probability 0.497477
+		do-up nuts1 the-hub1 was chosen with probability 0.981242
+		jack-down the-hub1 was chosen with probability 0.995132
+		put-away jack boot was chosen with probability 0.500201
+		tighten nuts1 the-hub1 was chosen with probability 0.998030
+		put-away wrench boot was chosen with probability 0.996412
+		close boot was chosen with probability 0.964398
 	training time: 10.190132141113281s
 	during the training the following losses were computed:
 		loss: 1.516700
@@ -2953,6 +3419,25 @@ problem epoch data for epoch 4, problem epoch 2
 problem epoch data for epoch 4, problem epoch 3
 	sampling search time: 4.245500802993774s
 	during this search the following actions were chosen:
+		open boot was chosen with probability 1.000000
+		fetch r1 boot was chosen with probability 0.256544
+		fetch jack boot was chosen with probability 0.333741
+		fetch wrench boot was chosen with probability 0.496386
+		loosen nuts1 the-hub1 was chosen with probability 0.507717
+		fetch pump boot was chosen with probability 0.514297
+		inflate r1 was chosen with probability 0.512367
+		jack-up the-hub1 was chosen with probability 0.509754
+		undo nuts1 the-hub1 was chosen with probability 0.513122
+		remove-wheel w1 the-hub1 was chosen with probability 0.505569
+		put-away w1 boot was chosen with probability 0.339605
+		put-on-wheel r1 the-hub1 was chosen with probability 0.509746
+		put-away pump boot was chosen with probability 0.502960
+		do-up nuts1 the-hub1 was chosen with probability 0.983460
+		jack-down the-hub1 was chosen with probability 0.994225
+		put-away jack boot was chosen with probability 0.502082
+		tighten nuts1 the-hub1 was chosen with probability 0.997723
+		put-away wrench boot was chosen with probability 0.996357
+		close boot was chosen with probability 0.963628
 	training time: 10.17397427558899s
 	during the training the following losses were computed:
 		loss: 1.541600
@@ -3062,6 +3547,36 @@ model creation time: 19.56646966934204s
 problem epoch data for epoch 4, problem epoch 1
 	sampling search time: 193.33036923408508s
 	during this search the following actions were chosen:
+		open boot was chosen with probability 1.000000
+		fetch wrench boot was chosen with probability 0.318377
+		loosen nuts1 the-hub1 was chosen with probability 0.224793
+		loosen nuts2 the-hub2 was chosen with probability 0.391054
+		fetch pump boot was chosen with probability 0.387842
+		inflate r1 was chosen with probability 0.278353
+		fetch jack boot was chosen with probability 0.428324
+		jack-up the-hub1 was chosen with probability 0.291741
+		undo nuts1 the-hub1 was chosen with probability 0.443118
+		remove-wheel w1 the-hub1 was chosen with probability 0.369853
+		put-away w1 boot was chosen with probability 0.358761
+		inflate r2 was chosen with probability 0.470889
+		put-away pump boot was chosen with probability 0.541797
+		fetch r1 boot was chosen with probability 0.721884
+		put-on-wheel r1 the-hub1 was chosen with probability 0.802824
+		do-up nuts1 the-hub1 was chosen with probability 0.753290
+		jack-down the-hub1 was chosen with probability 0.563626
+		jack-up the-hub2 was chosen with probability 0.492973
+		undo nuts2 the-hub2 was chosen with probability 0.513797
+		remove-wheel w2 the-hub2 was chosen with probability 0.470128
+		put-away w2 boot was chosen with probability 0.457182
+		tighten nuts1 the-hub1 was chosen with probability 0.504652
+		fetch r2 boot was chosen with probability 0.973341
+		put-on-wheel r2 the-hub2 was chosen with probability 0.984745
+		do-up nuts2 the-hub2 was chosen with probability 0.986082
+		jack-down the-hub2 was chosen with probability 0.988720
+		tighten nuts2 the-hub2 was chosen with probability 0.533819
+		put-away jack boot was chosen with probability 0.617261
+		put-away wrench boot was chosen with probability 0.990996
+		close boot was chosen with probability 0.956254
 	training time: 81.44057893753052s
 	during the training the following losses were computed:
 		loss: 3.307500
@@ -3268,6 +3783,36 @@ problem epoch data for epoch 4, problem epoch 1
 problem epoch data for epoch 4, problem epoch 2
 	sampling search time: 209.45442175865173s
 	during this search the following actions were chosen:
+		open boot was chosen with probability 1.000000
+		fetch r1 boot was chosen with probability 0.206553
+		fetch r2 boot was chosen with probability 0.253600
+		fetch jack boot was chosen with probability 0.334504
+		fetch wrench boot was chosen with probability 0.492193
+		loosen nuts1 the-hub1 was chosen with probability 0.338366
+		loosen nuts2 the-hub2 was chosen with probability 0.349388
+		jack-up the-hub1 was chosen with probability 0.334264
+		undo nuts1 the-hub1 was chosen with probability 0.511201
+		remove-wheel w1 the-hub1 was chosen with probability 0.508122
+		put-away w1 boot was chosen with probability 0.335240
+		put-on-wheel r1 the-hub1 was chosen with probability 0.498311
+		do-up nuts1 the-hub1 was chosen with probability 0.504860
+		jack-down the-hub1 was chosen with probability 0.499973
+		tighten nuts1 the-hub1 was chosen with probability 0.334350
+		fetch pump boot was chosen with probability 0.505262
+		inflate r1 was chosen with probability 0.347782
+		inflate r2 was chosen with probability 0.507415
+		put-away pump boot was chosen with probability 0.520311
+		jack-up the-hub2 was chosen with probability 0.995202
+		undo nuts2 the-hub2 was chosen with probability 0.997143
+		remove-wheel w2 the-hub2 was chosen with probability 0.996852
+		put-away w2 boot was chosen with probability 0.509287
+		put-on-wheel r2 the-hub2 was chosen with probability 0.996574
+		do-up nuts2 the-hub2 was chosen with probability 0.980411
+		jack-down the-hub2 was chosen with probability 0.991608
+		tighten nuts2 the-hub2 was chosen with probability 0.501196
+		put-away wrench boot was chosen with probability 0.505595
+		put-away jack boot was chosen with probability 0.997909
+		close boot was chosen with probability 0.946954
 	training time: 18.3301203250885s
 	during the training the following losses were computed:
 		loss: 2.959400
@@ -3474,6 +4019,36 @@ problem epoch data for epoch 4, problem epoch 2
 problem epoch data for epoch 4, problem epoch 3
 	sampling search time: 238.3223078250885s
 	during this search the following actions were chosen:
+		open boot was chosen with probability 1.000000
+		fetch r1 boot was chosen with probability 0.204425
+		fetch jack boot was chosen with probability 0.253204
+		fetch wrench boot was chosen with probability 0.337441
+		loosen nuts1 the-hub1 was chosen with probability 0.256814
+		loosen nuts2 the-hub2 was chosen with probability 0.253842
+		fetch r2 boot was chosen with probability 0.253055
+		fetch pump boot was chosen with probability 0.335694
+		inflate r1 was chosen with probability 0.255385
+		jack-up the-hub1 was chosen with probability 0.333673
+		undo nuts1 the-hub1 was chosen with probability 0.507849
+		remove-wheel w1 the-hub1 was chosen with probability 0.507952
+		put-away w1 boot was chosen with probability 0.335549
+		put-on-wheel r1 the-hub1 was chosen with probability 0.498734
+		do-up nuts1 the-hub1 was chosen with probability 0.522726
+		jack-down the-hub1 was chosen with probability 0.511348
+		jack-up the-hub2 was chosen with probability 0.336015
+		inflate r2 was chosen with probability 0.334534
+		put-away pump boot was chosen with probability 0.338682
+		undo nuts2 the-hub2 was chosen with probability 0.502665
+		remove-wheel w2 the-hub2 was chosen with probability 0.510058
+		put-on-wheel r2 the-hub2 was chosen with probability 0.345997
+		do-up nuts2 the-hub2 was chosen with probability 0.409295
+		jack-down the-hub2 was chosen with probability 0.362279
+		put-away w2 boot was chosen with probability 0.348725
+		tighten nuts1 the-hub1 was chosen with probability 0.337443
+		put-away jack boot was chosen with probability 0.516656
+		tighten nuts2 the-hub2 was chosen with probability 0.995921
+		put-away wrench boot was chosen with probability 0.996717
+		close boot was chosen with probability 0.943385
 	training time: 19.580176830291748s
 	during the training the following losses were computed:
 		loss: 2.987400
@@ -3686,6 +4261,25 @@ model creation time: 15.945051431655884s
 problem epoch data for epoch 5, problem epoch 1
 	sampling search time: 6.438180208206177s
 	during this search the following actions were chosen:
+		open boot was chosen with probability 1.000000
+		fetch r1 boot was chosen with probability 0.545408
+		fetch wrench boot was chosen with probability 0.335761
+		fetch jack boot was chosen with probability 0.337558
+		loosen nuts1 the-hub1 was chosen with probability 0.506357
+		jack-up the-hub1 was chosen with probability 0.502326
+		undo nuts1 the-hub1 was chosen with probability 0.500363
+		remove-wheel w1 the-hub1 was chosen with probability 0.567507
+		put-away w1 boot was chosen with probability 0.456092
+		fetch pump boot was chosen with probability 0.501719
+		inflate r1 was chosen with probability 0.515248
+		put-away pump boot was chosen with probability 0.516074
+		put-on-wheel r1 the-hub1 was chosen with probability 0.998166
+		do-up nuts1 the-hub1 was chosen with probability 0.983327
+		jack-down the-hub1 was chosen with probability 0.994067
+		tighten nuts1 the-hub1 was chosen with probability 0.500901
+		put-away jack boot was chosen with probability 0.508538
+		put-away wrench boot was chosen with probability 0.997403
+		close boot was chosen with probability 0.948097
 	training time: 61.753746032714844s
 	during the training the following losses were computed:
 		loss: 1.331200
@@ -3792,6 +4386,25 @@ problem epoch data for epoch 5, problem epoch 1
 problem epoch data for epoch 5, problem epoch 2
 	sampling search time: 6.222737789154053s
 	during this search the following actions were chosen:
+		open boot was chosen with probability 1.000000
+		fetch pump boot was chosen with probability 0.255043
+		fetch wrench boot was chosen with probability 0.252585
+		inflate r1 was chosen with probability 0.253152
+		put-away pump boot was chosen with probability 0.285161
+		loosen nuts1 the-hub1 was chosen with probability 0.340292
+		fetch jack boot was chosen with probability 0.525655
+		fetch r1 boot was chosen with probability 0.501073
+		jack-up the-hub1 was chosen with probability 0.997651
+		undo nuts1 the-hub1 was chosen with probability 0.998807
+		remove-wheel w1 the-hub1 was chosen with probability 0.998235
+		put-on-wheel r1 the-hub1 was chosen with probability 0.501325
+		do-up nuts1 the-hub1 was chosen with probability 0.530496
+		put-away w1 boot was chosen with probability 0.541161
+		jack-down the-hub1 was chosen with probability 0.995777
+		tighten nuts1 the-hub1 was chosen with probability 0.499954
+		put-away jack boot was chosen with probability 0.503330
+		put-away wrench boot was chosen with probability 0.996964
+		close boot was chosen with probability 0.968761
 	training time: 10.322318315505981s
 	during the training the following losses were computed:
 		loss: 1.666600
@@ -3898,6 +4511,25 @@ problem epoch data for epoch 5, problem epoch 2
 problem epoch data for epoch 5, problem epoch 3
 	sampling search time: 6.365373373031616s
 	during this search the following actions were chosen:
+		open boot was chosen with probability 1.000000
+		fetch r1 boot was chosen with probability 0.257259
+		fetch pump boot was chosen with probability 0.335046
+		fetch jack boot was chosen with probability 0.335382
+		fetch wrench boot was chosen with probability 0.498749
+		loosen nuts1 the-hub1 was chosen with probability 0.507643
+		inflate r1 was chosen with probability 0.501855
+		jack-up the-hub1 was chosen with probability 0.528777
+		undo nuts1 the-hub1 was chosen with probability 0.520886
+		remove-wheel w1 the-hub1 was chosen with probability 0.505983
+		put-away w1 boot was chosen with probability 0.339579
+		put-on-wheel r1 the-hub1 was chosen with probability 0.508265
+		put-away pump boot was chosen with probability 0.503931
+		do-up nuts1 the-hub1 was chosen with probability 0.982928
+		jack-down the-hub1 was chosen with probability 0.995413
+		put-away jack boot was chosen with probability 0.500620
+		tighten nuts1 the-hub1 was chosen with probability 0.998457
+		put-away wrench boot was chosen with probability 0.996608
+		close boot was chosen with probability 0.961998
 	training time: 10.348194122314453s
 	during the training the following losses were computed:
 		loss: 1.637500
@@ -4007,6 +4639,36 @@ model creation time: 28.351874351501465s
 problem epoch data for epoch 5, problem epoch 1
 	sampling search time: 248.12167477607727s
 	during this search the following actions were chosen:
+		open boot was chosen with probability 1.000000
+		fetch wrench boot was chosen with probability 0.323369
+		loosen nuts1 the-hub1 was chosen with probability 0.229184
+		loosen nuts2 the-hub2 was chosen with probability 0.424861
+		fetch jack boot was chosen with probability 0.403291
+		fetch pump boot was chosen with probability 0.308170
+		inflate r1 was chosen with probability 0.234475
+		jack-up the-hub1 was chosen with probability 0.286589
+		undo nuts1 the-hub1 was chosen with probability 0.437327
+		remove-wheel w1 the-hub1 was chosen with probability 0.383637
+		inflate r2 was chosen with probability 0.377115
+		put-away pump boot was chosen with probability 0.414511
+		put-away w1 boot was chosen with probability 0.554743
+		fetch r1 boot was chosen with probability 0.665568
+		put-on-wheel r1 the-hub1 was chosen with probability 0.837697
+		do-up nuts1 the-hub1 was chosen with probability 0.785176
+		jack-down the-hub1 was chosen with probability 0.620986
+		jack-up the-hub2 was chosen with probability 0.462239
+		undo nuts2 the-hub2 was chosen with probability 0.482864
+		remove-wheel w2 the-hub2 was chosen with probability 0.462972
+		put-away w2 boot was chosen with probability 0.417465
+		tighten nuts1 the-hub1 was chosen with probability 0.615710
+		fetch r2 boot was chosen with probability 0.962336
+		put-on-wheel r2 the-hub2 was chosen with probability 0.985766
+		do-up nuts2 the-hub2 was chosen with probability 0.984254
+		jack-down the-hub2 was chosen with probability 0.989512
+		tighten nuts2 the-hub2 was chosen with probability 0.522882
+		put-away jack boot was chosen with probability 0.592063
+		put-away wrench boot was chosen with probability 0.991772
+		close boot was chosen with probability 0.948442
 	training time: 79.21791362762451s
 	during the training the following losses were computed:
 		loss: 3.562300
@@ -4213,6 +4875,36 @@ problem epoch data for epoch 5, problem epoch 1
 problem epoch data for epoch 5, problem epoch 2
 	sampling search time: 178.73476576805115s
 	during this search the following actions were chosen:
+		open boot was chosen with probability 1.000000
+		fetch r1 boot was chosen with probability 0.205106
+		fetch r2 boot was chosen with probability 0.251836
+		fetch wrench boot was chosen with probability 0.334769
+		fetch pump boot was chosen with probability 0.255479
+		inflate r1 was chosen with probability 0.211767
+		inflate r2 was chosen with probability 0.256648
+		put-away pump boot was chosen with probability 0.279702
+		fetch jack boot was chosen with probability 0.335402
+		loosen nuts1 the-hub1 was chosen with probability 0.493408
+		loosen nuts2 the-hub2 was chosen with probability 0.509533
+		jack-up the-hub1 was chosen with probability 0.499455
+		undo nuts1 the-hub1 was chosen with probability 0.998496
+		remove-wheel w1 the-hub1 was chosen with probability 0.998138
+		put-on-wheel r1 the-hub1 was chosen with probability 0.496566
+		do-up nuts1 the-hub1 was chosen with probability 0.556290
+		jack-down the-hub1 was chosen with probability 0.554528
+		put-away w1 boot was chosen with probability 0.344038
+		jack-up the-hub2 was chosen with probability 0.501763
+		tighten nuts1 the-hub1 was chosen with probability 0.500953
+		undo nuts2 the-hub2 was chosen with probability 0.997191
+		remove-wheel w2 the-hub2 was chosen with probability 0.996884
+		put-away w2 boot was chosen with probability 0.503339
+		put-on-wheel r2 the-hub2 was chosen with probability 0.996742
+		do-up nuts2 the-hub2 was chosen with probability 0.981322
+		jack-down the-hub2 was chosen with probability 0.992625
+		tighten nuts2 the-hub2 was chosen with probability 0.501781
+		put-away jack boot was chosen with probability 0.502841
+		put-away wrench boot was chosen with probability 0.996207
+		close boot was chosen with probability 0.948286
 	training time: 19.147857904434204s
 	during the training the following losses were computed:
 		loss: 3.187800
@@ -4419,6 +5111,36 @@ problem epoch data for epoch 5, problem epoch 2
 problem epoch data for epoch 5, problem epoch 3
 	sampling search time: 190.70253372192383s
 	during this search the following actions were chosen:
+		open boot was chosen with probability 1.000000
+		fetch r1 boot was chosen with probability 0.204093
+		fetch wrench boot was chosen with probability 0.252550
+		loosen nuts1 the-hub1 was chosen with probability 0.205335
+		fetch pump boot was chosen with probability 0.251592
+		inflate r1 was chosen with probability 0.204025
+		inflate r2 was chosen with probability 0.251197
+		put-away pump boot was chosen with probability 0.255618
+		fetch jack boot was chosen with probability 0.334875
+		loosen nuts2 the-hub2 was chosen with probability 0.338879
+		jack-up the-hub1 was chosen with probability 0.341107
+		undo nuts1 the-hub1 was chosen with probability 0.502991
+		remove-wheel w1 the-hub1 was chosen with probability 0.531717
+		put-away w1 boot was chosen with probability 0.354349
+		put-on-wheel r1 the-hub1 was chosen with probability 0.499688
+		fetch r2 boot was chosen with probability 0.497933
+		do-up nuts1 the-hub1 was chosen with probability 0.986425
+		jack-down the-hub1 was chosen with probability 0.997013
+		jack-up the-hub2 was chosen with probability 0.508784
+		undo nuts2 the-hub2 was chosen with probability 0.500465
+		remove-wheel w2 the-hub2 was chosen with probability 0.513519
+		put-away w2 boot was chosen with probability 0.351565
+		tighten nuts1 the-hub1 was chosen with probability 0.503888
+		put-on-wheel r2 the-hub2 was chosen with probability 0.997121
+		do-up nuts2 the-hub2 was chosen with probability 0.981665
+		jack-down the-hub2 was chosen with probability 0.991589
+		put-away jack boot was chosen with probability 0.503395
+		tighten nuts2 the-hub2 was chosen with probability 0.996446
+		put-away wrench boot was chosen with probability 0.996585
+		close boot was chosen with probability 0.945418
 	training time: 21.245094060897827s
 	during the training the following losses were computed:
 		loss: 3.073900

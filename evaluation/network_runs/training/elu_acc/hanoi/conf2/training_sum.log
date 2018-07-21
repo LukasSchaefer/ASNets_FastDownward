@@ -1992,6 +1992,7 @@ model creation time: 2.1396636962890625s
 problem epoch data for epoch 3, problem epoch 1
 	sampling search time: 0.6113536357879639s
 	during this search the following actions were chosen:
+		move d1 peg3 peg1 was chosen with probability 1.000000
 	training time: 16.688590049743652s
 	during the training the following losses were computed:
 		loss: 0.061500
@@ -2984,6 +2985,7 @@ model creation time: 2.1225106716156006s
 problem epoch data for epoch 4, problem epoch 1
 	sampling search time: 0.6099576950073242s
 	during this search the following actions were chosen:
+		move d1 peg3 peg1 was chosen with probability 1.000000
 	training time: 16.346104860305786s
 	during the training the following losses were computed:
 		loss: 0.058200
@@ -3976,6 +3978,7 @@ model creation time: 2.1296074390411377s
 problem epoch data for epoch 5, problem epoch 1
 	sampling search time: 0.6120591163635254s
 	during this search the following actions were chosen:
+		move d1 peg3 peg1 was chosen with probability 1.000000
 	training time: 16.670091152191162s
 	during the training the following losses were computed:
 		loss: 0.053100
@@ -4968,6 +4971,7 @@ model creation time: 2.087394952774048s
 problem epoch data for epoch 6, problem epoch 1
 	sampling search time: 0.6118378639221191s
 	during this search the following actions were chosen:
+		move d1 peg3 peg1 was chosen with probability 1.000000
 	training time: 16.810077905654907s
 	during the training the following losses were computed:
 		loss: 0.052400
@@ -5960,6 +5964,7 @@ model creation time: 2.3735578060150146s
 problem epoch data for epoch 7, problem epoch 1
 	sampling search time: 0.6117465496063232s
 	during this search the following actions were chosen:
+		move d1 peg3 peg1 was chosen with probability 1.000000
 	training time: 16.272543907165527s
 	during the training the following losses were computed:
 		loss: 0.052800
@@ -6952,6 +6957,7 @@ model creation time: 2.3500044345855713s
 problem epoch data for epoch 8, problem epoch 1
 	sampling search time: 0.6159501075744629s
 	during this search the following actions were chosen:
+		move d1 peg3 peg1 was chosen with probability 1.000000
 	training time: 16.290823221206665s
 	during the training the following losses were computed:
 		loss: 0.055900
@@ -7944,6 +7950,7 @@ model creation time: 2.1097617149353027s
 problem epoch data for epoch 9, problem epoch 1
 	sampling search time: 0.6140949726104736s
 	during this search the following actions were chosen:
+		move d1 peg3 peg1 was chosen with probability 1.000000
 	training time: 16.692872762680054s
 	during the training the following losses were computed:
 		loss: 0.053500
@@ -8936,6 +8943,7 @@ model creation time: 2.1074373722076416s
 problem epoch data for epoch 10, problem epoch 1
 	sampling search time: 0.6203532218933105s
 	during this search the following actions were chosen:
+		move d1 peg3 peg1 was chosen with probability 1.000000
 	training time: 16.657574892044067s
 	during the training the following losses were computed:
 		loss: 0.052300

@@ -6,6 +6,14 @@ model creation time: 16.809717655181885s
 problem epoch data for epoch 1, problem epoch 1
 	sampling search time: 3.831300735473633s
 	during this search the following actions were chosen:
+		initialize  was chosen with probability 1.000000
+		blackfeeder-feed-letter sheet1 was chosen with probability 0.567865
+		blackcontainer-toime-letter sheet1 was chosen with probability 1.000000
+		blackprinter-simplex-letter sheet1 front image-1 was chosen with probability 0.595466
+		blackcontainer-fromime-letter sheet1 was chosen with probability 1.000000
+		endcap-move-letter sheet1 was chosen with probability 1.000000
+		htmoverblack-move-letter sheet1 was chosen with probability 1.000000
+		down-movedown-letter sheet1 was chosen with probability 0.545309
 	training time: 53.69127368927002s
 	during the training the following losses were computed:
 		loss: 1.150700
@@ -112,6 +120,17 @@ problem epoch data for epoch 1, problem epoch 1
 problem epoch data for epoch 1, problem epoch 2
 	sampling search time: 4.107818126678467s
 	during this search the following actions were chosen:
+		initialize  was chosen with probability 1.000000
+		blackfeeder-feed-letter sheet1 was chosen with probability 0.995047
+		blackcontainer-toime-letter sheet1 was chosen with probability 1.000000
+		blackprinter-simplex-letter sheet1 front image-1 was chosen with probability 0.996453
+		blackcontainer-fromime-letter sheet1 was chosen with probability 1.000000
+		endcap-move-letter sheet1 was chosen with probability 1.000000
+		htmoverblack-move-letter sheet1 was chosen with probability 1.000000
+		down-movetop-letter sheet1 was chosen with probability 0.995290
+		htmovercolor-move-letter sheet1 was chosen with probability 1.000000
+		up-movetop-letter sheet1 was chosen with probability 1.000000
+		finisher1-stack-letter sheet1 dummy-sheet was chosen with probability 0.994015
 	training time: 10.104824542999268s
 	during the training the following losses were computed:
 		loss: 0.377200
@@ -218,6 +237,17 @@ problem epoch data for epoch 1, problem epoch 2
 problem epoch data for epoch 1, problem epoch 3
 	sampling search time: 4.108087539672852s
 	during this search the following actions were chosen:
+		initialize  was chosen with probability 1.000000
+		blackfeeder-feed-letter sheet1 was chosen with probability 0.998721
+		blackcontainer-toime-letter sheet1 was chosen with probability 1.000000
+		blackprinter-simplex-letter sheet1 front image-1 was chosen with probability 0.998262
+		blackcontainer-fromime-letter sheet1 was chosen with probability 1.000000
+		endcap-move-letter sheet1 was chosen with probability 1.000000
+		htmoverblack-move-letter sheet1 was chosen with probability 1.000000
+		down-movetop-letter sheet1 was chosen with probability 0.999169
+		htmovercolor-move-letter sheet1 was chosen with probability 1.000000
+		up-movetop-letter sheet1 was chosen with probability 1.000000
+		finisher1-stack-letter sheet1 dummy-sheet was chosen with probability 0.998158
 	training time: 10.174085140228271s
 	during the training the following losses were computed:
 		loss: 0.150200
@@ -327,6 +357,13 @@ model creation time: 38.407541036605835s
 problem epoch data for epoch 1, problem epoch 1
 	sampling search time: 11.437263011932373s
 	during this search the following actions were chosen:
+		initialize  was chosen with probability 1.000000
+		blackfeeder-feed-letter sheet1 was chosen with probability 0.502151
+		blackfeeder-feed-letter sheet2 was chosen with probability 0.975309
+		blackcontainer-toime-letter sheet1 was chosen with probability 0.500298
+		blackprinter-simplex-letter sheet1 front image-1 was chosen with probability 0.942805
+		blackcontainer-toime-letter sheet2 was chosen with probability 0.552616
+		blackprinter-simplex-letter sheet2 front image-1 was chosen with probability 0.945784
 	training time: 122.90878963470459s
 	during the training the following losses were computed:
 		loss: 4.712700
@@ -433,6 +470,24 @@ problem epoch data for epoch 1, problem epoch 1
 problem epoch data for epoch 1, problem epoch 2
 	sampling search time: 11.671094417572021s
 	during this search the following actions were chosen:
+		initialize  was chosen with probability 1.000000
+		blackfeeder-feed-letter sheet1 was chosen with probability 0.490419
+		colorfeeder-feed-letter sheet2 was chosen with probability 0.509689
+		blackcontainer-toime-letter sheet1 was chosen with probability 0.786474
+		blackprinter-simplex-letter sheet1 front image-1 was chosen with probability 0.799477
+		blackcontainer-fromime-letter sheet1 was chosen with probability 0.789940
+		endcap-move-letter sheet1 was chosen with probability 0.786065
+		htmoverblack-move-letter sheet1 was chosen with probability 0.794998
+		down-movetop-letter sheet1 was chosen with probability 0.791468
+		htmovercolor-move-letter sheet1 was chosen with probability 0.791510
+		up-movetop-letter sheet1 was chosen with probability 0.792615
+		finisher1-stack-letter sheet1 dummy-sheet was chosen with probability 0.785947
+		down-movebottom-letter sheet2 was chosen with probability 1.000000
+		colorcontainer-toime-letter sheet2 was chosen with probability 1.000000
+		colorprinter-simplex-letter sheet2 front image-2 was chosen with probability 0.998433
+		colorcontainer-fromime-letter sheet2 was chosen with probability 1.000000
+		up-moveup-letter sheet2 was chosen with probability 1.000000
+		finisher1-stack-letter sheet2 sheet1 was chosen with probability 0.995245
 	training time: 12.8541259765625s
 	during the training the following losses were computed:
 		loss: 1.336800
@@ -539,6 +594,24 @@ problem epoch data for epoch 1, problem epoch 2
 problem epoch data for epoch 1, problem epoch 3
 	sampling search time: 11.63746428489685s
 	during this search the following actions were chosen:
+		initialize  was chosen with probability 1.000000
+		blackfeeder-feed-letter sheet1 was chosen with probability 0.492786
+		colorfeeder-feed-letter sheet2 was chosen with probability 0.504507
+		blackcontainer-toime-letter sheet1 was chosen with probability 0.500895
+		blackprinter-simplex-letter sheet1 front image-1 was chosen with probability 0.507942
+		down-movebottom-letter sheet2 was chosen with probability 0.502705
+		blackcontainer-fromime-letter sheet1 was chosen with probability 0.505397
+		endcap-move-letter sheet1 was chosen with probability 0.502537
+		htmoverblack-move-letter sheet1 was chosen with probability 0.505740
+		down-movetop-letter sheet1 was chosen with probability 0.510061
+		htmovercolor-move-letter sheet1 was chosen with probability 0.502766
+		up-movetop-letter sheet1 was chosen with probability 0.506084
+		finisher1-stack-letter sheet1 dummy-sheet was chosen with probability 0.512079
+		colorcontainer-toime-letter sheet2 was chosen with probability 1.000000
+		colorprinter-simplex-letter sheet2 front image-2 was chosen with probability 0.994149
+		colorcontainer-fromime-letter sheet2 was chosen with probability 1.000000
+		up-moveup-letter sheet2 was chosen with probability 1.000000
+		finisher1-stack-letter sheet2 sheet1 was chosen with probability 0.992157
 	training time: 13.88961935043335s
 	during the training the following losses were computed:
 		loss: 1.088500
@@ -648,6 +721,11 @@ model creation time: 28.541149616241455s
 problem epoch data for epoch 1, problem epoch 1
 	sampling search time: 6.831598520278931s
 	during this search the following actions were chosen:
+		initialize  was chosen with probability 1.000000
+		colorfeeder-feed-letter sheet1 was chosen with probability 0.276242
+		down-movebottom-letter sheet1 was chosen with probability 0.342011
+		colorcontainer-toime-letter sheet1 was chosen with probability 0.352483
+		colorprinter-simplex-letter sheet1 front image-2 was chosen with probability 0.207329
 	training time: 99.06886911392212s
 	during the training the following losses were computed:
 		loss: 2.280200
@@ -754,6 +832,28 @@ problem epoch data for epoch 1, problem epoch 1
 problem epoch data for epoch 1, problem epoch 2
 	sampling search time: 12.176087856292725s
 	during this search the following actions were chosen:
+		initialize  was chosen with probability 1.000000
+		colorfeeder-feed-letter sheet1 was chosen with probability 0.333300
+		colorfeeder-feed-letter sheet2 was chosen with probability 0.333368
+		colorfeeder-feed-letter sheet3 was chosen with probability 0.333436
+		down-movebottom-letter sheet1 was chosen with probability 0.333333
+		down-movebottom-letter sheet2 was chosen with probability 0.333638
+		down-movebottom-letter sheet3 was chosen with probability 0.333943
+		colorcontainer-toime-letter sheet1 was chosen with probability 0.333333
+		colorprinter-simplex-letter sheet1 front image-1 was chosen with probability 0.332990
+		colorcontainer-fromime-letter sheet1 was chosen with probability 0.333663
+		up-moveup-letter sheet1 was chosen with probability 0.334475
+		finisher1-stack-letter sheet1 dummy-sheet was chosen with probability 0.333621
+		colorcontainer-toime-letter sheet2 was chosen with probability 0.500000
+		colorprinter-simplex-letter sheet2 front image-2 was chosen with probability 0.499442
+		colorcontainer-fromime-letter sheet2 was chosen with probability 0.500370
+		up-moveup-letter sheet2 was chosen with probability 0.501313
+		finisher1-stack-letter sheet2 sheet1 was chosen with probability 0.502792
+		colorcontainer-toime-letter sheet3 was chosen with probability 1.000000
+		colorprinter-simplex-letter sheet3 front image-3 was chosen with probability 0.992395
+		colorcontainer-fromime-letter sheet3 was chosen with probability 1.000000
+		up-moveup-letter sheet3 was chosen with probability 1.000000
+		finisher1-stack-letter sheet3 sheet2 was chosen with probability 0.995098
 	training time: 12.103151082992554s
 	during the training the following losses were computed:
 		loss: 2.225600
@@ -860,6 +960,28 @@ problem epoch data for epoch 1, problem epoch 2
 problem epoch data for epoch 1, problem epoch 3
 	sampling search time: 11.829291343688965s
 	during this search the following actions were chosen:
+		initialize  was chosen with probability 1.000000
+		colorfeeder-feed-letter sheet1 was chosen with probability 0.333010
+		down-movebottom-letter sheet1 was chosen with probability 0.333158
+		colorcontainer-toime-letter sheet1 was chosen with probability 0.333169
+		colorfeeder-feed-letter sheet2 was chosen with probability 0.333314
+		colorfeeder-feed-letter sheet3 was chosen with probability 0.334129
+		down-movebottom-letter sheet2 was chosen with probability 0.332892
+		colorcontainer-toime-letter sheet2 was chosen with probability 0.333594
+		down-movebottom-letter sheet3 was chosen with probability 0.332452
+		colorcontainer-toime-letter sheet3 was chosen with probability 0.333154
+		colorprinter-simplex-letter sheet1 front image-1 was chosen with probability 0.331480
+		colorcontainer-fromime-letter sheet1 was chosen with probability 0.332467
+		colorprinter-simplex-letter sheet2 front image-2 was chosen with probability 0.332456
+		colorcontainer-fromime-letter sheet2 was chosen with probability 0.333455
+		colorprinter-simplex-letter sheet3 front image-3 was chosen with probability 0.333448
+		up-moveup-letter sheet2 was chosen with probability 0.333514
+		up-moveup-letter sheet1 was chosen with probability 0.499698
+		finisher1-stack-letter sheet1 dummy-sheet was chosen with probability 0.499560
+		finisher1-stack-letter sheet2 sheet1 was chosen with probability 0.501310
+		colorcontainer-fromime-letter sheet3 was chosen with probability 1.000000
+		up-moveup-letter sheet3 was chosen with probability 1.000000
+		finisher1-stack-letter sheet3 sheet2 was chosen with probability 0.997232
 	training time: 12.254848957061768s
 	during the training the following losses were computed:
 		loss: 2.507400
@@ -969,6 +1091,35 @@ model creation time: 102.90762996673584s
 problem epoch data for epoch 1, problem epoch 1
 	sampling search time: 44.25480341911316s
 	during this search the following actions were chosen:
+		initialize  was chosen with probability 1.000000
+		colorfeeder-feed-letter sheet3 was chosen with probability 0.272579
+		down-movebottom-letter sheet3 was chosen with probability 0.274430
+		colorcontainer-toime-letter sheet3 was chosen with probability 0.273776
+		colorfeeder-feed-letter sheet4 was chosen with probability 0.265114
+		down-movebottom-letter sheet4 was chosen with probability 0.264698
+		colorcontainer-toime-letter sheet4 was chosen with probability 0.264825
+		colorprinter-simplex-letter sheet3 front image-3 was chosen with probability 0.256323
+		colorcontainer-fromime-letter sheet3 was chosen with probability 0.265262
+		up-moveup-letter sheet3 was chosen with probability 0.264518
+		colorprinter-simplex-letter sheet4 front image-4 was chosen with probability 0.358224
+		colorcontainer-fromime-letter sheet4 was chosen with probability 0.377916
+		up-moveup-letter sheet4 was chosen with probability 0.378673
+		colorfeeder-feed-letter sheet1 was chosen with probability 0.497321
+		down-movebottom-letter sheet1 was chosen with probability 0.547648
+		colorcontainer-toime-letter sheet1 was chosen with probability 0.535040
+		colorfeeder-feed-letter sheet2 was chosen with probability 0.846687
+		down-movebottom-letter sheet2 was chosen with probability 0.871840
+		colorcontainer-toime-letter sheet2 was chosen with probability 0.866329
+		colorprinter-simplexmono-letter sheet1 front image-1 was chosen with probability 0.241766
+		colorcontainer-fromime-letter sheet1 was chosen with probability 0.869269
+		up-moveup-letter sheet1 was chosen with probability 0.872114
+		finisher1-stack-letter sheet1 dummy-sheet was chosen with probability 0.870846
+		colorprinter-simplexmono-letter sheet2 front image-2 was chosen with probability 0.478507
+		colorcontainer-fromime-letter sheet2 was chosen with probability 0.996827
+		up-moveup-letter sheet2 was chosen with probability 0.996914
+		finisher1-stack-letter sheet2 sheet1 was chosen with probability 0.995385
+		finisher1-stack-letter sheet3 sheet2 was chosen with probability 0.996919
+		finisher1-stack-letter sheet4 sheet3 was chosen with probability 0.998457
 	training time: 384.8044879436493s
 	during the training the following losses were computed:
 		loss: 4.661200
@@ -1275,6 +1426,41 @@ problem epoch data for epoch 1, problem epoch 1
 problem epoch data for epoch 1, problem epoch 2
 	sampling search time: 34.319289445877075s
 	during this search the following actions were chosen:
+		initialize  was chosen with probability 1.000000
+		blackfeeder-feed-letter sheet1 was chosen with probability 0.249951
+		blackcontainer-toime-letter sheet1 was chosen with probability 0.250743
+		blackprinter-simplex-letter sheet1 front image-1 was chosen with probability 0.254810
+		colorfeeder-feed-letter sheet3 was chosen with probability 0.250982
+		down-movebottom-letter sheet3 was chosen with probability 0.252687
+		colorcontainer-toime-letter sheet3 was chosen with probability 0.253088
+		colorfeeder-feed-letter sheet4 was chosen with probability 0.257454
+		down-movebottom-letter sheet4 was chosen with probability 0.256954
+		colorcontainer-toime-letter sheet4 was chosen with probability 0.257596
+		blackcontainer-fromime-letter sheet1 was chosen with probability 0.255335
+		endcap-move-letter sheet1 was chosen with probability 0.256107
+		htmoverblack-move-letter sheet1 was chosen with probability 0.255480
+		down-movetop-letter sheet1 was chosen with probability 0.256842
+		htmovercolor-move-letter sheet1 was chosen with probability 0.256122
+		up-movetop-letter sheet1 was chosen with probability 0.258653
+		finisher1-stack-letter sheet1 dummy-sheet was chosen with probability 0.256886
+		colorprinter-simplex-letter sheet3 front image-3 was chosen with probability 0.339399
+		colorcontainer-fromime-letter sheet3 was chosen with probability 0.347362
+		up-moveup-letter sheet3 was chosen with probability 0.344787
+		colorprinter-simplex-letter sheet4 front image-4 was chosen with probability 0.514358
+		colorcontainer-fromime-letter sheet4 was chosen with probability 0.500638
+		blackfeeder-feed-letter sheet2 was chosen with probability 0.499039
+		up-moveup-letter sheet4 was chosen with probability 0.500937
+		blackcontainer-toime-letter sheet2 was chosen with probability 0.999454
+		blackprinter-simplex-letter sheet2 front image-2 was chosen with probability 0.994212
+		blackcontainer-fromime-letter sheet2 was chosen with probability 0.999451
+		endcap-move-letter sheet2 was chosen with probability 0.999451
+		htmoverblack-move-letter sheet2 was chosen with probability 0.999451
+		down-movetop-letter sheet2 was chosen with probability 0.992085
+		htmovercolor-move-letter sheet2 was chosen with probability 0.999451
+		up-movetop-letter sheet2 was chosen with probability 0.999455
+		finisher1-stack-letter sheet2 sheet1 was chosen with probability 0.999182
+		finisher1-stack-letter sheet3 sheet2 was chosen with probability 0.999454
+		finisher1-stack-letter sheet4 sheet3 was chosen with probability 0.999727
 	training time: 162.64955759048462s
 	during the training the following losses were computed:
 		loss: 3.618400
@@ -1581,6 +1767,41 @@ problem epoch data for epoch 1, problem epoch 2
 problem epoch data for epoch 1, problem epoch 3
 	sampling search time: 55.99877166748047s
 	during this search the following actions were chosen:
+		initialize  was chosen with probability 1.000000
+		blackfeeder-feed-letter sheet1 was chosen with probability 0.255282
+		blackfeeder-feed-letter sheet2 was chosen with probability 0.257488
+		blackcontainer-toime-letter sheet1 was chosen with probability 0.252422
+		blackcontainer-toime-letter sheet2 was chosen with probability 0.252738
+		blackprinter-simplex-letter sheet1 front image-1 was chosen with probability 0.251629
+		blackcontainer-fromime-letter sheet1 was chosen with probability 0.254307
+		endcap-move-letter sheet1 was chosen with probability 0.252818
+		htmoverblack-move-letter sheet1 was chosen with probability 0.252521
+		down-movetop-letter sheet1 was chosen with probability 0.253462
+		htmovercolor-move-letter sheet1 was chosen with probability 0.252418
+		blackprinter-simplex-letter sheet2 front image-2 was chosen with probability 0.252142
+		blackcontainer-fromime-letter sheet2 was chosen with probability 0.253609
+		endcap-move-letter sheet2 was chosen with probability 0.252317
+		htmoverblack-move-letter sheet2 was chosen with probability 0.251987
+		down-movetop-letter sheet2 was chosen with probability 0.252957
+		htmovercolor-move-letter sheet2 was chosen with probability 0.251904
+		up-movetop-letter sheet1 was chosen with probability 0.250849
+		finisher1-stack-letter sheet1 dummy-sheet was chosen with probability 0.251684
+		up-movetop-letter sheet2 was chosen with probability 0.334844
+		finisher1-stack-letter sheet2 sheet1 was chosen with probability 0.336237
+		colorfeeder-feed-letter sheet3 was chosen with probability 0.499403
+		down-movebottom-letter sheet3 was chosen with probability 0.502446
+		colorcontainer-toime-letter sheet3 was chosen with probability 0.503291
+		colorfeeder-feed-letter sheet4 was chosen with probability 0.499878
+		down-movebottom-letter sheet4 was chosen with probability 0.501219
+		colorcontainer-toime-letter sheet4 was chosen with probability 0.502166
+		colorprinter-simplex-letter sheet3 front image-3 was chosen with probability 0.498936
+		colorcontainer-fromime-letter sheet3 was chosen with probability 0.502124
+		up-moveup-letter sheet3 was chosen with probability 0.501521
+		finisher1-stack-letter sheet3 sheet2 was chosen with probability 0.501030
+		colorprinter-simplex-letter sheet4 front image-4 was chosen with probability 0.997871
+		colorcontainer-fromime-letter sheet4 was chosen with probability 1.000000
+		up-moveup-letter sheet4 was chosen with probability 1.000000
+		finisher1-stack-letter sheet4 sheet3 was chosen with probability 0.999863
 	training time: 184.78746557235718s
 	during the training the following losses were computed:
 		loss: 2.521200
@@ -1993,6 +2214,17 @@ model creation time: 21.228216648101807s
 problem epoch data for epoch 2, problem epoch 1
 	sampling search time: 6.12413215637207s
 	during this search the following actions were chosen:
+		initialize  was chosen with probability 1.000000
+		blackfeeder-feed-letter sheet1 was chosen with probability 0.999988
+		blackcontainer-toime-letter sheet1 was chosen with probability 1.000000
+		blackprinter-simplex-letter sheet1 front image-1 was chosen with probability 0.999702
+		blackcontainer-fromime-letter sheet1 was chosen with probability 1.000000
+		endcap-move-letter sheet1 was chosen with probability 1.000000
+		htmoverblack-move-letter sheet1 was chosen with probability 1.000000
+		down-movetop-letter sheet1 was chosen with probability 0.999007
+		htmovercolor-move-letter sheet1 was chosen with probability 1.000000
+		up-movetop-letter sheet1 was chosen with probability 1.000000
+		finisher1-stack-letter sheet1 dummy-sheet was chosen with probability 0.999866
 	training time: 68.45304536819458s
 	during the training the following losses were computed:
 		loss: 0.022900
@@ -2099,6 +2331,17 @@ problem epoch data for epoch 2, problem epoch 1
 problem epoch data for epoch 2, problem epoch 2
 	sampling search time: 5.9040257930755615s
 	during this search the following actions were chosen:
+		initialize  was chosen with probability 1.000000
+		blackfeeder-feed-letter sheet1 was chosen with probability 0.999164
+		blackcontainer-toime-letter sheet1 was chosen with probability 1.000000
+		blackprinter-simplex-letter sheet1 front image-1 was chosen with probability 0.998978
+		blackcontainer-fromime-letter sheet1 was chosen with probability 1.000000
+		endcap-move-letter sheet1 was chosen with probability 1.000000
+		htmoverblack-move-letter sheet1 was chosen with probability 1.000000
+		down-movetop-letter sheet1 was chosen with probability 0.999294
+		htmovercolor-move-letter sheet1 was chosen with probability 1.000000
+		up-movetop-letter sheet1 was chosen with probability 1.000000
+		finisher1-stack-letter sheet1 dummy-sheet was chosen with probability 0.999383
 	training time: 10.11191439628601s
 	during the training the following losses were computed:
 		loss: 0.006900
@@ -2205,6 +2448,17 @@ problem epoch data for epoch 2, problem epoch 2
 problem epoch data for epoch 2, problem epoch 3
 	sampling search time: 4.231470346450806s
 	during this search the following actions were chosen:
+		initialize  was chosen with probability 1.000000
+		blackfeeder-feed-letter sheet1 was chosen with probability 0.999252
+		blackcontainer-toime-letter sheet1 was chosen with probability 1.000000
+		blackprinter-simplex-letter sheet1 front image-1 was chosen with probability 0.999173
+		blackcontainer-fromime-letter sheet1 was chosen with probability 1.000000
+		endcap-move-letter sheet1 was chosen with probability 1.000000
+		htmoverblack-move-letter sheet1 was chosen with probability 1.000000
+		down-movetop-letter sheet1 was chosen with probability 0.999261
+		htmovercolor-move-letter sheet1 was chosen with probability 1.000000
+		up-movetop-letter sheet1 was chosen with probability 1.000000
+		finisher1-stack-letter sheet1 dummy-sheet was chosen with probability 0.999280
 	training time: 10.104621648788452s
 	during the training the following losses were computed:
 		loss: 0.005000
@@ -2314,6 +2568,18 @@ model creation time: 32.868351221084595s
 problem epoch data for epoch 2, problem epoch 1
 	sampling search time: 8.057441234588623s
 	during this search the following actions were chosen:
+		initialize  was chosen with probability 1.000000
+		blackfeeder-feed-letter sheet1 was chosen with probability 0.499628
+		blackfeeder-feed-letter sheet2 was chosen with probability 0.971194
+		blackcontainer-toime-letter sheet1 was chosen with probability 0.500000
+		blackprinter-simplex-letter sheet1 front image-1 was chosen with probability 0.948707
+		blackcontainer-fromime-letter sheet1 was chosen with probability 0.513296
+		endcap-move-letter sheet1 was chosen with probability 0.500133
+		htmoverblack-move-letter sheet1 was chosen with probability 0.517630
+		down-movetop-letter sheet1 was chosen with probability 0.969859
+		htmovercolor-move-letter sheet1 was chosen with probability 0.513146
+		blackcontainer-toime-letter sheet2 was chosen with probability 0.500001
+		blackprinter-simplex-letter sheet2 front image-1 was chosen with probability 0.948700
 	training time: 85.05711603164673s
 	during the training the following losses were computed:
 		loss: 3.885300
@@ -2420,6 +2686,24 @@ problem epoch data for epoch 2, problem epoch 1
 problem epoch data for epoch 2, problem epoch 2
 	sampling search time: 8.83402943611145s
 	during this search the following actions were chosen:
+		initialize  was chosen with probability 1.000000
+		colorfeeder-feed-letter sheet2 was chosen with probability 0.468276
+		blackfeeder-feed-letter sheet1 was chosen with probability 0.657978
+		blackcontainer-toime-letter sheet1 was chosen with probability 0.723255
+		blackprinter-simplex-letter sheet1 front image-1 was chosen with probability 0.756819
+		blackcontainer-fromime-letter sheet1 was chosen with probability 0.748893
+		endcap-move-letter sheet1 was chosen with probability 0.702509
+		htmoverblack-move-letter sheet1 was chosen with probability 0.707678
+		down-movetop-letter sheet1 was chosen with probability 0.705891
+		htmovercolor-move-letter sheet1 was chosen with probability 0.703907
+		up-movetop-letter sheet1 was chosen with probability 0.716161
+		finisher1-stack-letter sheet1 dummy-sheet was chosen with probability 0.719997
+		down-movebottom-letter sheet2 was chosen with probability 1.000000
+		colorcontainer-toime-letter sheet2 was chosen with probability 1.000000
+		colorprinter-simplex-letter sheet2 front image-2 was chosen with probability 0.998948
+		colorcontainer-fromime-letter sheet2 was chosen with probability 1.000000
+		up-moveup-letter sheet2 was chosen with probability 1.000000
+		finisher1-stack-letter sheet2 sheet1 was chosen with probability 0.983386
 	training time: 11.701254844665527s
 	during the training the following losses were computed:
 		loss: 1.138900
@@ -2526,6 +2810,24 @@ problem epoch data for epoch 2, problem epoch 2
 problem epoch data for epoch 2, problem epoch 3
 	sampling search time: 7.870373725891113s
 	during this search the following actions were chosen:
+		initialize  was chosen with probability 1.000000
+		blackfeeder-feed-letter sheet1 was chosen with probability 0.495339
+		blackcontainer-toime-letter sheet1 was chosen with probability 0.499559
+		colorfeeder-feed-letter sheet2 was chosen with probability 0.499039
+		blackprinter-simplex-letter sheet1 front image-1 was chosen with probability 0.499906
+		down-movebottom-letter sheet2 was chosen with probability 0.502768
+		blackcontainer-fromime-letter sheet1 was chosen with probability 0.504479
+		endcap-move-letter sheet1 was chosen with probability 0.500418
+		htmoverblack-move-letter sheet1 was chosen with probability 0.503186
+		down-movetop-letter sheet1 was chosen with probability 0.505754
+		htmovercolor-move-letter sheet1 was chosen with probability 0.500262
+		up-movetop-letter sheet1 was chosen with probability 0.503475
+		finisher1-stack-letter sheet1 dummy-sheet was chosen with probability 0.507126
+		colorcontainer-toime-letter sheet2 was chosen with probability 1.000000
+		colorprinter-simplex-letter sheet2 front image-2 was chosen with probability 0.995659
+		colorcontainer-fromime-letter sheet2 was chosen with probability 1.000000
+		up-moveup-letter sheet2 was chosen with probability 1.000000
+		finisher1-stack-letter sheet2 sheet1 was chosen with probability 0.992107
 	training time: 11.174297571182251s
 	during the training the following losses were computed:
 		loss: 0.984300
@@ -2635,6 +2937,28 @@ model creation time: 36.08140301704407s
 problem epoch data for epoch 2, problem epoch 1
 	sampling search time: 7.940965175628662s
 	during this search the following actions were chosen:
+		initialize  was chosen with probability 1.000000
+		colorfeeder-feed-letter sheet1 was chosen with probability 0.253483
+		down-movebottom-letter sheet1 was chosen with probability 0.364412
+		colorcontainer-toime-letter sheet1 was chosen with probability 0.374126
+		colorprinter-simplex-letter sheet1 front image-1 was chosen with probability 0.226615
+		colorcontainer-fromime-letter sheet1 was chosen with probability 0.389980
+		up-moveup-letter sheet1 was chosen with probability 0.301311
+		finisher1-stack-letter sheet1 dummy-sheet was chosen with probability 0.391586
+		colorfeeder-feed-letter sheet2 was chosen with probability 0.381015
+		down-movebottom-letter sheet2 was chosen with probability 0.534245
+		colorcontainer-toime-letter sheet2 was chosen with probability 0.544615
+		colorprinter-simplex-letter sheet2 front image-2 was chosen with probability 0.272040
+		colorcontainer-fromime-letter sheet2 was chosen with probability 0.561160
+		up-moveup-letter sheet2 was chosen with probability 0.463088
+		finisher1-stack-letter sheet2 sheet1 was chosen with probability 0.561025
+		colorfeeder-feed-letter sheet3 was chosen with probability 0.762030
+		down-movebottom-letter sheet3 was chosen with probability 1.000000
+		colorcontainer-toime-letter sheet3 was chosen with probability 1.000000
+		colorprinter-simplex-letter sheet3 front image-3 was chosen with probability 0.339966
+		colorcontainer-fromime-letter sheet3 was chosen with probability 1.000000
+		up-moveup-letter sheet3 was chosen with probability 1.000000
+		finisher1-stack-letter sheet3 sheet2 was chosen with probability 0.967538
 	training time: 68.56928539276123s
 	during the training the following losses were computed:
 		loss: 2.352400
@@ -2741,6 +3065,28 @@ problem epoch data for epoch 2, problem epoch 1
 problem epoch data for epoch 2, problem epoch 2
 	sampling search time: 7.350379467010498s
 	during this search the following actions were chosen:
+		initialize  was chosen with probability 1.000000
+		colorfeeder-feed-letter sheet1 was chosen with probability 0.333284
+		down-movebottom-letter sheet1 was chosen with probability 0.333386
+		colorcontainer-toime-letter sheet1 was chosen with probability 0.333554
+		colorfeeder-feed-letter sheet2 was chosen with probability 0.333697
+		colorfeeder-feed-letter sheet3 was chosen with probability 0.334667
+		down-movebottom-letter sheet2 was chosen with probability 0.332897
+		colorcontainer-toime-letter sheet2 was chosen with probability 0.333347
+		down-movebottom-letter sheet3 was chosen with probability 0.332463
+		colorcontainer-toime-letter sheet3 was chosen with probability 0.332912
+		colorprinter-simplex-letter sheet1 front image-1 was chosen with probability 0.329718
+		colorcontainer-fromime-letter sheet1 was chosen with probability 0.333239
+		up-moveup-letter sheet1 was chosen with probability 0.331500
+		finisher1-stack-letter sheet1 dummy-sheet was chosen with probability 0.332331
+		colorprinter-simplex-letter sheet2 front image-2 was chosen with probability 0.494553
+		colorcontainer-fromime-letter sheet2 was chosen with probability 0.499873
+		up-moveup-letter sheet2 was chosen with probability 0.497937
+		finisher1-stack-letter sheet2 sheet1 was chosen with probability 0.500598
+		colorprinter-simplex-letter sheet3 front image-3 was chosen with probability 0.989106
+		colorcontainer-fromime-letter sheet3 was chosen with probability 1.000000
+		up-moveup-letter sheet3 was chosen with probability 1.000000
+		finisher1-stack-letter sheet3 sheet2 was chosen with probability 0.997261
 	training time: 10.150789260864258s
 	during the training the following losses were computed:
 		loss: 2.345900
@@ -2847,6 +3193,28 @@ problem epoch data for epoch 2, problem epoch 2
 problem epoch data for epoch 2, problem epoch 3
 	sampling search time: 7.693588495254517s
 	during this search the following actions were chosen:
+		initialize  was chosen with probability 1.000000
+		colorfeeder-feed-letter sheet1 was chosen with probability 0.333122
+		down-movebottom-letter sheet1 was chosen with probability 0.334102
+		colorcontainer-toime-letter sheet1 was chosen with probability 0.333949
+		colorfeeder-feed-letter sheet2 was chosen with probability 0.333834
+		colorfeeder-feed-letter sheet3 was chosen with probability 0.334841
+		colorprinter-simplex-letter sheet1 front image-1 was chosen with probability 0.333137
+		down-movebottom-letter sheet2 was chosen with probability 0.333336
+		down-movebottom-letter sheet3 was chosen with probability 0.333386
+		colorcontainer-fromime-letter sheet1 was chosen with probability 0.333428
+		colorcontainer-toime-letter sheet2 was chosen with probability 0.333427
+		colorprinter-simplex-letter sheet2 front image-2 was chosen with probability 0.333447
+		colorcontainer-fromime-letter sheet2 was chosen with probability 0.333530
+		colorcontainer-toime-letter sheet3 was chosen with probability 0.333520
+		colorprinter-simplex-letter sheet3 front image-3 was chosen with probability 0.333723
+		colorcontainer-fromime-letter sheet3 was chosen with probability 0.333406
+		up-moveup-letter sheet2 was chosen with probability 0.333334
+		up-moveup-letter sheet3 was chosen with probability 0.499527
+		up-moveup-letter sheet1 was chosen with probability 0.996224
+		finisher1-stack-letter sheet1 dummy-sheet was chosen with probability 0.994356
+		finisher1-stack-letter sheet2 sheet1 was chosen with probability 0.996236
+		finisher1-stack-letter sheet3 sheet2 was chosen with probability 0.998114
 	training time: 10.25619626045227s
 	during the training the following losses were computed:
 		loss: 2.320400
@@ -2956,6 +3324,35 @@ model creation time: 74.78617787361145s
 problem epoch data for epoch 2, problem epoch 1
 	sampling search time: 31.92139720916748s
 	during this search the following actions were chosen:
+		initialize  was chosen with probability 1.000000
+		colorfeeder-feed-letter sheet3 was chosen with probability 0.284508
+		down-movebottom-letter sheet3 was chosen with probability 0.286869
+		colorcontainer-toime-letter sheet3 was chosen with probability 0.286658
+		colorfeeder-feed-letter sheet4 was chosen with probability 0.231923
+		down-movebottom-letter sheet4 was chosen with probability 0.230830
+		colorcontainer-toime-letter sheet4 was chosen with probability 0.230796
+		colorprinter-simplex-letter sheet3 front image-3 was chosen with probability 0.193513
+		colorcontainer-fromime-letter sheet3 was chosen with probability 0.230710
+		up-moveup-letter sheet3 was chosen with probability 0.230463
+		colorprinter-simplex-letter sheet4 front image-4 was chosen with probability 0.298434
+		colorcontainer-fromime-letter sheet4 was chosen with probability 0.401216
+		up-moveup-letter sheet4 was chosen with probability 0.401510
+		colorfeeder-feed-letter sheet1 was chosen with probability 0.497714
+		down-movebottom-letter sheet1 was chosen with probability 0.571571
+		colorcontainer-toime-letter sheet1 was chosen with probability 0.569113
+		colorfeeder-feed-letter sheet2 was chosen with probability 0.469540
+		down-movebottom-letter sheet2 was chosen with probability 0.540771
+		colorcontainer-toime-letter sheet2 was chosen with probability 0.538405
+		colorprinter-simplexmono-letter sheet1 front image-1 was chosen with probability 0.248900
+		colorcontainer-fromime-letter sheet1 was chosen with probability 0.539909
+		up-moveup-letter sheet1 was chosen with probability 0.540734
+		finisher1-stack-letter sheet1 dummy-sheet was chosen with probability 0.540615
+		colorprinter-simplexmono-letter sheet2 front image-2 was chosen with probability 0.497262
+		colorcontainer-fromime-letter sheet2 was chosen with probability 0.998128
+		up-moveup-letter sheet2 was chosen with probability 0.998136
+		finisher1-stack-letter sheet2 sheet1 was chosen with probability 0.997210
+		finisher1-stack-letter sheet3 sheet2 was chosen with probability 0.998138
+		finisher1-stack-letter sheet4 sheet3 was chosen with probability 0.999068
 	training time: 303.68145203590393s
 	during the training the following losses were computed:
 		loss: 4.620400
@@ -3262,6 +3659,41 @@ problem epoch data for epoch 2, problem epoch 1
 problem epoch data for epoch 2, problem epoch 2
 	sampling search time: 42.187602519989014s
 	during this search the following actions were chosen:
+		initialize  was chosen with probability 1.000000
+		blackfeeder-feed-letter sheet1 was chosen with probability 0.254926
+		blackfeeder-feed-letter sheet2 was chosen with probability 0.257873
+		blackcontainer-toime-letter sheet1 was chosen with probability 0.251030
+		blackcontainer-toime-letter sheet2 was chosen with probability 0.252625
+		colorfeeder-feed-letter sheet3 was chosen with probability 0.249134
+		down-movebottom-letter sheet3 was chosen with probability 0.250313
+		colorcontainer-toime-letter sheet3 was chosen with probability 0.250517
+		blackprinter-simplex-letter sheet1 front image-1 was chosen with probability 0.250999
+		blackprinter-simplex-letter sheet2 front image-2 was chosen with probability 0.252093
+		colorprinter-simplex-letter sheet3 front image-3 was chosen with probability 0.252552
+		colorcontainer-fromime-letter sheet3 was chosen with probability 0.250991
+		colorfeeder-feed-letter sheet4 was chosen with probability 0.251001
+		up-moveup-letter sheet3 was chosen with probability 0.250717
+		down-movebottom-letter sheet4 was chosen with probability 0.333915
+		colorcontainer-toime-letter sheet4 was chosen with probability 0.334137
+		colorprinter-simplex-letter sheet4 front image-4 was chosen with probability 0.337567
+		colorcontainer-fromime-letter sheet4 was chosen with probability 0.335009
+		up-moveup-letter sheet4 was chosen with probability 0.334075
+		blackcontainer-fromime-letter sheet1 was chosen with probability 0.499894
+		blackcontainer-fromime-letter sheet2 was chosen with probability 0.501205
+		endcap-move-letter sheet1 was chosen with probability 0.499894
+		htmoverblack-move-letter sheet1 was chosen with probability 0.501310
+		down-movetop-letter sheet1 was chosen with probability 0.500160
+		htmovercolor-move-letter sheet1 was chosen with probability 0.501456
+		endcap-move-letter sheet2 was chosen with probability 0.500043
+		htmoverblack-move-letter sheet2 was chosen with probability 0.501472
+		down-movetop-letter sheet2 was chosen with probability 0.500339
+		htmovercolor-move-letter sheet2 was chosen with probability 0.501644
+		up-movetop-letter sheet2 was chosen with probability 0.499896
+		up-movetop-letter sheet1 was chosen with probability 0.999361
+		finisher1-stack-letter sheet1 dummy-sheet was chosen with probability 0.999155
+		finisher1-stack-letter sheet2 sheet1 was chosen with probability 0.999367
+		finisher1-stack-letter sheet3 sheet2 was chosen with probability 0.999578
+		finisher1-stack-letter sheet4 sheet3 was chosen with probability 0.999789
 	training time: 169.23358130455017s
 	during the training the following losses were computed:
 		loss: 3.050800
@@ -3568,6 +4000,41 @@ problem epoch data for epoch 2, problem epoch 2
 problem epoch data for epoch 2, problem epoch 3
 	sampling search time: 36.12897229194641s
 	during this search the following actions were chosen:
+		initialize  was chosen with probability 1.000000
+		blackfeeder-feed-letter sheet1 was chosen with probability 0.254964
+		blackfeeder-feed-letter sheet2 was chosen with probability 0.257984
+		blackcontainer-toime-letter sheet1 was chosen with probability 0.251373
+		blackprinter-simplex-letter sheet1 front image-1 was chosen with probability 0.252256
+		blackcontainer-fromime-letter sheet1 was chosen with probability 0.252508
+		endcap-move-letter sheet1 was chosen with probability 0.252562
+		htmoverblack-move-letter sheet1 was chosen with probability 0.252129
+		down-movetop-letter sheet1 was chosen with probability 0.252397
+		htmovercolor-move-letter sheet1 was chosen with probability 0.252017
+		up-movetop-letter sheet1 was chosen with probability 0.251921
+		finisher1-stack-letter sheet1 dummy-sheet was chosen with probability 0.251427
+		blackcontainer-toime-letter sheet2 was chosen with probability 0.335466
+		blackprinter-simplex-letter sheet2 front image-2 was chosen with probability 0.336979
+		blackcontainer-fromime-letter sheet2 was chosen with probability 0.334633
+		endcap-move-letter sheet2 was chosen with probability 0.334677
+		htmoverblack-move-letter sheet2 was chosen with probability 0.334168
+		down-movetop-letter sheet2 was chosen with probability 0.334449
+		htmovercolor-move-letter sheet2 was chosen with probability 0.334039
+		up-movetop-letter sheet2 was chosen with probability 0.333907
+		finisher1-stack-letter sheet2 sheet1 was chosen with probability 0.333528
+		colorfeeder-feed-letter sheet3 was chosen with probability 0.499365
+		colorfeeder-feed-letter sheet4 was chosen with probability 0.501572
+		down-movebottom-letter sheet3 was chosen with probability 0.500000
+		colorcontainer-toime-letter sheet3 was chosen with probability 0.500136
+		colorprinter-simplex-letter sheet3 front image-3 was chosen with probability 0.502240
+		colorcontainer-fromime-letter sheet3 was chosen with probability 0.500382
+		down-movebottom-letter sheet4 was chosen with probability 0.500004
+		colorcontainer-toime-letter sheet4 was chosen with probability 0.500128
+		colorprinter-simplex-letter sheet4 front image-4 was chosen with probability 0.502415
+		colorcontainer-fromime-letter sheet4 was chosen with probability 0.500419
+		up-moveup-letter sheet3 was chosen with probability 0.500000
+		finisher1-stack-letter sheet3 sheet2 was chosen with probability 0.500072
+		up-moveup-letter sheet4 was chosen with probability 1.000000
+		finisher1-stack-letter sheet4 sheet3 was chosen with probability 0.999887
 	training time: 179.3193235397339s
 	during the training the following losses were computed:
 		loss: 3.188500
@@ -3980,6 +4447,17 @@ model creation time: 19.804985284805298s
 problem epoch data for epoch 3, problem epoch 1
 	sampling search time: 3.9087436199188232s
 	during this search the following actions were chosen:
+		initialize  was chosen with probability 1.000000
+		blackfeeder-feed-letter sheet1 was chosen with probability 0.999987
+		blackcontainer-toime-letter sheet1 was chosen with probability 1.000000
+		blackprinter-simplex-letter sheet1 front image-1 was chosen with probability 0.999691
+		blackcontainer-fromime-letter sheet1 was chosen with probability 1.000000
+		endcap-move-letter sheet1 was chosen with probability 1.000000
+		htmoverblack-move-letter sheet1 was chosen with probability 1.000000
+		down-movetop-letter sheet1 was chosen with probability 0.999180
+		htmovercolor-move-letter sheet1 was chosen with probability 1.000000
+		up-movetop-letter sheet1 was chosen with probability 1.000000
+		finisher1-stack-letter sheet1 dummy-sheet was chosen with probability 0.999896
 	training time: 56.17428421974182s
 	during the training the following losses were computed:
 		loss: 0.022500
@@ -4086,6 +4564,17 @@ problem epoch data for epoch 3, problem epoch 1
 problem epoch data for epoch 3, problem epoch 2
 	sampling search time: 3.9345128536224365s
 	during this search the following actions were chosen:
+		initialize  was chosen with probability 1.000000
+		blackfeeder-feed-letter sheet1 was chosen with probability 0.999188
+		blackcontainer-toime-letter sheet1 was chosen with probability 1.000000
+		blackprinter-simplex-letter sheet1 front image-1 was chosen with probability 0.999144
+		blackcontainer-fromime-letter sheet1 was chosen with probability 1.000000
+		endcap-move-letter sheet1 was chosen with probability 1.000000
+		htmoverblack-move-letter sheet1 was chosen with probability 1.000000
+		down-movetop-letter sheet1 was chosen with probability 0.999248
+		htmovercolor-move-letter sheet1 was chosen with probability 1.000000
+		up-movetop-letter sheet1 was chosen with probability 1.000000
+		finisher1-stack-letter sheet1 dummy-sheet was chosen with probability 0.999343
 	training time: 10.130581378936768s
 	during the training the following losses were computed:
 		loss: 0.006400
@@ -4192,6 +4681,17 @@ problem epoch data for epoch 3, problem epoch 2
 problem epoch data for epoch 3, problem epoch 3
 	sampling search time: 6.456318140029907s
 	during this search the following actions were chosen:
+		initialize  was chosen with probability 1.000000
+		blackfeeder-feed-letter sheet1 was chosen with probability 0.999241
+		blackcontainer-toime-letter sheet1 was chosen with probability 1.000000
+		blackprinter-simplex-letter sheet1 front image-1 was chosen with probability 0.999221
+		blackcontainer-fromime-letter sheet1 was chosen with probability 1.000000
+		endcap-move-letter sheet1 was chosen with probability 1.000000
+		htmoverblack-move-letter sheet1 was chosen with probability 1.000000
+		down-movetop-letter sheet1 was chosen with probability 0.999242
+		htmovercolor-move-letter sheet1 was chosen with probability 1.000000
+		up-movetop-letter sheet1 was chosen with probability 1.000000
+		finisher1-stack-letter sheet1 dummy-sheet was chosen with probability 0.999269
 	training time: 10.14504098892212s
 	during the training the following losses were computed:
 		loss: 0.004900
@@ -4301,6 +4801,13 @@ model creation time: 31.691221237182617s
 problem epoch data for epoch 3, problem epoch 1
 	sampling search time: 7.347367286682129s
 	during this search the following actions were chosen:
+		initialize  was chosen with probability 1.000000
+		blackfeeder-feed-letter sheet1 was chosen with probability 0.499623
+		blackfeeder-feed-letter sheet2 was chosen with probability 0.971818
+		blackcontainer-toime-letter sheet1 was chosen with probability 0.500000
+		blackprinter-simplex-letter sheet1 front image-1 was chosen with probability 0.969892
+		blackcontainer-toime-letter sheet2 was chosen with probability 0.514354
+		blackprinter-simplex-letter sheet2 front image-1 was chosen with probability 0.971474
 	training time: 83.73465609550476s
 	during the training the following losses were computed:
 		loss: 4.683900
@@ -4407,6 +4914,24 @@ problem epoch data for epoch 3, problem epoch 1
 problem epoch data for epoch 3, problem epoch 2
 	sampling search time: 7.675235986709595s
 	during this search the following actions were chosen:
+		initialize  was chosen with probability 1.000000
+		colorfeeder-feed-letter sheet2 was chosen with probability 0.483147
+		blackfeeder-feed-letter sheet1 was chosen with probability 0.626692
+		blackcontainer-toime-letter sheet1 was chosen with probability 0.719065
+		blackprinter-simplex-letter sheet1 front image-1 was chosen with probability 0.765886
+		blackcontainer-fromime-letter sheet1 was chosen with probability 0.748270
+		endcap-move-letter sheet1 was chosen with probability 0.710423
+		htmoverblack-move-letter sheet1 was chosen with probability 0.709412
+		down-movetop-letter sheet1 was chosen with probability 0.707745
+		htmovercolor-move-letter sheet1 was chosen with probability 0.704352
+		up-movetop-letter sheet1 was chosen with probability 0.711057
+		finisher1-stack-letter sheet1 dummy-sheet was chosen with probability 0.723303
+		down-movebottom-letter sheet2 was chosen with probability 1.000000
+		colorcontainer-toime-letter sheet2 was chosen with probability 1.000000
+		colorprinter-simplex-letter sheet2 front image-2 was chosen with probability 0.999216
+		colorcontainer-fromime-letter sheet2 was chosen with probability 1.000000
+		up-moveup-letter sheet2 was chosen with probability 1.000000
+		finisher1-stack-letter sheet2 sheet1 was chosen with probability 0.983662
 	training time: 10.132925271987915s
 	during the training the following losses were computed:
 		loss: 1.292700
@@ -4513,6 +5038,24 @@ problem epoch data for epoch 3, problem epoch 2
 problem epoch data for epoch 3, problem epoch 3
 	sampling search time: 7.663474798202515s
 	during this search the following actions were chosen:
+		initialize  was chosen with probability 1.000000
+		blackfeeder-feed-letter sheet1 was chosen with probability 0.497949
+		blackcontainer-toime-letter sheet1 was chosen with probability 0.500267
+		colorfeeder-feed-letter sheet2 was chosen with probability 0.497889
+		blackprinter-simplex-letter sheet1 front image-1 was chosen with probability 0.500722
+		down-movebottom-letter sheet2 was chosen with probability 0.503963
+		blackcontainer-fromime-letter sheet1 was chosen with probability 0.503843
+		endcap-move-letter sheet1 was chosen with probability 0.500309
+		htmoverblack-move-letter sheet1 was chosen with probability 0.503732
+		down-movetop-letter sheet1 was chosen with probability 0.505790
+		htmovercolor-move-letter sheet1 was chosen with probability 0.500330
+		up-movetop-letter sheet1 was chosen with probability 0.503663
+		finisher1-stack-letter sheet1 dummy-sheet was chosen with probability 0.507445
+		colorcontainer-toime-letter sheet2 was chosen with probability 1.000000
+		colorprinter-simplex-letter sheet2 front image-2 was chosen with probability 0.994998
+		colorcontainer-fromime-letter sheet2 was chosen with probability 1.000000
+		up-moveup-letter sheet2 was chosen with probability 1.000000
+		finisher1-stack-letter sheet2 sheet1 was chosen with probability 0.992137
 	training time: 10.146834135055542s
 	during the training the following losses were computed:
 		loss: 1.079200
@@ -4622,6 +5165,11 @@ model creation time: 36.411803245544434s
 problem epoch data for epoch 3, problem epoch 1
 	sampling search time: 7.094630002975464s
 	during this search the following actions were chosen:
+		initialize  was chosen with probability 1.000000
+		colorfeeder-feed-letter sheet1 was chosen with probability 0.252891
+		down-movebottom-letter sheet1 was chosen with probability 0.362771
+		colorcontainer-toime-letter sheet1 was chosen with probability 0.371795
+		colorprinter-simplex-letter sheet1 front image-2 was chosen with probability 0.213659
 	training time: 70.05329298973083s
 	during the training the following losses were computed:
 		loss: 2.321700
@@ -4728,6 +5276,28 @@ problem epoch data for epoch 3, problem epoch 1
 problem epoch data for epoch 3, problem epoch 2
 	sampling search time: 7.343431234359741s
 	during this search the following actions were chosen:
+		initialize  was chosen with probability 1.000000
+		colorfeeder-feed-letter sheet1 was chosen with probability 0.333233
+		down-movebottom-letter sheet1 was chosen with probability 0.334156
+		colorfeeder-feed-letter sheet2 was chosen with probability 0.333532
+		down-movebottom-letter sheet2 was chosen with probability 0.334451
+		colorfeeder-feed-letter sheet3 was chosen with probability 0.333827
+		down-movebottom-letter sheet3 was chosen with probability 0.334701
+		colorcontainer-toime-letter sheet1 was chosen with probability 0.333333
+		colorprinter-simplex-letter sheet1 front image-1 was chosen with probability 0.332318
+		colorcontainer-fromime-letter sheet1 was chosen with probability 0.334263
+		up-moveup-letter sheet1 was chosen with probability 0.334877
+		finisher1-stack-letter sheet1 dummy-sheet was chosen with probability 0.336273
+		colorcontainer-toime-letter sheet2 was chosen with probability 0.500000
+		colorprinter-simplex-letter sheet2 front image-2 was chosen with probability 0.499682
+		colorcontainer-fromime-letter sheet2 was chosen with probability 0.501043
+		up-moveup-letter sheet2 was chosen with probability 0.501760
+		finisher1-stack-letter sheet2 sheet1 was chosen with probability 0.505712
+		colorcontainer-toime-letter sheet3 was chosen with probability 1.000000
+		colorprinter-simplex-letter sheet3 front image-3 was chosen with probability 0.989047
+		colorcontainer-fromime-letter sheet3 was chosen with probability 1.000000
+		up-moveup-letter sheet3 was chosen with probability 1.000000
+		finisher1-stack-letter sheet3 sheet2 was chosen with probability 0.995953
 	training time: 10.1450674533844s
 	during the training the following losses were computed:
 		loss: 2.250000
@@ -4834,6 +5404,28 @@ problem epoch data for epoch 3, problem epoch 2
 problem epoch data for epoch 3, problem epoch 3
 	sampling search time: 7.396846532821655s
 	during this search the following actions were chosen:
+		initialize  was chosen with probability 1.000000
+		colorfeeder-feed-letter sheet1 was chosen with probability 0.332904
+		down-movebottom-letter sheet1 was chosen with probability 0.333294
+		colorcontainer-toime-letter sheet1 was chosen with probability 0.333321
+		colorfeeder-feed-letter sheet2 was chosen with probability 0.333299
+		colorfeeder-feed-letter sheet3 was chosen with probability 0.334539
+		down-movebottom-letter sheet2 was chosen with probability 0.332956
+		colorcontainer-toime-letter sheet2 was chosen with probability 0.333659
+		down-movebottom-letter sheet3 was chosen with probability 0.332580
+		colorcontainer-toime-letter sheet3 was chosen with probability 0.333282
+		colorprinter-simplex-letter sheet1 front image-1 was chosen with probability 0.331088
+		colorprinter-simplex-letter sheet2 front image-2 was chosen with probability 0.331796
+		colorprinter-simplex-letter sheet3 front image-3 was chosen with probability 0.332570
+		colorcontainer-fromime-letter sheet1 was chosen with probability 0.333333
+		up-moveup-letter sheet1 was chosen with probability 0.333386
+		finisher1-stack-letter sheet1 dummy-sheet was chosen with probability 0.333582
+		colorcontainer-fromime-letter sheet2 was chosen with probability 0.500000
+		up-moveup-letter sheet2 was chosen with probability 0.500060
+		finisher1-stack-letter sheet2 sheet1 was chosen with probability 0.500783
+		colorcontainer-fromime-letter sheet3 was chosen with probability 1.000000
+		up-moveup-letter sheet3 was chosen with probability 1.000000
+		finisher1-stack-letter sheet3 sheet2 was chosen with probability 0.997495
 	training time: 10.136756658554077s
 	during the training the following losses were computed:
 		loss: 2.490600
@@ -4943,6 +5535,11 @@ model creation time: 66.29612636566162s
 problem epoch data for epoch 3, problem epoch 1
 	sampling search time: 25.08275318145752s
 	during this search the following actions were chosen:
+		initialize  was chosen with probability 1.000000
+		colorfeeder-feed-letter sheet3 was chosen with probability 0.274378
+		down-movebottom-letter sheet3 was chosen with probability 0.277656
+		colorcontainer-toime-letter sheet3 was chosen with probability 0.276724
+		colorprinter-simplexmono-letter sheet3 front image-1 was chosen with probability 0.193075
 	training time: 205.17236518859863s
 	during the training the following losses were computed:
 		loss: 5.011300
@@ -5049,6 +5646,41 @@ problem epoch data for epoch 3, problem epoch 1
 problem epoch data for epoch 3, problem epoch 2
 	sampling search time: 147.58032202720642s
 	during this search the following actions were chosen:
+		initialize  was chosen with probability 1.000000
+		blackfeeder-feed-letter sheet1 was chosen with probability 0.254849
+		blackfeeder-feed-letter sheet2 was chosen with probability 0.254721
+		blackcontainer-toime-letter sheet1 was chosen with probability 0.252903
+		blackcontainer-toime-letter sheet2 was chosen with probability 0.255144
+		blackprinter-simplex-letter sheet1 front image-1 was chosen with probability 0.249560
+		blackcontainer-fromime-letter sheet1 was chosen with probability 0.254544
+		endcap-move-letter sheet1 was chosen with probability 0.251247
+		htmoverblack-move-letter sheet1 was chosen with probability 0.250917
+		down-movetop-letter sheet1 was chosen with probability 0.255984
+		colorfeeder-feed-letter sheet3 was chosen with probability 0.250750
+		down-movebottom-letter sheet3 was chosen with probability 0.251328
+		colorfeeder-feed-letter sheet4 was chosen with probability 0.251179
+		down-movebottom-letter sheet4 was chosen with probability 0.251536
+		colorcontainer-toime-letter sheet3 was chosen with probability 0.250884
+		colorcontainer-toime-letter sheet4 was chosen with probability 0.251266
+		blackprinter-simplex-letter sheet2 front image-2 was chosen with probability 0.249675
+		blackcontainer-fromime-letter sheet2 was chosen with probability 0.250842
+		colorprinter-simplex-letter sheet3 front image-3 was chosen with probability 0.250606
+		colorcontainer-fromime-letter sheet3 was chosen with probability 0.252726
+		colorprinter-simplex-letter sheet4 front image-4 was chosen with probability 0.251380
+		colorcontainer-fromime-letter sheet4 was chosen with probability 0.251749
+		endcap-move-letter sheet2 was chosen with probability 0.251493
+		htmoverblack-move-letter sheet2 was chosen with probability 0.251321
+		down-movetop-letter sheet2 was chosen with probability 0.255906
+		up-moveup-letter sheet3 was chosen with probability 0.250090
+		up-moveup-letter sheet4 was chosen with probability 0.333491
+		htmovercolor-move-letter sheet1 was chosen with probability 0.499947
+		htmovercolor-move-letter sheet2 was chosen with probability 0.501497
+		up-movetop-letter sheet2 was chosen with probability 0.499954
+		up-movetop-letter sheet1 was chosen with probability 0.999678
+		finisher1-stack-letter sheet1 dummy-sheet was chosen with probability 0.999577
+		finisher1-stack-letter sheet2 sheet1 was chosen with probability 0.999683
+		finisher1-stack-letter sheet3 sheet2 was chosen with probability 0.999789
+		finisher1-stack-letter sheet4 sheet3 was chosen with probability 0.999894
 	training time: 175.45832061767578s
 	during the training the following losses were computed:
 		loss: 3.886900
@@ -5255,6 +5887,41 @@ problem epoch data for epoch 3, problem epoch 2
 problem epoch data for epoch 3, problem epoch 3
 	sampling search time: 36.39860916137695s
 	during this search the following actions were chosen:
+		initialize  was chosen with probability 1.000000
+		blackfeeder-feed-letter sheet1 was chosen with probability 0.251389
+		blackfeeder-feed-letter sheet2 was chosen with probability 0.252823
+		blackcontainer-toime-letter sheet1 was chosen with probability 0.250716
+		blackcontainer-toime-letter sheet2 was chosen with probability 0.251580
+		blackprinter-simplex-letter sheet1 front image-1 was chosen with probability 0.250103
+		blackcontainer-fromime-letter sheet1 was chosen with probability 0.251296
+		endcap-move-letter sheet1 was chosen with probability 0.250825
+		htmoverblack-move-letter sheet1 was chosen with probability 0.250611
+		down-movetop-letter sheet1 was chosen with probability 0.250369
+		htmovercolor-move-letter sheet1 was chosen with probability 0.250626
+		up-movetop-letter sheet1 was chosen with probability 0.250854
+		finisher1-stack-letter sheet1 dummy-sheet was chosen with probability 0.250988
+		colorfeeder-feed-letter sheet3 was chosen with probability 0.332665
+		colorfeeder-feed-letter sheet4 was chosen with probability 0.333004
+		down-movebottom-letter sheet3 was chosen with probability 0.333108
+		down-movebottom-letter sheet4 was chosen with probability 0.333212
+		colorcontainer-toime-letter sheet3 was chosen with probability 0.332994
+		blackprinter-simplex-letter sheet2 front image-2 was chosen with probability 0.333339
+		colorprinter-simplex-letter sheet3 front image-3 was chosen with probability 0.335115
+		colorcontainer-fromime-letter sheet3 was chosen with probability 0.334238
+		up-moveup-letter sheet3 was chosen with probability 0.333914
+		colorcontainer-toime-letter sheet4 was chosen with probability 0.500749
+		colorprinter-simplex-letter sheet4 front image-4 was chosen with probability 0.502449
+		colorcontainer-fromime-letter sheet4 was chosen with probability 0.500310
+		up-moveup-letter sheet4 was chosen with probability 0.500386
+		blackcontainer-fromime-letter sheet2 was chosen with probability 0.999429
+		endcap-move-letter sheet2 was chosen with probability 0.999429
+		htmoverblack-move-letter sheet2 was chosen with probability 0.999428
+		down-movetop-letter sheet2 was chosen with probability 0.994563
+		htmovercolor-move-letter sheet2 was chosen with probability 0.999429
+		up-movetop-letter sheet2 was chosen with probability 0.999429
+		finisher1-stack-letter sheet2 sheet1 was chosen with probability 0.999145
+		finisher1-stack-letter sheet3 sheet2 was chosen with probability 0.999430
+		finisher1-stack-letter sheet4 sheet3 was chosen with probability 0.999715
 	training time: 112.59808540344238s
 	during the training the following losses were computed:
 		loss: 3.070300
@@ -5567,6 +6234,17 @@ model creation time: 26.202528715133667s
 problem epoch data for epoch 4, problem epoch 1
 	sampling search time: 4.088236331939697s
 	during this search the following actions were chosen:
+		initialize  was chosen with probability 1.000000
+		blackfeeder-feed-letter sheet1 was chosen with probability 0.999947
+		blackcontainer-toime-letter sheet1 was chosen with probability 1.000000
+		blackprinter-simplex-letter sheet1 front image-1 was chosen with probability 0.999824
+		blackcontainer-fromime-letter sheet1 was chosen with probability 1.000000
+		endcap-move-letter sheet1 was chosen with probability 1.000000
+		htmoverblack-move-letter sheet1 was chosen with probability 1.000000
+		down-movetop-letter sheet1 was chosen with probability 0.998308
+		htmovercolor-move-letter sheet1 was chosen with probability 1.000000
+		up-movetop-letter sheet1 was chosen with probability 1.000000
+		finisher1-stack-letter sheet1 dummy-sheet was chosen with probability 0.999837
 	training time: 54.63125801086426s
 	during the training the following losses were computed:
 		loss: 0.029700
@@ -5673,6 +6351,17 @@ problem epoch data for epoch 4, problem epoch 1
 problem epoch data for epoch 4, problem epoch 2
 	sampling search time: 4.030679225921631s
 	during this search the following actions were chosen:
+		initialize  was chosen with probability 1.000000
+		blackfeeder-feed-letter sheet1 was chosen with probability 0.999150
+		blackcontainer-toime-letter sheet1 was chosen with probability 1.000000
+		blackprinter-simplex-letter sheet1 front image-1 was chosen with probability 0.999053
+		blackcontainer-fromime-letter sheet1 was chosen with probability 1.000000
+		endcap-move-letter sheet1 was chosen with probability 1.000000
+		htmoverblack-move-letter sheet1 was chosen with probability 1.000000
+		down-movetop-letter sheet1 was chosen with probability 0.999232
+		htmovercolor-move-letter sheet1 was chosen with probability 1.000000
+		up-movetop-letter sheet1 was chosen with probability 1.000000
+		finisher1-stack-letter sheet1 dummy-sheet was chosen with probability 0.999417
 	training time: 10.168527364730835s
 	during the training the following losses were computed:
 		loss: 0.007600
@@ -5779,6 +6468,17 @@ problem epoch data for epoch 4, problem epoch 2
 problem epoch data for epoch 4, problem epoch 3
 	sampling search time: 4.1217100620269775s
 	during this search the following actions were chosen:
+		initialize  was chosen with probability 1.000000
+		blackfeeder-feed-letter sheet1 was chosen with probability 0.999235
+		blackcontainer-toime-letter sheet1 was chosen with probability 1.000000
+		blackprinter-simplex-letter sheet1 front image-1 was chosen with probability 0.999177
+		blackcontainer-fromime-letter sheet1 was chosen with probability 1.000000
+		endcap-move-letter sheet1 was chosen with probability 1.000000
+		htmoverblack-move-letter sheet1 was chosen with probability 1.000000
+		down-movetop-letter sheet1 was chosen with probability 0.999238
+		htmovercolor-move-letter sheet1 was chosen with probability 1.000000
+		up-movetop-letter sheet1 was chosen with probability 1.000000
+		finisher1-stack-letter sheet1 dummy-sheet was chosen with probability 0.999293
 	training time: 10.170512199401855s
 	during the training the following losses were computed:
 		loss: 0.005300
@@ -5888,6 +6588,20 @@ model creation time: 34.82716107368469s
 problem epoch data for epoch 4, problem epoch 1
 	sampling search time: 7.200740098953247s
 	during this search the following actions were chosen:
+		initialize  was chosen with probability 1.000000
+		blackfeeder-feed-letter sheet1 was chosen with probability 0.499623
+		blackfeeder-feed-letter sheet2 was chosen with probability 0.971915
+		blackcontainer-toime-letter sheet1 was chosen with probability 0.500000
+		blackprinter-simplex-letter sheet1 front image-1 was chosen with probability 0.967920
+		blackcontainer-fromime-letter sheet1 was chosen with probability 0.548514
+		endcap-move-letter sheet1 was chosen with probability 0.501867
+		htmoverblack-move-letter sheet1 was chosen with probability 0.530759
+		down-movetop-letter sheet1 was chosen with probability 0.963145
+		htmovercolor-move-letter sheet1 was chosen with probability 0.580842
+		up-movetop-letter sheet1 was chosen with probability 0.550841
+		finisher1-stack-letter sheet1 dummy-sheet was chosen with probability 0.972438
+		blackcontainer-toime-letter sheet2 was chosen with probability 1.000000
+		blackprinter-simplex-letter sheet2 front image-1 was chosen with probability 0.999226
 	training time: 81.53482055664062s
 	during the training the following losses were computed:
 		loss: 3.581800
@@ -5994,6 +6708,24 @@ problem epoch data for epoch 4, problem epoch 1
 problem epoch data for epoch 4, problem epoch 2
 	sampling search time: 7.3564369678497314s
 	during this search the following actions were chosen:
+		initialize  was chosen with probability 1.000000
+		colorfeeder-feed-letter sheet2 was chosen with probability 0.515532
+		blackfeeder-feed-letter sheet1 was chosen with probability 0.393741
+		blackcontainer-toime-letter sheet1 was chosen with probability 0.629248
+		blackprinter-simplex-letter sheet1 front image-1 was chosen with probability 0.636390
+		blackcontainer-fromime-letter sheet1 was chosen with probability 0.669216
+		endcap-move-letter sheet1 was chosen with probability 0.683058
+		htmoverblack-move-letter sheet1 was chosen with probability 0.686835
+		down-movetop-letter sheet1 was chosen with probability 0.685670
+		htmovercolor-move-letter sheet1 was chosen with probability 0.678659
+		up-movetop-letter sheet1 was chosen with probability 0.691390
+		finisher1-stack-letter sheet1 dummy-sheet was chosen with probability 0.711124
+		down-movebottom-letter sheet2 was chosen with probability 1.000000
+		colorcontainer-toime-letter sheet2 was chosen with probability 1.000000
+		colorprinter-simplex-letter sheet2 front image-2 was chosen with probability 0.998233
+		colorcontainer-fromime-letter sheet2 was chosen with probability 1.000000
+		up-moveup-letter sheet2 was chosen with probability 1.000000
+		finisher1-stack-letter sheet2 sheet1 was chosen with probability 0.978065
 	training time: 10.146170616149902s
 	during the training the following losses were computed:
 		loss: 1.086700
@@ -6100,6 +6832,24 @@ problem epoch data for epoch 4, problem epoch 2
 problem epoch data for epoch 4, problem epoch 3
 	sampling search time: 7.398948431015015s
 	during this search the following actions were chosen:
+		initialize  was chosen with probability 1.000000
+		blackfeeder-feed-letter sheet1 was chosen with probability 0.502910
+		colorfeeder-feed-letter sheet2 was chosen with probability 0.502096
+		down-movebottom-letter sheet2 was chosen with probability 0.503237
+		blackcontainer-toime-letter sheet1 was chosen with probability 0.508344
+		blackprinter-simplex-letter sheet1 front image-1 was chosen with probability 0.515165
+		blackcontainer-fromime-letter sheet1 was chosen with probability 0.504590
+		endcap-move-letter sheet1 was chosen with probability 0.501955
+		htmoverblack-move-letter sheet1 was chosen with probability 0.503804
+		down-movetop-letter sheet1 was chosen with probability 0.505880
+		colorcontainer-toime-letter sheet2 was chosen with probability 0.500914
+		colorprinter-simplex-letter sheet2 front image-2 was chosen with probability 0.508562
+		colorcontainer-fromime-letter sheet2 was chosen with probability 0.501785
+		htmovercolor-move-letter sheet1 was chosen with probability 0.692808
+		up-movetop-letter sheet1 was chosen with probability 0.697595
+		finisher1-stack-letter sheet1 dummy-sheet was chosen with probability 0.697532
+		up-moveup-letter sheet2 was chosen with probability 1.000000
+		finisher1-stack-letter sheet2 sheet1 was chosen with probability 0.991812
 	training time: 10.298867225646973s
 	during the training the following losses were computed:
 		loss: 1.019100
@@ -6209,6 +6959,11 @@ model creation time: 26.76245880126953s
 problem epoch data for epoch 4, problem epoch 1
 	sampling search time: 6.315474510192871s
 	during this search the following actions were chosen:
+		initialize  was chosen with probability 1.000000
+		colorfeeder-feed-letter sheet1 was chosen with probability 0.291290
+		down-movebottom-letter sheet1 was chosen with probability 0.368657
+		colorcontainer-toime-letter sheet1 was chosen with probability 0.377486
+		colorprinter-simplex-letter sheet1 front image-2 was chosen with probability 0.200122
 	training time: 74.31815099716187s
 	during the training the following losses were computed:
 		loss: 2.236200
@@ -6315,6 +7070,28 @@ problem epoch data for epoch 4, problem epoch 1
 problem epoch data for epoch 4, problem epoch 2
 	sampling search time: 6.682303190231323s
 	during this search the following actions were chosen:
+		initialize  was chosen with probability 1.000000
+		colorfeeder-feed-letter sheet1 was chosen with probability 0.333259
+		down-movebottom-letter sheet1 was chosen with probability 0.334363
+		colorcontainer-toime-letter sheet1 was chosen with probability 0.334413
+		colorfeeder-feed-letter sheet2 was chosen with probability 0.332826
+		down-movebottom-letter sheet2 was chosen with probability 0.333915
+		colorcontainer-toime-letter sheet2 was chosen with probability 0.334290
+		colorfeeder-feed-letter sheet3 was chosen with probability 0.332388
+		down-movebottom-letter sheet3 was chosen with probability 0.333715
+		colorcontainer-toime-letter sheet3 was chosen with probability 0.334124
+		colorprinter-simplex-letter sheet1 front image-1 was chosen with probability 0.331191
+		colorcontainer-fromime-letter sheet1 was chosen with probability 0.333645
+		up-moveup-letter sheet1 was chosen with probability 0.333233
+		finisher1-stack-letter sheet1 dummy-sheet was chosen with probability 0.333401
+		colorprinter-simplex-letter sheet2 front image-2 was chosen with probability 0.496759
+		colorcontainer-fromime-letter sheet2 was chosen with probability 0.500353
+		up-moveup-letter sheet2 was chosen with probability 0.499891
+		finisher1-stack-letter sheet2 sheet1 was chosen with probability 0.501615
+		colorprinter-simplex-letter sheet3 front image-3 was chosen with probability 0.993518
+		colorcontainer-fromime-letter sheet3 was chosen with probability 1.000000
+		up-moveup-letter sheet3 was chosen with probability 1.000000
+		finisher1-stack-letter sheet3 sheet2 was chosen with probability 0.996361
 	training time: 10.138031721115112s
 	during the training the following losses were computed:
 		loss: 2.476600
@@ -6421,6 +7198,28 @@ problem epoch data for epoch 4, problem epoch 2
 problem epoch data for epoch 4, problem epoch 3
 	sampling search time: 6.696157217025757s
 	during this search the following actions were chosen:
+		initialize  was chosen with probability 1.000000
+		colorfeeder-feed-letter sheet1 was chosen with probability 0.333052
+		down-movebottom-letter sheet1 was chosen with probability 0.334052
+		colorcontainer-toime-letter sheet1 was chosen with probability 0.334012
+		colorfeeder-feed-letter sheet2 was chosen with probability 0.333212
+		colorfeeder-feed-letter sheet3 was chosen with probability 0.333862
+		colorprinter-simplex-letter sheet1 front image-1 was chosen with probability 0.333679
+		down-movebottom-letter sheet2 was chosen with probability 0.333361
+		down-movebottom-letter sheet3 was chosen with probability 0.333386
+		colorcontainer-toime-letter sheet2 was chosen with probability 0.333337
+		colorprinter-simplex-letter sheet2 front image-2 was chosen with probability 0.333669
+		colorcontainer-toime-letter sheet3 was chosen with probability 0.333341
+		colorprinter-simplex-letter sheet3 front image-3 was chosen with probability 0.333662
+		colorcontainer-fromime-letter sheet1 was chosen with probability 0.333333
+		up-moveup-letter sheet1 was chosen with probability 0.333419
+		finisher1-stack-letter sheet1 dummy-sheet was chosen with probability 0.333370
+		colorcontainer-fromime-letter sheet2 was chosen with probability 0.500000
+		up-moveup-letter sheet2 was chosen with probability 0.500096
+		finisher1-stack-letter sheet2 sheet1 was chosen with probability 0.500295
+		colorcontainer-fromime-letter sheet3 was chosen with probability 1.000000
+		up-moveup-letter sheet3 was chosen with probability 1.000000
+		finisher1-stack-letter sheet3 sheet2 was chosen with probability 0.998417
 	training time: 10.136287927627563s
 	during the training the following losses were computed:
 		loss: 2.474300
@@ -6530,6 +7329,26 @@ model creation time: 64.19836664199829s
 problem epoch data for epoch 4, problem epoch 1
 	sampling search time: 26.328572750091553s
 	during this search the following actions were chosen:
+		initialize  was chosen with probability 1.000000
+		colorfeeder-feed-letter sheet3 was chosen with probability 0.289986
+		down-movebottom-letter sheet3 was chosen with probability 0.293634
+		colorcontainer-toime-letter sheet3 was chosen with probability 0.293565
+		colorfeeder-feed-letter sheet4 was chosen with probability 0.254200
+		down-movebottom-letter sheet4 was chosen with probability 0.253525
+		colorcontainer-toime-letter sheet4 was chosen with probability 0.253901
+		colorprinter-simplex-letter sheet3 front image-3 was chosen with probability 0.220511
+		colorcontainer-fromime-letter sheet3 was chosen with probability 0.253920
+		up-moveup-letter sheet3 was chosen with probability 0.253840
+		colorprinter-simplex-letter sheet4 front image-4 was chosen with probability 0.331917
+		colorcontainer-fromime-letter sheet4 was chosen with probability 0.416527
+		up-moveup-letter sheet4 was chosen with probability 0.416763
+		colorfeeder-feed-letter sheet1 was chosen with probability 0.498253
+		down-movebottom-letter sheet1 was chosen with probability 0.587066
+		colorcontainer-toime-letter sheet1 was chosen with probability 0.582416
+		colorfeeder-feed-letter sheet2 was chosen with probability 0.603277
+		down-movebottom-letter sheet2 was chosen with probability 0.683699
+		colorcontainer-toime-letter sheet2 was chosen with probability 0.679736
+		colorprinter-simplexmono-letter sheet1 front image-2 was chosen with probability 0.249077
 	training time: 273.42304134368896s
 	during the training the following losses were computed:
 		loss: 7.104400
@@ -6836,6 +7655,41 @@ problem epoch data for epoch 4, problem epoch 1
 problem epoch data for epoch 4, problem epoch 2
 	sampling search time: 40.51458692550659s
 	during this search the following actions were chosen:
+		initialize  was chosen with probability 1.000000
+		blackfeeder-feed-letter sheet1 was chosen with probability 0.255669
+		blackfeeder-feed-letter sheet2 was chosen with probability 0.258177
+		blackcontainer-toime-letter sheet1 was chosen with probability 0.252322
+		blackcontainer-toime-letter sheet2 was chosen with probability 0.253743
+		colorfeeder-feed-letter sheet3 was chosen with probability 0.249411
+		down-movebottom-letter sheet3 was chosen with probability 0.253135
+		colorcontainer-toime-letter sheet3 was chosen with probability 0.252947
+		colorfeeder-feed-letter sheet4 was chosen with probability 0.253440
+		down-movebottom-letter sheet4 was chosen with probability 0.255236
+		colorcontainer-toime-letter sheet4 was chosen with probability 0.254966
+		blackprinter-simplex-letter sheet1 front image-1 was chosen with probability 0.251908
+		blackcontainer-fromime-letter sheet1 was chosen with probability 0.255880
+		endcap-move-letter sheet1 was chosen with probability 0.253978
+		htmoverblack-move-letter sheet1 was chosen with probability 0.252373
+		down-movetop-letter sheet1 was chosen with probability 0.256146
+		htmovercolor-move-letter sheet1 was chosen with probability 0.254717
+		up-movetop-letter sheet1 was chosen with probability 0.256673
+		finisher1-stack-letter sheet1 dummy-sheet was chosen with probability 0.256419
+		blackprinter-simplex-letter sheet2 front image-2 was chosen with probability 0.336508
+		blackcontainer-fromime-letter sheet2 was chosen with probability 0.336521
+		endcap-move-letter sheet2 was chosen with probability 0.334180
+		colorprinter-simplex-letter sheet3 front image-3 was chosen with probability 0.332605
+		colorcontainer-fromime-letter sheet3 was chosen with probability 0.338708
+		up-moveup-letter sheet3 was chosen with probability 0.338618
+		colorprinter-simplex-letter sheet4 front image-4 was chosen with probability 0.499171
+		colorcontainer-fromime-letter sheet4 was chosen with probability 0.502253
+		up-moveup-letter sheet4 was chosen with probability 0.501939
+		htmoverblack-move-letter sheet2 was chosen with probability 0.999553
+		down-movetop-letter sheet2 was chosen with probability 0.991859
+		htmovercolor-move-letter sheet2 was chosen with probability 0.999554
+		up-movetop-letter sheet2 was chosen with probability 0.999555
+		finisher1-stack-letter sheet2 sheet1 was chosen with probability 0.999334
+		finisher1-stack-letter sheet3 sheet2 was chosen with probability 0.999556
+		finisher1-stack-letter sheet4 sheet3 was chosen with probability 0.999778
 	training time: 173.27105498313904s
 	during the training the following losses were computed:
 		loss: 2.430200
@@ -7242,6 +8096,41 @@ problem epoch data for epoch 4, problem epoch 2
 problem epoch data for epoch 4, problem epoch 3
 	sampling search time: 37.27795672416687s
 	during this search the following actions were chosen:
+		initialize  was chosen with probability 1.000000
+		blackfeeder-feed-letter sheet1 was chosen with probability 0.257772
+		blackfeeder-feed-letter sheet2 was chosen with probability 0.260791
+		blackcontainer-toime-letter sheet1 was chosen with probability 0.253712
+		blackcontainer-toime-letter sheet2 was chosen with probability 0.254275
+		blackprinter-simplex-letter sheet1 front image-1 was chosen with probability 0.253502
+		blackcontainer-fromime-letter sheet1 was chosen with probability 0.254326
+		blackprinter-simplex-letter sheet2 front image-2 was chosen with probability 0.253573
+		blackcontainer-fromime-letter sheet2 was chosen with probability 0.253197
+		endcap-move-letter sheet1 was chosen with probability 0.252508
+		htmoverblack-move-letter sheet1 was chosen with probability 0.253360
+		down-movetop-letter sheet1 was chosen with probability 0.252849
+		htmovercolor-move-letter sheet1 was chosen with probability 0.253478
+		up-movetop-letter sheet1 was chosen with probability 0.255725
+		finisher1-stack-letter sheet1 dummy-sheet was chosen with probability 0.253371
+		endcap-move-letter sheet2 was chosen with probability 0.337807
+		htmoverblack-move-letter sheet2 was chosen with probability 0.338816
+		down-movetop-letter sheet2 was chosen with probability 0.338069
+		htmovercolor-move-letter sheet2 was chosen with probability 0.338957
+		up-movetop-letter sheet2 was chosen with probability 0.341614
+		finisher1-stack-letter sheet2 sheet1 was chosen with probability 0.338904
+		colorfeeder-feed-letter sheet3 was chosen with probability 0.499367
+		down-movebottom-letter sheet3 was chosen with probability 0.503174
+		colorcontainer-toime-letter sheet3 was chosen with probability 0.502465
+		colorfeeder-feed-letter sheet4 was chosen with probability 0.501428
+		down-movebottom-letter sheet4 was chosen with probability 0.501623
+		colorcontainer-toime-letter sheet4 was chosen with probability 0.500853
+		colorprinter-simplex-letter sheet3 front image-3 was chosen with probability 0.498906
+		colorcontainer-fromime-letter sheet3 was chosen with probability 0.502328
+		up-moveup-letter sheet3 was chosen with probability 0.502632
+		finisher1-stack-letter sheet3 sheet2 was chosen with probability 0.502421
+		colorprinter-simplex-letter sheet4 front image-4 was chosen with probability 0.997811
+		colorcontainer-fromime-letter sheet4 was chosen with probability 1.000000
+		up-moveup-letter sheet4 was chosen with probability 1.000000
+		finisher1-stack-letter sheet4 sheet3 was chosen with probability 0.999925
 	training time: 177.2173523902893s
 	during the training the following losses were computed:
 		loss: 3.098700
@@ -7654,6 +8543,17 @@ model creation time: 18.773215770721436s
 problem epoch data for epoch 5, problem epoch 1
 	sampling search time: 4.047042608261108s
 	during this search the following actions were chosen:
+		initialize  was chosen with probability 1.000000
+		blackfeeder-feed-letter sheet1 was chosen with probability 0.999964
+		blackcontainer-toime-letter sheet1 was chosen with probability 1.000000
+		blackprinter-simplex-letter sheet1 front image-1 was chosen with probability 0.999936
+		blackcontainer-fromime-letter sheet1 was chosen with probability 1.000000
+		endcap-move-letter sheet1 was chosen with probability 1.000000
+		htmoverblack-move-letter sheet1 was chosen with probability 1.000000
+		down-movetop-letter sheet1 was chosen with probability 0.998555
+		htmovercolor-move-letter sheet1 was chosen with probability 1.000000
+		up-movetop-letter sheet1 was chosen with probability 1.000000
+		finisher1-stack-letter sheet1 dummy-sheet was chosen with probability 0.999952
 	training time: 62.412025690078735s
 	during the training the following losses were computed:
 		loss: 0.025100
@@ -7760,6 +8660,17 @@ problem epoch data for epoch 5, problem epoch 1
 problem epoch data for epoch 5, problem epoch 2
 	sampling search time: 3.838801383972168s
 	during this search the following actions were chosen:
+		initialize  was chosen with probability 1.000000
+		blackfeeder-feed-letter sheet1 was chosen with probability 0.999024
+		blackcontainer-toime-letter sheet1 was chosen with probability 1.000000
+		blackprinter-simplex-letter sheet1 front image-1 was chosen with probability 0.999141
+		blackcontainer-fromime-letter sheet1 was chosen with probability 1.000000
+		endcap-move-letter sheet1 was chosen with probability 1.000000
+		htmoverblack-move-letter sheet1 was chosen with probability 1.000000
+		down-movetop-letter sheet1 was chosen with probability 0.999251
+		htmovercolor-move-letter sheet1 was chosen with probability 1.000000
+		up-movetop-letter sheet1 was chosen with probability 1.000000
+		finisher1-stack-letter sheet1 dummy-sheet was chosen with probability 0.999420
 	training time: 10.106724739074707s
 	during the training the following losses were computed:
 		loss: 0.006800
@@ -7866,6 +8777,17 @@ problem epoch data for epoch 5, problem epoch 2
 problem epoch data for epoch 5, problem epoch 3
 	sampling search time: 3.7837905883789062s
 	during this search the following actions were chosen:
+		initialize  was chosen with probability 1.000000
+		blackfeeder-feed-letter sheet1 was chosen with probability 0.999227
+		blackcontainer-toime-letter sheet1 was chosen with probability 1.000000
+		blackprinter-simplex-letter sheet1 front image-1 was chosen with probability 0.999210
+		blackcontainer-fromime-letter sheet1 was chosen with probability 1.000000
+		endcap-move-letter sheet1 was chosen with probability 1.000000
+		htmoverblack-move-letter sheet1 was chosen with probability 1.000000
+		down-movetop-letter sheet1 was chosen with probability 0.999254
+		htmovercolor-move-letter sheet1 was chosen with probability 1.000000
+		up-movetop-letter sheet1 was chosen with probability 1.000000
+		finisher1-stack-letter sheet1 dummy-sheet was chosen with probability 0.999278
 	training time: 10.11290955543518s
 	during the training the following losses were computed:
 		loss: 0.005000
@@ -7975,6 +8897,15 @@ model creation time: 31.774791479110718s
 problem epoch data for epoch 5, problem epoch 1
 	sampling search time: 7.278183460235596s
 	during this search the following actions were chosen:
+		initialize  was chosen with probability 1.000000
+		blackfeeder-feed-letter sheet1 was chosen with probability 0.499623
+		blackfeeder-feed-letter sheet2 was chosen with probability 0.969460
+		blackcontainer-toime-letter sheet1 was chosen with probability 0.500000
+		blackprinter-simplex-letter sheet1 front image-1 was chosen with probability 0.967943
+		blackcontainer-fromime-letter sheet1 was chosen with probability 0.521696
+		endcap-move-letter sheet1 was chosen with probability 0.517944
+		blackcontainer-toime-letter sheet2 was chosen with probability 0.539592
+		blackprinter-simplex-letter sheet2 front image-1 was chosen with probability 0.972400
 	training time: 88.94171667098999s
 	during the training the following losses were computed:
 		loss: 4.281300
@@ -8081,6 +9012,24 @@ problem epoch data for epoch 5, problem epoch 1
 problem epoch data for epoch 5, problem epoch 2
 	sampling search time: 7.325549840927124s
 	during this search the following actions were chosen:
+		initialize  was chosen with probability 1.000000
+		colorfeeder-feed-letter sheet2 was chosen with probability 0.477195
+		blackfeeder-feed-letter sheet1 was chosen with probability 0.557402
+		blackcontainer-toime-letter sheet1 was chosen with probability 0.664163
+		blackprinter-simplex-letter sheet1 front image-1 was chosen with probability 0.769123
+		blackcontainer-fromime-letter sheet1 was chosen with probability 0.740113
+		endcap-move-letter sheet1 was chosen with probability 0.709725
+		htmoverblack-move-letter sheet1 was chosen with probability 0.708451
+		down-movetop-letter sheet1 was chosen with probability 0.707494
+		htmovercolor-move-letter sheet1 was chosen with probability 0.703717
+		up-movetop-letter sheet1 was chosen with probability 0.714346
+		finisher1-stack-letter sheet1 dummy-sheet was chosen with probability 0.724585
+		down-movebottom-letter sheet2 was chosen with probability 1.000000
+		colorcontainer-toime-letter sheet2 was chosen with probability 1.000000
+		colorprinter-simplex-letter sheet2 front image-2 was chosen with probability 0.998759
+		colorcontainer-fromime-letter sheet2 was chosen with probability 1.000000
+		up-moveup-letter sheet2 was chosen with probability 1.000000
+		finisher1-stack-letter sheet2 sheet1 was chosen with probability 0.984499
 	training time: 10.132057666778564s
 	during the training the following losses were computed:
 		loss: 1.194600
@@ -8187,6 +9136,24 @@ problem epoch data for epoch 5, problem epoch 2
 problem epoch data for epoch 5, problem epoch 3
 	sampling search time: 7.331692695617676s
 	during this search the following actions were chosen:
+		initialize  was chosen with probability 1.000000
+		blackfeeder-feed-letter sheet1 was chosen with probability 0.505278
+		colorfeeder-feed-letter sheet2 was chosen with probability 0.499527
+		blackcontainer-toime-letter sheet1 was chosen with probability 0.501990
+		blackprinter-simplex-letter sheet1 front image-1 was chosen with probability 0.504464
+		down-movebottom-letter sheet2 was chosen with probability 0.507390
+		blackcontainer-fromime-letter sheet1 was chosen with probability 0.506462
+		endcap-move-letter sheet1 was chosen with probability 0.503128
+		htmoverblack-move-letter sheet1 was chosen with probability 0.506565
+		down-movetop-letter sheet1 was chosen with probability 0.508968
+		htmovercolor-move-letter sheet1 was chosen with probability 0.502373
+		up-movetop-letter sheet1 was chosen with probability 0.505429
+		finisher1-stack-letter sheet1 dummy-sheet was chosen with probability 0.508997
+		colorcontainer-toime-letter sheet2 was chosen with probability 1.000000
+		colorprinter-simplex-letter sheet2 front image-2 was chosen with probability 0.996318
+		colorcontainer-fromime-letter sheet2 was chosen with probability 1.000000
+		up-moveup-letter sheet2 was chosen with probability 1.000000
+		finisher1-stack-letter sheet2 sheet1 was chosen with probability 0.992895
 	training time: 10.136911392211914s
 	during the training the following losses were computed:
 		loss: 1.042200
@@ -8296,6 +9263,11 @@ model creation time: 26.5305438041687s
 problem epoch data for epoch 5, problem epoch 1
 	sampling search time: 6.27733302116394s
 	during this search the following actions were chosen:
+		initialize  was chosen with probability 1.000000
+		colorfeeder-feed-letter sheet1 was chosen with probability 0.285451
+		down-movebottom-letter sheet1 was chosen with probability 0.367516
+		colorcontainer-toime-letter sheet1 was chosen with probability 0.375984
+		colorprinter-simplex-letter sheet1 front image-2 was chosen with probability 0.221596
 	training time: 66.79126071929932s
 	during the training the following losses were computed:
 		loss: 2.271300
@@ -8402,6 +9374,28 @@ problem epoch data for epoch 5, problem epoch 1
 problem epoch data for epoch 5, problem epoch 2
 	sampling search time: 8.432103157043457s
 	during this search the following actions were chosen:
+		initialize  was chosen with probability 1.000000
+		colorfeeder-feed-letter sheet1 was chosen with probability 0.333263
+		down-movebottom-letter sheet1 was chosen with probability 0.334911
+		colorcontainer-toime-letter sheet1 was chosen with probability 0.333849
+		colorfeeder-feed-letter sheet2 was chosen with probability 0.332196
+		down-movebottom-letter sheet2 was chosen with probability 0.334291
+		colorcontainer-toime-letter sheet2 was chosen with probability 0.333510
+		colorfeeder-feed-letter sheet3 was chosen with probability 0.331128
+		down-movebottom-letter sheet3 was chosen with probability 0.334091
+		colorcontainer-toime-letter sheet3 was chosen with probability 0.333352
+		colorprinter-simplex-letter sheet1 front image-1 was chosen with probability 0.330026
+		colorcontainer-fromime-letter sheet1 was chosen with probability 0.334209
+		up-moveup-letter sheet1 was chosen with probability 0.334203
+		finisher1-stack-letter sheet1 dummy-sheet was chosen with probability 0.334817
+		colorprinter-simplex-letter sheet2 front image-2 was chosen with probability 0.495059
+		colorcontainer-fromime-letter sheet2 was chosen with probability 0.500792
+		up-moveup-letter sheet2 was chosen with probability 0.501004
+		finisher1-stack-letter sheet2 sheet1 was chosen with probability 0.504315
+		colorprinter-simplex-letter sheet3 front image-3 was chosen with probability 0.990119
+		colorcontainer-fromime-letter sheet3 was chosen with probability 1.000000
+		up-moveup-letter sheet3 was chosen with probability 1.000000
+		finisher1-stack-letter sheet3 sheet2 was chosen with probability 0.995524
 	training time: 10.231250047683716s
 	during the training the following losses were computed:
 		loss: 2.480200
@@ -8508,6 +9502,28 @@ problem epoch data for epoch 5, problem epoch 2
 problem epoch data for epoch 5, problem epoch 3
 	sampling search time: 7.501888275146484s
 	during this search the following actions were chosen:
+		initialize  was chosen with probability 1.000000
+		colorfeeder-feed-letter sheet1 was chosen with probability 0.332978
+		down-movebottom-letter sheet1 was chosen with probability 0.333556
+		colorcontainer-toime-letter sheet1 was chosen with probability 0.333522
+		colorprinter-simplex-letter sheet1 front image-1 was chosen with probability 0.335386
+		colorcontainer-fromime-letter sheet1 was chosen with probability 0.333869
+		up-moveup-letter sheet1 was chosen with probability 0.333879
+		finisher1-stack-letter sheet1 dummy-sheet was chosen with probability 0.333929
+		colorfeeder-feed-letter sheet2 was chosen with probability 0.499485
+		down-movebottom-letter sheet2 was chosen with probability 0.499947
+		colorcontainer-toime-letter sheet2 was chosen with probability 0.499962
+		colorprinter-simplex-letter sheet2 front image-2 was chosen with probability 0.502025
+		colorcontainer-fromime-letter sheet2 was chosen with probability 0.500602
+		up-moveup-letter sheet2 was chosen with probability 0.500615
+		finisher1-stack-letter sheet2 sheet1 was chosen with probability 0.500899
+		colorfeeder-feed-letter sheet3 was chosen with probability 0.998969
+		down-movebottom-letter sheet3 was chosen with probability 1.000000
+		colorcontainer-toime-letter sheet3 was chosen with probability 1.000000
+		colorprinter-simplex-letter sheet3 front image-3 was chosen with probability 0.997954
+		colorcontainer-fromime-letter sheet3 was chosen with probability 1.000000
+		up-moveup-letter sheet3 was chosen with probability 1.000000
+		finisher1-stack-letter sheet3 sheet2 was chosen with probability 0.998179
 	training time: 10.139934778213501s
 	during the training the following losses were computed:
 		loss: 2.388700
@@ -8617,6 +9633,26 @@ model creation time: 64.63861274719238s
 problem epoch data for epoch 5, problem epoch 1
 	sampling search time: 26.8495454788208s
 	during this search the following actions were chosen:
+		initialize  was chosen with probability 1.000000
+		colorfeeder-feed-letter sheet3 was chosen with probability 0.285079
+		down-movebottom-letter sheet3 was chosen with probability 0.287905
+		colorcontainer-toime-letter sheet3 was chosen with probability 0.287444
+		colorfeeder-feed-letter sheet4 was chosen with probability 0.258630
+		down-movebottom-letter sheet4 was chosen with probability 0.258473
+		colorcontainer-toime-letter sheet4 was chosen with probability 0.258472
+		colorprinter-simplex-letter sheet3 front image-3 was chosen with probability 0.233910
+		colorcontainer-fromime-letter sheet3 was chosen with probability 0.258553
+		up-moveup-letter sheet3 was chosen with probability 0.257982
+		colorprinter-simplex-letter sheet4 front image-4 was chosen with probability 0.344443
+		colorcontainer-fromime-letter sheet4 was chosen with probability 0.404372
+		up-moveup-letter sheet4 was chosen with probability 0.404705
+		colorfeeder-feed-letter sheet1 was chosen with probability 0.497925
+		down-movebottom-letter sheet1 was chosen with probability 0.575333
+		colorcontainer-toime-letter sheet1 was chosen with probability 0.567072
+		colorfeeder-feed-letter sheet2 was chosen with probability 0.625254
+		down-movebottom-letter sheet2 was chosen with probability 0.693962
+		colorcontainer-toime-letter sheet2 was chosen with probability 0.686941
+		colorprinter-simplexmono-letter sheet1 front image-2 was chosen with probability 0.251657
 	training time: 263.816205739975s
 	during the training the following losses were computed:
 		loss: 3.196400
@@ -8923,6 +9959,41 @@ problem epoch data for epoch 5, problem epoch 1
 problem epoch data for epoch 5, problem epoch 2
 	sampling search time: 34.37211298942566s
 	during this search the following actions were chosen:
+		initialize  was chosen with probability 1.000000
+		blackfeeder-feed-letter sheet1 was chosen with probability 0.252497
+		blackfeeder-feed-letter sheet2 was chosen with probability 0.255061
+		blackcontainer-toime-letter sheet1 was chosen with probability 0.250959
+		blackprinter-simplex-letter sheet1 front image-1 was chosen with probability 0.253902
+		blackcontainer-fromime-letter sheet1 was chosen with probability 0.250666
+		blackcontainer-toime-letter sheet2 was chosen with probability 0.251034
+		blackprinter-simplex-letter sheet2 front image-2 was chosen with probability 0.253960
+		colorfeeder-feed-letter sheet3 was chosen with probability 0.251136
+		colorfeeder-feed-letter sheet4 was chosen with probability 0.251672
+		down-movebottom-letter sheet3 was chosen with probability 0.250987
+		colorcontainer-toime-letter sheet3 was chosen with probability 0.251445
+		colorprinter-simplex-letter sheet3 front image-3 was chosen with probability 0.254099
+		colorcontainer-fromime-letter sheet3 was chosen with probability 0.251950
+		up-moveup-letter sheet3 was chosen with probability 0.251183
+		down-movebottom-letter sheet4 was chosen with probability 0.335128
+		colorcontainer-toime-letter sheet4 was chosen with probability 0.335719
+		colorprinter-simplex-letter sheet4 front image-4 was chosen with probability 0.338938
+		colorcontainer-fromime-letter sheet4 was chosen with probability 0.335272
+		up-moveup-letter sheet4 was chosen with probability 0.334711
+		blackcontainer-fromime-letter sheet2 was chosen with probability 0.501803
+		endcap-move-letter sheet1 was chosen with probability 0.499868
+		htmoverblack-move-letter sheet1 was chosen with probability 0.501979
+		down-movetop-letter sheet1 was chosen with probability 0.501282
+		htmovercolor-move-letter sheet1 was chosen with probability 0.502176
+		up-movetop-letter sheet1 was chosen with probability 0.502128
+		finisher1-stack-letter sheet1 dummy-sheet was chosen with probability 0.501598
+		endcap-move-letter sheet2 was chosen with probability 0.999473
+		htmoverblack-move-letter sheet2 was chosen with probability 0.999477
+		down-movetop-letter sheet2 was chosen with probability 0.993605
+		htmovercolor-move-letter sheet2 was chosen with probability 0.999477
+		up-movetop-letter sheet2 was chosen with probability 0.999477
+		finisher1-stack-letter sheet2 sheet1 was chosen with probability 0.999217
+		finisher1-stack-letter sheet3 sheet2 was chosen with probability 0.999478
+		finisher1-stack-letter sheet4 sheet3 was chosen with probability 0.999739
 	training time: 140.43539261817932s
 	during the training the following losses were computed:
 		loss: 2.967200
@@ -9229,6 +10300,41 @@ problem epoch data for epoch 5, problem epoch 2
 problem epoch data for epoch 5, problem epoch 3
 	sampling search time: 34.36542797088623s
 	during this search the following actions were chosen:
+		initialize  was chosen with probability 1.000000
+		blackfeeder-feed-letter sheet1 was chosen with probability 0.250064
+		blackfeeder-feed-letter sheet2 was chosen with probability 0.252177
+		blackcontainer-toime-letter sheet1 was chosen with probability 0.250003
+		blackprinter-simplex-letter sheet1 front image-1 was chosen with probability 0.252925
+		blackcontainer-fromime-letter sheet1 was chosen with probability 0.251146
+		blackcontainer-toime-letter sheet2 was chosen with probability 0.250285
+		blackprinter-simplex-letter sheet2 front image-2 was chosen with probability 0.253128
+		colorfeeder-feed-letter sheet3 was chosen with probability 0.250850
+		colorfeeder-feed-letter sheet4 was chosen with probability 0.252894
+		blackcontainer-fromime-letter sheet2 was chosen with probability 0.251477
+		down-movebottom-letter sheet3 was chosen with probability 0.250501
+		colorcontainer-toime-letter sheet3 was chosen with probability 0.252287
+		colorprinter-simplex-letter sheet3 front image-3 was chosen with probability 0.251015
+		colorcontainer-fromime-letter sheet3 was chosen with probability 0.251347
+		up-moveup-letter sheet3 was chosen with probability 0.251357
+		down-movebottom-letter sheet4 was chosen with probability 0.334248
+		colorcontainer-toime-letter sheet4 was chosen with probability 0.336367
+		colorprinter-simplex-letter sheet4 front image-4 was chosen with probability 0.334752
+		colorcontainer-fromime-letter sheet4 was chosen with probability 0.334890
+		up-moveup-letter sheet4 was chosen with probability 0.334909
+		endcap-move-letter sheet1 was chosen with probability 0.499927
+		htmoverblack-move-letter sheet1 was chosen with probability 0.502667
+		down-movetop-letter sheet1 was chosen with probability 0.501495
+		htmovercolor-move-letter sheet1 was chosen with probability 0.503719
+		up-movetop-letter sheet1 was chosen with probability 0.500158
+		finisher1-stack-letter sheet1 dummy-sheet was chosen with probability 0.501506
+		endcap-move-letter sheet2 was chosen with probability 0.999706
+		htmoverblack-move-letter sheet2 was chosen with probability 0.999710
+		down-movetop-letter sheet2 was chosen with probability 0.998096
+		htmovercolor-move-letter sheet2 was chosen with probability 0.999711
+		up-movetop-letter sheet2 was chosen with probability 0.999707
+		finisher1-stack-letter sheet2 sheet1 was chosen with probability 0.999563
+		finisher1-stack-letter sheet3 sheet2 was chosen with probability 0.999708
+		finisher1-stack-letter sheet4 sheet3 was chosen with probability 0.999854
 	training time: 165.27855682373047s
 	during the training the following losses were computed:
 		loss: 3.094200
