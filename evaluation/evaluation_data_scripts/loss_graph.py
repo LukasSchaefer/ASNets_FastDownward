@@ -1,15 +1,18 @@
 #! /usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import sys
+import os
 import re
+import sys
 
 def extract_loss_values(log_lines, skip_x_losses):
     problem_losses = {}
+    epoch_indeces = []
     loss_index = 0
     current_problem = ""
     problem_name_regex = r'Training data for problem ([a-zA-Z0-9-_]*\.pddl) in epoch \d+:'
     loss_regex = r'loss: ([0-9]+\.[0-9]*)'
+    epoch_regex = r'Epoch (\d+):'
     loss_counter = -1
     for line in log_lines:
         match = re.match(problem_name_regex, line)
@@ -29,10 +32,15 @@ def extract_loss_values(log_lines, skip_x_losses):
             loss = float(match_loss.group(1))
             problem_losses[current_problem][-1].append((loss_index, loss))
             loss_index += 1
-    return problem_losses
+        match = re.match(epoch_regex, line)
+        if match:
+            epoch_indeces.append(loss_index)
+            loss_index += 1
+
+    return problem_losses, epoch_indeces
 
 
-def write_loss_graph(problem_losses, tex_path):
+def write_loss_graph(problem_losses, epoch_indeces, tex_path):
     colors = ['blue', 'green', 'magenta', 'olive', 'orange', 'red', 'yellow']
     with open(tex_path, 'w') as f:
         f.write('\\begin{tikzpicture}[trim axis left]\n')
@@ -68,15 +76,21 @@ def write_loss_graph(problem_losses, tex_path):
                 f.write('\t};\n')
                 if epoch_index == 0:
                     f.write('\t\\addlegendentry{%s}\n' % problem_file)
+        for epoch_index in epoch_indeces:
+            f.write('\t\\draw[dashed] ({axis cs:%d,0}|-{rel axis cs:0,1}) -- ({axis cs:%d,0}|-{rel axis cs:0,0});\n' % (epoch_index, epoch_index))
         f.write('\t\\end{axis}\n')
         f.write('\\end{tikzpicture}')
 
 
 def main(argv):
     if len(argv) < 2 or len(argv) > 3:
-        print("Usage: python3 loss_graph.py <path/to/training_sum.log> (<skip_every_x_losses>)")
+        print("Usage: python3 loss_graph.py <path/to/training_sum.log> (<path/to/save_dir>) (<skip_every_x_losses>)")
         sys.exit(1)
     training_log_path = argv[1]
+    if len(argv) == 3:
+        save_dir = argv[2]
+    else:
+        save_dir = './'
     if len(argv) == 4:
         skip_x_losses = int(argv[3])
     else:
@@ -88,9 +102,9 @@ def main(argv):
 
     # first line ends with <domain>: -> split to get "<domain:" and drop last character
     domain_name = log_lines[0].split()[-1][:-1]
-    tex_path = 'loss_graph_' + domain_name + '.tex'
-    problem_losses = extract_loss_values(log_lines, skip_x_losses)
-    write_loss_graph(problem_losses, tex_path)
+    tex_path = os.path.join(save_dir, 'loss_graph_' + domain_name + '.tex')
+    problem_losses, epoch_indeces = extract_loss_values(log_lines, skip_x_losses)
+    write_loss_graph(problem_losses, epoch_indeces[1:-1], tex_path)
 
 
 if __name__ == "__main__":

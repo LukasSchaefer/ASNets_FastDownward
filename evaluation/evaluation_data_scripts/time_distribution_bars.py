@@ -1,8 +1,9 @@
 #! /usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import sys
+import os
 import re
+import sys
 
 
 def extract_time_distribution(log_lines):
@@ -102,17 +103,22 @@ def write_problem_time_distribution_bars(time_distribution, tex_path):
 
 def main(argv):
     if len(argv) < 2 or len(argv) > 3:
-        print("Usage: python3 time_distribution_bars.py <path/to/training_sum.log>")
+        print("Usage: python3 time_distribution_bars.py <path/to/training_sum.log> (<path/to/save_dir>)")
         sys.exit(1)
     training_log_path = argv[1]
+
+    if len(argv) == 3:
+        save_dir = argv[2]
+    else:
+        save_dir = './'
 
     log_file = open(training_log_path, 'r')
     log_lines = [l.strip() for l in log_file.readlines()]
 
     # first line ends with <domain>: -> split to get "<domain:" and drop last character
     domain_name = log_lines[0].split()[-1][:-1]
-    tex_path = 'time_distribution_' + domain_name + '.tex'
-    prob_tex_path = 'prob_time_distribution_' + domain_name + '.tex'
+    tex_path = os.path.join(save_dir, 'time_distribution_' + domain_name + '.tex')
+    prob_tex_path = os.path.join(save_dir, 'prob_time_distribution_' + domain_name + '.tex')
     time_distribution = extract_time_distribution(log_lines)
     write_time_distribution_bars(time_distribution, tex_path)
     write_problem_time_distribution_bars(time_distribution, prob_tex_path)
