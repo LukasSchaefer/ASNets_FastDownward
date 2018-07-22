@@ -344,7 +344,7 @@ class FastDownwardASNetRun(FastDownwardRun):
         self.add_resource(
             'problem', self.task.problem_file, 'problem.pddl', symlink=True)
 
-        CONF = 'conf1'
+        CONF = 'conf2'
 
         domain_dir_path = os.path.dirname(self.task.domain_file)
         domain_name = domain_dir_path.split('/')[-1]
@@ -352,18 +352,12 @@ class FastDownwardASNetRun(FastDownwardRun):
 
         asnetsfastdownward_path = os.path.dirname(os.path.dirname(os.path.dirname(domain_dir_path)))
 
-        network_path = os.path.join(asnetsfastdownward_path + '/evaluation/network_runs/evaluation/protobuf_networks/' + domain_name + '_single/' + CONF + '/', problem_name + '.pb')
+        network_path = os.path.join(asnetsfastdownward_path + '/evaluation/network_runs/evaluation/protobuf_networks/elu_acc/' + domain_name + '/' + CONF + '/', problem_name + '.pb')
 
-        # weights_path = os.path.join(asnetsfastdownward_path + '/evaluation/training/' + domain_name + '/accumulate_samples/' + CONF + '/', 'asnet_final_weights.h5')
         # network_path = os.path.join(asnetsfastdownward_path + '/evaluation/network_runs/evaluation/protobuf_networks/' + domain_name + '/accumulate_samples/' + CONF + '/', problem_name + '.pb')
 
         # replace the network path dummy string
         algo.component_options[1] = algo.component_options[1].replace('NETWORK_PATH', network_path)
-
-        # self.add_command(
-        #     'build_asnet_as_pb_' + domain_name + '_' + problem_name,
-        #     ['python3', os.path.join(asnetsfastdownward_path, 'build_and_store_asnet_as_pb.py'), '{domain}',
-        #      '{problem}', '2', 'False', weights_path, network_path])
 
         self.add_command(
             'fast-downward',
