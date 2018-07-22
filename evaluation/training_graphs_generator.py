@@ -8,6 +8,7 @@ import re
 from evaluation_data_scripts.act_probability_graph import main as act_prob_graph
 from evaluation_data_scripts.loss_graph import main as loss_graph
 from evaluation_data_scripts.time_distribution_bars import main as time_distr_graphs
+from evaluation_data_scripts.success_rate_graph import main as success_rate_graph
 
 def write_dom_training_sum(domain_name, domain_dir, included_confs):
     included_confs.sort()
@@ -26,6 +27,11 @@ def write_dom_training_sum(domain_name, domain_dir, included_confs):
             f.write('\t\\paragraph{Time distribution}\n')
             f.write('\t\\ \\\\ \n')
             rel_path = os.path.join(domain_dir, conf + '/time_distribution_' + domain_name + '.tex')
+            f.write('\t\\input{%s}\n\n' % os.path.abspath(rel_path))
+
+            f.write('\t\\paragraph{Success rate development}\n')
+            f.write('\t\\ \\\\ \n')
+            rel_path = os.path.join(domain_dir, conf + '/success_rate_graph_' + domain_name + '.tex')
             f.write('\t\\input{%s}\n\n' % os.path.abspath(rel_path))
 
             f.write('\t\\paragraph{Loss development}\n')
@@ -64,9 +70,10 @@ def main(argv):
                 included_confs.append(conf_name)
 
                 save_dir_current = os.path.join(save_dir, domain_name + '/' + conf_name)
-                act_prob_graph(['blub', train_log_sum_path, save_dir_current])
                 time_distr_graphs(['blub', train_log_sum_path, save_dir_current])
+                success_rate_graph(['blub', train_log_sum_path, save_dir_current])
                 loss_graph(['blub', train_log_sum_path, save_dir_current])
+                act_prob_graph(['blub', train_log_sum_path, save_dir_current])
 
         if len(included_confs) > 0:
             print('Creating sum for %s' % domain_name)
