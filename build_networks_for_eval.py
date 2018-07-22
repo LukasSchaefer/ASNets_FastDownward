@@ -51,9 +51,9 @@ def main(argv):
             if problem_name == 'domain':
                 continue
 
-            if domain == 'elevator':
-                if problem_name in ['d-20', 'd-21', 'd-22', 'd-23', 'd-24', 'd-25', 'd-26', 'd-27', 'd-28', 'd-29', 'd-30']:
-                    continue
+            # if domain == 'elevator':
+            #     if problem_name in ['d-20', 'd-21', 'd-22', 'd-23', 'd-24', 'd-25', 'd-26', 'd-27', 'd-28', 'd-29', 'd-30']:
+            #         continue
 
             network_path = os.path.join(asnetsfastdownward_dir, 'evaluation/network_runs/evaluation/protobuf_networks/elu_acc/' + domain + '/' + conf + '/' + problem_name + '.pb')
             if os.path.isfile(network_path):
