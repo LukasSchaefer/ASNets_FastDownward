@@ -15,7 +15,7 @@ def write_dom_training_sum(domain_name, domain_dir, included_confs):
     training_dom_path = os.path.join(domain_dir, 'summary_section.tex')
     dom_name = domain_name[0].capitalize() + domain_name[1:]
     with open(training_dom_path, 'w') as f:
-        f.write('\\subsection{%s}\n' % dom_name)
+        f.write('\\section{%s}\n' % dom_name)
         for conf in included_confs:
             if conf == 'conf1':
                 conf_name = '1st configuration: A$^*$ $h^{LM-Cut}$ teacher'
@@ -23,26 +23,28 @@ def write_dom_training_sum(domain_name, domain_dir, included_confs):
                 conf_name = '2nd configuration: A$^*$ $h^{add}$ teacher'
             elif conf == 'conf3':
                 conf_name = '3rd configuration: GBFS $h^{FF}$ teacher'
-            f.write('\\subsubsection{%s}\n\n' % conf_name)
-            f.write('\t\\paragraph{Time distribution}\n')
-            f.write('\t\\ \\\\ \n')
+            f.write('\\subsection*{%s}\n\n' % conf_name)
+            f.write('\t\\subsubsection{Time distribution}\n')
+            # f.write('\t\\ \\\\ \n')
             rel_path = os.path.join(domain_dir, conf + '/time_distribution_' + domain_name + '.tex')
             f.write('\t\\input{%s}\n\n' % os.path.abspath(rel_path))
 
-            f.write('\t\\paragraph{Success rate development}\n')
-            f.write('\t\\ \\\\ \n')
+            f.write('\t\\vspace{2cm}\n')
+            f.write('\t\\subsubsection{Success rate development}\n')
+            # f.write('\t\\ \\\\ \n')
             rel_path = os.path.join(domain_dir, conf + '/success_rate_graph_' + domain_name + '.tex')
-            f.write('\t\\input{%s}\n\n' % os.path.abspath(rel_path))
+            f.write('\t\\input{%s}\n' % os.path.abspath(rel_path))
+            f.write('\t\\newpage\n\n')
 
-            f.write('\t\\paragraph{Loss development}\n')
-            f.write('\t\\ \\\\ \n')
-            rel_path = os.path.join(domain_dir, conf + '/loss_graph_' + domain_name + '.tex')
-            f.write('\t\\input{%s}\n\n' % os.path.abspath(rel_path))
+            # f.write('\t\\paragraph{Loss development}\n')
+            # f.write('\t\\ \\\\ \n')
+            # rel_path = os.path.join(domain_dir, conf + '/loss_graph_' + domain_name + '.tex')
+            # f.write('\t\\input{%s}\n\n' % os.path.abspath(rel_path))
 
-            f.write('\t\\paragraph{Action probabilities development}\n')
-            f.write('\t\\ \\\\ \n')
-            rel_path = os.path.join(domain_dir, conf + '/action_probability_graph_' + domain_name + '.tex')
-            f.write('\t\\input{%s}\n\n' % os.path.abspath(rel_path))
+            # f.write('\t\\paragraph{Action probabilities development}\n')
+            # f.write('\t\\ \\\\ \n')
+            # rel_path = os.path.join(domain_dir, conf + '/action_probability_graph_' + domain_name + '.tex')
+            # f.write('\t\\input{%s}\n\n' % os.path.abspath(rel_path))
 
 
 def main(argv):

@@ -206,7 +206,7 @@ def add_network_data_to_tables(report_dict, tables_dir):
     coverage_table_lines = coverage_table_file.readlines()
 
     line_index = 0
-    cov_regex = r'[\w]+ & \d+\/\d+ & \d+\/\d+ & \d+\/\d+ & \d+\/\d+ & \? & \? & \?'
+    cov_regex = r'[\w]+ & \d+\/\d+ & \d+\/\d+ & \d+\/\d+ & \d+\/\d+ & - & - & -'
     while line_index < len(coverage_table_lines):
         line = coverage_table_lines[line_index]
         match = re.search(cov_regex, line)

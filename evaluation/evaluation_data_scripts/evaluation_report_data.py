@@ -259,7 +259,7 @@ def write_evaluation_tables(report_data, tables_dir):
                 cov_list.append(cov)
             # add ? for ASNets
             for _ in range(3):
-                cov_list.append('?')
+                cov_list.append('-')
             f.write('\t%s & %s & %s & %s & %s & %s & %s & %s\\\\ \n' % tuple(cov_list))
         f.write('\\end{tabular}')
 
@@ -282,8 +282,8 @@ def write_evaluation_tables(report_data, tables_dir):
                     search_times.append(time)
                 # for ASNets
                 for _ in range(3):
-                    costs.append('?')
-                    search_times.append('?')
+                    costs.append('-')
+                    search_times.append('-')
 
                 f.write('\\vspace{0.5cm}\n')
                 f.write('\\noindent\n')
@@ -291,7 +291,7 @@ def write_evaluation_tables(report_data, tables_dir):
                 f.write('\t\\textbf{%s} & A$^*$ $h^{add}$ & A$^*$ $h^{LM-Cut}$ & GBFS $h^{FF}$ & LAMA & ASNet$_1$ & ASNet$_2$ & ASNet$_3$\\\\ \\hline\n' % prob_name)
                 f.write('\tPlan cost & %s & %s & %s & %s & %s & %s & %s\\\\ \n' % tuple(costs))
                 f.write('\tSearch time & %s & %s & %s & %s & %s & %s & %s\\\\ \n' % tuple(search_times))
-                f.write('\tModel creation time & / & / & / & / & ? & ? & ?\\\\ \n')
+                f.write('\tModel creation time & - & - & - & - & - & - & -\\\\ \n')
                 f.write('\\end{tabular}\n')
             
 
