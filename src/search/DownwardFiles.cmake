@@ -432,6 +432,14 @@ fast_downward_plugin(
 )
 
 fast_downward_plugin(
+    NAME OPEN_LIST_POLICY_SEARCH
+    HELP "Policy guided search algorithm with open list"
+    SOURCES
+        search_engines/open_list_policy_search
+    DEPENDS SEARCH_COMMON
+)
+
+fast_downward_plugin(
     NAME LP_SOLVER
     HELP "Interface to an LP solver"
     SOURCES

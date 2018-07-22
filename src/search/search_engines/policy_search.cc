@@ -94,10 +94,6 @@ namespace policy_search {
         // preferences correspond to operator id by index
         assert(operator_ids.size() == operator_prefs.size());
 
-        // check if these are all applicable actions
-        vector<OperatorID> applicable_ops;
-        g_successor_generator->generate_applicable_ops(parent_state, applicable_ops);
-
         // find most probable/ preferenced operator
         int most_probable_op_index = -1;
         float highest_op_probability = 0;
