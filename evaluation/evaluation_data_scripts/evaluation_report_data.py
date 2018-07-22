@@ -23,7 +23,9 @@ def save_costs_for_probs(report_lines, line_index, dom_dict):
         if not cost_match:
             cost = '/'
         else:
-            cost = cost_match.group(1)
+            # while this is really ugly I want to get rid of the (seemingly) unnecessary float .00 for the
+            # costs which were all natural numbers (this works also if there are truly real cost values)
+            cost = str(int(float(cost_match.group(1))))
         prob_dict['astar_add'] = cost
 
         line_index += 1
@@ -32,7 +34,7 @@ def save_costs_for_probs(report_lines, line_index, dom_dict):
         if not cost_match:
             cost = '/'
         else:
-            cost = cost_match.group(1)
+            cost = str(int(float(cost_match.group(1))))
         prob_dict['astar_lmcut'] = cost
 
         line_index += 1
@@ -41,7 +43,7 @@ def save_costs_for_probs(report_lines, line_index, dom_dict):
         if not cost_match:
             cost = '/'
         else:
-            cost = cost_match.group(1)
+            cost = str(int(float(cost_match.group(1))))
         prob_dict['gbfs_ff'] = cost
 
         line_index += 1
@@ -50,7 +52,7 @@ def save_costs_for_probs(report_lines, line_index, dom_dict):
         if not cost_match:
             cost = '/'
         else:
-            cost = cost_match.group(1)
+            cost = str(int(float(cost_match.group(1))))
         prob_dict['lama'] = cost
 
         dom_dict[prob_name] = prob_dict
