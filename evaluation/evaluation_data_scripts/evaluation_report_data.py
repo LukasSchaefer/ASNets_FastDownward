@@ -243,13 +243,13 @@ def extract_report_data(report_lines):
 
 
 def write_evaluation_tables(report_data, tables_dir):
-    planners = ['astar_add', 'astar_lmcut', 'gbfs_ff', 'lama']
+    planners = ['astar_lmcut', 'astar_add', 'gbfs_ff', 'lama']
 
     # creating coverage table
     with open(os.path.join(tables_dir, 'eval_coverage_table.tex'), 'w') as f:
         f.write('\\section{Coverage}\n')
-        f.write('\\begin{tabular}{l || l | l | l | l | l | l | l}\n')
-        f.write('\tDomain & A$^*$ $h^{add}$ & A$^*$ $h^{LM-Cut}$ & GBFS $h^{FF}$ & LAMA & ASNet$_1$ & ASNet$_2$ & ASNet$_3$\\\\ \\hhline{========}\n')
+        f.write('\\begin{tabular}{l || l | l | l | l | l  l | l  l | l  l}\n')
+        f.write('\tDomain & A$^*$ LM & A$^*$ add & GBFS & LAMA & Net$_1$ & eNet$_1$ & Net$_2$ & eNet$_2$ & Net$_3$ & eNet$_3$\\\\ \\hhline{===========}\n')
         for dom in report_data.keys():
             dom_dict = report_data[dom]
             dom_name = dom[0].capitalize() + dom[1:]
@@ -257,10 +257,10 @@ def write_evaluation_tables(report_data, tables_dir):
             for planner in planners:
                 cov = dom_dict[planner]
                 cov_list.append(cov)
-            # add ? for ASNets
-            for _ in range(3):
+            # add - for ASNets
+            for _ in range(6):
                 cov_list.append('-')
-            f.write('\t%s & %s & %s & %s & %s & %s & %s & %s\\\\ \n' % tuple(cov_list))
+            f.write('\t%s & %s & %s & %s & %s & %s & %s & %s & %s & %s & %s\\\\ \n' % tuple(cov_list))
         f.write('\\end{tabular}')
 
 
@@ -281,18 +281,20 @@ def write_evaluation_tables(report_data, tables_dir):
                     costs.append(cost)
                     search_times.append(time)
                 # for ASNets
-                for _ in range(3):
+                for _ in range(6):
                     costs.append('-')
                     search_times.append('-')
 
                 f.write('\\vspace{0.5cm}\n')
                 f.write('\\noindent\n')
-                f.write('\\begin{tabular}{l | l l l l l l l}\n')
-                f.write('\t\\textbf{%s} & A$^*$ $h^{add}$ & A$^*$ $h^{LM-Cut}$ & GBFS $h^{FF}$ & LAMA & ASNet$_1$ & ASNet$_2$ & ASNet$_3$\\\\ \\hline\n' % prob_name)
-                f.write('\tPlan cost & %s & %s & %s & %s & %s & %s & %s\\\\ \n' % tuple(costs))
-                f.write('\tSearch time & %s & %s & %s & %s & %s & %s & %s\\\\ \n' % tuple(search_times))
-                f.write('\tModel creation time & - & - & - & - & - & - & -\\\\ \n')
-                f.write('\\end{tabular}\n')
+                f.write('\\resizebox{1.1\linewidth}{!}{\n')
+                f.write('\t\\begin{tabular}{l || l l l l | l l l l l l}\n')
+                f.write('\t\t\\textbf{%s} & A$^*$ LM & A$^*$ add & GBFS & LAMA & Net$_1$ & eNet$_1$ & Net$_2$ & eNet$_2$ & Net$_3$ & eNet$_3$\\\\ \\hline\n' % prob_name)
+                f.write('\t\tPlan cost & %s & %s & %s & %s & %s & %s & %s & %s & %s & %s\\\\ \n' % tuple(costs))
+                f.write('\t\tSearch time & %s & %s & %s & %s & %s & %s & %s & %s & %s & %s\\\\ \n' % tuple(search_times))
+                f.write('\t\tModel creation time & - & - & - & - & - & - & - & - & - & -\\\\ \n')
+                f.write('\t\\end{tabular}\n')
+                f.write('}\n')
             
 
 def main(argv):
@@ -308,8 +310,6 @@ def main(argv):
     report_lines = [l.strip() for l in report_file.readlines()]
 
     report_dict = extract_report_data(report_lines)
-    domains = ['blocksworld', 'elevator', 'floortile', 'hanoi', 'parcprinter', 'sokoban', 'turnandopen', 'tyreworld']
-    planners = ['astar_add', 'astar_lmcut', 'gbfs_ff', 'lama']
 
     write_evaluation_tables(report_dict, tables_dir)
 

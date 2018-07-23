@@ -18,11 +18,12 @@ def extract_success_rates(log_lines):
 
 def write_success_rate_graph(success_rates, tex_path):
     with open(tex_path, 'w') as f:
-        f.write('\\begin{tikzpicture}[trim axis left]\n')
+        #f.write('\\begin{tikzpicture}[trim axis left]\n')
+        f.write('\\begin{tikzpicture}\n')
         f.write('\t\\begin{axis}[\n')
         f.write('\t\tscale only axis,\n')
-        f.write('\t\theight=5cm,\n')
         f.write('\t\twidth=\\textwidth,\n')
+        f.write('\t\theight=6cm,\n')
         f.write('\t\tmax space between ticks=50,\n')
         f.write('\t\tminor x tick num=4,\n')
         f.write('\t\tminor y tick num=4,\n')

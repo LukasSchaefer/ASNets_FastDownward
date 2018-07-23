@@ -182,11 +182,15 @@ def extend_network_creation_times(report_dict, network_dir, conf):
         dom_dict = report_dict[dom]
         
         for prob_name in dom_dict.keys():
-            if prob_name.startswith('conf'):
+            if prob_name.startswith('conf') or prob_name.startswith('exp'):
                 continue
             prob_dict = dom_dict[prob_name]
 
-            prob_log_path = os.path.join(network_dir, dom + '/' + conf + '/' + prob_name + '.log')
+            if conf.startswith('exp'):
+                conf_string = conf[4:]
+            else:
+                conf_string = conf
+            prob_log_path = os.path.join(network_dir, dom + '/' + conf_string + '/' + prob_name + '.log')
             if not os.path.isfile(prob_log_path):
                 build_time = '/'
             else:
@@ -206,7 +210,7 @@ def add_network_data_to_tables(report_dict, tables_dir):
     coverage_table_lines = coverage_table_file.readlines()
 
     line_index = 0
-    cov_regex = r'[\w]+ & \d+\/\d+ & \d+\/\d+ & \d+\/\d+ & \d+\/\d+ & - & - & -'
+    cov_regex = r'[\w]+ & \d+\/\d+ & \d+\/\d+ & \d+\/\d+ & \d+\/\d+ & - & - & - & - & - & -'
     while line_index < len(coverage_table_lines):
         line = coverage_table_lines[line_index]
         match = re.search(cov_regex, line)
@@ -223,11 +227,14 @@ def add_network_data_to_tables(report_dict, tables_dir):
             print('Domain %s did not occur in the ASNet reports' % dom_name)
             continue
 
-        elements[-3] = dom_dict['conf1']
-        elements[-2] = dom_dict['conf2']
-        elements[-1] = dom_dict['conf3']
-        
-        new_line = '\t%s & %s & %s & %s & %s & %s & %s & %s\\\\ \n' % tuple(elements)
+        elements[-6] = dom_dict['conf1']
+        elements[-5] = dom_dict['exp_conf1']
+        elements[-4] = dom_dict['conf2']
+        elements[-3] = dom_dict['exp_conf2']
+        elements[-2] = dom_dict['conf3']
+        elements[-1] = dom_dict['exp_conf3']
+
+        new_line = '\t%s & %s & %s & %s & %s & %s & %s & %s & %s & %s & %s\\\\ \n' % tuple(elements)
         coverage_table_lines[line_index] = new_line
         print('Domain %s was updated' % dom_name)
         line_index += 1
@@ -257,28 +264,37 @@ def add_network_data_to_tables(report_dict, tables_dir):
                 assert current_problem != ''
                 elements = [s.strip() for s in line.split('&')]
                 prob_dict = dom_dict[current_problem]
-                elements[-3] = prob_dict['conf1'][0]
-                elements[-2] = prob_dict['conf2'][0]
-                elements[-1] = prob_dict['conf3'][0]
-                new_line = '\t%s & %s & %s & %s & %s & %s & %s & %s\\\\ \n' % tuple(elements)
+                elements[-6] = prob_dict['conf1'][0]
+                elements[-5] = prob_dict['exp_conf1'][0]
+                elements[-4] = prob_dict['conf2'][0]
+                elements[-3] = prob_dict['exp_conf2'][0]
+                elements[-2] = prob_dict['conf3'][0]
+                elements[-1] = prob_dict['exp_conf3'][0]
+                new_line = '\t%s & %s & %s & %s & %s & %s & %s & %s & %s & %s & %s\\\\ \n' % tuple(elements)
                 eval_table_lines[line_index] = new_line
             elif line.startswith('Search time'):
                 assert current_problem != ''
                 elements = [s.strip() for s in line.split('&')]
                 prob_dict = dom_dict[current_problem]
-                elements[-3] = prob_dict['conf1'][1]
-                elements[-2] = prob_dict['conf2'][1]
-                elements[-1] = prob_dict['conf3'][1]
-                new_line = '\t%s & %s & %s & %s & %s & %s & %s & %s\\\\ \n' % tuple(elements)
+                elements[-6] = prob_dict['conf1'][1]
+                elements[-5] = prob_dict['exp_conf1'][1]
+                elements[-4] = prob_dict['conf2'][1]
+                elements[-3] = prob_dict['exp_conf2'][1]
+                elements[-2] = prob_dict['conf3'][1]
+                elements[-1] = prob_dict['exp_conf3'][1]
+                new_line = '\t%s & %s & %s & %s & %s & %s & %s & %s & %s & %s & %s\\\\ \n' % tuple(elements)
                 eval_table_lines[line_index] = new_line
             elif line.startswith('Model creation time'):
                 assert current_problem != ''
                 elements = [s.strip() for s in line.split('&')]
                 prob_dict = dom_dict[current_problem]
-                elements[-3] = prob_dict['conf1'][2]
-                elements[-2] = prob_dict['conf2'][2]
-                elements[-1] = prob_dict['conf3'][2]
-                new_line = '\t%s & %s & %s & %s & %s & %s & %s & %s\\\\ \n' % tuple(elements)
+                elements[-6] = prob_dict['conf1'][2]
+                elements[-5] = prob_dict['exp_conf1'][2]
+                elements[-4] = prob_dict['conf2'][2]
+                elements[-3] = prob_dict['exp_conf2'][2]
+                elements[-2] = prob_dict['conf3'][2]
+                elements[-1] = prob_dict['exp_conf3'][2]
+                new_line = '\t%s & %s & %s & %s & %s & %s & %s & %s & %s & %s & %s\\\\ \n' % tuple(elements)
                 eval_table_lines[line_index] = new_line
 
             line_index += 1
@@ -301,15 +317,18 @@ def main(argv):
     assert os.path.isdir(tables_dir)
 
     confs = ['conf1', 'conf2', 'conf3']
+    exps = ['', 'exp_']
     report_dicts = []
 
-    for conf in confs:
-        report_path = os.path.join(report_dir, 'asnet_eval_report_' + conf + '.html')
-        report_file = open(report_path, 'r')
-        report_lines = [l.strip() for l in report_file.readlines()]
-        report_dict = extract_report_data(report_lines, conf)
-        extend_network_creation_times(report_dict, network_dir, conf)
-        report_dicts.append((conf, report_dict))
+    
+    for exp in exps:
+        for conf in confs:
+            report_path = os.path.join(report_dir, 'asnet_eval_report_' + exp + conf + '.html')
+            report_file = open(report_path, 'r')
+            report_lines = [l.strip() for l in report_file.readlines()]
+            report_dict = extract_report_data(report_lines, exp + conf)
+            extend_network_creation_times(report_dict, network_dir, exp + conf)
+            report_dicts.append((exp + conf, report_dict))
 
     report_dict = merge_report_dicts(report_dicts)
     add_network_data_to_tables(report_dict, tables_dir)

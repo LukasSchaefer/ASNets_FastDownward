@@ -24,17 +24,21 @@ def write_dom_training_sum(domain_name, domain_dir, included_confs):
             elif conf == 'conf3':
                 conf_name = '3rd configuration: GBFS $h^{FF}$ teacher'
             f.write('\\subsection*{%s}\n\n' % conf_name)
+            f.write('\t\\vspace{0.7cm}\n')
             f.write('\t\\subsubsection{Time distribution}\n')
+            f.write('\t\\vspace{0.5cm}\n')
             # f.write('\t\\ \\\\ \n')
             rel_path = os.path.join(domain_dir, conf + '/time_distribution_' + domain_name + '.tex')
             f.write('\t\\input{%s}\n\n' % os.path.abspath(rel_path))
 
             f.write('\t\\vspace{2cm}\n')
+
             f.write('\t\\subsubsection{Success rate development}\n')
+            f.write('\t\\vspace{0.5cm}\n')
             # f.write('\t\\ \\\\ \n')
             rel_path = os.path.join(domain_dir, conf + '/success_rate_graph_' + domain_name + '.tex')
             f.write('\t\\input{%s}\n' % os.path.abspath(rel_path))
-            f.write('\t\\newpage\n\n')
+            f.write('\\newpage\n\n')
 
             # f.write('\t\\paragraph{Loss development}\n')
             # f.write('\t\\ \\\\ \n')
