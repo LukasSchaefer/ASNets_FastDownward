@@ -128,7 +128,7 @@ namespace policy_search_explored {
         OperatorID op_id = operator_ids[best_op_index];
         OperatorProxy op_proxy = task_proxy.get_operators()[op_id];
         GlobalState new_state = state_registry.lookup_state(best_new_state_id);
-        cout << "Policy reached state with id " << new_state.get_id() << "by applying action " << op_proxy.get_name() << " which had probability " << highest_op_probability << endl;
+        cout << "Policy reached state with id " << new_state.get_id() << " by applying action " << op_proxy.get_name() << " which had probability " << highest_op_probability << endl;
         SearchNode node = search_space.get_node(new_state);
         statistics.inc_generated();
 

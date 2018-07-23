@@ -8,7 +8,8 @@ import keras.backend as K
 
 asnetsfastdownward_dir = os.path.dirname(os.path.realpath(__file__))
 
-domains = ['blocksworld',  'hanoi', 'parcprinter', 'sokoban', 'floortile', 'tyreworld', 'elevator']#, 'turnandopen']
+# domains = ['blocksworld', 'elevator', 'floortile', 'hanoi', 'parcprinter', 'sokoban', 'tyreworld']#, 'turnandopen']
+domains = ['elevator']
 
 configurations = {}
 conf1 = ('False', '2', '"astar(lmcut(),transform=asnet_sampling_transform())"')
@@ -51,12 +52,8 @@ def main(argv):
             if problem_name == 'domain':
                 continue
 
-            # if domain == 'elevator':
-            #     if problem_name in ['d-20', 'd-21', 'd-22', 'd-23', 'd-24', 'd-25', 'd-26', 'd-27', 'd-28', 'd-29', 'd-30']:
-            #         continue
-
             network_path = os.path.join(asnetsfastdownward_dir, 'evaluation/network_runs/evaluation/protobuf_networks/elu_acc/' + domain + '/' + conf + '/' + problem_name + '.pb')
-            if os.path.isfile(network_path):
+            if domain != 'tyreworld' and os.path.isfile(network_path):
                 continue
 
             weights_path = os.path.join(asnetsfastdownward_dir, 'evaluation/network_runs/training/elu_acc/' + domain + '/' + conf + '/asnet_final_weights.h5')
