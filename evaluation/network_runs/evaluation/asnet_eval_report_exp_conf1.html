@@ -98,8 +98,6 @@ document.addEventListener("DOMContentLoaded", show_overview_tables);
 <div class="body" id="body">
 
 <ul>
-<li><b><a href="#unexplained-errors" onclick="show_table(document.getElementById('unexplained-errors'));">Unexplained Errors</a></b>
-</li>
 <li><b><a href="#info" onclick="show_table(document.getElementById('info'));">Info</a></b>
 </li>
 <li><b><a href="#summary" onclick="show_table(document.getElementById('summary'));">Summary</a></b>
@@ -148,86 +146,6 @@ document.addEventListener("DOMContentLoaded", show_overview_tables);
 </li>
 </ul>
 
-<a id="unexplained-errors" name="unexplained-errors"></a>
-<h1>unexplained-errors</h1>
-
-<button type="button" class="toggle-table" onclick="toggle_table(this)">Show table</button><p></p>
-
-<table border="1" style="display:none">
-<tr>
-<th>Unexplained errors</th>
-<th>domain</th>
-<th>problem</th>
-<th>algorithm</th>
-<th>error</th>
-<th>fast-downward_<wbr>wall_<wbr>clock_<wbr>time</th>
-<th>raw_<wbr>memory</th>
-</tr>
-<tr>
-<td>runs-00001-00100/00013</td>
-<td>tyreworld</td>
-<td>d-13.pddl</td>
-<td>asnet_search</td>
-<td>unexplained-crash</td>
-<td>?</td>
-<td>?</td>
-</tr>
-<tr>
-<td>runs-00001-00100/00016</td>
-<td>tyreworld</td>
-<td>d-16.pddl</td>
-<td>asnet_search</td>
-<td>unexplained-segfault</td>
-<td align="right">99.30</td>
-<td align="right">1676868</td>
-</tr>
-<tr>
-<td>runs-00001-00100/00018</td>
-<td>tyreworld</td>
-<td>d-18.pddl</td>
-<td>asnet_search</td>
-<td>unexplained-segfault</td>
-<td align="right">166.46</td>
-<td align="right">3175540</td>
-</tr>
-<tr>
-<td>runs-00001-00100/00029</td>
-<td>sokoban</td>
-<td>d-09.pddl</td>
-<td>asnet_search</td>
-<td>unexplained-exitcode-250</td>
-<td align="right">73.06</td>
-<td align="right">747192</td>
-</tr>
-<tr>
-<td>runs-00001-00100/00038</td>
-<td>sokoban</td>
-<td>d-18.pddl</td>
-<td>asnet_search</td>
-<td>unexplained-segfault</td>
-<td align="right">48.18</td>
-<td align="right">622012</td>
-</tr>
-<tr>
-<td>runs-00001-00100/00066</td>
-<td>hanoi</td>
-<td>d-16.pddl</td>
-<td>asnet_search</td>
-<td>unexplained-crash</td>
-<td>?</td>
-<td>?</td>
-</tr>
-<tr>
-<td>runs-00001-00100/00098</td>
-<td>blocksworld</td>
-<td>d-6-1.pddl</td>
-<td>asnet_search</td>
-<td>unexplained-segfault</td>
-<td align="right">30.81</td>
-<td align="right">396328</td>
-</tr>
-</table>
-
 <a id="info" name="info"></a>
 <h1>info</h1>
 
@@ -246,8 +164,8 @@ document.addEventListener("DOMContentLoaded", show_overview_tables);
 <tr>
 <td>asnet_search</td>
 <td>default</td>
-<td>2aca1591c20d</td>
-<td>2aca1591c20d tip</td>
+<td>c448f79d1a7b</td>
+<td>c448f79d1a7b tip</td>
 <td>['-j12', 'release64dynamic']</td>
 <td>['--search-time-limit', '30m', '--build', 'release64dynamic']</td>
 <td>['--search', 'policysearch_explored(p=np(network=asnet(path=NETWORK_PATH)))']</td>
@@ -266,23 +184,23 @@ document.addEventListener("DOMContentLoaded", show_overview_tables);
 </tr>
 <tr>
 <td><a href="#cost" onclick="show_table(document.getElementById('cost'));">cost - Sum</a></td>
-<td align="right"><span style="color:rgb(127,127,127)">171968.00</span></td>
+<td align="right"><span style="color:rgb(127,127,127)">172519.00</span></td>
 </tr>
 <tr>
 <td><a href="#coverage" onclick="show_table(document.getElementById('coverage'));">coverage - Sum</a></td>
-<td align="right"><span style="color:rgb(127,127,127)">38</span></td>
+<td align="right"><span style="color:rgb(127,127,127)">42</span></td>
 </tr>
 <tr>
 <td><a href="#memory" onclick="show_table(document.getElementById('memory'));">memory - Sum</a></td>
-<td align="right"><span style="color:rgb(127,127,127)">104294548</span></td>
+<td align="right"><span style="color:rgb(127,127,127)">125265488</span></td>
 </tr>
 <tr>
 <td><a href="#plan_length" onclick="show_table(document.getElementById('plan_length'));">plan_length - Sum</a></td>
-<td align="right"><span style="color:rgb(127,127,127)">3350</span></td>
+<td align="right"><span style="color:rgb(127,127,127)">3901</span></td>
 </tr>
 <tr>
 <td><a href="#total_time" onclick="show_table(document.getElementById('total_time'));">total_time - Geometric mean</a></td>
-<td align="right"><span style="color:rgb(127,127,127)">35.96</span></td>
+<td align="right"><span style="color:rgb(127,127,127)">35.14</span></td>
 </tr>
 <tr>
 <td><a href="#unsolvable" onclick="show_table(document.getElementById('unsolvable'));">unsolvable - Sum</a></td>
@@ -301,8 +219,8 @@ document.addEventListener("DOMContentLoaded", show_overview_tables);
 <th>asnet_<wbr>search</th>
 </tr>
 <tr>
-<td><a href="#cost-blocksworld" onclick="show_table(document.getElementById('cost-blocksworld'));">blocksworld</a> (14)</td>
-<td align="right"><span style="color:rgb(127,127,127)">800.00</span></td>
+<td><a href="#cost-blocksworld" onclick="show_table(document.getElementById('cost-blocksworld'));">blocksworld</a> (15)</td>
+<td align="right"><span style="color:rgb(127,127,127)">810.00</span></td>
 </tr>
 <tr>
 <td><a href="#cost-floortile" onclick="show_table(document.getElementById('cost-floortile'));">floortile</a> (1)</td>
@@ -321,12 +239,12 @@ document.addEventListener("DOMContentLoaded", show_overview_tables);
 <td align="right"><span style="color:rgb(127,127,127)">2.00</span></td>
 </tr>
 <tr>
-<td><a href="#cost-tyreworld" onclick="show_table(document.getElementById('cost-tyreworld'));">tyreworld</a> (17)</td>
-<td align="right"><span style="color:rgb(127,127,127)">1929.00</span></td>
+<td><a href="#cost-tyreworld" onclick="show_table(document.getElementById('cost-tyreworld'));">tyreworld</a> (20)</td>
+<td align="right"><span style="color:rgb(127,127,127)">2470.00</span></td>
 </tr>
 <tr>
-<td><b>Sum (38)</b></td>
-<td align="right"><span style="color:rgb(127,127,127)">171968.00</span></td>
+<td><b>Sum (42)</b></td>
+<td align="right"><span style="color:rgb(127,127,127)">172519.00</span></td>
 </tr>
 </table>
 
@@ -374,7 +292,7 @@ Only instances where all algorithms have a value for "cost" are considered. Each
 </tr>
 <tr>
 <td>d-6-1.pddl</td>
-<td><span style="color:rgb(127,127,127)">None</span></td>
+<td align="right"><span style="color:rgb(127,127,127)">10.00</span></td>
 </tr>
 <tr>
 <td>d-6-2.pddl</td>
@@ -914,7 +832,7 @@ Only instances where all algorithms have a value for "cost" are considered. Each
 </tr>
 <tr>
 <td>d-13.pddl</td>
-<td><span style="color:rgb(127,127,127)">None</span></td>
+<td align="right"><span style="color:rgb(127,127,127)">151.00</span></td>
 </tr>
 <tr>
 <td>d-14.pddl</td>
@@ -926,7 +844,7 @@ Only instances where all algorithms have a value for "cost" are considered. Each
 </tr>
 <tr>
 <td>d-16.pddl</td>
-<td><span style="color:rgb(127,127,127)">None</span></td>
+<td align="right"><span style="color:rgb(127,127,127)">184.00</span></td>
 </tr>
 <tr>
 <td>d-17.pddl</td>
@@ -934,7 +852,7 @@ Only instances where all algorithms have a value for "cost" are considered. Each
 </tr>
 <tr>
 <td>d-18.pddl</td>
-<td><span style="color:rgb(127,127,127)">None</span></td>
+<td align="right"><span style="color:rgb(127,127,127)">206.00</span></td>
 </tr>
 <tr>
 <td>d-19.pddl</td>
@@ -958,14 +876,14 @@ Only instances where all algorithms have a value for "cost" are considered. Each
 </tr>
 <tr>
 <td><a href="#coverage-blocksworld" onclick="show_table(document.getElementById('coverage-blocksworld'));">blocksworld</a> (35)</td>
-<td align="right"><span style="color:rgb(127,127,127)">14</span></td>
+<td align="right"><span style="color:rgb(127,127,127)">15</span></td>
 </tr>
 <tr>
 <td><a href="#coverage-floortile" onclick="show_table(document.getElementById('coverage-floortile'));">floortile</a> (20)</td>
 <td align="right"><span style="color:rgb(127,127,127)">1</span></td>
 </tr>
 <tr>
-<td><a href="#coverage-hanoi" onclick="show_table(document.getElementById('coverage-hanoi'));">hanoi</a> (19)</td>
+<td><a href="#coverage-hanoi" onclick="show_table(document.getElementById('coverage-hanoi'));">hanoi</a> (20)</td>
 <td align="right"><span style="color:rgb(127,127,127)">4</span></td>
 </tr>
 <tr>
@@ -977,12 +895,12 @@ Only instances where all algorithms have a value for "cost" are considered. Each
 <td align="right"><span style="color:rgb(127,127,127)">1</span></td>
 </tr>
 <tr>
-<td><a href="#coverage-tyreworld" onclick="show_table(document.getElementById('coverage-tyreworld'));">tyreworld</a> (19)</td>
-<td align="right"><span style="color:rgb(127,127,127)">17</span></td>
+<td><a href="#coverage-tyreworld" onclick="show_table(document.getElementById('coverage-tyreworld'));">tyreworld</a> (20)</td>
+<td align="right"><span style="color:rgb(127,127,127)">20</span></td>
 </tr>
 <tr>
 <td><b>Sum (135)</b></td>
-<td align="right"><span style="color:rgb(127,127,127)">38</span></td>
+<td align="right"><span style="color:rgb(127,127,127)">42</span></td>
 </tr>
 </table>
 
@@ -1030,7 +948,7 @@ The last row reports the sum across all domains.
 </tr>
 <tr>
 <td>d-6-1.pddl</td>
-<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+<td align="right"><span style="color:rgb(127,127,127)">1</span></td>
 </tr>
 <tr>
 <td>d-6-2.pddl</td>
@@ -1306,7 +1224,7 @@ The last row reports the sum across all domains.
 </tr>
 <tr>
 <td>d-16.pddl</td>
-<td><span style="color:rgb(127,127,127)">None</span></td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
 </tr>
 <tr>
 <td>d-17.pddl</td>
@@ -1570,7 +1488,7 @@ The last row reports the sum across all domains.
 </tr>
 <tr>
 <td>d-13.pddl</td>
-<td><span style="color:rgb(127,127,127)">None</span></td>
+<td align="right"><span style="color:rgb(127,127,127)">1</span></td>
 </tr>
 <tr>
 <td>d-14.pddl</td>
@@ -1582,7 +1500,7 @@ The last row reports the sum across all domains.
 </tr>
 <tr>
 <td>d-16.pddl</td>
-<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+<td align="right"><span style="color:rgb(127,127,127)">1</span></td>
 </tr>
 <tr>
 <td>d-17.pddl</td>
@@ -1590,7 +1508,7 @@ The last row reports the sum across all domains.
 </tr>
 <tr>
 <td>d-18.pddl</td>
-<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+<td align="right"><span style="color:rgb(127,127,127)">1</span></td>
 </tr>
 <tr>
 <td>d-19.pddl</td>
@@ -1649,7 +1567,7 @@ Domain-wise reports only support numeric attributes, but error has type str.
 </tr>
 <tr>
 <td>d-6-1.pddl</td>
-<td>unexplained-segfault</td>
+<td>none</td>
 </tr>
 <tr>
 <td>d-6-2.pddl</td>
@@ -1925,7 +1843,7 @@ Domain-wise reports only support numeric attributes, but error has type str.
 </tr>
 <tr>
 <td>d-16.pddl</td>
-<td>unexplained-crash</td>
+<td>incomplete-search-found-no-plan</td>
 </tr>
 <tr>
 <td>d-17.pddl</td>
@@ -2041,7 +1959,7 @@ Domain-wise reports only support numeric attributes, but error has type str.
 </tr>
 <tr>
 <td>d-09.pddl</td>
-<td>unexplained-exitcode-250</td>
+<td>incomplete-search-found-no-plan</td>
 </tr>
 <tr>
 <td>d-10.pddl</td>
@@ -2077,7 +1995,7 @@ Domain-wise reports only support numeric attributes, but error has type str.
 </tr>
 <tr>
 <td>d-18.pddl</td>
-<td>unexplained-segfault</td>
+<td>incomplete-search-found-no-plan</td>
 </tr>
 <tr>
 <td>d-19.pddl</td>
@@ -2189,7 +2107,7 @@ Domain-wise reports only support numeric attributes, but error has type str.
 </tr>
 <tr>
 <td>d-13.pddl</td>
-<td>unexplained-crash</td>
+<td>none</td>
 </tr>
 <tr>
 <td>d-14.pddl</td>
@@ -2201,7 +2119,7 @@ Domain-wise reports only support numeric attributes, but error has type str.
 </tr>
 <tr>
 <td>d-16.pddl</td>
-<td>unexplained-segfault</td>
+<td>none</td>
 </tr>
 <tr>
 <td>d-17.pddl</td>
@@ -2209,7 +2127,7 @@ Domain-wise reports only support numeric attributes, but error has type str.
 </tr>
 <tr>
 <td>d-18.pddl</td>
-<td>unexplained-segfault</td>
+<td>none</td>
 </tr>
 <tr>
 <td>d-19.pddl</td>
@@ -2232,32 +2150,32 @@ Domain-wise reports only support numeric attributes, but error has type str.
 <th>asnet_<wbr>search</th>
 </tr>
 <tr>
-<td><a href="#memory-blocksworld" onclick="show_table(document.getElementById('memory-blocksworld'));">blocksworld</a> (14)</td>
-<td align="right"><span style="color:rgb(127,127,127)">24811348</span></td>
+<td><a href="#memory-blocksworld" onclick="show_table(document.getElementById('memory-blocksworld'));">blocksworld</a> (15)</td>
+<td align="right"><span style="color:rgb(127,127,127)">26853112</span></td>
 </tr>
 <tr>
 <td><a href="#memory-floortile" onclick="show_table(document.getElementById('memory-floortile'));">floortile</a> (1)</td>
-<td align="right"><span style="color:rgb(127,127,127)">1821532</span></td>
+<td align="right"><span style="color:rgb(127,127,127)">1758164</span></td>
 </tr>
 <tr>
 <td><a href="#memory-hanoi" onclick="show_table(document.getElementById('memory-hanoi'));">hanoi</a> (4)</td>
-<td align="right"><span style="color:rgb(127,127,127)">5476664</span></td>
+<td align="right"><span style="color:rgb(127,127,127)">4558168</span></td>
 </tr>
 <tr>
 <td><a href="#memory-parcprinter" onclick="show_table(document.getElementById('memory-parcprinter'));">parcprinter</a> (1)</td>
-<td align="right"><span style="color:rgb(127,127,127)">1388040</span></td>
+<td align="right"><span style="color:rgb(127,127,127)">1324676</span></td>
 </tr>
 <tr>
 <td><a href="#memory-sokoban" onclick="show_table(document.getElementById('memory-sokoban'));">sokoban</a> (1)</td>
-<td align="right"><span style="color:rgb(127,127,127)">2716376</span></td>
+<td align="right"><span style="color:rgb(127,127,127)">2653016</span></td>
 </tr>
 <tr>
-<td><a href="#memory-tyreworld" onclick="show_table(document.getElementById('memory-tyreworld'));">tyreworld</a> (17)</td>
-<td align="right"><span style="color:rgb(127,127,127)">68080588</span></td>
+<td><a href="#memory-tyreworld" onclick="show_table(document.getElementById('memory-tyreworld'));">tyreworld</a> (20)</td>
+<td align="right"><span style="color:rgb(127,127,127)">88118352</span></td>
 </tr>
 <tr>
-<td><b>Sum (38)</b></td>
-<td align="right"><span style="color:rgb(127,127,127)">104294548</span></td>
+<td><b>Sum (42)</b></td>
+<td align="right"><span style="color:rgb(127,127,127)">125265488</span></td>
 </tr>
 </table>
 
@@ -2277,15 +2195,15 @@ Only instances where all algorithms have a value for "memory" are considered. Ea
 </tr>
 <tr>
 <td>d-4-0.pddl</td>
-<td align="right"><span style="color:rgb(127,127,127)">1322388</span></td>
+<td align="right"><span style="color:rgb(127,127,127)">1390088</span></td>
 </tr>
 <tr>
 <td>d-4-1.pddl</td>
-<td align="right"><span style="color:rgb(127,127,127)">1387920</span></td>
+<td align="right"><span style="color:rgb(127,127,127)">1390088</span></td>
 </tr>
 <tr>
 <td>d-4-2.pddl</td>
-<td align="right"><span style="color:rgb(127,127,127)">1387920</span></td>
+<td align="right"><span style="color:rgb(127,127,127)">1390092</span></td>
 </tr>
 <tr>
 <td>d-5-0.pddl</td>
@@ -2293,7 +2211,7 @@ Only instances where all algorithms have a value for "memory" are considered. Ea
 </tr>
 <tr>
 <td>d-5-1.pddl</td>
-<td align="right"><span style="color:rgb(127,127,127)">1366296</span></td>
+<td align="right"><span style="color:rgb(127,127,127)">1434000</span></td>
 </tr>
 <tr>
 <td>d-5-2.pddl</td>
@@ -2305,7 +2223,7 @@ Only instances where all algorithms have a value for "memory" are considered. Ea
 </tr>
 <tr>
 <td>d-6-1.pddl</td>
-<td><span style="color:rgb(127,127,127)">None</span></td>
+<td align="right"><span style="color:rgb(127,127,127)">1487732</span></td>
 </tr>
 <tr>
 <td>d-6-2.pddl</td>
@@ -2317,7 +2235,7 @@ Only instances where all algorithms have a value for "memory" are considered. Ea
 </tr>
 <tr>
 <td>d-7-1.pddl</td>
-<td align="right"><span style="color:rgb(127,127,127)">1548944</span></td>
+<td align="right"><span style="color:rgb(127,127,127)">1485576</span></td>
 </tr>
 <tr>
 <td>d-7-2.pddl</td>
@@ -2325,11 +2243,11 @@ Only instances where all algorithms have a value for "memory" are considered. Ea
 </tr>
 <tr>
 <td>d-8-0.pddl</td>
-<td align="right"><span style="color:rgb(127,127,127)">1622500</span></td>
+<td align="right"><span style="color:rgb(127,127,127)">1624668</span></td>
 </tr>
 <tr>
 <td>d-8-1.pddl</td>
-<td align="right"><span style="color:rgb(127,127,127)">1556964</span></td>
+<td align="right"><span style="color:rgb(127,127,127)">1624668</span></td>
 </tr>
 <tr>
 <td>d-8-2.pddl</td>
@@ -2337,11 +2255,11 @@ Only instances where all algorithms have a value for "memory" are considered. Ea
 </tr>
 <tr>
 <td>d-9-0.pddl</td>
-<td align="right"><span style="color:rgb(127,127,127)">1705024</span></td>
+<td align="right"><span style="color:rgb(127,127,127)">1706880</span></td>
 </tr>
 <tr>
 <td>d-9-1.pddl</td>
-<td align="right"><span style="color:rgb(127,127,127)">1704708</span></td>
+<td align="right"><span style="color:rgb(127,127,127)">1903492</span></td>
 </tr>
 <tr>
 <td>d-9-2.pddl</td>
@@ -2353,7 +2271,7 @@ Only instances where all algorithms have a value for "memory" are considered. Ea
 </tr>
 <tr>
 <td>d-10-1.pddl</td>
-<td align="right"><span style="color:rgb(127,127,127)">1731724</span></td>
+<td align="right"><span style="color:rgb(127,127,127)">1799832</span></td>
 </tr>
 <tr>
 <td>d-10-2.pddl</td>
@@ -2385,11 +2303,11 @@ Only instances where all algorithms have a value for "memory" are considered. Ea
 </tr>
 <tr>
 <td>d-13-1.pddl</td>
-<td align="right"><span style="color:rgb(127,127,127)">2133404</span></td>
+<td align="right"><span style="color:rgb(127,127,127)">2135576</span></td>
 </tr>
 <tr>
 <td>d-14-0.pddl</td>
-<td align="right"><span style="color:rgb(127,127,127)">2198872</span></td>
+<td align="right"><span style="color:rgb(127,127,127)">2200356</span></td>
 </tr>
 <tr>
 <td>d-14-1.pddl</td>
@@ -2405,7 +2323,7 @@ Only instances where all algorithms have a value for "memory" are considered. Ea
 </tr>
 <tr>
 <td>d-16-1.pddl</td>
-<td align="right"><span style="color:rgb(127,127,127)">2493020</span></td>
+<td align="right"><span style="color:rgb(127,127,127)">2560712</span></td>
 </tr>
 <tr>
 <td>d-16-2.pddl</td>
@@ -2413,7 +2331,7 @@ Only instances where all algorithms have a value for "memory" are considered. Ea
 </tr>
 <tr>
 <td>d-17-0.pddl</td>
-<td align="right"><span style="color:rgb(127,127,127)">2651664</span></td>
+<td align="right"><span style="color:rgb(127,127,127)">2719352</span></td>
 </tr>
 </table>
 
@@ -2437,7 +2355,7 @@ Only instances where all algorithms have a value for "memory" are considered. Ea
 </tr>
 <tr>
 <td>d-01-5-3-2.pddl</td>
-<td align="right"><span style="color:rgb(127,127,127)">1821532</span></td>
+<td align="right"><span style="color:rgb(127,127,127)">1758164</span></td>
 </tr>
 <tr>
 <td>d-01-5-4-2.pddl</td>
@@ -2521,19 +2439,19 @@ Only instances where all algorithms have a value for "memory" are considered. Ea
 </tr>
 <tr>
 <td>d-01.pddl</td>
-<td align="right"><span style="color:rgb(127,127,127)">1323092</span></td>
+<td align="right"><span style="color:rgb(127,127,127)">332524</span></td>
 </tr>
 <tr>
 <td>d-02.pddl</td>
-<td align="right"><span style="color:rgb(127,127,127)">1482940</span></td>
+<td align="right"><span style="color:rgb(127,127,127)">1354036</span></td>
 </tr>
 <tr>
 <td>d-03.pddl</td>
-<td align="right"><span style="color:rgb(127,127,127)">1202152</span></td>
+<td align="right"><span style="color:rgb(127,127,127)">1400960</span></td>
 </tr>
 <tr>
 <td>d-04.pddl</td>
-<td align="right"><span style="color:rgb(127,127,127)">1468480</span></td>
+<td align="right"><span style="color:rgb(127,127,127)">1470648</span></td>
 </tr>
 <tr>
 <td>d-05.pddl</td>
@@ -2613,7 +2531,7 @@ Only instances where all algorithms have a value for "memory" are considered. Ea
 </tr>
 <tr>
 <td>d-01.pddl</td>
-<td align="right"><span style="color:rgb(127,127,127)">1388040</span></td>
+<td align="right"><span style="color:rgb(127,127,127)">1324676</span></td>
 </tr>
 <tr>
 <td>d-02.pddl</td>
@@ -2701,7 +2619,7 @@ Only instances where all algorithms have a value for "memory" are considered. Ea
 </tr>
 <tr>
 <td>d-10.pddl</td>
-<td align="right"><span style="color:rgb(127,127,127)">2716376</span></td>
+<td align="right"><span style="color:rgb(127,127,127)">2653016</span></td>
 </tr>
 <tr>
 <td>d-11.pddl</td>
@@ -2797,83 +2715,83 @@ Only instances where all algorithms have a value for "memory" are considered. Ea
 </tr>
 <tr>
 <td>d-01.pddl</td>
-<td align="right"><span style="color:rgb(127,127,127)">1367900</span></td>
+<td align="right"><span style="color:rgb(127,127,127)">1304536</span></td>
 </tr>
 <tr>
 <td>d-02.pddl</td>
-<td align="right"><span style="color:rgb(127,127,127)">1518136</span></td>
+<td align="right"><span style="color:rgb(127,127,127)">1454772</span></td>
 </tr>
 <tr>
 <td>d-03.pddl</td>
-<td align="right"><span style="color:rgb(127,127,127)">1507424</span></td>
+<td align="right"><span style="color:rgb(127,127,127)">1575128</span></td>
 </tr>
 <tr>
 <td>d-04.pddl</td>
-<td align="right"><span style="color:rgb(127,127,127)">1733276</span></td>
+<td align="right"><span style="color:rgb(127,127,127)">1735448</span></td>
 </tr>
 <tr>
 <td>d-05.pddl</td>
-<td align="right"><span style="color:rgb(127,127,127)">1933472</span></td>
+<td align="right"><span style="color:rgb(127,127,127)">2132244</span></td>
 </tr>
 <tr>
 <td>d-06.pddl</td>
-<td align="right"><span style="color:rgb(127,127,127)">2235884</span></td>
+<td align="right"><span style="color:rgb(127,127,127)">2238772</span></td>
 </tr>
 <tr>
 <td>d-07.pddl</td>
-<td align="right"><span style="color:rgb(127,127,127)">2381496</span></td>
+<td align="right"><span style="color:rgb(127,127,127)">2382852</span></td>
 </tr>
 <tr>
 <td>d-08.pddl</td>
-<td align="right"><span style="color:rgb(127,127,127)">2897364</span></td>
+<td align="right"><span style="color:rgb(127,127,127)">2767372</span></td>
 </tr>
 <tr>
 <td>d-09.pddl</td>
-<td align="right"><span style="color:rgb(127,127,127)">3054424</span></td>
+<td align="right"><span style="color:rgb(127,127,127)">3187668</span></td>
 </tr>
 <tr>
 <td>d-10.pddl</td>
-<td align="right"><span style="color:rgb(127,127,127)">3445756</span></td>
+<td align="right"><span style="color:rgb(127,127,127)">3447928</span></td>
 </tr>
 <tr>
 <td>d-11.pddl</td>
-<td align="right"><span style="color:rgb(127,127,127)">4150304</span></td>
+<td align="right"><span style="color:rgb(127,127,127)">3954472</span></td>
 </tr>
 <tr>
 <td>d-12.pddl</td>
-<td align="right"><span style="color:rgb(127,127,127)">4355660</span></td>
+<td align="right"><span style="color:rgb(127,127,127)">4423356</span></td>
 </tr>
 <tr>
 <td>d-13.pddl</td>
-<td><span style="color:rgb(127,127,127)">None</span></td>
+<td align="right"><span style="color:rgb(127,127,127)">4933724</span></td>
 </tr>
 <tr>
 <td>d-14.pddl</td>
-<td align="right"><span style="color:rgb(127,127,127)">5418860</span></td>
+<td align="right"><span style="color:rgb(127,127,127)">5486508</span></td>
 </tr>
 <tr>
 <td>d-15.pddl</td>
-<td align="right"><span style="color:rgb(127,127,127)">6070196</span></td>
+<td align="right"><span style="color:rgb(127,127,127)">6069044</span></td>
 </tr>
 <tr>
 <td>d-16.pddl</td>
-<td><span style="color:rgb(127,127,127)">None</span></td>
+<td align="right"><span style="color:rgb(127,127,127)">6848276</span></td>
 </tr>
 <tr>
 <td>d-17.pddl</td>
-<td align="right"><span style="color:rgb(127,127,127)">7311888</span></td>
+<td align="right"><span style="color:rgb(127,127,127)">7448340</span></td>
 </tr>
 <tr>
 <td>d-18.pddl</td>
-<td><span style="color:rgb(127,127,127)">None</span></td>
+<td align="right"><span style="color:rgb(127,127,127)">8021104</span></td>
 </tr>
 <tr>
 <td>d-19.pddl</td>
-<td align="right"><span style="color:rgb(127,127,127)">8827712</span></td>
+<td align="right"><span style="color:rgb(127,127,127)">8768284</span></td>
 </tr>
 <tr>
 <td>d-20.pddl</td>
-<td align="right"><span style="color:rgb(127,127,127)">9870836</span></td>
+<td align="right"><span style="color:rgb(127,127,127)">9938524</span></td>
 </tr>
 </table>
 
@@ -2888,8 +2806,8 @@ Only instances where all algorithms have a value for "memory" are considered. Ea
 <th>asnet_<wbr>search</th>
 </tr>
 <tr>
-<td><a href="#plan_length-blocksworld" onclick="show_table(document.getElementById('plan_length-blocksworld'));">blocksworld</a> (14)</td>
-<td align="right"><span style="color:rgb(127,127,127)">800</span></td>
+<td><a href="#plan_length-blocksworld" onclick="show_table(document.getElementById('plan_length-blocksworld'));">blocksworld</a> (15)</td>
+<td align="right"><span style="color:rgb(127,127,127)">810</span></td>
 </tr>
 <tr>
 <td><a href="#plan_length-floortile" onclick="show_table(document.getElementById('plan_length-floortile'));">floortile</a> (1)</td>
@@ -2908,12 +2826,12 @@ Only instances where all algorithms have a value for "memory" are considered. Ea
 <td align="right"><span style="color:rgb(127,127,127)">429</span></td>
 </tr>
 <tr>
-<td><a href="#plan_length-tyreworld" onclick="show_table(document.getElementById('plan_length-tyreworld'));">tyreworld</a> (17)</td>
-<td align="right"><span style="color:rgb(127,127,127)">1929</span></td>
+<td><a href="#plan_length-tyreworld" onclick="show_table(document.getElementById('plan_length-tyreworld'));">tyreworld</a> (20)</td>
+<td align="right"><span style="color:rgb(127,127,127)">2470</span></td>
 </tr>
 <tr>
-<td><b>Sum (38)</b></td>
-<td align="right"><span style="color:rgb(127,127,127)">3350</span></td>
+<td><b>Sum (42)</b></td>
+<td align="right"><span style="color:rgb(127,127,127)">3901</span></td>
 </tr>
 </table>
 
@@ -2961,7 +2879,7 @@ Only instances where all algorithms have a value for "plan_length" are considere
 </tr>
 <tr>
 <td>d-6-1.pddl</td>
-<td><span style="color:rgb(127,127,127)">None</span></td>
+<td align="right"><span style="color:rgb(127,127,127)">10</span></td>
 </tr>
 <tr>
 <td>d-6-2.pddl</td>
@@ -3501,7 +3419,7 @@ Only instances where all algorithms have a value for "plan_length" are considere
 </tr>
 <tr>
 <td>d-13.pddl</td>
-<td><span style="color:rgb(127,127,127)">None</span></td>
+<td align="right"><span style="color:rgb(127,127,127)">151</span></td>
 </tr>
 <tr>
 <td>d-14.pddl</td>
@@ -3513,7 +3431,7 @@ Only instances where all algorithms have a value for "plan_length" are considere
 </tr>
 <tr>
 <td>d-16.pddl</td>
-<td><span style="color:rgb(127,127,127)">None</span></td>
+<td align="right"><span style="color:rgb(127,127,127)">184</span></td>
 </tr>
 <tr>
 <td>d-17.pddl</td>
@@ -3521,7 +3439,7 @@ Only instances where all algorithms have a value for "plan_length" are considere
 </tr>
 <tr>
 <td>d-18.pddl</td>
-<td><span style="color:rgb(127,127,127)">None</span></td>
+<td align="right"><span style="color:rgb(127,127,127)">206</span></td>
 </tr>
 <tr>
 <td>d-19.pddl</td>
@@ -3544,32 +3462,32 @@ Only instances where all algorithms have a value for "plan_length" are considere
 <th>asnet_<wbr>search</th>
 </tr>
 <tr>
-<td><a href="#total_time-blocksworld" onclick="show_table(document.getElementById('total_time-blocksworld'));">blocksworld</a> (34)</td>
-<td align="right"><span style="color:rgb(127,127,127)">18.34</span></td>
+<td><a href="#total_time-blocksworld" onclick="show_table(document.getElementById('total_time-blocksworld'));">blocksworld</a> (35)</td>
+<td align="right"><span style="color:rgb(127,127,127)">16.00</span></td>
 </tr>
 <tr>
 <td><a href="#total_time-floortile" onclick="show_table(document.getElementById('total_time-floortile'));">floortile</a> (20)</td>
-<td align="right"><span style="color:rgb(127,127,127)">31.22</span></td>
+<td align="right"><span style="color:rgb(127,127,127)">30.63</span></td>
 </tr>
 <tr>
-<td><a href="#total_time-hanoi" onclick="show_table(document.getElementById('total_time-hanoi'));">hanoi</a> (19)</td>
-<td align="right"><span style="color:rgb(127,127,127)">34.43</span></td>
+<td><a href="#total_time-hanoi" onclick="show_table(document.getElementById('total_time-hanoi'));">hanoi</a> (20)</td>
+<td align="right"><span style="color:rgb(127,127,127)">35.67</span></td>
 </tr>
 <tr>
 <td><a href="#total_time-parcprinter" onclick="show_table(document.getElementById('total_time-parcprinter'));">parcprinter</a> (10)</td>
-<td align="right"><span style="color:rgb(127,127,127)">24.90</span></td>
+<td align="right"><span style="color:rgb(127,127,127)">23.13</span></td>
 </tr>
 <tr>
-<td><a href="#total_time-sokoban" onclick="show_table(document.getElementById('total_time-sokoban'));">sokoban</a> (28)</td>
-<td align="right"><span style="color:rgb(127,127,127)">51.08</span></td>
+<td><a href="#total_time-sokoban" onclick="show_table(document.getElementById('total_time-sokoban'));">sokoban</a> (30)</td>
+<td align="right"><span style="color:rgb(127,127,127)">51.40</span></td>
 </tr>
 <tr>
-<td><a href="#total_time-tyreworld" onclick="show_table(document.getElementById('total_time-tyreworld'));">tyreworld</a> (17)</td>
-<td align="right"><span style="color:rgb(127,127,127)">86.29</span></td>
+<td><a href="#total_time-tyreworld" onclick="show_table(document.getElementById('total_time-tyreworld'));">tyreworld</a> (20)</td>
+<td align="right"><span style="color:rgb(127,127,127)">90.54</span></td>
 </tr>
 <tr>
-<td><b>Geometric mean (128)</b></td>
-<td align="right"><span style="color:rgb(127,127,127)">35.96</span></td>
+<td><b>Geometric mean (135)</b></td>
+<td align="right"><span style="color:rgb(127,127,127)">35.14</span></td>
 </tr>
 </table>
 
@@ -3589,15 +3507,15 @@ Only instances where all algorithms have a value for "total_time" are considered
 </tr>
 <tr>
 <td>d-4-0.pddl</td>
-<td align="right"><span style="color:rgb(127,127,127)">2.98</span></td>
+<td align="right"><span style="color:rgb(127,127,127)">2.48</span></td>
 </tr>
 <tr>
 <td>d-4-1.pddl</td>
-<td align="right"><span style="color:rgb(127,127,127)">2.81</span></td>
+<td align="right"><span style="color:rgb(127,127,127)">2.86</span></td>
 </tr>
 <tr>
 <td>d-4-2.pddl</td>
-<td align="right"><span style="color:rgb(127,127,127)">2.76</span></td>
+<td align="right"><span style="color:rgb(127,127,127)">3.01</span></td>
 </tr>
 <tr>
 <td>d-5-0.pddl</td>
@@ -3605,127 +3523,127 @@ Only instances where all algorithms have a value for "total_time" are considered
 </tr>
 <tr>
 <td>d-5-1.pddl</td>
-<td align="right"><span style="color:rgb(127,127,127)">88.45</span></td>
+<td align="right"><span style="color:rgb(127,127,127)">4.38</span></td>
 </tr>
 <tr>
 <td>d-5-2.pddl</td>
-<td align="right"><span style="color:rgb(127,127,127)">4.45</span></td>
+<td align="right"><span style="color:rgb(127,127,127)">4.58</span></td>
 </tr>
 <tr>
 <td>d-6-0.pddl</td>
-<td align="right"><span style="color:rgb(127,127,127)">6.57</span></td>
+<td align="right"><span style="color:rgb(127,127,127)">6.56</span></td>
 </tr>
 <tr>
 <td>d-6-1.pddl</td>
-<td><span style="color:rgb(127,127,127)">None</span></td>
+<td align="right"><span style="color:rgb(127,127,127)">6.38</span></td>
 </tr>
 <tr>
 <td>d-6-2.pddl</td>
-<td align="right"><span style="color:rgb(127,127,127)">6.72</span></td>
+<td align="right"><span style="color:rgb(127,127,127)">6.70</span></td>
 </tr>
 <tr>
 <td>d-7-0.pddl</td>
-<td align="right"><span style="color:rgb(127,127,127)">9.13</span></td>
+<td align="right"><span style="color:rgb(127,127,127)">9.14</span></td>
 </tr>
 <tr>
 <td>d-7-1.pddl</td>
-<td align="right"><span style="color:rgb(127,127,127)">9.56</span></td>
+<td align="right"><span style="color:rgb(127,127,127)">9.40</span></td>
 </tr>
 <tr>
 <td>d-7-2.pddl</td>
-<td align="right"><span style="color:rgb(127,127,127)">9.27</span></td>
+<td align="right"><span style="color:rgb(127,127,127)">9.50</span></td>
 </tr>
 <tr>
 <td>d-8-0.pddl</td>
-<td align="right"><span style="color:rgb(127,127,127)">31.35</span></td>
+<td align="right"><span style="color:rgb(127,127,127)">12.66</span></td>
 </tr>
 <tr>
 <td>d-8-1.pddl</td>
-<td align="right"><span style="color:rgb(127,127,127)">12.31</span></td>
+<td align="right"><span style="color:rgb(127,127,127)">11.95</span></td>
 </tr>
 <tr>
 <td>d-8-2.pddl</td>
-<td align="right"><span style="color:rgb(127,127,127)">12.12</span></td>
+<td align="right"><span style="color:rgb(127,127,127)">12.34</span></td>
 </tr>
 <tr>
 <td>d-9-0.pddl</td>
-<td align="right"><span style="color:rgb(127,127,127)">16.61</span></td>
+<td align="right"><span style="color:rgb(127,127,127)">17.09</span></td>
 </tr>
 <tr>
 <td>d-9-1.pddl</td>
-<td align="right"><span style="color:rgb(127,127,127)">16.62</span></td>
+<td align="right"><span style="color:rgb(127,127,127)">16.67</span></td>
 </tr>
 <tr>
 <td>d-9-2.pddl</td>
-<td align="right"><span style="color:rgb(127,127,127)">15.34</span></td>
+<td align="right"><span style="color:rgb(127,127,127)">15.77</span></td>
 </tr>
 <tr>
 <td>d-10-0.pddl</td>
-<td align="right"><span style="color:rgb(127,127,127)">20.48</span></td>
+<td align="right"><span style="color:rgb(127,127,127)">20.61</span></td>
 </tr>
 <tr>
 <td>d-10-1.pddl</td>
-<td align="right"><span style="color:rgb(127,127,127)">20.38</span></td>
+<td align="right"><span style="color:rgb(127,127,127)">20.31</span></td>
 </tr>
 <tr>
 <td>d-10-2.pddl</td>
-<td align="right"><span style="color:rgb(127,127,127)">20.20</span></td>
+<td align="right"><span style="color:rgb(127,127,127)">21.35</span></td>
 </tr>
 <tr>
 <td>d-11-0.pddl</td>
-<td align="right"><span style="color:rgb(127,127,127)">23.82</span></td>
+<td align="right"><span style="color:rgb(127,127,127)">24.09</span></td>
 </tr>
 <tr>
 <td>d-11-1.pddl</td>
-<td align="right"><span style="color:rgb(127,127,127)">30.89</span></td>
+<td align="right"><span style="color:rgb(127,127,127)">29.82</span></td>
 </tr>
 <tr>
 <td>d-11-2.pddl</td>
-<td align="right"><span style="color:rgb(127,127,127)">25.60</span></td>
+<td align="right"><span style="color:rgb(127,127,127)">26.39</span></td>
 </tr>
 <tr>
 <td>d-12-0.pddl</td>
-<td align="right"><span style="color:rgb(127,127,127)">30.50</span></td>
+<td align="right"><span style="color:rgb(127,127,127)">31.57</span></td>
 </tr>
 <tr>
 <td>d-12-1.pddl</td>
-<td align="right"><span style="color:rgb(127,127,127)">37.18</span></td>
+<td align="right"><span style="color:rgb(127,127,127)">36.63</span></td>
 </tr>
 <tr>
 <td>d-13-0.pddl</td>
-<td align="right"><span style="color:rgb(127,127,127)">34.64</span></td>
+<td align="right"><span style="color:rgb(127,127,127)">33.67</span></td>
 </tr>
 <tr>
 <td>d-13-1.pddl</td>
-<td align="right"><span style="color:rgb(127,127,127)">34.33</span></td>
+<td align="right"><span style="color:rgb(127,127,127)">34.54</span></td>
 </tr>
 <tr>
 <td>d-14-0.pddl</td>
-<td align="right"><span style="color:rgb(127,127,127)">42.22</span></td>
+<td align="right"><span style="color:rgb(127,127,127)">41.36</span></td>
 </tr>
 <tr>
 <td>d-14-1.pddl</td>
-<td align="right"><span style="color:rgb(127,127,127)">40.30</span></td>
+<td align="right"><span style="color:rgb(127,127,127)">41.02</span></td>
 </tr>
 <tr>
 <td>d-15-0.pddl</td>
-<td align="right"><span style="color:rgb(127,127,127)">64.84</span></td>
+<td align="right"><span style="color:rgb(127,127,127)">67.90</span></td>
 </tr>
 <tr>
 <td>d-15-1.pddl</td>
-<td align="right"><span style="color:rgb(127,127,127)">47.55</span></td>
+<td align="right"><span style="color:rgb(127,127,127)">48.33</span></td>
 </tr>
 <tr>
 <td>d-16-1.pddl</td>
-<td align="right"><span style="color:rgb(127,127,127)">71.23</span></td>
+<td align="right"><span style="color:rgb(127,127,127)">74.74</span></td>
 </tr>
 <tr>
 <td>d-16-2.pddl</td>
-<td align="right"><span style="color:rgb(127,127,127)">60.13</span></td>
+<td align="right"><span style="color:rgb(127,127,127)">59.94</span></td>
 </tr>
 <tr>
 <td>d-17-0.pddl</td>
-<td align="right"><span style="color:rgb(127,127,127)">66.56</span></td>
+<td align="right"><span style="color:rgb(127,127,127)">67.99</span></td>
 </tr>
 </table>
 
@@ -3741,83 +3659,83 @@ Only instances where all algorithms have a value for "total_time" are considered
 </tr>
 <tr>
 <td>d-01-4-3-2.pddl</td>
-<td align="right"><span style="color:rgb(127,127,127)">17.91</span></td>
+<td align="right"><span style="color:rgb(127,127,127)">16.95</span></td>
 </tr>
 <tr>
 <td>d-01-4-4-2.pddl</td>
-<td align="right"><span style="color:rgb(127,127,127)">26.70</span></td>
+<td align="right"><span style="color:rgb(127,127,127)">26.23</span></td>
 </tr>
 <tr>
 <td>d-01-5-3-2.pddl</td>
-<td align="right"><span style="color:rgb(127,127,127)">27.13</span></td>
+<td align="right"><span style="color:rgb(127,127,127)">27.42</span></td>
 </tr>
 <tr>
 <td>d-01-5-4-2.pddl</td>
-<td align="right"><span style="color:rgb(127,127,127)">29.48</span></td>
+<td align="right"><span style="color:rgb(127,127,127)">28.64</span></td>
 </tr>
 <tr>
 <td>d-01-5-5-2.pddl</td>
-<td align="right"><span style="color:rgb(127,127,127)">38.13</span></td>
+<td align="right"><span style="color:rgb(127,127,127)">39.46</span></td>
 </tr>
 <tr>
 <td>d-01-6-4-2.pddl</td>
-<td align="right"><span style="color:rgb(127,127,127)">35.54</span></td>
+<td align="right"><span style="color:rgb(127,127,127)">36.27</span></td>
 </tr>
 <tr>
 <td>d-01-6-5-2.pddl</td>
-<td align="right"><span style="color:rgb(127,127,127)">44.94</span></td>
+<td align="right"><span style="color:rgb(127,127,127)">45.35</span></td>
 </tr>
 <tr>
 <td>d-02-4-4-2.pddl</td>
-<td align="right"><span style="color:rgb(127,127,127)">23.54</span></td>
+<td align="right"><span style="color:rgb(127,127,127)">24.34</span></td>
 </tr>
 <tr>
 <td>d-02-5-3-2.pddl</td>
-<td align="right"><span style="color:rgb(127,127,127)">20.86</span></td>
+<td align="right"><span style="color:rgb(127,127,127)">21.55</span></td>
 </tr>
 <tr>
 <td>d-02-5-4-2.pddl</td>
-<td align="right"><span style="color:rgb(127,127,127)">29.80</span></td>
+<td align="right"><span style="color:rgb(127,127,127)">29.88</span></td>
 </tr>
 <tr>
 <td>d-02-5-5-2.pddl</td>
-<td align="right"><span style="color:rgb(127,127,127)">40.43</span></td>
+<td align="right"><span style="color:rgb(127,127,127)">40.72</span></td>
 </tr>
 <tr>
 <td>d-02-6-4-2.pddl</td>
-<td align="right"><span style="color:rgb(127,127,127)">42.94</span></td>
+<td align="right"><span style="color:rgb(127,127,127)">42.17</span></td>
 </tr>
 <tr>
 <td>d-02-6-5-2.pddl</td>
-<td align="right"><span style="color:rgb(127,127,127)">44.37</span></td>
+<td align="right"><span style="color:rgb(127,127,127)">45.65</span></td>
 </tr>
 <tr>
 <td>d-03-4-3-2.pddl</td>
-<td align="right"><span style="color:rgb(127,127,127)">17.30</span></td>
+<td align="right"><span style="color:rgb(127,127,127)">18.87</span></td>
 </tr>
 <tr>
 <td>d-03-4-4-2.pddl</td>
-<td align="right"><span style="color:rgb(127,127,127)">24.01</span></td>
+<td align="right"><span style="color:rgb(127,127,127)">24.57</span></td>
 </tr>
 <tr>
 <td>d-03-5-3-2.pddl</td>
-<td align="right"><span style="color:rgb(127,127,127)">35.05</span></td>
+<td align="right"><span style="color:rgb(127,127,127)">21.14</span></td>
 </tr>
 <tr>
 <td>d-03-5-4-2.pddl</td>
-<td align="right"><span style="color:rgb(127,127,127)">30.05</span></td>
+<td align="right"><span style="color:rgb(127,127,127)">29.77</span></td>
 </tr>
 <tr>
 <td>d-03-5-5-2.pddl</td>
-<td align="right"><span style="color:rgb(127,127,127)">40.63</span></td>
+<td align="right"><span style="color:rgb(127,127,127)">40.74</span></td>
 </tr>
 <tr>
 <td>d-03-6-4-2.pddl</td>
-<td align="right"><span style="color:rgb(127,127,127)">36.23</span></td>
+<td align="right"><span style="color:rgb(127,127,127)">35.45</span></td>
 </tr>
 <tr>
 <td>d-03-6-5-2.pddl</td>
-<td align="right"><span style="color:rgb(127,127,127)">45.92</span></td>
+<td align="right"><span style="color:rgb(127,127,127)">44.95</span></td>
 </tr>
 </table>
 
@@ -3833,83 +3751,83 @@ Only instances where all algorithms have a value for "total_time" are considered
 </tr>
 <tr>
 <td>d-01.pddl</td>
-<td align="right"><span style="color:rgb(127,127,127)">0.84</span></td>
+<td align="right"><span style="color:rgb(127,127,127)">0.51</span></td>
 </tr>
 <tr>
 <td>d-02.pddl</td>
-<td align="right"><span style="color:rgb(127,127,127)">1.32</span></td>
+<td align="right"><span style="color:rgb(127,127,127)">1.29</span></td>
 </tr>
 <tr>
 <td>d-03.pddl</td>
-<td align="right"><span style="color:rgb(127,127,127)">2.96</span></td>
+<td align="right"><span style="color:rgb(127,127,127)">2.97</span></td>
 </tr>
 <tr>
 <td>d-04.pddl</td>
-<td align="right"><span style="color:rgb(127,127,127)">5.56</span></td>
+<td align="right"><span style="color:rgb(127,127,127)">5.36</span></td>
 </tr>
 <tr>
 <td>d-05.pddl</td>
-<td align="right"><span style="color:rgb(127,127,127)">9.08</span></td>
+<td align="right"><span style="color:rgb(127,127,127)">8.94</span></td>
 </tr>
 <tr>
 <td>d-06.pddl</td>
-<td align="right"><span style="color:rgb(127,127,127)">13.92</span></td>
+<td align="right"><span style="color:rgb(127,127,127)">13.68</span></td>
 </tr>
 <tr>
 <td>d-07.pddl</td>
-<td align="right"><span style="color:rgb(127,127,127)">20.37</span></td>
+<td align="right"><span style="color:rgb(127,127,127)">20.24</span></td>
 </tr>
 <tr>
 <td>d-08.pddl</td>
-<td align="right"><span style="color:rgb(127,127,127)">42.45</span></td>
+<td align="right"><span style="color:rgb(127,127,127)">28.14</span></td>
 </tr>
 <tr>
 <td>d-09.pddl</td>
-<td align="right"><span style="color:rgb(127,127,127)">37.76</span></td>
+<td align="right"><span style="color:rgb(127,127,127)">37.82</span></td>
 </tr>
 <tr>
 <td>d-10.pddl</td>
-<td align="right"><span style="color:rgb(127,127,127)">50.23</span></td>
+<td align="right"><span style="color:rgb(127,127,127)">50.21</span></td>
 </tr>
 <tr>
 <td>d-11.pddl</td>
-<td align="right"><span style="color:rgb(127,127,127)">63.22</span></td>
+<td align="right"><span style="color:rgb(127,127,127)">64.68</span></td>
 </tr>
 <tr>
 <td>d-12.pddl</td>
-<td align="right"><span style="color:rgb(127,127,127)">78.11</span></td>
+<td align="right"><span style="color:rgb(127,127,127)">78.75</span></td>
 </tr>
 <tr>
 <td>d-13.pddl</td>
-<td align="right"><span style="color:rgb(127,127,127)">103.12</span></td>
+<td align="right"><span style="color:rgb(127,127,127)">97.63</span></td>
 </tr>
 <tr>
 <td>d-14.pddl</td>
-<td align="right"><span style="color:rgb(127,127,127)">120.36</span></td>
+<td align="right"><span style="color:rgb(127,127,127)">120.31</span></td>
 </tr>
 <tr>
 <td>d-15.pddl</td>
-<td align="right"><span style="color:rgb(127,127,127)">140.98</span></td>
+<td align="right"><span style="color:rgb(127,127,127)">144.28</span></td>
 </tr>
 <tr>
 <td>d-16.pddl</td>
-<td><span style="color:rgb(127,127,127)">None</span></td>
+<td align="right"><span style="color:rgb(127,127,127)">180.68</span></td>
 </tr>
 <tr>
 <td>d-17.pddl</td>
-<td align="right"><span style="color:rgb(127,127,127)">209.79</span></td>
+<td align="right"><span style="color:rgb(127,127,127)">219.69</span></td>
 </tr>
 <tr>
 <td>d-18.pddl</td>
-<td align="right"><span style="color:rgb(127,127,127)">244.94</span></td>
+<td align="right"><span style="color:rgb(127,127,127)">241.97</span></td>
 </tr>
 <tr>
 <td>d-19.pddl</td>
-<td align="right"><span style="color:rgb(127,127,127)">285.95</span></td>
+<td align="right"><span style="color:rgb(127,127,127)">287.81</span></td>
 </tr>
 <tr>
 <td>d-20.pddl</td>
-<td align="right"><span style="color:rgb(127,127,127)">330.52</span></td>
+<td align="right"><span style="color:rgb(127,127,127)">333.24</span></td>
 </tr>
 </table>
 
@@ -3925,43 +3843,43 @@ Only instances where all algorithms have a value for "total_time" are considered
 </tr>
 <tr>
 <td>d-01.pddl</td>
-<td align="right"><span style="color:rgb(127,127,127)">4.28</span></td>
+<td align="right"><span style="color:rgb(127,127,127)">4.40</span></td>
 </tr>
 <tr>
 <td>d-02.pddl</td>
-<td align="right"><span style="color:rgb(127,127,127)">8.87</span></td>
+<td align="right"><span style="color:rgb(127,127,127)">8.54</span></td>
 </tr>
 <tr>
 <td>d-03.pddl</td>
-<td align="right"><span style="color:rgb(127,127,127)">14.93</span></td>
+<td align="right"><span style="color:rgb(127,127,127)">7.13</span></td>
 </tr>
 <tr>
 <td>d-04.pddl</td>
-<td align="right"><span style="color:rgb(127,127,127)">20.95</span></td>
+<td align="right"><span style="color:rgb(127,127,127)">20.41</span></td>
 </tr>
 <tr>
 <td>d-05.pddl</td>
-<td align="right"><span style="color:rgb(127,127,127)">26.53</span></td>
+<td align="right"><span style="color:rgb(127,127,127)">26.08</span></td>
 </tr>
 <tr>
 <td>d-06.pddl</td>
-<td align="right"><span style="color:rgb(127,127,127)">29.75</span></td>
+<td align="right"><span style="color:rgb(127,127,127)">29.81</span></td>
 </tr>
 <tr>
 <td>d-07.pddl</td>
-<td align="right"><span style="color:rgb(127,127,127)">49.83</span></td>
+<td align="right"><span style="color:rgb(127,127,127)">54.26</span></td>
 </tr>
 <tr>
 <td>d-08.pddl</td>
-<td align="right"><span style="color:rgb(127,127,127)">52.71</span></td>
+<td align="right"><span style="color:rgb(127,127,127)">51.62</span></td>
 </tr>
 <tr>
 <td>d-09.pddl</td>
-<td align="right"><span style="color:rgb(127,127,127)">59.12</span></td>
+<td align="right"><span style="color:rgb(127,127,127)">58.57</span></td>
 </tr>
 <tr>
 <td>d-10.pddl</td>
-<td align="right"><span style="color:rgb(127,127,127)">62.94</span></td>
+<td align="right"><span style="color:rgb(127,127,127)">62.87</span></td>
 </tr>
 </table>
 
@@ -3977,123 +3895,123 @@ Only instances where all algorithms have a value for "total_time" are considered
 </tr>
 <tr>
 <td>d-01.pddl</td>
-<td align="right"><span style="color:rgb(127,127,127)">11.37</span></td>
+<td align="right"><span style="color:rgb(127,127,127)">11.26</span></td>
 </tr>
 <tr>
 <td>d-02.pddl</td>
-<td align="right"><span style="color:rgb(127,127,127)">23.54</span></td>
+<td align="right"><span style="color:rgb(127,127,127)">23.67</span></td>
 </tr>
 <tr>
 <td>d-03.pddl</td>
-<td align="right"><span style="color:rgb(127,127,127)">15.09</span></td>
+<td align="right"><span style="color:rgb(127,127,127)">15.55</span></td>
 </tr>
 <tr>
 <td>d-04.pddl</td>
-<td align="right"><span style="color:rgb(127,127,127)">35.87</span></td>
+<td align="right"><span style="color:rgb(127,127,127)">36.48</span></td>
 </tr>
 <tr>
 <td>d-05.pddl</td>
-<td align="right"><span style="color:rgb(127,127,127)">25.46</span></td>
+<td align="right"><span style="color:rgb(127,127,127)">25.47</span></td>
 </tr>
 <tr>
 <td>d-06.pddl</td>
-<td align="right"><span style="color:rgb(127,127,127)">37.81</span></td>
+<td align="right"><span style="color:rgb(127,127,127)">38.96</span></td>
 </tr>
 <tr>
 <td>d-07.pddl</td>
-<td align="right"><span style="color:rgb(127,127,127)">24.84</span></td>
+<td align="right"><span style="color:rgb(127,127,127)">25.21</span></td>
 </tr>
 <tr>
 <td>d-08.pddl</td>
-<td align="right"><span style="color:rgb(127,127,127)">33.42</span></td>
+<td align="right"><span style="color:rgb(127,127,127)">33.32</span></td>
 </tr>
 <tr>
 <td>d-09.pddl</td>
-<td><span style="color:rgb(127,127,127)">None</span></td>
+<td align="right"><span style="color:rgb(127,127,127)">40.75</span></td>
 </tr>
 <tr>
 <td>d-10.pddl</td>
-<td align="right"><span style="color:rgb(127,127,127)">115.45</span></td>
+<td align="right"><span style="color:rgb(127,127,127)">111.18</span></td>
 </tr>
 <tr>
 <td>d-11.pddl</td>
-<td align="right"><span style="color:rgb(127,127,127)">145.11</span></td>
+<td align="right"><span style="color:rgb(127,127,127)">143.53</span></td>
 </tr>
 <tr>
 <td>d-12.pddl</td>
-<td align="right"><span style="color:rgb(127,127,127)">45.38</span></td>
+<td align="right"><span style="color:rgb(127,127,127)">45.62</span></td>
 </tr>
 <tr>
 <td>d-13.pddl</td>
-<td align="right"><span style="color:rgb(127,127,127)">37.42</span></td>
+<td align="right"><span style="color:rgb(127,127,127)">37.40</span></td>
 </tr>
 <tr>
 <td>d-14.pddl</td>
-<td align="right"><span style="color:rgb(127,127,127)">43.46</span></td>
+<td align="right"><span style="color:rgb(127,127,127)">44.40</span></td>
 </tr>
 <tr>
 <td>d-15.pddl</td>
-<td align="right"><span style="color:rgb(127,127,127)">48.56</span></td>
+<td align="right"><span style="color:rgb(127,127,127)">49.37</span></td>
 </tr>
 <tr>
 <td>d-16.pddl</td>
-<td align="right"><span style="color:rgb(127,127,127)">49.75</span></td>
+<td align="right"><span style="color:rgb(127,127,127)">50.09</span></td>
 </tr>
 <tr>
 <td>d-17.pddl</td>
-<td align="right"><span style="color:rgb(127,127,127)">68.41</span></td>
+<td align="right"><span style="color:rgb(127,127,127)">70.43</span></td>
 </tr>
 <tr>
 <td>d-18.pddl</td>
-<td><span style="color:rgb(127,127,127)">None</span></td>
+<td align="right"><span style="color:rgb(127,127,127)">48.33</span></td>
 </tr>
 <tr>
 <td>d-19.pddl</td>
-<td align="right"><span style="color:rgb(127,127,127)">193.23</span></td>
+<td align="right"><span style="color:rgb(127,127,127)">209.80</span></td>
 </tr>
 <tr>
 <td>d-20.pddl</td>
-<td align="right"><span style="color:rgb(127,127,127)">215.57</span></td>
+<td align="right"><span style="color:rgb(127,127,127)">230.97</span></td>
 </tr>
 <tr>
 <td>d-21.pddl</td>
-<td align="right"><span style="color:rgb(127,127,127)">56.68</span></td>
+<td align="right"><span style="color:rgb(127,127,127)">57.21</span></td>
 </tr>
 <tr>
 <td>d-22.pddl</td>
-<td align="right"><span style="color:rgb(127,127,127)">56.02</span></td>
+<td align="right"><span style="color:rgb(127,127,127)">56.25</span></td>
 </tr>
 <tr>
 <td>d-23.pddl</td>
-<td align="right"><span style="color:rgb(127,127,127)">51.05</span></td>
+<td align="right"><span style="color:rgb(127,127,127)">53.28</span></td>
 </tr>
 <tr>
 <td>d-24.pddl</td>
-<td align="right"><span style="color:rgb(127,127,127)">52.31</span></td>
+<td align="right"><span style="color:rgb(127,127,127)">51.84</span></td>
 </tr>
 <tr>
 <td>d-25.pddl</td>
-<td align="right"><span style="color:rgb(127,127,127)">54.45</span></td>
+<td align="right"><span style="color:rgb(127,127,127)">58.54</span></td>
 </tr>
 <tr>
 <td>d-26.pddl</td>
-<td align="right"><span style="color:rgb(127,127,127)">69.20</span></td>
+<td align="right"><span style="color:rgb(127,127,127)">70.13</span></td>
 </tr>
 <tr>
 <td>d-27.pddl</td>
-<td align="right"><span style="color:rgb(127,127,127)">114.66</span></td>
+<td align="right"><span style="color:rgb(127,127,127)">117.63</span></td>
 </tr>
 <tr>
 <td>d-28.pddl</td>
-<td align="right"><span style="color:rgb(127,127,127)">70.75</span></td>
+<td align="right"><span style="color:rgb(127,127,127)">70.44</span></td>
 </tr>
 <tr>
 <td>d-29.pddl</td>
-<td align="right"><span style="color:rgb(127,127,127)">51.51</span></td>
+<td align="right"><span style="color:rgb(127,127,127)">53.26</span></td>
 </tr>
 <tr>
 <td>d-30.pddl</td>
-<td align="right"><span style="color:rgb(127,127,127)">51.55</span></td>
+<td align="right"><span style="color:rgb(127,127,127)">52.41</span></td>
 </tr>
 </table>
 
@@ -4109,83 +4027,83 @@ Only instances where all algorithms have a value for "total_time" are considered
 </tr>
 <tr>
 <td>d-01.pddl</td>
-<td align="right"><span style="color:rgb(127,127,127)">10.50</span></td>
+<td align="right"><span style="color:rgb(127,127,127)">2.12</span></td>
 </tr>
 <tr>
 <td>d-02.pddl</td>
-<td align="right"><span style="color:rgb(127,127,127)">5.57</span></td>
+<td align="right"><span style="color:rgb(127,127,127)">5.79</span></td>
 </tr>
 <tr>
 <td>d-03.pddl</td>
-<td align="right"><span style="color:rgb(127,127,127)">25.97</span></td>
+<td align="right"><span style="color:rgb(127,127,127)">11.03</span></td>
 </tr>
 <tr>
 <td>d-04.pddl</td>
-<td align="right"><span style="color:rgb(127,127,127)">33.66</span></td>
+<td align="right"><span style="color:rgb(127,127,127)">18.29</span></td>
 </tr>
 <tr>
 <td>d-05.pddl</td>
-<td align="right"><span style="color:rgb(127,127,127)">27.64</span></td>
+<td align="right"><span style="color:rgb(127,127,127)">27.60</span></td>
 </tr>
 <tr>
 <td>d-06.pddl</td>
-<td align="right"><span style="color:rgb(127,127,127)">39.64</span></td>
+<td align="right"><span style="color:rgb(127,127,127)">39.98</span></td>
 </tr>
 <tr>
 <td>d-07.pddl</td>
-<td align="right"><span style="color:rgb(127,127,127)">52.49</span></td>
+<td align="right"><span style="color:rgb(127,127,127)">53.84</span></td>
 </tr>
 <tr>
 <td>d-08.pddl</td>
-<td align="right"><span style="color:rgb(127,127,127)">71.53</span></td>
+<td align="right"><span style="color:rgb(127,127,127)">70.35</span></td>
 </tr>
 <tr>
 <td>d-09.pddl</td>
-<td align="right"><span style="color:rgb(127,127,127)">89.41</span></td>
+<td align="right"><span style="color:rgb(127,127,127)">88.46</span></td>
 </tr>
 <tr>
 <td>d-10.pddl</td>
-<td align="right"><span style="color:rgb(127,127,127)">123.45</span></td>
+<td align="right"><span style="color:rgb(127,127,127)">111.71</span></td>
 </tr>
 <tr>
 <td>d-11.pddl</td>
-<td align="right"><span style="color:rgb(127,127,127)">159.67</span></td>
+<td align="right"><span style="color:rgb(127,127,127)">144.46</span></td>
 </tr>
 <tr>
 <td>d-12.pddl</td>
-<td align="right"><span style="color:rgb(127,127,127)">166.46</span></td>
+<td align="right"><span style="color:rgb(127,127,127)">188.92</span></td>
 </tr>
 <tr>
 <td>d-13.pddl</td>
-<td><span style="color:rgb(127,127,127)">None</span></td>
+<td align="right"><span style="color:rgb(127,127,127)">215.65</span></td>
 </tr>
 <tr>
 <td>d-14.pddl</td>
-<td align="right"><span style="color:rgb(127,127,127)">282.06</span></td>
+<td align="right"><span style="color:rgb(127,127,127)">268.98</span></td>
 </tr>
 <tr>
 <td>d-15.pddl</td>
-<td align="right"><span style="color:rgb(127,127,127)">300.39</span></td>
+<td align="right"><span style="color:rgb(127,127,127)">347.00</span></td>
 </tr>
 <tr>
 <td>d-16.pddl</td>
-<td><span style="color:rgb(127,127,127)">None</span></td>
+<td align="right"><span style="color:rgb(127,127,127)">314.47</span></td>
 </tr>
 <tr>
 <td>d-17.pddl</td>
-<td align="right"><span style="color:rgb(127,127,127)">369.87</span></td>
+<td align="right"><span style="color:rgb(127,127,127)">460.11</span></td>
 </tr>
 <tr>
 <td>d-18.pddl</td>
-<td><span style="color:rgb(127,127,127)">None</span></td>
+<td align="right"><span style="color:rgb(127,127,127)">506.73</span></td>
 </tr>
 <tr>
 <td>d-19.pddl</td>
-<td align="right"><span style="color:rgb(127,127,127)">605.68</span></td>
+<td align="right"><span style="color:rgb(127,127,127)">540.70</span></td>
 </tr>
 <tr>
 <td>d-20.pddl</td>
-<td align="right"><span style="color:rgb(127,127,127)">697.24</span></td>
+<td align="right"><span style="color:rgb(127,127,127)">615.65</span></td>
 </tr>
 </table>
 
@@ -4208,7 +4126,7 @@ Only instances where all algorithms have a value for "total_time" are considered
 <td align="right"><span style="color:rgb(127,127,127)">0</span></td>
 </tr>
 <tr>
-<td><a href="#unsolvable-hanoi" onclick="show_table(document.getElementById('unsolvable-hanoi'));">hanoi</a> (19)</td>
+<td><a href="#unsolvable-hanoi" onclick="show_table(document.getElementById('unsolvable-hanoi'));">hanoi</a> (20)</td>
 <td align="right"><span style="color:rgb(127,127,127)">0</span></td>
 </tr>
 <tr>
@@ -4220,7 +4138,7 @@ Only instances where all algorithms have a value for "total_time" are considered
 <td align="right"><span style="color:rgb(127,127,127)">0</span></td>
 </tr>
 <tr>
-<td><a href="#unsolvable-tyreworld" onclick="show_table(document.getElementById('unsolvable-tyreworld'));">tyreworld</a> (19)</td>
+<td><a href="#unsolvable-tyreworld" onclick="show_table(document.getElementById('unsolvable-tyreworld'));">tyreworld</a> (20)</td>
 <td align="right"><span style="color:rgb(127,127,127)">0</span></td>
 </tr>
 <tr>
@@ -4549,7 +4467,7 @@ The last row reports the sum across all domains.
 </tr>
 <tr>
 <td>d-16.pddl</td>
-<td><span style="color:rgb(127,127,127)">None</span></td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
 </tr>
 <tr>
 <td>d-17.pddl</td>
@@ -4813,7 +4731,7 @@ The last row reports the sum across all domains.
 </tr>
 <tr>
 <td>d-13.pddl</td>
-<td><span style="color:rgb(127,127,127)">None</span></td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
 </tr>
 <tr>
 <td>d-14.pddl</td>
