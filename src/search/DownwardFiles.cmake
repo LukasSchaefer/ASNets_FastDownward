@@ -432,6 +432,14 @@ fast_downward_plugin(
 )
 
 fast_downward_plugin(
+    NAME POLICY_SEARCH_EXPLORED
+    HELP "Policy guided search algorithm with explored states memory"
+    SOURCES
+        search_engines/policy_search_explored
+    DEPENDS SEARCH_COMMON
+)
+
+fast_downward_plugin(
     NAME OPEN_LIST_POLICY_SEARCH
     HELP "Policy guided search algorithm with open list"
     SOURCES
