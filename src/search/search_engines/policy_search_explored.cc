@@ -42,7 +42,7 @@ namespace policy_search_explored {
 
     void PolicySearchExplored::initialize() {
         assert(policy);
-        cout << "Conducting policy search" << endl;
+        cout << "Conducting policy search with explored list" << endl;
 
         bool dead_end = false;
         if (use_heuristic_dead_end_detection) {
