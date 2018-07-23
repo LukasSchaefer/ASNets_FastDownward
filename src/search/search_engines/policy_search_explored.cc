@@ -73,9 +73,13 @@ namespace policy_search_explored {
     }
 
     SearchStatus PolicySearchExplored::step() {
+        // cout << "PolicySearch explored list call" << endl;
         if (check_goal_and_set_plan(current_eval_context.get_state())) {
+	    // cout << "Goal found!" << endl;
             return SOLVED;
         }
+
+	// cout << "No Goal found" << endl;
 
         if (exploration_trajectory_limit != -1 && trajectory_length >= exploration_trajectory_limit) {
             cout << "No solution - trajectory limit reached" << endl;
@@ -83,6 +87,7 @@ namespace policy_search_explored {
         }
 
         assert(current_eval_context.contains_policy());
+	// cout << "Contains policy was checked" << endl;
 
         // add current state to explored list
         explored_states.push_back(current_eval_context.get_state().get_id());
@@ -92,16 +97,19 @@ namespace policy_search_explored {
         SearchNode parent_node = search_space.get_node(parent_state);
 
         // collect policy output in current EvaluationContext
+	// cout << "Policy output is extracted" << endl;
         vector<OperatorID> operator_ids = current_eval_context.get_preferred_operators(policy);
         vector<float> operator_prefs = current_eval_context.get_preferred_operator_preferences(policy);
 
         // preferences correspond to operator id by index
+	// cout << "Policy output is checked" << endl;
         assert(operator_ids.size() == operator_prefs.size());
 
         // find most probable/ preferenced operator
         StateID best_new_state_id = StateID::no_state;
         unsigned int best_op_index = 0;
         float highest_op_probability = 0;
+	// cout << "Determining best op" << endl;
         for (unsigned int index = 0; index < operator_ids.size(); index++) {
             float probability = operator_prefs[index];
             if (probability > highest_op_probability) {
@@ -109,7 +117,9 @@ namespace policy_search_explored {
                 OperatorID op_id = operator_ids[index];
                 OperatorProxy op_proxy  = task_proxy.get_operators()[op_id];
                 GlobalState new_state = state_registry.get_successor_state(parent_state, op_proxy);
+		cout << "Check whether op leads to already explored state" << endl;
                 if (find(explored_states.begin(), explored_states.end(), new_state.get_id()) != explored_states.end()) {
+		    // cout << "Action " << op_proxy.get_name() << " lead to state " << new_state.get_id() << " already encountered -> ignored" << endl;
                     // new_state was already explored
                     continue;
                 }
@@ -117,30 +127,40 @@ namespace policy_search_explored {
                 highest_op_probability = probability;
                 best_op_index = index;
                 best_new_state_id = new_state.get_id();
+		cout << "New best op found" << endl;
             }
         }
 
         // reach new state
+	// cout << "Best op determined" << endl;
         if (best_new_state_id == StateID::no_state) {
             // no applicable action lead to a new state -> dead-end
+	    // cout << "no op was applicable or lead to new state" << endl;
             return FAILED;
         }
+	// cout << "Getting op_id" << endl;
         OperatorID op_id = operator_ids[best_op_index];
+	// cout << "Getting op" << endl;
         OperatorProxy op_proxy = task_proxy.get_operators()[op_id];
+	// cout << "Getting state" << endl;
         GlobalState new_state = state_registry.lookup_state(best_new_state_id);
         cout << "Policy reached state with id " << new_state.get_id() << " by applying action " << op_proxy.get_name() << " which had probability " << highest_op_probability << endl;
         SearchNode node = search_space.get_node(new_state);
         statistics.inc_generated();
 
+	// cout << "checking for new state" << endl;
         if (node.is_new()) {
             // create eval_context with policy
             EvaluationContext eval_context(new_state, &statistics, true, true);
             statistics.inc_evaluated_states();
 
             bool dead_end = false;
+	    // cout << "check whether state is dead-end..." << endl;
             if (use_heuristic_dead_end_detection) {
+                // cout << "using heuristic" << endl;
                 dead_end = eval_context.is_heuristic_infinite(dead_end_heuristic);
             } else {
+                // cout << "using policy" << endl;
                 dead_end = eval_context.is_policy_dead_end(policy);
             }
             if (dead_end) {
@@ -149,6 +169,7 @@ namespace policy_search_explored {
                 cout << "No solution - FAILED" << endl;
                 return FAILED;
             }
+
             node.open(parent_node, op_proxy);
 
             current_eval_context = eval_context;
