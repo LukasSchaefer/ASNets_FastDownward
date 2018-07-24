@@ -27,10 +27,13 @@ def write_success_rate_graph(success_rates, tex_path):
         f.write('\t\tmax space between ticks=50,\n')
         f.write('\t\tminor x tick num=4,\n')
         f.write('\t\tminor y tick num=4,\n')
+        f.write('\t\txtick={0,1,2,3,4,5,6,7,8,9,10},\n')
+        f.write('\t\tytick={0,25,50,75,100},\n')
         f.write('\t\ttick style={semithick,color=black},\n')
         f.write('\t\txlabel=epoch,\n')
         f.write('\t\tylabel=success rate (in percent)]\n')
         f.write('\t\\addplot[smooth,mark=*] plot coordinates {\n')
+        f.write('\t\t(0,0)\n')
         for epoch, success_rate in enumerate(success_rates):
             f.write('\t\t(%d,%d)\n' % (epoch + 1, int(success_rate)))
         f.write('\t};\n')

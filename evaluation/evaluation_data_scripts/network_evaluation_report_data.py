@@ -210,7 +210,8 @@ def add_network_data_to_tables(report_dict, tables_dir):
     coverage_table_lines = coverage_table_file.readlines()
 
     line_index = 0
-    cov_regex = r'[\w]+ & \d+\/\d+ & \d+\/\d+ & \d+\/\d+ & \d+\/\d+ & - & - & - & - & - & -'
+    # cov_regex = r'[\w]+ & \d+\/\d+ & \d+\/\d+ & \d+\/\d+ & \d+\/\d+ & - & - & - & - & - & -'
+    cov_regex = r'[\w]+ & \d+\/\d+ & \d+\/\d+ & \d+\/\d+ & \d+\/\d+ & - & - & -'
     while line_index < len(coverage_table_lines):
         line = coverage_table_lines[line_index]
         match = re.search(cov_regex, line)
@@ -227,14 +228,15 @@ def add_network_data_to_tables(report_dict, tables_dir):
             print('Domain %s did not occur in the ASNet reports' % dom_name)
             continue
 
-        elements[-6] = dom_dict['conf1']
-        elements[-5] = dom_dict['exp_conf1']
-        elements[-4] = dom_dict['conf2']
-        elements[-3] = dom_dict['exp_conf2']
-        elements[-2] = dom_dict['conf3']
-        elements[-1] = dom_dict['exp_conf3']
+        elements[-3] = dom_dict['conf1']
+        # elements[-5] = dom_dict['exp_conf1']
+        elements[-2] = dom_dict['conf2']
+        # elements[-3] = dom_dict['exp_conf2']
+        elements[-1] = dom_dict['conf3']
+        # elements[-1] = dom_dict['exp_conf3']
 
-        new_line = '\t%s & %s & %s & %s & %s & %s & %s & %s & %s & %s & %s\\\\ \n' % tuple(elements)
+        # new_line = '\t%s & %s & %s & %s & %s & %s & %s & %s & %s & %s & %s\\\\ \n' % tuple(elements)
+        new_line = '\t%s & %s & %s & %s & %s & %s & %s & %s\\\\ \n' % tuple(elements)
         coverage_table_lines[line_index] = new_line
         print('Domain %s was updated' % dom_name)
         line_index += 1
@@ -264,37 +266,37 @@ def add_network_data_to_tables(report_dict, tables_dir):
                 assert current_problem != ''
                 elements = [s.strip() for s in line.split('&')]
                 prob_dict = dom_dict[current_problem]
-                elements[-6] = prob_dict['conf1'][0]
-                elements[-5] = prob_dict['exp_conf1'][0]
-                elements[-4] = prob_dict['conf2'][0]
-                elements[-3] = prob_dict['exp_conf2'][0]
-                elements[-2] = prob_dict['conf3'][0]
-                elements[-1] = prob_dict['exp_conf3'][0]
-                new_line = '\t%s & %s & %s & %s & %s & %s & %s & %s & %s & %s & %s\\\\ \n' % tuple(elements)
+                elements[-3] = prob_dict['conf1'][0]
+                # elements[-5] = prob_dict['exp_conf1'][0]
+                elements[-2] = prob_dict['conf2'][0]
+                # elements[-3] = prob_dict['exp_conf2'][0]
+                elements[-1] = prob_dict['conf3'][0]
+                # elements[-1] = prob_dict['exp_conf3'][0]
+                new_line = '\t%s & %s & %s & %s & %s & %s & %s & %s\\\\ \n' % tuple(elements)
                 eval_table_lines[line_index] = new_line
             elif line.startswith('Search time'):
                 assert current_problem != ''
                 elements = [s.strip() for s in line.split('&')]
                 prob_dict = dom_dict[current_problem]
-                elements[-6] = prob_dict['conf1'][1]
-                elements[-5] = prob_dict['exp_conf1'][1]
-                elements[-4] = prob_dict['conf2'][1]
-                elements[-3] = prob_dict['exp_conf2'][1]
-                elements[-2] = prob_dict['conf3'][1]
-                elements[-1] = prob_dict['exp_conf3'][1]
-                new_line = '\t%s & %s & %s & %s & %s & %s & %s & %s & %s & %s & %s\\\\ \n' % tuple(elements)
+                elements[-3] = prob_dict['conf1'][1]
+                # elements[-5] = prob_dict['exp_conf1'][1]
+                elements[-2] = prob_dict['conf2'][1]
+                # elements[-3] = prob_dict['exp_conf2'][1]
+                elements[-1] = prob_dict['conf3'][1]
+                # elements[-1] = prob_dict['exp_conf3'][1]
+                new_line = '\t%s & %s & %s & %s & %s & %s & %s & %s\\\\ \n' % tuple(elements)
                 eval_table_lines[line_index] = new_line
             elif line.startswith('Model creation time'):
                 assert current_problem != ''
                 elements = [s.strip() for s in line.split('&')]
                 prob_dict = dom_dict[current_problem]
-                elements[-6] = prob_dict['conf1'][2]
-                elements[-5] = prob_dict['exp_conf1'][2]
-                elements[-4] = prob_dict['conf2'][2]
-                elements[-3] = prob_dict['exp_conf2'][2]
-                elements[-2] = prob_dict['conf3'][2]
-                elements[-1] = prob_dict['exp_conf3'][2]
-                new_line = '\t%s & %s & %s & %s & %s & %s & %s & %s & %s & %s & %s\\\\ \n' % tuple(elements)
+                elements[-3] = prob_dict['conf1'][2]
+                # elements[-5] = prob_dict['exp_conf1'][2]
+                elements[-2] = prob_dict['conf2'][2]
+                # elements[-3] = prob_dict['exp_conf2'][2]
+                elements[-1] = prob_dict['conf3'][2]
+                # elements[-1] = prob_dict['exp_conf3'][2]
+                new_line = '\t%s & %s & %s & %s & %s & %s & %s & %s\\\\ \n' % tuple(elements)
                 eval_table_lines[line_index] = new_line
 
             line_index += 1
