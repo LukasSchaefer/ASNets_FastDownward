@@ -8,8 +8,7 @@ import keras.backend as K
 
 asnetsfastdownward_dir = os.path.dirname(os.path.realpath(__file__))
 
-# domains = ['blocksworld', 'elevator', 'floortile', 'hanoi', 'parcprinter', 'sokoban', 'tyreworld']#, 'turnandopen']
-domains = ['elevator']
+# domains = ['elevator']
 
 configurations = {}
 conf1 = ('False', '2', '"astar(lmcut(),transform=asnet_sampling_transform())"')
@@ -21,7 +20,7 @@ configurations['conf3'] = conf3
 
 
 def main(argv):
-    if len(argv) != 2:
+    if len(argv) < 2 or len(argv) > 3:
         print("Usage: python3 build_networks_for_eval.py confx")
         print("Possible configurations:")
         for conf, values in configurations.items():
@@ -33,6 +32,10 @@ def main(argv):
         print("Given configuration %s does not exist!" % conf)
     just_opt_loss, layers, teacher_search = configurations[conf]
     print("Using %s: just_opt_loss = %s, layers = %s, teacher_search = %s" % (conf, just_opt_loss, layers, teacher_search))
+    if len(argv) == 3:
+        domains = ['elevator']
+    else:
+        domains = ['blocksworld', 'floortile', 'hanoi', 'parcprinter', 'sokoban', 'tyreworld', 'elevator']#, 'turnandopen']
 
     for domain in domains:
         if domain == 'parcprinter':
@@ -53,7 +56,7 @@ def main(argv):
                 continue
 
             network_path = os.path.join(asnetsfastdownward_dir, 'evaluation/network_runs/evaluation/protobuf_networks/elu_acc/' + domain + '/' + conf + '/' + problem_name + '.pb')
-            if domain != 'tyreworld' and os.path.isfile(network_path):
+            if domains == ['elevator'] and os.path.isfile(network_path):
                 continue
 
             weights_path = os.path.join(asnetsfastdownward_dir, 'evaluation/network_runs/training/elu_acc/' + domain + '/' + conf + '/asnet_final_weights.h5')
@@ -68,6 +71,9 @@ def main(argv):
             f = open(log_path, 'w')
             f.write("Model building & saving time: %f" % network_build_time)
             f.close()
+
+            if network_build_time > 3600:
+                break
 
 
 if __name__ == "__main__":

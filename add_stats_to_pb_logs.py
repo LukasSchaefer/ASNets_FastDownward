@@ -26,7 +26,7 @@ def compute_pb_network_size(log_path):
         size = os.stat(protobuf_path).st_size
         # size in MB
         size = (size / 1024) / 1024
-        size_line = '\nProtobuf network size: %fMB' % size
+        size_line = '\nProtobuf network size: %dMB' % size
     else:
         size_line = ''
     return size_line
