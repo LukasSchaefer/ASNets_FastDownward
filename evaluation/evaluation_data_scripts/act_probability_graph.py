@@ -20,7 +20,7 @@ def extract_probabilities(log_lines, skip_x_probs):
             if prob_counter % skip_x_probs != 0:
                 continue
             prob = float(match.group(1))
-            probabilities.append((prob_index, prob))
+            probabilities.append((prob_index * skip_x_probs, prob))
             prob_index += 1
             continue
 
@@ -79,7 +79,7 @@ def main(argv):
     domain_name = log_lines[0].split()[-1][:-1]
     tex_path = os.path.join(save_dir, 'action_probability_graph_' + domain_name + '.tex')
     probabilities, epoch_indeces = extract_probabilities(log_lines, skip_x_probs)
-    write_probability_graph(probabilities, epoch_indeces[1:-1], tex_path)
+    write_probability_graph(probabilities, epoch_indeces[1:], tex_path)
 
 
 if __name__ == "__main__":

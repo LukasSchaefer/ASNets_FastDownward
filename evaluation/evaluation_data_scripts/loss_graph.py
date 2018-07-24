@@ -30,11 +30,11 @@ def extract_loss_values(log_lines, skip_x_losses):
             if loss_counter % skip_x_losses != 0:
                 continue
             loss = float(match_loss.group(1))
-            problem_losses[current_problem][-1].append((loss_index, loss))
+            problem_losses[current_problem][-1].append((loss_index * skip_x_losses, loss))
             loss_index += 1
         match = re.match(epoch_regex, line)
         if match:
-            epoch_indeces.append(loss_index)
+            epoch_indeces.append(loss_index * skip_x_losses)
             loss_index += 1
 
     return problem_losses, epoch_indeces
@@ -43,7 +43,7 @@ def extract_loss_values(log_lines, skip_x_losses):
 def write_loss_graph(problem_losses, epoch_indeces, tex_path):
     colors = ['blue', 'green', 'magenta', 'olive', 'orange', 'red', 'yellow']
     with open(tex_path, 'w') as f:
-        f.write('\\begin{tikzpicture}[trim axis left]\n')
+        f.write('\\begin{tikzpicture}\n')
         f.write('\t\\begin{axis}[\n')
         f.write('\t\tscale only axis,\n')
         f.write('\t\theight=5cm,\n')
@@ -52,6 +52,8 @@ def write_loss_graph(problem_losses, epoch_indeces, tex_path):
         f.write('\t\tminor x tick num=4,\n')
         f.write('\t\tminor y tick num=4,\n')
         f.write('\t\ttick style={semithick,color=black},\n')
+        f.write('\t\tscaled ticks=false,\n')
+        #f.write('\t\ttick label style={/pgf/number format/fixed}\n')
         f.write('\t\tlegend style={\n')
         f.write('\t\t\tat={(0.5,1.2)},\n')
         f.write('\t\t\tanchor=north,\n')
@@ -104,7 +106,7 @@ def main(argv):
     domain_name = log_lines[0].split()[-1][:-1]
     tex_path = os.path.join(save_dir, 'loss_graph_' + domain_name + '.tex')
     problem_losses, epoch_indeces = extract_loss_values(log_lines, skip_x_losses)
-    write_loss_graph(problem_losses, epoch_indeces[1:-1], tex_path)
+    write_loss_graph(problem_losses, epoch_indeces[1:], tex_path)
 
 
 if __name__ == "__main__":

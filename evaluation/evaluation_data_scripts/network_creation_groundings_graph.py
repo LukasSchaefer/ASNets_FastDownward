@@ -61,6 +61,7 @@ def write_groundings_graph(network_creation_time_points, network_size_points, sa
         f.write('\t\ttick style={semithick,color=black},\n')
         f.write('\t\txlabel=number of groundings,\n')
         f.write('\t\tylabel=network creation time (in seconds),\n')
+        f.write('\t\ty label style={at={(axis description cs:-0.03,.5)},anchor=south},\n')
         f.write('\t\tlegend style={\n')
         f.write('\t\t\tat={(0.5,1.2)},\n')
         f.write('\t\t\tanchor=north,\n')
@@ -83,7 +84,7 @@ def write_groundings_graph(network_creation_time_points, network_size_points, sa
         for time_triple in network_creation_time_points:
             f.write('\t\t%d\t%d\t%s\n' % time_triple)
         f.write('\t};\n')
-        f.write('\t\\legend{Blocksworld, Elevator, Floortile, Hanoi, ParcPrinter, Sokoban, TurnAndOpen, Tyreworld}\n')
+        f.write('\t\\legend{Blocksworld, Elevator, Floortile, Hanoi, ParcPrinter, Sokoban, Turnandopen, Tyreworld}\n')
         f.write('\t\\end{axis}\n')
         f.write('\\end{tikzpicture}')
 
@@ -100,6 +101,7 @@ def write_groundings_graph(network_creation_time_points, network_size_points, sa
         f.write('\t\ttick style={semithick,color=black},\n')
         f.write('\t\txlabel=number of groundings,\n')
         f.write('\t\tylabel=protobuf network size (in MB),\n')
+        f.write('\t\ty label style={at={(axis description cs:-0.03,.5)},anchor=south},\n')
         f.write('\t\tlegend style={\n')
         f.write('\t\t\tat={(0.5,1.2)},\n')
         f.write('\t\t\tanchor=north,\n')
@@ -122,7 +124,7 @@ def write_groundings_graph(network_creation_time_points, network_size_points, sa
         for size_triple in network_size_points:
             f.write('\t\t%d\t%d\t%s\n' % size_triple)
         f.write('\t};\n')
-        f.write('\t\\legend{Blocksworld, Elevator, Floortile, Hanoi, ParcPrinter, Sokoban, TurnAndOpen, Tyreworld}\n')
+        f.write('\t\\legend{Blocksworld, Elevator, Floortile, Hanoi, ParcPrinter, Sokoban, Turnandopen, Tyreworld}\n')
         f.write('\t\\end{axis}\n')
         f.write('\\end{tikzpicture}')
 

@@ -18,41 +18,51 @@ def write_dom_training_sum(domain_name, domain_dir, included_confs):
         f.write('\\section{%s}\n' % dom_name)
         for conf in included_confs:
             if conf == 'conf1':
-                conf_name = '1st configuration: A$^*$ $h^{LM-Cut}$ teacher'
+                conf_name = '1st configuration: A$^*$ $h^{LM-cut}$ teacher'
             elif conf == 'conf2':
                 conf_name = '2nd configuration: A$^*$ $h^{add}$ teacher'
             elif conf == 'conf3':
                 conf_name = '3rd configuration: GBFS $h^{FF}$ teacher'
-            f.write('\\subsection*{%s}\n\n' % conf_name)
-            # f.write('\t\\vspace{0.7cm}\n')
-            f.write('\\begin{figure}[htbp!]\n')
+            f.write('\\FloatBarrier\n\n')
+            f.write('\\subsection*{%s}\n' % conf_name)
+            f.write('\\begin{figure}[h]\n')
             f.write('\t\\centering\n')
-            f.write('\t\t\\textbf{Time distribution}\n')
-            f.write('\t\t\\ \\\\\n')
-            f.write('\t\t\\vspace{0.5cm}\n')
             rel_path = os.path.join(domain_dir, conf + '/time_distribution_' + domain_name + '.tex')
+            f.write('\t\\resizebox{0.85\\linewidth}{!}{\n')
             f.write('\t\t\\input{%s}\n\n' % os.path.abspath(rel_path))
-
-            f.write('\t\t\\vspace{2cm}\n')
-
-            f.write('\t\t\\textbf{Success rate development}\n')
-            f.write('\t\t\\ \\\\\n')
-            f.write('\t\t\\vspace{0.5cm}\n')
-            rel_path = os.path.join(domain_dir, conf + '/success_rate_graph_' + domain_name + '.tex')
-            f.write('\t\t\\input{%s}\n' % os.path.abspath(rel_path))
+            f.write('\t}\n')
+            f.write('\t\\caption{Time distribution}\n')
             f.write('\\end{figure}\n\n')
-            f.write('\\newpage\n\n')
-            # f.write('\\vspace{2cm}\n\n')
 
-            # f.write('\t\\paragraph{Loss development}\n')
-            # f.write('\t\\ \\\\ \n')
-            # rel_path = os.path.join(domain_dir, conf + '/loss_graph_' + domain_name + '.tex')
-            # f.write('\t\\input{%s}\n\n' % os.path.abspath(rel_path))
+            f.write('\\begin{figure}[h]\n')
+            f.write('\t\\centering\n')
+            rel_path = os.path.join(domain_dir, conf + '/success_rate_graph_' + domain_name + '.tex')
+            f.write('\t\\resizebox{0.85\\linewidth}{!}{\n')
+            f.write('\t\t\\input{%s}\n' % os.path.abspath(rel_path))
+            f.write('\t}\n')
+            f.write('\t\\caption{Success rate development}\n')
+            f.write('\\end{figure}\n\n')
+
+            f.write('\\begin{figure}[h]\n')
+            f.write('\t\\centering\n')
+            rel_path = os.path.join(domain_dir, conf + '/loss_graph_' + domain_name + '.tex')
+            f.write('\t\\resizebox{0.85\\linewidth}{!}{\n')
+            f.write('\t\t\\input{%s}\n' % os.path.abspath(rel_path))
+            f.write('\t}\n')
+            f.write('\t\\caption{Loss development}\n')
+            f.write('\\end{figure}\n\n')
+
+            if domain_name == 'blocksworld':
+                f.write('\\vspace{2cm} \\ \\\\\n\n')
+            else:
+                f.write('\\newpage\n\n')
 
             # f.write('\t\\paragraph{Action probabilities development}\n')
             # f.write('\t\\ \\\\ \n')
             # rel_path = os.path.join(domain_dir, conf + '/action_probability_graph_' + domain_name + '.tex')
             # f.write('\t\\input{%s}\n\n' % os.path.abspath(rel_path))
+        if domain_name == 'blocksworld':
+            f.write('\\newpage\n\n')
 
 
 def main(argv):
