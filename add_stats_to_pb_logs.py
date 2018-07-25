@@ -34,7 +34,7 @@ def compute_pb_network_size(log_path):
 
 def main(argv):
     if len(argv) != 2:
-        print("Usage: python3 build_networks_for_eval.py <path/to/protobuf/networks_dir>")
+        print("Usage: python3 add_stats_to_pb_logs.py <path/to/protobuf/networks_dir>")
         sys.exit(1)
 
     network_dir = argv[1]

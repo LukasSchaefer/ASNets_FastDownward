@@ -666,6 +666,7 @@ def train(options, directory, domain_path, problem_list):
                 print()
 
                 # check if time limit for training is reached
+                current_time = time.time()
                 training_time = current_time - begin_train_time
                 duration_string = duration_format(options.time_limit)
                 if training_time > options.time_limit:

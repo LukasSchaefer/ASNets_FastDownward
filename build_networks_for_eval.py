@@ -8,7 +8,8 @@ import keras.backend as K
 
 asnetsfastdownward_dir = os.path.dirname(os.path.realpath(__file__))
 
-# domains = ['elevator']
+domains = ['blocksworld', 'floortile', 'hanoi', 'parcprinter', 'sokoban', 'tyreworld']
+# domains = ['turnandopen', 'elevator']
 
 configurations = {}
 conf1 = ('False', '2', '"astar(lmcut(),transform=asnet_sampling_transform())"')
@@ -32,10 +33,6 @@ def main(argv):
         print("Given configuration %s does not exist!" % conf)
     just_opt_loss, layers, teacher_search = configurations[conf]
     print("Using %s: just_opt_loss = %s, layers = %s, teacher_search = %s" % (conf, just_opt_loss, layers, teacher_search))
-    if len(argv) == 3:
-        domains = ['elevator']
-    else:
-        domains = ['blocksworld', 'floortile', 'hanoi', 'parcprinter', 'sokoban', 'tyreworld', 'elevator']#, 'turnandopen']
 
     for domain in domains:
         if domain == 'parcprinter':
@@ -56,8 +53,10 @@ def main(argv):
                 continue
 
             network_path = os.path.join(asnetsfastdownward_dir, 'evaluation/network_runs/evaluation/protobuf_networks/elu_acc/' + domain + '/' + conf + '/' + problem_name + '.pb')
-            if domains == ['elevator'] and os.path.isfile(network_path):
-                continue
+
+            # if os.path.isfile(network_path):
+            #     # network already built
+            #     continue
 
             weights_path = os.path.join(asnetsfastdownward_dir, 'evaluation/network_runs/training/elu_acc/' + domain + '/' + conf + '/asnet_final_weights.h5')
             print(weights_path)
