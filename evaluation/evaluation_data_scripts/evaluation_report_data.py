@@ -248,8 +248,8 @@ def write_evaluation_tables(report_data, tables_dir):
     # creating coverage table
     with open(os.path.join(tables_dir, 'eval_coverage_table.tex'), 'w') as f:
         f.write('\\section{Coverage}\n')
-        f.write('\\begin{tabular}{l || l | l | l | l | l  l | l  l | l  l}\n')
-        f.write('\tDomain & A$^*$ LM & A$^*$ add & GBFS & LAMA & Net$_1$ & eNet$_1$ & Net$_2$ & eNet$_2$ & Net$_3$ & eNet$_3$\\\\ \\hhline{===========}\n')
+        f.write('\\begin{tabular}{l || l | l | l | l | c | c | c}\n')
+        f.write('\tDomain & A$^*$ LM & A$^*$ add & GBFS & LAMA & ASNet LM & ASNet add & ASNet FF\\\\ \\hhline{========}\n')
         for dom in report_data.keys():
             dom_dict = report_data[dom]
             dom_name = dom[0].capitalize() + dom[1:]
@@ -258,9 +258,9 @@ def write_evaluation_tables(report_data, tables_dir):
                 cov = dom_dict[planner]
                 cov_list.append(cov)
             # add - for ASNets
-            for _ in range(6):
+            for _ in range(3):
                 cov_list.append('-')
-            f.write('\t%s & %s & %s & %s & %s & %s & %s & %s & %s & %s & %s\\\\ \n' % tuple(cov_list))
+            f.write('\t%s & %s & %s & %s & %s & %s & %s & %s\\\\ \n' % tuple(cov_list))
         f.write('\\end{tabular}')
 
 
@@ -281,20 +281,20 @@ def write_evaluation_tables(report_data, tables_dir):
                     costs.append(cost)
                     search_times.append(time)
                 # for ASNets
-                for _ in range(6):
+                for _ in range(3):
                     costs.append('-')
                     search_times.append('-')
 
                 f.write('\\vspace{0.5cm}\n')
                 f.write('\\noindent\n')
-                f.write('\\resizebox{1.1\linewidth}{!}{\n')
-                f.write('\t\\begin{tabular}{l || l l l l | l l l l l l}\n')
-                f.write('\t\t\\textbf{%s} & A$^*$ LM & A$^*$ add & GBFS & LAMA & Net$_1$ & eNet$_1$ & Net$_2$ & eNet$_2$ & Net$_3$ & eNet$_3$\\\\ \\hline\n' % prob_name)
-                f.write('\t\tPlan cost & %s & %s & %s & %s & %s & %s & %s & %s & %s & %s\\\\ \n' % tuple(costs))
-                f.write('\t\tSearch time & %s & %s & %s & %s & %s & %s & %s & %s & %s & %s\\\\ \n' % tuple(search_times))
-                f.write('\t\tModel creation time & - & - & - & - & - & - & - & - & - & -\\\\ \n')
+                # f.write('\\resizebox{1.1\linewidth}{!}{\n')
+                f.write('\t\\begin{tabular}{l || l l l l | l l l}\n')
+                f.write('\t\t\\textbf{%s} & A$^*$ LM & A$^*$ add & GBFS & LAMA & ASNet LM & ASNet add & ASNet FF\\\\ \\hline\n' % prob_name)
+                f.write('\t\tPlan cost & %s & %s & %s & %s & %s & %s & %s\\\\ \n' % tuple(costs))
+                f.write('\t\tSearch time & %s & %s & %s & %s & %s & %s & %s\\\\ \n' % tuple(search_times))
+                f.write('\t\tModel creation time & - & - & - & - & - & - & -\\\\ \n')
                 f.write('\t\\end{tabular}\n')
-                f.write('}\n')
+                # f.write('}\n')
             
 
 def main(argv):
