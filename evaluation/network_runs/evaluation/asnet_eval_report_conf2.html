@@ -1,0 +1,6517 @@
+<?xml version="1.0"
+      encoding="UTF-8"
+?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>report</title>
+<meta name="generator" content="http://txt2tags.sf.net" />
+<style type="text/css">
+    body {
+        font-family: Ubuntu, Helvetica, Arial, sans-serif;
+    }
+    blockquote {
+        margin: 1em 2em;
+        border-left: 2px solid #999;
+        font-style: oblique;
+        padding-left: 1em;
+    }
+    blockquote:first-letter {
+        margin: .2em .1em .1em 0;
+        font-size: 160%;
+        font-weight: bold;
+    }
+    blockquote:first-line {
+        font-weight: bold;
+    }
+    table {
+        border-collapse: collapse;
+    }
+    td, th {
+        <!--border: 1px solid #888;--> <!--Allow tables without borders-->
+        padding: 3px 7px 2px 7px;
+    }
+    th {
+        text-align: left;
+        padding-top: 5px;
+        padding-bottom: 4px;
+        background-color: #aaa;
+        color: #ffffff;
+    }
+    hr.heavy {
+        height: 2px;
+        background-color: black;
+    }
+</style>
+<script type="text/javascript">
+function toggle_element(element) {
+    if (element.style.display == "none") {
+        element.style.display = "";
+    } else {
+        element.style.display = "none";
+    }
+}
+
+function find_next(element, classname) {
+    element = element.nextSibling;
+    while(element.nodeName != classname)
+        element = element.nextSibling;
+    return element;
+}
+
+function toggle_table(toggle_button) {
+    toggle_element(find_next(toggle_button, "TABLE"));
+    if (toggle_button.innerHTML == "Show table") {
+        toggle_button.innerHTML = "Hide table";
+    } else {
+        toggle_button.innerHTML = "Show table";
+    }
+}
+
+function show_table(link) {
+    var toggle_button = find_next(link, "BUTTON");
+    var table = find_next(toggle_button, "TABLE");
+    table.style.display = "";
+    toggle_button.innerHTML = "Hide table";
+}
+
+function show_overview_tables() {
+    var names = ["unexplained-errors", "info", "summary"];
+    for (var i = 0; i < names.length; i++) {
+        var link = document.getElementById(names[i]);
+        if (link) {
+            show_table(link);
+        }
+    }
+}
+
+document.addEventListener("DOMContentLoaded", show_overview_tables);
+</script>
+</head>
+<body>
+
+<div class="header" id="header">
+<h1>report</h1>
+<h3>2018-07-25</h3>
+</div>
+
+<div class="body" id="body">
+
+<ul>
+<li><b><a href="#unexplained-errors" onclick="show_table(document.getElementById('unexplained-errors'));">Unexplained Errors</a></b>
+</li>
+<li><b><a href="#info" onclick="show_table(document.getElementById('info'));">Info</a></b>
+</li>
+<li><b><a href="#summary" onclick="show_table(document.getElementById('summary'));">Summary</a></b>
+</li>
+<li><b><a href="#cost" onclick="show_table(document.getElementById('cost'));">cost</a></b>
+  <ul>
+  <li><a href="#cost-blocksworld" onclick="show_table(document.getElementById('cost-blocksworld'));">blocksworld</a> <a href="#cost-elevator" onclick="show_table(document.getElementById('cost-elevator'));">elevator</a> <a href="#cost-floortile" onclick="show_table(document.getElementById('cost-floortile'));">floortile</a> <a href="#cost-hanoi" onclick="show_table(document.getElementById('cost-hanoi'));">hanoi</a> <a href="#cost-parcprinter" onclick="show_table(document.getElementById('cost-parcprinter'));">parcprinter</a> <a href="#cost-sokoban" onclick="show_table(document.getElementById('cost-sokoban'));">sokoban</a> <a href="#cost-turnandopen" onclick="show_table(document.getElementById('cost-turnandopen'));">turnandopen</a> <a href="#cost-tyreworld" onclick="show_table(document.getElementById('cost-tyreworld'));">tyreworld</a>
+  </li>
+  </ul>
+</li>
+<li><b><a href="#coverage" onclick="show_table(document.getElementById('coverage'));">coverage</a></b>
+  <ul>
+  <li><a href="#coverage-blocksworld" onclick="show_table(document.getElementById('coverage-blocksworld'));">blocksworld</a> <a href="#coverage-elevator" onclick="show_table(document.getElementById('coverage-elevator'));">elevator</a> <a href="#coverage-floortile" onclick="show_table(document.getElementById('coverage-floortile'));">floortile</a> <a href="#coverage-hanoi" onclick="show_table(document.getElementById('coverage-hanoi'));">hanoi</a> <a href="#coverage-parcprinter" onclick="show_table(document.getElementById('coverage-parcprinter'));">parcprinter</a> <a href="#coverage-sokoban" onclick="show_table(document.getElementById('coverage-sokoban'));">sokoban</a> <a href="#coverage-turnandopen" onclick="show_table(document.getElementById('coverage-turnandopen'));">turnandopen</a> <a href="#coverage-tyreworld" onclick="show_table(document.getElementById('coverage-tyreworld'));">tyreworld</a>
+  </li>
+  </ul>
+</li>
+<li><b><a href="#error" onclick="show_table(document.getElementById('error'));">error</a></b>
+  <ul>
+  <li><a href="#error-blocksworld" onclick="show_table(document.getElementById('error-blocksworld'));">blocksworld</a> <a href="#error-elevator" onclick="show_table(document.getElementById('error-elevator'));">elevator</a> <a href="#error-floortile" onclick="show_table(document.getElementById('error-floortile'));">floortile</a> <a href="#error-hanoi" onclick="show_table(document.getElementById('error-hanoi'));">hanoi</a> <a href="#error-parcprinter" onclick="show_table(document.getElementById('error-parcprinter'));">parcprinter</a> <a href="#error-sokoban" onclick="show_table(document.getElementById('error-sokoban'));">sokoban</a> <a href="#error-turnandopen" onclick="show_table(document.getElementById('error-turnandopen'));">turnandopen</a> <a href="#error-tyreworld" onclick="show_table(document.getElementById('error-tyreworld'));">tyreworld</a>
+  </li>
+  </ul>
+</li>
+<li><b><a href="#memory" onclick="show_table(document.getElementById('memory'));">memory</a></b>
+  <ul>
+  <li><a href="#memory-blocksworld" onclick="show_table(document.getElementById('memory-blocksworld'));">blocksworld</a> <a href="#memory-elevator" onclick="show_table(document.getElementById('memory-elevator'));">elevator</a> <a href="#memory-floortile" onclick="show_table(document.getElementById('memory-floortile'));">floortile</a> <a href="#memory-hanoi" onclick="show_table(document.getElementById('memory-hanoi'));">hanoi</a> <a href="#memory-parcprinter" onclick="show_table(document.getElementById('memory-parcprinter'));">parcprinter</a> <a href="#memory-sokoban" onclick="show_table(document.getElementById('memory-sokoban'));">sokoban</a> <a href="#memory-turnandopen" onclick="show_table(document.getElementById('memory-turnandopen'));">turnandopen</a> <a href="#memory-tyreworld" onclick="show_table(document.getElementById('memory-tyreworld'));">tyreworld</a>
+  </li>
+  </ul>
+</li>
+<li><b><a href="#plan_length" onclick="show_table(document.getElementById('plan_length'));">plan_length</a></b>
+  <ul>
+  <li><a href="#plan_length-blocksworld" onclick="show_table(document.getElementById('plan_length-blocksworld'));">blocksworld</a> <a href="#plan_length-elevator" onclick="show_table(document.getElementById('plan_length-elevator'));">elevator</a> <a href="#plan_length-floortile" onclick="show_table(document.getElementById('plan_length-floortile'));">floortile</a> <a href="#plan_length-hanoi" onclick="show_table(document.getElementById('plan_length-hanoi'));">hanoi</a> <a href="#plan_length-parcprinter" onclick="show_table(document.getElementById('plan_length-parcprinter'));">parcprinter</a> <a href="#plan_length-sokoban" onclick="show_table(document.getElementById('plan_length-sokoban'));">sokoban</a> <a href="#plan_length-turnandopen" onclick="show_table(document.getElementById('plan_length-turnandopen'));">turnandopen</a> <a href="#plan_length-tyreworld" onclick="show_table(document.getElementById('plan_length-tyreworld'));">tyreworld</a>
+  </li>
+  </ul>
+</li>
+<li><b><a href="#total_time" onclick="show_table(document.getElementById('total_time'));">total_time</a></b>
+  <ul>
+  <li><a href="#total_time-blocksworld" onclick="show_table(document.getElementById('total_time-blocksworld'));">blocksworld</a> <a href="#total_time-elevator" onclick="show_table(document.getElementById('total_time-elevator'));">elevator</a> <a href="#total_time-floortile" onclick="show_table(document.getElementById('total_time-floortile'));">floortile</a> <a href="#total_time-hanoi" onclick="show_table(document.getElementById('total_time-hanoi'));">hanoi</a> <a href="#total_time-parcprinter" onclick="show_table(document.getElementById('total_time-parcprinter'));">parcprinter</a> <a href="#total_time-sokoban" onclick="show_table(document.getElementById('total_time-sokoban'));">sokoban</a> <a href="#total_time-turnandopen" onclick="show_table(document.getElementById('total_time-turnandopen'));">turnandopen</a> <a href="#total_time-tyreworld" onclick="show_table(document.getElementById('total_time-tyreworld'));">tyreworld</a>
+  </li>
+  </ul>
+</li>
+<li><b><a href="#unsolvable" onclick="show_table(document.getElementById('unsolvable'));">unsolvable</a></b>
+  <ul>
+  <li><a href="#unsolvable-blocksworld" onclick="show_table(document.getElementById('unsolvable-blocksworld'));">blocksworld</a> <a href="#unsolvable-elevator" onclick="show_table(document.getElementById('unsolvable-elevator'));">elevator</a> <a href="#unsolvable-floortile" onclick="show_table(document.getElementById('unsolvable-floortile'));">floortile</a> <a href="#unsolvable-hanoi" onclick="show_table(document.getElementById('unsolvable-hanoi'));">hanoi</a> <a href="#unsolvable-parcprinter" onclick="show_table(document.getElementById('unsolvable-parcprinter'));">parcprinter</a> <a href="#unsolvable-sokoban" onclick="show_table(document.getElementById('unsolvable-sokoban'));">sokoban</a> <a href="#unsolvable-turnandopen" onclick="show_table(document.getElementById('unsolvable-turnandopen'));">turnandopen</a> <a href="#unsolvable-tyreworld" onclick="show_table(document.getElementById('unsolvable-tyreworld'));">tyreworld</a>
+  </li>
+  </ul>
+</li>
+</ul>
+
+<a id="unexplained-errors" name="unexplained-errors"></a>
+<h1>unexplained-errors</h1>
+
+<button type="button" class="toggle-table" onclick="toggle_table(this)">Show table</button><p></p>
+
+<table border="1" style="display:none">
+<tr>
+<th>Unexplained errors</th>
+<th>domain</th>
+<th>problem</th>
+<th>algorithm</th>
+<th>error</th>
+<th>fast-downward_<wbr>wall_<wbr>clock_<wbr>time</th>
+<th>raw_<wbr>memory</th>
+</tr>
+<tr>
+<td>runs-00001-00100/00029</td>
+<td>blocksworld</td>
+<td>d-14-0.pddl</td>
+<td>asnet_search</td>
+<td>unexplained-crash</td>
+<td>?</td>
+<td>?</td>
+</tr>
+<tr>
+<td>runs-00001-00100/00031</td>
+<td>blocksworld</td>
+<td>d-15-0.pddl</td>
+<td>asnet_search</td>
+<td>unexplained-crash</td>
+<td>?</td>
+<td>?</td>
+</tr>
+<tr>
+<td>runs-00001-00100/00043</td>
+<td>elevator</td>
+<td>d-08.pddl</td>
+<td>asnet_search</td>
+<td>unexplained-crash</td>
+<td>?</td>
+<td>?</td>
+</tr>
+<tr>
+<td>runs-00001-00100/00058</td>
+<td>elevator</td>
+<td>d-23.pddl</td>
+<td>asnet_search</td>
+<td>unexplained-could-not-determine-peak-memory</td>
+<td align="right">566.56</td>
+<td>?</td>
+</tr>
+<tr>
+<td>runs-00001-00100/00060</td>
+<td>elevator</td>
+<td>d-25.pddl</td>
+<td>asnet_search</td>
+<td>unexplained-could-not-determine-peak-memory</td>
+<td align="right">202.83</td>
+<td>?</td>
+</tr>
+<tr>
+<td>runs-00001-00100/00061</td>
+<td>elevator</td>
+<td>d-26.pddl</td>
+<td>asnet_search</td>
+<td>unexplained-critical-error</td>
+<td align="right">4.04</td>
+<td align="right">196676</td>
+</tr>
+<tr>
+<td>runs-00001-00100/00062</td>
+<td>elevator</td>
+<td>d-27.pddl</td>
+<td>asnet_search</td>
+<td>unexplained-critical-error</td>
+<td align="right">4.55</td>
+<td align="right">197128</td>
+</tr>
+<tr>
+<td>runs-00001-00100/00063</td>
+<td>elevator</td>
+<td>d-28.pddl</td>
+<td>asnet_search</td>
+<td>unexplained-critical-error</td>
+<td align="right">4.79</td>
+<td align="right">197576</td>
+</tr>
+<tr>
+<td>runs-00001-00100/00064</td>
+<td>elevator</td>
+<td>d-29.pddl</td>
+<td>asnet_search</td>
+<td>unexplained-critical-error</td>
+<td align="right">5.18</td>
+<td align="right">198028</td>
+</tr>
+<tr>
+<td>runs-00001-00100/00065</td>
+<td>elevator</td>
+<td>d-30.pddl</td>
+<td>asnet_search</td>
+<td>unexplained-critical-error</td>
+<td align="right">5.72</td>
+<td align="right">198476</td>
+</tr>
+<tr>
+<td>runs-00001-00100/00066</td>
+<td>floortile</td>
+<td>d-01-4-3-2.pddl</td>
+<td>asnet_search</td>
+<td>unexplained-crash</td>
+<td>?</td>
+<td>?</td>
+</tr>
+<tr>
+<td>runs-00101-00200/00155</td>
+<td>turnandopen</td>
+<td>d-10.pddl</td>
+<td>asnet_search</td>
+<td>unexplained-crash</td>
+<td>?</td>
+<td>?</td>
+</tr>
+<tr>
+<td>runs-00101-00200/00156</td>
+<td>turnandopen</td>
+<td>d-11.pddl</td>
+<td>asnet_search</td>
+<td>unexplained-critical-error</td>
+<td align="right">4.61</td>
+<td align="right">198064</td>
+</tr>
+<tr>
+<td>runs-00101-00200/00157</td>
+<td>turnandopen</td>
+<td>d-12.pddl</td>
+<td>asnet_search</td>
+<td>unexplained-critical-error</td>
+<td align="right">4.91</td>
+<td align="right">198384</td>
+</tr>
+<tr>
+<td>runs-00101-00200/00158</td>
+<td>turnandopen</td>
+<td>d-13.pddl</td>
+<td>asnet_search</td>
+<td>unexplained-critical-error</td>
+<td align="right">4.73</td>
+<td align="right">198516</td>
+</tr>
+<tr>
+<td>runs-00101-00200/00159</td>
+<td>turnandopen</td>
+<td>d-14.pddl</td>
+<td>asnet_search</td>
+<td>unexplained-critical-error</td>
+<td align="right">5.05</td>
+<td align="right">198676</td>
+</tr>
+<tr>
+<td>runs-00101-00200/00160</td>
+<td>turnandopen</td>
+<td>d-15.pddl</td>
+<td>asnet_search</td>
+<td>unexplained-critical-error</td>
+<td align="right">6.93</td>
+<td align="right">198836</td>
+</tr>
+<tr>
+<td>runs-00101-00200/00161</td>
+<td>turnandopen</td>
+<td>d-16.pddl</td>
+<td>asnet_search</td>
+<td>unexplained-critical-error</td>
+<td align="right">6.63</td>
+<td align="right">202052</td>
+</tr>
+<tr>
+<td>runs-00101-00200/00162</td>
+<td>turnandopen</td>
+<td>d-17.pddl</td>
+<td>asnet_search</td>
+<td>unexplained-critical-error</td>
+<td align="right">7.00</td>
+<td align="right">202408</td>
+</tr>
+<tr>
+<td>runs-00101-00200/00163</td>
+<td>turnandopen</td>
+<td>d-18.pddl</td>
+<td>asnet_search</td>
+<td>unexplained-critical-error</td>
+<td align="right">7.10</td>
+<td align="right">202664</td>
+</tr>
+<tr>
+<td>runs-00101-00200/00164</td>
+<td>turnandopen</td>
+<td>d-19.pddl</td>
+<td>asnet_search</td>
+<td>unexplained-critical-error</td>
+<td align="right">7.55</td>
+<td align="right">202824</td>
+</tr>
+</table>
+
+<a id="info" name="info"></a>
+<h1>info</h1>
+
+<button type="button" class="toggle-table" onclick="toggle_table(this)">Show table</button><p></p>
+
+<table border="1" style="display:none">
+<tr>
+<th>algorithm</th>
+<th>local_<wbr>revision</th>
+<th>global_<wbr>revision</th>
+<th>revision_<wbr>summary</th>
+<th>build_<wbr>options</th>
+<th>driver_<wbr>options</th>
+<th>component_<wbr>options</th>
+</tr>
+<tr>
+<td>asnet_search</td>
+<td>default</td>
+<td>f395b66946f9</td>
+<td>f395b66946f9 tip</td>
+<td>['-j12', 'release64dynamic']</td>
+<td>['--search-time-limit', '30m', '--build', 'release64dynamic']</td>
+<td>['--search', 'policysearch(p=np(network=asnet(path=NETWORK_PATH)))']</td>
+</tr>
+</table>
+
+<a id="summary" name="summary"></a>
+<h1>summary</h1>
+
+<button type="button" class="toggle-table" onclick="toggle_table(this)">Show table</button><p></p>
+
+<table border="1" style="display:none">
+<tr>
+<th>Summary</th>
+<th>asnet_<wbr>search</th>
+</tr>
+<tr>
+<td><a href="#cost" onclick="show_table(document.getElementById('cost'));">cost - Sum</a></td>
+<td align="right"><span style="color:rgb(127,127,127)">169180.00</span></td>
+</tr>
+<tr>
+<td><a href="#coverage" onclick="show_table(document.getElementById('coverage'));">coverage - Sum</a></td>
+<td align="right"><span style="color:rgb(127,127,127)">11</span></td>
+</tr>
+<tr>
+<td><a href="#memory" onclick="show_table(document.getElementById('memory'));">memory - Sum</a></td>
+<td align="right"><span style="color:rgb(127,127,127)">13207388</span></td>
+</tr>
+<tr>
+<td><a href="#plan_length" onclick="show_table(document.getElementById('plan_length'));">plan_length - Sum</a></td>
+<td align="right"><span style="color:rgb(127,127,127)">155</span></td>
+</tr>
+<tr>
+<td><a href="#total_time" onclick="show_table(document.getElementById('total_time'));">total_time - Geometric mean</a></td>
+<td align="right"><span style="color:rgb(127,127,127)">56.69</span></td>
+</tr>
+<tr>
+<td><a href="#unsolvable" onclick="show_table(document.getElementById('unsolvable'));">unsolvable - Sum</a></td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+</table>
+
+<a id="cost" name="cost"></a>
+<h1>cost</h1>
+
+<button type="button" class="toggle-table" onclick="toggle_table(this)">Show table</button><p></p>
+
+<table border="1" style="display:none">
+<tr>
+<th>cost</th>
+<th>asnet_<wbr>search</th>
+</tr>
+<tr>
+<td><a href="#cost-blocksworld" onclick="show_table(document.getElementById('cost-blocksworld'));">blocksworld</a> (7)</td>
+<td align="right"><span style="color:rgb(127,127,127)">92.00</span></td>
+</tr>
+<tr>
+<td><a href="#cost-floortile" onclick="show_table(document.getElementById('cost-floortile'));">floortile</a> (1)</td>
+<td align="right"><span style="color:rgb(127,127,127)">75.00</span></td>
+</tr>
+<tr>
+<td><a href="#cost-hanoi" onclick="show_table(document.getElementById('cost-hanoi'));">hanoi</a> (2)</td>
+<td align="right"><span style="color:rgb(127,127,127)">4.00</span></td>
+</tr>
+<tr>
+<td><a href="#cost-parcprinter" onclick="show_table(document.getElementById('cost-parcprinter'));">parcprinter</a> (1)</td>
+<td align="right"><span style="color:rgb(127,127,127)">169009.00</span></td>
+</tr>
+<tr>
+<td><b>Sum (11)</b></td>
+<td align="right"><span style="color:rgb(127,127,127)">169180.00</span></td>
+</tr>
+</table>
+
+<p>
+Only instances where all algorithms have a value for "cost" are considered. Each table entry gives the sum of "cost" for that domain. The last row reports the sum across all domains.
+</p>
+
+<a id="cost-blocksworld" name="cost-blocksworld"></a>
+<h2>blocksworld</h2>
+
+<button type="button" class="toggle-table" onclick="toggle_table(this)">Show table</button><p></p>
+
+<table border="1" style="display:none">
+<tr>
+<th>cost</th>
+<th>asnet_<wbr>search</th>
+</tr>
+<tr>
+<td>d-4-0.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">6.00</span></td>
+</tr>
+<tr>
+<td>d-4-1.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">10.00</span></td>
+</tr>
+<tr>
+<td>d-4-2.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">6.00</span></td>
+</tr>
+<tr>
+<td>d-5-0.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-5-1.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-5-2.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-6-0.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">14.00</span></td>
+</tr>
+<tr>
+<td>d-6-1.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">10.00</span></td>
+</tr>
+<tr>
+<td>d-6-2.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-7-0.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">20.00</span></td>
+</tr>
+<tr>
+<td>d-7-1.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-7-2.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-8-0.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-8-1.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-8-2.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-9-0.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-9-1.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-9-2.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">26.00</span></td>
+</tr>
+<tr>
+<td>d-10-0.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-10-1.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-10-2.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-11-0.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-11-1.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-11-2.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-12-0.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-12-1.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-13-0.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-13-1.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-14-0.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-14-1.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-15-0.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-15-1.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-16-1.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-16-2.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-17-0.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+</table>
+
+<a id="cost-elevator" name="cost-elevator"></a>
+<h2>elevator</h2>
+
+<button type="button" class="toggle-table" onclick="toggle_table(this)">Show table</button><p></p>
+
+<table border="1" style="display:none">
+<tr>
+<th>cost</th>
+<th>asnet_<wbr>search</th>
+</tr>
+<tr>
+<td>d-01.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-02.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-03.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-04.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-05.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-06.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-07.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-08.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-09.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-10.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-11.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-12.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-13.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-14.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-15.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-16.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-17.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-18.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-19.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-20.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-21.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-22.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-23.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-24.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-25.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-26.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-27.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-28.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-29.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-30.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+</table>
+
+<a id="cost-floortile" name="cost-floortile"></a>
+<h2>floortile</h2>
+
+<button type="button" class="toggle-table" onclick="toggle_table(this)">Show table</button><p></p>
+
+<table border="1" style="display:none">
+<tr>
+<th>cost</th>
+<th>asnet_<wbr>search</th>
+</tr>
+<tr>
+<td>d-01-4-3-2.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-01-4-4-2.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-01-5-3-2.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">75.00</span></td>
+</tr>
+<tr>
+<td>d-01-5-4-2.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-01-5-5-2.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-01-6-4-2.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-01-6-5-2.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-02-4-4-2.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-02-5-3-2.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-02-5-4-2.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-02-5-5-2.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-02-6-4-2.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-02-6-5-2.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-03-4-3-2.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-03-4-4-2.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-03-5-3-2.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-03-5-4-2.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-03-5-5-2.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-03-6-4-2.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-03-6-5-2.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+</table>
+
+<a id="cost-hanoi" name="cost-hanoi"></a>
+<h2>hanoi</h2>
+
+<button type="button" class="toggle-table" onclick="toggle_table(this)">Show table</button><p></p>
+
+<table border="1" style="display:none">
+<tr>
+<th>cost</th>
+<th>asnet_<wbr>search</th>
+</tr>
+<tr>
+<td>d-01.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">1.00</span></td>
+</tr>
+<tr>
+<td>d-02.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">3.00</span></td>
+</tr>
+<tr>
+<td>d-03.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-04.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-05.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-06.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-07.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-08.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-09.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-10.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-11.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-12.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-13.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-14.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-15.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-16.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-17.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-18.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-19.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-20.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+</table>
+
+<a id="cost-parcprinter" name="cost-parcprinter"></a>
+<h2>parcprinter</h2>
+
+<button type="button" class="toggle-table" onclick="toggle_table(this)">Show table</button><p></p>
+
+<table border="1" style="display:none">
+<tr>
+<th>cost</th>
+<th>asnet_<wbr>search</th>
+</tr>
+<tr>
+<td>d-01.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">169009.00</span></td>
+</tr>
+<tr>
+<td>d-02.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-03.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-04.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-05.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-06.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-07.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-08.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-09.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-10.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+</table>
+
+<a id="cost-sokoban" name="cost-sokoban"></a>
+<h2>sokoban</h2>
+
+<button type="button" class="toggle-table" onclick="toggle_table(this)">Show table</button><p></p>
+
+<table border="1" style="display:none">
+<tr>
+<th>cost</th>
+<th>asnet_<wbr>search</th>
+</tr>
+<tr>
+<td>d-01.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-02.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-03.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-04.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-05.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-06.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-07.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-08.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-09.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-10.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-11.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-12.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-13.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-14.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-15.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-16.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-17.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-18.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-19.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-20.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-21.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-22.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-23.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-24.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-25.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-26.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-27.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-28.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-29.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-30.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+</table>
+
+<a id="cost-turnandopen" name="cost-turnandopen"></a>
+<h2>turnandopen</h2>
+
+<button type="button" class="toggle-table" onclick="toggle_table(this)">Show table</button><p></p>
+
+<table border="1" style="display:none">
+<tr>
+<th>cost</th>
+<th>asnet_<wbr>search</th>
+</tr>
+<tr>
+<td>d-01.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-02.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-03.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-04.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-05.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-06.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-07.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-08.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-09.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-10.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-11.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-12.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-13.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-14.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-15.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-16.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-17.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-18.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-19.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+</table>
+
+<a id="cost-tyreworld" name="cost-tyreworld"></a>
+<h2>tyreworld</h2>
+
+<button type="button" class="toggle-table" onclick="toggle_table(this)">Show table</button><p></p>
+
+<table border="1" style="display:none">
+<tr>
+<th>cost</th>
+<th>asnet_<wbr>search</th>
+</tr>
+<tr>
+<td>d-01.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-02.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-03.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-04.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-05.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-06.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-07.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-08.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-09.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-10.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-11.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-12.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-13.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-14.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-15.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-16.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-17.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-18.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-19.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-20.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+</table>
+
+<a id="coverage" name="coverage"></a>
+<h1>coverage</h1>
+
+<button type="button" class="toggle-table" onclick="toggle_table(this)">Show table</button><p></p>
+
+<table border="1" style="display:none">
+<tr>
+<th>coverage</th>
+<th>asnet_<wbr>search</th>
+</tr>
+<tr>
+<td><a href="#coverage-blocksworld" onclick="show_table(document.getElementById('coverage-blocksworld'));">blocksworld</a> (33)</td>
+<td align="right"><span style="color:rgb(127,127,127)">7</span></td>
+</tr>
+<tr>
+<td><a href="#coverage-elevator" onclick="show_table(document.getElementById('coverage-elevator'));">elevator</a> (29)</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td><a href="#coverage-floortile" onclick="show_table(document.getElementById('coverage-floortile'));">floortile</a> (19)</td>
+<td align="right"><span style="color:rgb(127,127,127)">1</span></td>
+</tr>
+<tr>
+<td><a href="#coverage-hanoi" onclick="show_table(document.getElementById('coverage-hanoi'));">hanoi</a> (20)</td>
+<td align="right"><span style="color:rgb(127,127,127)">2</span></td>
+</tr>
+<tr>
+<td><a href="#coverage-parcprinter" onclick="show_table(document.getElementById('coverage-parcprinter'));">parcprinter</a> (10)</td>
+<td align="right"><span style="color:rgb(127,127,127)">1</span></td>
+</tr>
+<tr>
+<td><a href="#coverage-sokoban" onclick="show_table(document.getElementById('coverage-sokoban'));">sokoban</a> (30)</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td><a href="#coverage-turnandopen" onclick="show_table(document.getElementById('coverage-turnandopen'));">turnandopen</a> (18)</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td><a href="#coverage-tyreworld" onclick="show_table(document.getElementById('coverage-tyreworld'));">tyreworld</a> (20)</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td><b>Sum (184)</b></td>
+<td align="right"><span style="color:rgb(127,127,127)">11</span></td>
+</tr>
+</table>
+
+<p>
+The last row reports the sum across all domains.
+</p>
+
+<a id="coverage-blocksworld" name="coverage-blocksworld"></a>
+<h2>blocksworld</h2>
+
+<button type="button" class="toggle-table" onclick="toggle_table(this)">Show table</button><p></p>
+
+<table border="1" style="display:none">
+<tr>
+<th>coverage</th>
+<th>asnet_<wbr>search</th>
+</tr>
+<tr>
+<td>d-4-0.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">1</span></td>
+</tr>
+<tr>
+<td>d-4-1.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">1</span></td>
+</tr>
+<tr>
+<td>d-4-2.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">1</span></td>
+</tr>
+<tr>
+<td>d-5-0.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-5-1.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-5-2.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-6-0.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">1</span></td>
+</tr>
+<tr>
+<td>d-6-1.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">1</span></td>
+</tr>
+<tr>
+<td>d-6-2.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-7-0.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">1</span></td>
+</tr>
+<tr>
+<td>d-7-1.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-7-2.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-8-0.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-8-1.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-8-2.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-9-0.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-9-1.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-9-2.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">1</span></td>
+</tr>
+<tr>
+<td>d-10-0.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-10-1.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-10-2.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-11-0.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-11-1.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-11-2.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-12-0.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-12-1.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-13-0.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-13-1.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-14-0.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-14-1.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-15-0.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-15-1.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-16-1.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-16-2.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-17-0.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+</table>
+
+<a id="coverage-elevator" name="coverage-elevator"></a>
+<h2>elevator</h2>
+
+<button type="button" class="toggle-table" onclick="toggle_table(this)">Show table</button><p></p>
+
+<table border="1" style="display:none">
+<tr>
+<th>coverage</th>
+<th>asnet_<wbr>search</th>
+</tr>
+<tr>
+<td>d-01.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-02.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-03.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-04.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-05.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-06.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-07.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-08.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-09.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-10.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-11.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-12.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-13.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-14.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-15.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-16.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-17.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-18.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-19.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-20.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-21.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-22.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-23.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-24.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-25.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-26.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-27.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-28.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-29.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-30.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+</table>
+
+<a id="coverage-floortile" name="coverage-floortile"></a>
+<h2>floortile</h2>
+
+<button type="button" class="toggle-table" onclick="toggle_table(this)">Show table</button><p></p>
+
+<table border="1" style="display:none">
+<tr>
+<th>coverage</th>
+<th>asnet_<wbr>search</th>
+</tr>
+<tr>
+<td>d-01-4-3-2.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-01-4-4-2.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-01-5-3-2.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">1</span></td>
+</tr>
+<tr>
+<td>d-01-5-4-2.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-01-5-5-2.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-01-6-4-2.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-01-6-5-2.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-02-4-4-2.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-02-5-3-2.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-02-5-4-2.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-02-5-5-2.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-02-6-4-2.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-02-6-5-2.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-03-4-3-2.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-03-4-4-2.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-03-5-3-2.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-03-5-4-2.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-03-5-5-2.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-03-6-4-2.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-03-6-5-2.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+</table>
+
+<a id="coverage-hanoi" name="coverage-hanoi"></a>
+<h2>hanoi</h2>
+
+<button type="button" class="toggle-table" onclick="toggle_table(this)">Show table</button><p></p>
+
+<table border="1" style="display:none">
+<tr>
+<th>coverage</th>
+<th>asnet_<wbr>search</th>
+</tr>
+<tr>
+<td>d-01.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">1</span></td>
+</tr>
+<tr>
+<td>d-02.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">1</span></td>
+</tr>
+<tr>
+<td>d-03.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-04.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-05.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-06.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-07.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-08.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-09.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-10.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-11.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-12.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-13.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-14.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-15.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-16.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-17.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-18.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-19.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-20.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+</table>
+
+<a id="coverage-parcprinter" name="coverage-parcprinter"></a>
+<h2>parcprinter</h2>
+
+<button type="button" class="toggle-table" onclick="toggle_table(this)">Show table</button><p></p>
+
+<table border="1" style="display:none">
+<tr>
+<th>coverage</th>
+<th>asnet_<wbr>search</th>
+</tr>
+<tr>
+<td>d-01.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">1</span></td>
+</tr>
+<tr>
+<td>d-02.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-03.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-04.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-05.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-06.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-07.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-08.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-09.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-10.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+</table>
+
+<a id="coverage-sokoban" name="coverage-sokoban"></a>
+<h2>sokoban</h2>
+
+<button type="button" class="toggle-table" onclick="toggle_table(this)">Show table</button><p></p>
+
+<table border="1" style="display:none">
+<tr>
+<th>coverage</th>
+<th>asnet_<wbr>search</th>
+</tr>
+<tr>
+<td>d-01.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-02.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-03.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-04.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-05.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-06.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-07.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-08.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-09.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-10.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-11.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-12.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-13.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-14.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-15.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-16.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-17.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-18.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-19.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-20.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-21.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-22.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-23.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-24.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-25.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-26.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-27.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-28.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-29.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-30.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+</table>
+
+<a id="coverage-turnandopen" name="coverage-turnandopen"></a>
+<h2>turnandopen</h2>
+
+<button type="button" class="toggle-table" onclick="toggle_table(this)">Show table</button><p></p>
+
+<table border="1" style="display:none">
+<tr>
+<th>coverage</th>
+<th>asnet_<wbr>search</th>
+</tr>
+<tr>
+<td>d-01.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-02.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-03.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-04.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-05.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-06.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-07.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-08.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-09.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-10.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-11.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-12.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-13.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-14.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-15.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-16.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-17.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-18.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-19.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+</table>
+
+<a id="coverage-tyreworld" name="coverage-tyreworld"></a>
+<h2>tyreworld</h2>
+
+<button type="button" class="toggle-table" onclick="toggle_table(this)">Show table</button><p></p>
+
+<table border="1" style="display:none">
+<tr>
+<th>coverage</th>
+<th>asnet_<wbr>search</th>
+</tr>
+<tr>
+<td>d-01.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-02.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-03.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-04.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-05.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-06.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-07.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-08.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-09.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-10.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-11.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-12.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-13.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-14.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-15.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-16.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-17.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-18.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-19.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-20.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+</table>
+
+<a id="error" name="error"></a>
+<h1>error</h1>
+
+<p>
+Domain-wise reports only support numeric attributes, but error has type str.
+</p>
+
+<a id="error-blocksworld" name="error-blocksworld"></a>
+<h2>blocksworld</h2>
+
+<button type="button" class="toggle-table" onclick="toggle_table(this)">Show table</button><p></p>
+
+<table border="1" style="display:none">
+<tr>
+<th>error</th>
+<th>asnet_<wbr>search</th>
+</tr>
+<tr>
+<td>d-4-0.pddl</td>
+<td>none</td>
+</tr>
+<tr>
+<td>d-4-1.pddl</td>
+<td>none</td>
+</tr>
+<tr>
+<td>d-4-2.pddl</td>
+<td>none</td>
+</tr>
+<tr>
+<td>d-5-0.pddl</td>
+<td>incomplete-search-found-no-plan</td>
+</tr>
+<tr>
+<td>d-5-1.pddl</td>
+<td>incomplete-search-found-no-plan</td>
+</tr>
+<tr>
+<td>d-5-2.pddl</td>
+<td>incomplete-search-found-no-plan</td>
+</tr>
+<tr>
+<td>d-6-0.pddl</td>
+<td>none</td>
+</tr>
+<tr>
+<td>d-6-1.pddl</td>
+<td>none</td>
+</tr>
+<tr>
+<td>d-6-2.pddl</td>
+<td>incomplete-search-found-no-plan</td>
+</tr>
+<tr>
+<td>d-7-0.pddl</td>
+<td>none</td>
+</tr>
+<tr>
+<td>d-7-1.pddl</td>
+<td>incomplete-search-found-no-plan</td>
+</tr>
+<tr>
+<td>d-7-2.pddl</td>
+<td>incomplete-search-found-no-plan</td>
+</tr>
+<tr>
+<td>d-8-0.pddl</td>
+<td>incomplete-search-found-no-plan</td>
+</tr>
+<tr>
+<td>d-8-1.pddl</td>
+<td>incomplete-search-found-no-plan</td>
+</tr>
+<tr>
+<td>d-8-2.pddl</td>
+<td>incomplete-search-found-no-plan</td>
+</tr>
+<tr>
+<td>d-9-0.pddl</td>
+<td>incomplete-search-found-no-plan</td>
+</tr>
+<tr>
+<td>d-9-1.pddl</td>
+<td>incomplete-search-found-no-plan</td>
+</tr>
+<tr>
+<td>d-9-2.pddl</td>
+<td>none</td>
+</tr>
+<tr>
+<td>d-10-0.pddl</td>
+<td>incomplete-search-found-no-plan</td>
+</tr>
+<tr>
+<td>d-10-1.pddl</td>
+<td>incomplete-search-found-no-plan</td>
+</tr>
+<tr>
+<td>d-10-2.pddl</td>
+<td>incomplete-search-found-no-plan</td>
+</tr>
+<tr>
+<td>d-11-0.pddl</td>
+<td>incomplete-search-found-no-plan</td>
+</tr>
+<tr>
+<td>d-11-1.pddl</td>
+<td>incomplete-search-found-no-plan</td>
+</tr>
+<tr>
+<td>d-11-2.pddl</td>
+<td>incomplete-search-found-no-plan</td>
+</tr>
+<tr>
+<td>d-12-0.pddl</td>
+<td>incomplete-search-found-no-plan</td>
+</tr>
+<tr>
+<td>d-12-1.pddl</td>
+<td>incomplete-search-found-no-plan</td>
+</tr>
+<tr>
+<td>d-13-0.pddl</td>
+<td>incomplete-search-found-no-plan</td>
+</tr>
+<tr>
+<td>d-13-1.pddl</td>
+<td>incomplete-search-found-no-plan</td>
+</tr>
+<tr>
+<td>d-14-0.pddl</td>
+<td>unexplained-crash</td>
+</tr>
+<tr>
+<td>d-14-1.pddl</td>
+<td>incomplete-search-found-no-plan</td>
+</tr>
+<tr>
+<td>d-15-0.pddl</td>
+<td>unexplained-crash</td>
+</tr>
+<tr>
+<td>d-15-1.pddl</td>
+<td>incomplete-search-found-no-plan</td>
+</tr>
+<tr>
+<td>d-16-1.pddl</td>
+<td>incomplete-search-found-no-plan</td>
+</tr>
+<tr>
+<td>d-16-2.pddl</td>
+<td>incomplete-search-found-no-plan</td>
+</tr>
+<tr>
+<td>d-17-0.pddl</td>
+<td>incomplete-search-found-no-plan</td>
+</tr>
+</table>
+
+<a id="error-elevator" name="error-elevator"></a>
+<h2>elevator</h2>
+
+<button type="button" class="toggle-table" onclick="toggle_table(this)">Show table</button><p></p>
+
+<table border="1" style="display:none">
+<tr>
+<th>error</th>
+<th>asnet_<wbr>search</th>
+</tr>
+<tr>
+<td>d-01.pddl</td>
+<td>incomplete-search-found-no-plan</td>
+</tr>
+<tr>
+<td>d-02.pddl</td>
+<td>incomplete-search-found-no-plan</td>
+</tr>
+<tr>
+<td>d-03.pddl</td>
+<td>incomplete-search-found-no-plan</td>
+</tr>
+<tr>
+<td>d-04.pddl</td>
+<td>incomplete-search-found-no-plan</td>
+</tr>
+<tr>
+<td>d-05.pddl</td>
+<td>incomplete-search-found-no-plan</td>
+</tr>
+<tr>
+<td>d-06.pddl</td>
+<td>incomplete-search-found-no-plan</td>
+</tr>
+<tr>
+<td>d-07.pddl</td>
+<td>incomplete-search-found-no-plan</td>
+</tr>
+<tr>
+<td>d-08.pddl</td>
+<td>unexplained-crash</td>
+</tr>
+<tr>
+<td>d-09.pddl</td>
+<td>incomplete-search-found-no-plan</td>
+</tr>
+<tr>
+<td>d-10.pddl</td>
+<td>incomplete-search-found-no-plan</td>
+</tr>
+<tr>
+<td>d-11.pddl</td>
+<td>incomplete-search-found-no-plan</td>
+</tr>
+<tr>
+<td>d-12.pddl</td>
+<td>incomplete-search-found-no-plan</td>
+</tr>
+<tr>
+<td>d-13.pddl</td>
+<td>incomplete-search-found-no-plan</td>
+</tr>
+<tr>
+<td>d-14.pddl</td>
+<td>incomplete-search-found-no-plan</td>
+</tr>
+<tr>
+<td>d-15.pddl</td>
+<td>incomplete-search-found-no-plan</td>
+</tr>
+<tr>
+<td>d-16.pddl</td>
+<td>incomplete-search-found-no-plan</td>
+</tr>
+<tr>
+<td>d-17.pddl</td>
+<td>incomplete-search-found-no-plan</td>
+</tr>
+<tr>
+<td>d-18.pddl</td>
+<td>incomplete-search-found-no-plan</td>
+</tr>
+<tr>
+<td>d-19.pddl</td>
+<td>incomplete-search-found-no-plan</td>
+</tr>
+<tr>
+<td>d-20.pddl</td>
+<td>incomplete-search-found-no-plan</td>
+</tr>
+<tr>
+<td>d-21.pddl</td>
+<td>incomplete-search-found-no-plan</td>
+</tr>
+<tr>
+<td>d-22.pddl</td>
+<td>incomplete-search-found-no-plan</td>
+</tr>
+<tr>
+<td>d-23.pddl</td>
+<td>unexplained-could-not-determine-peak-memory</td>
+</tr>
+<tr>
+<td>d-24.pddl</td>
+<td>incomplete-search-found-no-plan</td>
+</tr>
+<tr>
+<td>d-25.pddl</td>
+<td>unexplained-could-not-determine-peak-memory</td>
+</tr>
+<tr>
+<td>d-26.pddl</td>
+<td>unexplained-critical-error</td>
+</tr>
+<tr>
+<td>d-27.pddl</td>
+<td>unexplained-critical-error</td>
+</tr>
+<tr>
+<td>d-28.pddl</td>
+<td>unexplained-critical-error</td>
+</tr>
+<tr>
+<td>d-29.pddl</td>
+<td>unexplained-critical-error</td>
+</tr>
+<tr>
+<td>d-30.pddl</td>
+<td>unexplained-critical-error</td>
+</tr>
+</table>
+
+<a id="error-floortile" name="error-floortile"></a>
+<h2>floortile</h2>
+
+<button type="button" class="toggle-table" onclick="toggle_table(this)">Show table</button><p></p>
+
+<table border="1" style="display:none">
+<tr>
+<th>error</th>
+<th>asnet_<wbr>search</th>
+</tr>
+<tr>
+<td>d-01-4-3-2.pddl</td>
+<td>unexplained-crash</td>
+</tr>
+<tr>
+<td>d-01-4-4-2.pddl</td>
+<td>incomplete-search-found-no-plan</td>
+</tr>
+<tr>
+<td>d-01-5-3-2.pddl</td>
+<td>none</td>
+</tr>
+<tr>
+<td>d-01-5-4-2.pddl</td>
+<td>incomplete-search-found-no-plan</td>
+</tr>
+<tr>
+<td>d-01-5-5-2.pddl</td>
+<td>incomplete-search-found-no-plan</td>
+</tr>
+<tr>
+<td>d-01-6-4-2.pddl</td>
+<td>incomplete-search-found-no-plan</td>
+</tr>
+<tr>
+<td>d-01-6-5-2.pddl</td>
+<td>incomplete-search-found-no-plan</td>
+</tr>
+<tr>
+<td>d-02-4-4-2.pddl</td>
+<td>incomplete-search-found-no-plan</td>
+</tr>
+<tr>
+<td>d-02-5-3-2.pddl</td>
+<td>incomplete-search-found-no-plan</td>
+</tr>
+<tr>
+<td>d-02-5-4-2.pddl</td>
+<td>incomplete-search-found-no-plan</td>
+</tr>
+<tr>
+<td>d-02-5-5-2.pddl</td>
+<td>incomplete-search-found-no-plan</td>
+</tr>
+<tr>
+<td>d-02-6-4-2.pddl</td>
+<td>incomplete-search-found-no-plan</td>
+</tr>
+<tr>
+<td>d-02-6-5-2.pddl</td>
+<td>incomplete-search-found-no-plan</td>
+</tr>
+<tr>
+<td>d-03-4-3-2.pddl</td>
+<td>incomplete-search-found-no-plan</td>
+</tr>
+<tr>
+<td>d-03-4-4-2.pddl</td>
+<td>incomplete-search-found-no-plan</td>
+</tr>
+<tr>
+<td>d-03-5-3-2.pddl</td>
+<td>incomplete-search-found-no-plan</td>
+</tr>
+<tr>
+<td>d-03-5-4-2.pddl</td>
+<td>incomplete-search-found-no-plan</td>
+</tr>
+<tr>
+<td>d-03-5-5-2.pddl</td>
+<td>incomplete-search-found-no-plan</td>
+</tr>
+<tr>
+<td>d-03-6-4-2.pddl</td>
+<td>incomplete-search-found-no-plan</td>
+</tr>
+<tr>
+<td>d-03-6-5-2.pddl</td>
+<td>incomplete-search-found-no-plan</td>
+</tr>
+</table>
+
+<a id="error-hanoi" name="error-hanoi"></a>
+<h2>hanoi</h2>
+
+<button type="button" class="toggle-table" onclick="toggle_table(this)">Show table</button><p></p>
+
+<table border="1" style="display:none">
+<tr>
+<th>error</th>
+<th>asnet_<wbr>search</th>
+</tr>
+<tr>
+<td>d-01.pddl</td>
+<td>none</td>
+</tr>
+<tr>
+<td>d-02.pddl</td>
+<td>none</td>
+</tr>
+<tr>
+<td>d-03.pddl</td>
+<td>incomplete-search-found-no-plan</td>
+</tr>
+<tr>
+<td>d-04.pddl</td>
+<td>incomplete-search-found-no-plan</td>
+</tr>
+<tr>
+<td>d-05.pddl</td>
+<td>incomplete-search-found-no-plan</td>
+</tr>
+<tr>
+<td>d-06.pddl</td>
+<td>incomplete-search-found-no-plan</td>
+</tr>
+<tr>
+<td>d-07.pddl</td>
+<td>incomplete-search-found-no-plan</td>
+</tr>
+<tr>
+<td>d-08.pddl</td>
+<td>incomplete-search-found-no-plan</td>
+</tr>
+<tr>
+<td>d-09.pddl</td>
+<td>incomplete-search-found-no-plan</td>
+</tr>
+<tr>
+<td>d-10.pddl</td>
+<td>incomplete-search-found-no-plan</td>
+</tr>
+<tr>
+<td>d-11.pddl</td>
+<td>incomplete-search-found-no-plan</td>
+</tr>
+<tr>
+<td>d-12.pddl</td>
+<td>incomplete-search-found-no-plan</td>
+</tr>
+<tr>
+<td>d-13.pddl</td>
+<td>incomplete-search-found-no-plan</td>
+</tr>
+<tr>
+<td>d-14.pddl</td>
+<td>incomplete-search-found-no-plan</td>
+</tr>
+<tr>
+<td>d-15.pddl</td>
+<td>incomplete-search-found-no-plan</td>
+</tr>
+<tr>
+<td>d-16.pddl</td>
+<td>incomplete-search-found-no-plan</td>
+</tr>
+<tr>
+<td>d-17.pddl</td>
+<td>incomplete-search-found-no-plan</td>
+</tr>
+<tr>
+<td>d-18.pddl</td>
+<td>incomplete-search-found-no-plan</td>
+</tr>
+<tr>
+<td>d-19.pddl</td>
+<td>incomplete-search-found-no-plan</td>
+</tr>
+<tr>
+<td>d-20.pddl</td>
+<td>incomplete-search-found-no-plan</td>
+</tr>
+</table>
+
+<a id="error-parcprinter" name="error-parcprinter"></a>
+<h2>parcprinter</h2>
+
+<button type="button" class="toggle-table" onclick="toggle_table(this)">Show table</button><p></p>
+
+<table border="1" style="display:none">
+<tr>
+<th>error</th>
+<th>asnet_<wbr>search</th>
+</tr>
+<tr>
+<td>d-01.pddl</td>
+<td>none</td>
+</tr>
+<tr>
+<td>d-02.pddl</td>
+<td>incomplete-search-found-no-plan</td>
+</tr>
+<tr>
+<td>d-03.pddl</td>
+<td>incomplete-search-found-no-plan</td>
+</tr>
+<tr>
+<td>d-04.pddl</td>
+<td>incomplete-search-found-no-plan</td>
+</tr>
+<tr>
+<td>d-05.pddl</td>
+<td>incomplete-search-found-no-plan</td>
+</tr>
+<tr>
+<td>d-06.pddl</td>
+<td>incomplete-search-found-no-plan</td>
+</tr>
+<tr>
+<td>d-07.pddl</td>
+<td>incomplete-search-found-no-plan</td>
+</tr>
+<tr>
+<td>d-08.pddl</td>
+<td>incomplete-search-found-no-plan</td>
+</tr>
+<tr>
+<td>d-09.pddl</td>
+<td>incomplete-search-found-no-plan</td>
+</tr>
+<tr>
+<td>d-10.pddl</td>
+<td>incomplete-search-found-no-plan</td>
+</tr>
+</table>
+
+<a id="error-sokoban" name="error-sokoban"></a>
+<h2>sokoban</h2>
+
+<button type="button" class="toggle-table" onclick="toggle_table(this)">Show table</button><p></p>
+
+<table border="1" style="display:none">
+<tr>
+<th>error</th>
+<th>asnet_<wbr>search</th>
+</tr>
+<tr>
+<td>d-01.pddl</td>
+<td>incomplete-search-found-no-plan</td>
+</tr>
+<tr>
+<td>d-02.pddl</td>
+<td>incomplete-search-found-no-plan</td>
+</tr>
+<tr>
+<td>d-03.pddl</td>
+<td>incomplete-search-found-no-plan</td>
+</tr>
+<tr>
+<td>d-04.pddl</td>
+<td>incomplete-search-found-no-plan</td>
+</tr>
+<tr>
+<td>d-05.pddl</td>
+<td>incomplete-search-found-no-plan</td>
+</tr>
+<tr>
+<td>d-06.pddl</td>
+<td>incomplete-search-found-no-plan</td>
+</tr>
+<tr>
+<td>d-07.pddl</td>
+<td>incomplete-search-found-no-plan</td>
+</tr>
+<tr>
+<td>d-08.pddl</td>
+<td>incomplete-search-found-no-plan</td>
+</tr>
+<tr>
+<td>d-09.pddl</td>
+<td>incomplete-search-found-no-plan</td>
+</tr>
+<tr>
+<td>d-10.pddl</td>
+<td>incomplete-search-found-no-plan</td>
+</tr>
+<tr>
+<td>d-11.pddl</td>
+<td>incomplete-search-found-no-plan</td>
+</tr>
+<tr>
+<td>d-12.pddl</td>
+<td>incomplete-search-found-no-plan</td>
+</tr>
+<tr>
+<td>d-13.pddl</td>
+<td>incomplete-search-found-no-plan</td>
+</tr>
+<tr>
+<td>d-14.pddl</td>
+<td>incomplete-search-found-no-plan</td>
+</tr>
+<tr>
+<td>d-15.pddl</td>
+<td>incomplete-search-found-no-plan</td>
+</tr>
+<tr>
+<td>d-16.pddl</td>
+<td>incomplete-search-found-no-plan</td>
+</tr>
+<tr>
+<td>d-17.pddl</td>
+<td>incomplete-search-found-no-plan</td>
+</tr>
+<tr>
+<td>d-18.pddl</td>
+<td>incomplete-search-found-no-plan</td>
+</tr>
+<tr>
+<td>d-19.pddl</td>
+<td>incomplete-search-found-no-plan</td>
+</tr>
+<tr>
+<td>d-20.pddl</td>
+<td>incomplete-search-found-no-plan</td>
+</tr>
+<tr>
+<td>d-21.pddl</td>
+<td>incomplete-search-found-no-plan</td>
+</tr>
+<tr>
+<td>d-22.pddl</td>
+<td>incomplete-search-found-no-plan</td>
+</tr>
+<tr>
+<td>d-23.pddl</td>
+<td>incomplete-search-found-no-plan</td>
+</tr>
+<tr>
+<td>d-24.pddl</td>
+<td>incomplete-search-found-no-plan</td>
+</tr>
+<tr>
+<td>d-25.pddl</td>
+<td>incomplete-search-found-no-plan</td>
+</tr>
+<tr>
+<td>d-26.pddl</td>
+<td>incomplete-search-found-no-plan</td>
+</tr>
+<tr>
+<td>d-27.pddl</td>
+<td>incomplete-search-found-no-plan</td>
+</tr>
+<tr>
+<td>d-28.pddl</td>
+<td>incomplete-search-found-no-plan</td>
+</tr>
+<tr>
+<td>d-29.pddl</td>
+<td>incomplete-search-found-no-plan</td>
+</tr>
+<tr>
+<td>d-30.pddl</td>
+<td>incomplete-search-found-no-plan</td>
+</tr>
+</table>
+
+<a id="error-turnandopen" name="error-turnandopen"></a>
+<h2>turnandopen</h2>
+
+<button type="button" class="toggle-table" onclick="toggle_table(this)">Show table</button><p></p>
+
+<table border="1" style="display:none">
+<tr>
+<th>error</th>
+<th>asnet_<wbr>search</th>
+</tr>
+<tr>
+<td>d-01.pddl</td>
+<td>incomplete-search-found-no-plan</td>
+</tr>
+<tr>
+<td>d-02.pddl</td>
+<td>incomplete-search-found-no-plan</td>
+</tr>
+<tr>
+<td>d-03.pddl</td>
+<td>incomplete-search-found-no-plan</td>
+</tr>
+<tr>
+<td>d-04.pddl</td>
+<td>incomplete-search-found-no-plan</td>
+</tr>
+<tr>
+<td>d-05.pddl</td>
+<td>incomplete-search-found-no-plan</td>
+</tr>
+<tr>
+<td>d-06.pddl</td>
+<td>incomplete-search-found-no-plan</td>
+</tr>
+<tr>
+<td>d-07.pddl</td>
+<td>incomplete-search-found-no-plan</td>
+</tr>
+<tr>
+<td>d-08.pddl</td>
+<td>incomplete-search-found-no-plan</td>
+</tr>
+<tr>
+<td>d-09.pddl</td>
+<td>incomplete-search-found-no-plan</td>
+</tr>
+<tr>
+<td>d-10.pddl</td>
+<td>unexplained-crash</td>
+</tr>
+<tr>
+<td>d-11.pddl</td>
+<td>unexplained-critical-error</td>
+</tr>
+<tr>
+<td>d-12.pddl</td>
+<td>unexplained-critical-error</td>
+</tr>
+<tr>
+<td>d-13.pddl</td>
+<td>unexplained-critical-error</td>
+</tr>
+<tr>
+<td>d-14.pddl</td>
+<td>unexplained-critical-error</td>
+</tr>
+<tr>
+<td>d-15.pddl</td>
+<td>unexplained-critical-error</td>
+</tr>
+<tr>
+<td>d-16.pddl</td>
+<td>unexplained-critical-error</td>
+</tr>
+<tr>
+<td>d-17.pddl</td>
+<td>unexplained-critical-error</td>
+</tr>
+<tr>
+<td>d-18.pddl</td>
+<td>unexplained-critical-error</td>
+</tr>
+<tr>
+<td>d-19.pddl</td>
+<td>unexplained-critical-error</td>
+</tr>
+</table>
+
+<a id="error-tyreworld" name="error-tyreworld"></a>
+<h2>tyreworld</h2>
+
+<button type="button" class="toggle-table" onclick="toggle_table(this)">Show table</button><p></p>
+
+<table border="1" style="display:none">
+<tr>
+<th>error</th>
+<th>asnet_<wbr>search</th>
+</tr>
+<tr>
+<td>d-01.pddl</td>
+<td>incomplete-search-found-no-plan</td>
+</tr>
+<tr>
+<td>d-02.pddl</td>
+<td>incomplete-search-found-no-plan</td>
+</tr>
+<tr>
+<td>d-03.pddl</td>
+<td>incomplete-search-found-no-plan</td>
+</tr>
+<tr>
+<td>d-04.pddl</td>
+<td>incomplete-search-found-no-plan</td>
+</tr>
+<tr>
+<td>d-05.pddl</td>
+<td>incomplete-search-found-no-plan</td>
+</tr>
+<tr>
+<td>d-06.pddl</td>
+<td>incomplete-search-found-no-plan</td>
+</tr>
+<tr>
+<td>d-07.pddl</td>
+<td>incomplete-search-found-no-plan</td>
+</tr>
+<tr>
+<td>d-08.pddl</td>
+<td>incomplete-search-found-no-plan</td>
+</tr>
+<tr>
+<td>d-09.pddl</td>
+<td>incomplete-search-found-no-plan</td>
+</tr>
+<tr>
+<td>d-10.pddl</td>
+<td>incomplete-search-found-no-plan</td>
+</tr>
+<tr>
+<td>d-11.pddl</td>
+<td>incomplete-search-found-no-plan</td>
+</tr>
+<tr>
+<td>d-12.pddl</td>
+<td>incomplete-search-found-no-plan</td>
+</tr>
+<tr>
+<td>d-13.pddl</td>
+<td>incomplete-search-found-no-plan</td>
+</tr>
+<tr>
+<td>d-14.pddl</td>
+<td>incomplete-search-found-no-plan</td>
+</tr>
+<tr>
+<td>d-15.pddl</td>
+<td>incomplete-search-found-no-plan</td>
+</tr>
+<tr>
+<td>d-16.pddl</td>
+<td>incomplete-search-found-no-plan</td>
+</tr>
+<tr>
+<td>d-17.pddl</td>
+<td>incomplete-search-found-no-plan</td>
+</tr>
+<tr>
+<td>d-18.pddl</td>
+<td>incomplete-search-found-no-plan</td>
+</tr>
+<tr>
+<td>d-19.pddl</td>
+<td>incomplete-search-found-no-plan</td>
+</tr>
+<tr>
+<td>d-20.pddl</td>
+<td>incomplete-search-found-no-plan</td>
+</tr>
+</table>
+
+<a id="memory" name="memory"></a>
+<h1>memory</h1>
+
+<button type="button" class="toggle-table" onclick="toggle_table(this)">Show table</button><p></p>
+
+<table border="1" style="display:none">
+<tr>
+<th>memory</th>
+<th>asnet_<wbr>search</th>
+</tr>
+<tr>
+<td><a href="#memory-blocksworld" onclick="show_table(document.getElementById('memory-blocksworld'));">blocksworld</a> (7)</td>
+<td align="right"><span style="color:rgb(127,127,127)">9158876</span></td>
+</tr>
+<tr>
+<td><a href="#memory-floortile" onclick="show_table(document.getElementById('memory-floortile'));">floortile</a> (1)</td>
+<td align="right"><span style="color:rgb(127,127,127)">1823700</span></td>
+</tr>
+<tr>
+<td><a href="#memory-hanoi" onclick="show_table(document.getElementById('memory-hanoi'));">hanoi</a> (2)</td>
+<td align="right"><span style="color:rgb(127,127,127)">769064</span></td>
+</tr>
+<tr>
+<td><a href="#memory-parcprinter" onclick="show_table(document.getElementById('memory-parcprinter'));">parcprinter</a> (1)</td>
+<td align="right"><span style="color:rgb(127,127,127)">1455748</span></td>
+</tr>
+<tr>
+<td><b>Sum (11)</b></td>
+<td align="right"><span style="color:rgb(127,127,127)">13207388</span></td>
+</tr>
+</table>
+
+<p>
+Only instances where all algorithms have a value for "memory" are considered. Each table entry gives the sum of "memory" for that domain. The last row reports the sum across all domains.
+</p>
+
+<a id="memory-blocksworld" name="memory-blocksworld"></a>
+<h2>blocksworld</h2>
+
+<button type="button" class="toggle-table" onclick="toggle_table(this)">Show table</button><p></p>
+
+<table border="1" style="display:none">
+<tr>
+<th>memory</th>
+<th>asnet_<wbr>search</th>
+</tr>
+<tr>
+<td>d-4-0.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">865804</span></td>
+</tr>
+<tr>
+<td>d-4-1.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">1390092</span></td>
+</tr>
+<tr>
+<td>d-4-2.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">734732</span></td>
+</tr>
+<tr>
+<td>d-5-0.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-5-1.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-5-2.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-6-0.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">1487736</span></td>
+</tr>
+<tr>
+<td>d-6-1.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">1487736</span></td>
+</tr>
+<tr>
+<td>d-6-2.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-7-0.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">1485580</span></td>
+</tr>
+<tr>
+<td>d-7-1.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-7-2.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-8-0.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-8-1.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-8-2.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-9-0.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-9-1.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-9-2.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">1707196</span></td>
+</tr>
+<tr>
+<td>d-10-0.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-10-1.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-10-2.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-11-0.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-11-1.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-11-2.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-12-0.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-12-1.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-13-0.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-13-1.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-14-0.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-14-1.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-15-0.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-15-1.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-16-1.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-16-2.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-17-0.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+</table>
+
+<a id="memory-elevator" name="memory-elevator"></a>
+<h2>elevator</h2>
+
+<button type="button" class="toggle-table" onclick="toggle_table(this)">Show table</button><p></p>
+
+<table border="1" style="display:none">
+<tr>
+<th>memory</th>
+<th>asnet_<wbr>search</th>
+</tr>
+<tr>
+<td>d-01.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-02.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-03.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-04.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-05.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-06.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-07.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-08.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-09.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-10.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-11.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-12.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-13.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-14.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-15.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-16.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-17.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-18.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-19.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-20.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-21.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-22.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-23.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-24.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-25.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-26.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-27.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-28.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-29.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-30.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+</table>
+
+<a id="memory-floortile" name="memory-floortile"></a>
+<h2>floortile</h2>
+
+<button type="button" class="toggle-table" onclick="toggle_table(this)">Show table</button><p></p>
+
+<table border="1" style="display:none">
+<tr>
+<th>memory</th>
+<th>asnet_<wbr>search</th>
+</tr>
+<tr>
+<td>d-01-4-3-2.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-01-4-4-2.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-01-5-3-2.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">1823700</span></td>
+</tr>
+<tr>
+<td>d-01-5-4-2.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-01-5-5-2.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-01-6-4-2.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-01-6-5-2.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-02-4-4-2.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-02-5-3-2.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-02-5-4-2.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-02-5-5-2.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-02-6-4-2.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-02-6-5-2.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-03-4-3-2.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-03-4-4-2.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-03-5-3-2.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-03-5-4-2.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-03-5-5-2.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-03-6-4-2.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-03-6-5-2.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+</table>
+
+<a id="memory-hanoi" name="memory-hanoi"></a>
+<h2>hanoi</h2>
+
+<button type="button" class="toggle-table" onclick="toggle_table(this)">Show table</button><p></p>
+
+<table border="1" style="display:none">
+<tr>
+<th>memory</th>
+<th>asnet_<wbr>search</th>
+</tr>
+<tr>
+<td>d-01.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">332528</span></td>
+</tr>
+<tr>
+<td>d-02.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">436536</span></td>
+</tr>
+<tr>
+<td>d-03.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-04.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-05.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-06.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-07.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-08.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-09.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-10.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-11.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-12.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-13.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-14.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-15.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-16.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-17.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-18.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-19.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-20.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+</table>
+
+<a id="memory-parcprinter" name="memory-parcprinter"></a>
+<h2>parcprinter</h2>
+
+<button type="button" class="toggle-table" onclick="toggle_table(this)">Show table</button><p></p>
+
+<table border="1" style="display:none">
+<tr>
+<th>memory</th>
+<th>asnet_<wbr>search</th>
+</tr>
+<tr>
+<td>d-01.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">1455748</span></td>
+</tr>
+<tr>
+<td>d-02.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-03.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-04.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-05.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-06.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-07.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-08.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-09.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-10.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+</table>
+
+<a id="memory-sokoban" name="memory-sokoban"></a>
+<h2>sokoban</h2>
+
+<button type="button" class="toggle-table" onclick="toggle_table(this)">Show table</button><p></p>
+
+<table border="1" style="display:none">
+<tr>
+<th>memory</th>
+<th>asnet_<wbr>search</th>
+</tr>
+<tr>
+<td>d-01.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-02.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-03.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-04.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-05.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-06.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-07.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-08.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-09.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-10.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-11.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-12.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-13.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-14.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-15.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-16.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-17.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-18.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-19.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-20.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-21.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-22.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-23.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-24.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-25.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-26.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-27.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-28.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-29.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-30.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+</table>
+
+<a id="memory-turnandopen" name="memory-turnandopen"></a>
+<h2>turnandopen</h2>
+
+<button type="button" class="toggle-table" onclick="toggle_table(this)">Show table</button><p></p>
+
+<table border="1" style="display:none">
+<tr>
+<th>memory</th>
+<th>asnet_<wbr>search</th>
+</tr>
+<tr>
+<td>d-01.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-02.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-03.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-04.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-05.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-06.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-07.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-08.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-09.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-10.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-11.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-12.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-13.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-14.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-15.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-16.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-17.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-18.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-19.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+</table>
+
+<a id="memory-tyreworld" name="memory-tyreworld"></a>
+<h2>tyreworld</h2>
+
+<button type="button" class="toggle-table" onclick="toggle_table(this)">Show table</button><p></p>
+
+<table border="1" style="display:none">
+<tr>
+<th>memory</th>
+<th>asnet_<wbr>search</th>
+</tr>
+<tr>
+<td>d-01.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-02.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-03.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-04.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-05.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-06.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-07.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-08.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-09.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-10.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-11.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-12.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-13.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-14.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-15.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-16.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-17.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-18.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-19.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-20.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+</table>
+
+<a id="plan_length" name="plan_length"></a>
+<h1>plan_length</h1>
+
+<button type="button" class="toggle-table" onclick="toggle_table(this)">Show table</button><p></p>
+
+<table border="1" style="display:none">
+<tr>
+<th>plan_<wbr>length</th>
+<th>asnet_<wbr>search</th>
+</tr>
+<tr>
+<td><a href="#plan_length-blocksworld" onclick="show_table(document.getElementById('plan_length-blocksworld'));">blocksworld</a> (7)</td>
+<td align="right"><span style="color:rgb(127,127,127)">92</span></td>
+</tr>
+<tr>
+<td><a href="#plan_length-floortile" onclick="show_table(document.getElementById('plan_length-floortile'));">floortile</a> (1)</td>
+<td align="right"><span style="color:rgb(127,127,127)">48</span></td>
+</tr>
+<tr>
+<td><a href="#plan_length-hanoi" onclick="show_table(document.getElementById('plan_length-hanoi'));">hanoi</a> (2)</td>
+<td align="right"><span style="color:rgb(127,127,127)">4</span></td>
+</tr>
+<tr>
+<td><a href="#plan_length-parcprinter" onclick="show_table(document.getElementById('plan_length-parcprinter'));">parcprinter</a> (1)</td>
+<td align="right"><span style="color:rgb(127,127,127)">11</span></td>
+</tr>
+<tr>
+<td><b>Sum (11)</b></td>
+<td align="right"><span style="color:rgb(127,127,127)">155</span></td>
+</tr>
+</table>
+
+<p>
+Only instances where all algorithms have a value for "plan_length" are considered. Each table entry gives the sum of "plan_length" for that domain. The last row reports the sum across all domains.
+</p>
+
+<a id="plan_length-blocksworld" name="plan_length-blocksworld"></a>
+<h2>blocksworld</h2>
+
+<button type="button" class="toggle-table" onclick="toggle_table(this)">Show table</button><p></p>
+
+<table border="1" style="display:none">
+<tr>
+<th>plan_<wbr>length</th>
+<th>asnet_<wbr>search</th>
+</tr>
+<tr>
+<td>d-4-0.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">6</span></td>
+</tr>
+<tr>
+<td>d-4-1.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">10</span></td>
+</tr>
+<tr>
+<td>d-4-2.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">6</span></td>
+</tr>
+<tr>
+<td>d-5-0.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-5-1.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-5-2.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-6-0.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">14</span></td>
+</tr>
+<tr>
+<td>d-6-1.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">10</span></td>
+</tr>
+<tr>
+<td>d-6-2.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-7-0.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">20</span></td>
+</tr>
+<tr>
+<td>d-7-1.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-7-2.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-8-0.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-8-1.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-8-2.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-9-0.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-9-1.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-9-2.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">26</span></td>
+</tr>
+<tr>
+<td>d-10-0.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-10-1.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-10-2.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-11-0.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-11-1.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-11-2.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-12-0.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-12-1.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-13-0.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-13-1.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-14-0.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-14-1.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-15-0.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-15-1.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-16-1.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-16-2.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-17-0.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+</table>
+
+<a id="plan_length-elevator" name="plan_length-elevator"></a>
+<h2>elevator</h2>
+
+<button type="button" class="toggle-table" onclick="toggle_table(this)">Show table</button><p></p>
+
+<table border="1" style="display:none">
+<tr>
+<th>plan_<wbr>length</th>
+<th>asnet_<wbr>search</th>
+</tr>
+<tr>
+<td>d-01.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-02.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-03.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-04.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-05.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-06.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-07.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-08.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-09.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-10.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-11.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-12.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-13.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-14.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-15.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-16.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-17.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-18.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-19.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-20.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-21.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-22.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-23.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-24.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-25.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-26.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-27.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-28.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-29.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-30.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+</table>
+
+<a id="plan_length-floortile" name="plan_length-floortile"></a>
+<h2>floortile</h2>
+
+<button type="button" class="toggle-table" onclick="toggle_table(this)">Show table</button><p></p>
+
+<table border="1" style="display:none">
+<tr>
+<th>plan_<wbr>length</th>
+<th>asnet_<wbr>search</th>
+</tr>
+<tr>
+<td>d-01-4-3-2.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-01-4-4-2.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-01-5-3-2.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">48</span></td>
+</tr>
+<tr>
+<td>d-01-5-4-2.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-01-5-5-2.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-01-6-4-2.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-01-6-5-2.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-02-4-4-2.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-02-5-3-2.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-02-5-4-2.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-02-5-5-2.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-02-6-4-2.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-02-6-5-2.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-03-4-3-2.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-03-4-4-2.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-03-5-3-2.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-03-5-4-2.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-03-5-5-2.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-03-6-4-2.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-03-6-5-2.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+</table>
+
+<a id="plan_length-hanoi" name="plan_length-hanoi"></a>
+<h2>hanoi</h2>
+
+<button type="button" class="toggle-table" onclick="toggle_table(this)">Show table</button><p></p>
+
+<table border="1" style="display:none">
+<tr>
+<th>plan_<wbr>length</th>
+<th>asnet_<wbr>search</th>
+</tr>
+<tr>
+<td>d-01.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">1</span></td>
+</tr>
+<tr>
+<td>d-02.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">3</span></td>
+</tr>
+<tr>
+<td>d-03.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-04.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-05.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-06.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-07.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-08.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-09.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-10.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-11.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-12.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-13.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-14.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-15.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-16.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-17.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-18.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-19.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-20.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+</table>
+
+<a id="plan_length-parcprinter" name="plan_length-parcprinter"></a>
+<h2>parcprinter</h2>
+
+<button type="button" class="toggle-table" onclick="toggle_table(this)">Show table</button><p></p>
+
+<table border="1" style="display:none">
+<tr>
+<th>plan_<wbr>length</th>
+<th>asnet_<wbr>search</th>
+</tr>
+<tr>
+<td>d-01.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">11</span></td>
+</tr>
+<tr>
+<td>d-02.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-03.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-04.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-05.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-06.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-07.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-08.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-09.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-10.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+</table>
+
+<a id="plan_length-sokoban" name="plan_length-sokoban"></a>
+<h2>sokoban</h2>
+
+<button type="button" class="toggle-table" onclick="toggle_table(this)">Show table</button><p></p>
+
+<table border="1" style="display:none">
+<tr>
+<th>plan_<wbr>length</th>
+<th>asnet_<wbr>search</th>
+</tr>
+<tr>
+<td>d-01.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-02.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-03.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-04.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-05.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-06.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-07.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-08.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-09.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-10.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-11.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-12.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-13.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-14.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-15.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-16.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-17.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-18.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-19.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-20.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-21.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-22.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-23.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-24.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-25.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-26.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-27.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-28.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-29.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-30.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+</table>
+
+<a id="plan_length-turnandopen" name="plan_length-turnandopen"></a>
+<h2>turnandopen</h2>
+
+<button type="button" class="toggle-table" onclick="toggle_table(this)">Show table</button><p></p>
+
+<table border="1" style="display:none">
+<tr>
+<th>plan_<wbr>length</th>
+<th>asnet_<wbr>search</th>
+</tr>
+<tr>
+<td>d-01.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-02.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-03.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-04.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-05.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-06.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-07.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-08.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-09.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-10.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-11.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-12.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-13.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-14.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-15.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-16.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-17.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-18.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-19.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+</table>
+
+<a id="plan_length-tyreworld" name="plan_length-tyreworld"></a>
+<h2>tyreworld</h2>
+
+<button type="button" class="toggle-table" onclick="toggle_table(this)">Show table</button><p></p>
+
+<table border="1" style="display:none">
+<tr>
+<th>plan_<wbr>length</th>
+<th>asnet_<wbr>search</th>
+</tr>
+<tr>
+<td>d-01.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-02.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-03.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-04.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-05.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-06.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-07.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-08.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-09.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-10.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-11.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-12.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-13.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-14.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-15.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-16.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-17.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-18.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-19.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-20.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+</table>
+
+<a id="total_time" name="total_time"></a>
+<h1>total_time</h1>
+
+<button type="button" class="toggle-table" onclick="toggle_table(this)">Show table</button><p></p>
+
+<table border="1" style="display:none">
+<tr>
+<th>total_<wbr>time</th>
+<th>asnet_<wbr>search</th>
+</tr>
+<tr>
+<td><a href="#total_time-blocksworld" onclick="show_table(document.getElementById('total_time-blocksworld'));">blocksworld</a> (33)</td>
+<td align="right"><span style="color:rgb(127,127,127)">15.22</span></td>
+</tr>
+<tr>
+<td><a href="#total_time-elevator" onclick="show_table(document.getElementById('total_time-elevator'));">elevator</a> (22)</td>
+<td align="right"><span style="color:rgb(127,127,127)">213.42</span></td>
+</tr>
+<tr>
+<td><a href="#total_time-floortile" onclick="show_table(document.getElementById('total_time-floortile'));">floortile</a> (19)</td>
+<td align="right"><span style="color:rgb(127,127,127)">33.12</span></td>
+</tr>
+<tr>
+<td><a href="#total_time-hanoi" onclick="show_table(document.getElementById('total_time-hanoi'));">hanoi</a> (20)</td>
+<td align="right"><span style="color:rgb(127,127,127)">38.93</span></td>
+</tr>
+<tr>
+<td><a href="#total_time-parcprinter" onclick="show_table(document.getElementById('total_time-parcprinter'));">parcprinter</a> (10)</td>
+<td align="right"><span style="color:rgb(127,127,127)">25.44</span></td>
+</tr>
+<tr>
+<td><a href="#total_time-sokoban" onclick="show_table(document.getElementById('total_time-sokoban'));">sokoban</a> (30)</td>
+<td align="right"><span style="color:rgb(127,127,127)">55.49</span></td>
+</tr>
+<tr>
+<td><a href="#total_time-turnandopen" onclick="show_table(document.getElementById('total_time-turnandopen'));">turnandopen</a> (9)</td>
+<td align="right"><span style="color:rgb(127,127,127)">169.27</span></td>
+</tr>
+<tr>
+<td><a href="#total_time-tyreworld" onclick="show_table(document.getElementById('total_time-tyreworld'));">tyreworld</a> (20)</td>
+<td align="right"><span style="color:rgb(127,127,127)">106.66</span></td>
+</tr>
+<tr>
+<td><b>Geometric mean (163)</b></td>
+<td align="right"><span style="color:rgb(127,127,127)">56.69</span></td>
+</tr>
+</table>
+
+<p>
+Only instances where all algorithms have a value for "total_time" are considered. Each table entry gives the geometric mean of "total_time" for that domain. The last row reports the geometric mean across all domains.
+</p>
+
+<a id="total_time-blocksworld" name="total_time-blocksworld"></a>
+<h2>blocksworld</h2>
+
+<button type="button" class="toggle-table" onclick="toggle_table(this)">Show table</button><p></p>
+
+<table border="1" style="display:none">
+<tr>
+<th>total_<wbr>time</th>
+<th>asnet_<wbr>search</th>
+</tr>
+<tr>
+<td>d-4-0.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">2.81</span></td>
+</tr>
+<tr>
+<td>d-4-1.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">3.02</span></td>
+</tr>
+<tr>
+<td>d-4-2.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">2.89</span></td>
+</tr>
+<tr>
+<td>d-5-0.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">5.27</span></td>
+</tr>
+<tr>
+<td>d-5-1.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">5.45</span></td>
+</tr>
+<tr>
+<td>d-5-2.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">5.14</span></td>
+</tr>
+<tr>
+<td>d-6-0.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">6.81</span></td>
+</tr>
+<tr>
+<td>d-6-1.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">7.11</span></td>
+</tr>
+<tr>
+<td>d-6-2.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">6.88</span></td>
+</tr>
+<tr>
+<td>d-7-0.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">9.64</span></td>
+</tr>
+<tr>
+<td>d-7-1.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">9.56</span></td>
+</tr>
+<tr>
+<td>d-7-2.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">8.58</span></td>
+</tr>
+<tr>
+<td>d-8-0.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">13.05</span></td>
+</tr>
+<tr>
+<td>d-8-1.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">12.81</span></td>
+</tr>
+<tr>
+<td>d-8-2.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">12.66</span></td>
+</tr>
+<tr>
+<td>d-9-0.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">16.45</span></td>
+</tr>
+<tr>
+<td>d-9-1.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">19.36</span></td>
+</tr>
+<tr>
+<td>d-9-2.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">15.55</span></td>
+</tr>
+<tr>
+<td>d-10-0.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">20.70</span></td>
+</tr>
+<tr>
+<td>d-10-1.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">20.49</span></td>
+</tr>
+<tr>
+<td>d-10-2.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">20.04</span></td>
+</tr>
+<tr>
+<td>d-11-0.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">23.94</span></td>
+</tr>
+<tr>
+<td>d-11-1.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">25.40</span></td>
+</tr>
+<tr>
+<td>d-11-2.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">26.29</span></td>
+</tr>
+<tr>
+<td>d-12-0.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">29.10</span></td>
+</tr>
+<tr>
+<td>d-12-1.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">34.18</span></td>
+</tr>
+<tr>
+<td>d-13-0.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">35.58</span></td>
+</tr>
+<tr>
+<td>d-13-1.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">35.23</span></td>
+</tr>
+<tr>
+<td>d-14-0.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-14-1.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">43.30</span></td>
+</tr>
+<tr>
+<td>d-15-0.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-15-1.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">58.70</span></td>
+</tr>
+<tr>
+<td>d-16-1.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">58.23</span></td>
+</tr>
+<tr>
+<td>d-16-2.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">63.49</span></td>
+</tr>
+<tr>
+<td>d-17-0.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">65.21</span></td>
+</tr>
+</table>
+
+<a id="total_time-elevator" name="total_time-elevator"></a>
+<h2>elevator</h2>
+
+<button type="button" class="toggle-table" onclick="toggle_table(this)">Show table</button><p></p>
+
+<table border="1" style="display:none">
+<tr>
+<th>total_<wbr>time</th>
+<th>asnet_<wbr>search</th>
+</tr>
+<tr>
+<td>d-01.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">37.43</span></td>
+</tr>
+<tr>
+<td>d-02.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">52.72</span></td>
+</tr>
+<tr>
+<td>d-03.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">71.61</span></td>
+</tr>
+<tr>
+<td>d-04.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">71.03</span></td>
+</tr>
+<tr>
+<td>d-05.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">83.88</span></td>
+</tr>
+<tr>
+<td>d-06.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">95.65</span></td>
+</tr>
+<tr>
+<td>d-07.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">104.27</span></td>
+</tr>
+<tr>
+<td>d-08.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-09.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">130.87</span></td>
+</tr>
+<tr>
+<td>d-10.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">138.65</span></td>
+</tr>
+<tr>
+<td>d-11.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">165.99</span></td>
+</tr>
+<tr>
+<td>d-12.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">208.03</span></td>
+</tr>
+<tr>
+<td>d-13.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">232.55</span></td>
+</tr>
+<tr>
+<td>d-14.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">309.94</span></td>
+</tr>
+<tr>
+<td>d-15.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">343.90</span></td>
+</tr>
+<tr>
+<td>d-16.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">402.84</span></td>
+</tr>
+<tr>
+<td>d-17.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">448.68</span></td>
+</tr>
+<tr>
+<td>d-18.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">445.94</span></td>
+</tr>
+<tr>
+<td>d-19.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">602.60</span></td>
+</tr>
+<tr>
+<td>d-20.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">575.64</span></td>
+</tr>
+<tr>
+<td>d-21.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">591.18</span></td>
+</tr>
+<tr>
+<td>d-22.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">692.96</span></td>
+</tr>
+<tr>
+<td>d-23.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-24.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">1171.72</span></td>
+</tr>
+<tr>
+<td>d-25.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-26.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-27.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-28.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-29.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-30.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+</table>
+
+<a id="total_time-floortile" name="total_time-floortile"></a>
+<h2>floortile</h2>
+
+<button type="button" class="toggle-table" onclick="toggle_table(this)">Show table</button><p></p>
+
+<table border="1" style="display:none">
+<tr>
+<th>total_<wbr>time</th>
+<th>asnet_<wbr>search</th>
+</tr>
+<tr>
+<td>d-01-4-3-2.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-01-4-4-2.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">26.76</span></td>
+</tr>
+<tr>
+<td>d-01-5-3-2.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">26.36</span></td>
+</tr>
+<tr>
+<td>d-01-5-4-2.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">29.83</span></td>
+</tr>
+<tr>
+<td>d-01-5-5-2.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">43.57</span></td>
+</tr>
+<tr>
+<td>d-01-6-4-2.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">36.58</span></td>
+</tr>
+<tr>
+<td>d-01-6-5-2.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">55.81</span></td>
+</tr>
+<tr>
+<td>d-02-4-4-2.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">23.65</span></td>
+</tr>
+<tr>
+<td>d-02-5-3-2.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">22.26</span></td>
+</tr>
+<tr>
+<td>d-02-5-4-2.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">30.85</span></td>
+</tr>
+<tr>
+<td>d-02-5-5-2.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">43.75</span></td>
+</tr>
+<tr>
+<td>d-02-6-4-2.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">41.50</span></td>
+</tr>
+<tr>
+<td>d-02-6-5-2.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">46.74</span></td>
+</tr>
+<tr>
+<td>d-03-4-3-2.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">17.42</span></td>
+</tr>
+<tr>
+<td>d-03-4-4-2.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">24.41</span></td>
+</tr>
+<tr>
+<td>d-03-5-3-2.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">25.07</span></td>
+</tr>
+<tr>
+<td>d-03-5-4-2.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">30.42</span></td>
+</tr>
+<tr>
+<td>d-03-5-5-2.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">45.54</span></td>
+</tr>
+<tr>
+<td>d-03-6-4-2.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">37.30</span></td>
+</tr>
+<tr>
+<td>d-03-6-5-2.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">53.52</span></td>
+</tr>
+</table>
+
+<a id="total_time-hanoi" name="total_time-hanoi"></a>
+<h2>hanoi</h2>
+
+<button type="button" class="toggle-table" onclick="toggle_table(this)">Show table</button><p></p>
+
+<table border="1" style="display:none">
+<tr>
+<th>total_<wbr>time</th>
+<th>asnet_<wbr>search</th>
+</tr>
+<tr>
+<td>d-01.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0.50</span></td>
+</tr>
+<tr>
+<td>d-02.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">1.52</span></td>
+</tr>
+<tr>
+<td>d-03.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">3.11</span></td>
+</tr>
+<tr>
+<td>d-04.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">5.47</span></td>
+</tr>
+<tr>
+<td>d-05.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">10.64</span></td>
+</tr>
+<tr>
+<td>d-06.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">14.46</span></td>
+</tr>
+<tr>
+<td>d-07.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">21.43</span></td>
+</tr>
+<tr>
+<td>d-08.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">28.99</span></td>
+</tr>
+<tr>
+<td>d-09.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">40.32</span></td>
+</tr>
+<tr>
+<td>d-10.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">51.15</span></td>
+</tr>
+<tr>
+<td>d-11.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">69.68</span></td>
+</tr>
+<tr>
+<td>d-12.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">84.55</span></td>
+</tr>
+<tr>
+<td>d-13.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">111.62</span></td>
+</tr>
+<tr>
+<td>d-14.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">129.15</span></td>
+</tr>
+<tr>
+<td>d-15.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">183.77</span></td>
+</tr>
+<tr>
+<td>d-16.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">189.91</span></td>
+</tr>
+<tr>
+<td>d-17.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">240.94</span></td>
+</tr>
+<tr>
+<td>d-18.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">258.83</span></td>
+</tr>
+<tr>
+<td>d-19.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">327.87</span></td>
+</tr>
+<tr>
+<td>d-20.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">412.64</span></td>
+</tr>
+</table>
+
+<a id="total_time-parcprinter" name="total_time-parcprinter"></a>
+<h2>parcprinter</h2>
+
+<button type="button" class="toggle-table" onclick="toggle_table(this)">Show table</button><p></p>
+
+<table border="1" style="display:none">
+<tr>
+<th>total_<wbr>time</th>
+<th>asnet_<wbr>search</th>
+</tr>
+<tr>
+<td>d-01.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">4.83</span></td>
+</tr>
+<tr>
+<td>d-02.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">9.12</span></td>
+</tr>
+<tr>
+<td>d-03.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">9.07</span></td>
+</tr>
+<tr>
+<td>d-04.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">21.62</span></td>
+</tr>
+<tr>
+<td>d-05.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">31.46</span></td>
+</tr>
+<tr>
+<td>d-06.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">32.59</span></td>
+</tr>
+<tr>
+<td>d-07.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">54.25</span></td>
+</tr>
+<tr>
+<td>d-08.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">58.05</span></td>
+</tr>
+<tr>
+<td>d-09.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">62.81</span></td>
+</tr>
+<tr>
+<td>d-10.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">64.80</span></td>
+</tr>
+</table>
+
+<a id="total_time-sokoban" name="total_time-sokoban"></a>
+<h2>sokoban</h2>
+
+<button type="button" class="toggle-table" onclick="toggle_table(this)">Show table</button><p></p>
+
+<table border="1" style="display:none">
+<tr>
+<th>total_<wbr>time</th>
+<th>asnet_<wbr>search</th>
+</tr>
+<tr>
+<td>d-01.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">11.67</span></td>
+</tr>
+<tr>
+<td>d-02.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">28.17</span></td>
+</tr>
+<tr>
+<td>d-03.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">15.40</span></td>
+</tr>
+<tr>
+<td>d-04.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">36.42</span></td>
+</tr>
+<tr>
+<td>d-05.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">26.09</span></td>
+</tr>
+<tr>
+<td>d-06.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">42.31</span></td>
+</tr>
+<tr>
+<td>d-07.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">31.28</span></td>
+</tr>
+<tr>
+<td>d-08.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">33.87</span></td>
+</tr>
+<tr>
+<td>d-09.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">44.31</span></td>
+</tr>
+<tr>
+<td>d-10.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">64.04</span></td>
+</tr>
+<tr>
+<td>d-11.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">165.39</span></td>
+</tr>
+<tr>
+<td>d-12.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">52.59</span></td>
+</tr>
+<tr>
+<td>d-13.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">40.18</span></td>
+</tr>
+<tr>
+<td>d-14.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">45.88</span></td>
+</tr>
+<tr>
+<td>d-15.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">52.68</span></td>
+</tr>
+<tr>
+<td>d-16.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">52.62</span></td>
+</tr>
+<tr>
+<td>d-17.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">78.86</span></td>
+</tr>
+<tr>
+<td>d-18.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">58.34</span></td>
+</tr>
+<tr>
+<td>d-19.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">206.44</span></td>
+</tr>
+<tr>
+<td>d-20.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">260.87</span></td>
+</tr>
+<tr>
+<td>d-21.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">64.64</span></td>
+</tr>
+<tr>
+<td>d-22.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">63.75</span></td>
+</tr>
+<tr>
+<td>d-23.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">55.37</span></td>
+</tr>
+<tr>
+<td>d-24.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">55.61</span></td>
+</tr>
+<tr>
+<td>d-25.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">67.49</span></td>
+</tr>
+<tr>
+<td>d-26.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">84.61</span></td>
+</tr>
+<tr>
+<td>d-27.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">161.80</span></td>
+</tr>
+<tr>
+<td>d-28.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">100.34</span></td>
+</tr>
+<tr>
+<td>d-29.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">49.13</span></td>
+</tr>
+<tr>
+<td>d-30.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">54.42</span></td>
+</tr>
+</table>
+
+<a id="total_time-turnandopen" name="total_time-turnandopen"></a>
+<h2>turnandopen</h2>
+
+<button type="button" class="toggle-table" onclick="toggle_table(this)">Show table</button><p></p>
+
+<table border="1" style="display:none">
+<tr>
+<th>total_<wbr>time</th>
+<th>asnet_<wbr>search</th>
+</tr>
+<tr>
+<td>d-01.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">84.30</span></td>
+</tr>
+<tr>
+<td>d-02.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">101.60</span></td>
+</tr>
+<tr>
+<td>d-03.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">110.16</span></td>
+</tr>
+<tr>
+<td>d-04.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">151.37</span></td>
+</tr>
+<tr>
+<td>d-05.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">151.92</span></td>
+</tr>
+<tr>
+<td>d-06.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">180.28</span></td>
+</tr>
+<tr>
+<td>d-07.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">185.57</span></td>
+</tr>
+<tr>
+<td>d-08.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">373.35</span></td>
+</tr>
+<tr>
+<td>d-09.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">420.95</span></td>
+</tr>
+<tr>
+<td>d-10.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-11.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-12.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-13.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-14.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-15.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-16.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-17.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-18.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-19.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+</table>
+
+<a id="total_time-tyreworld" name="total_time-tyreworld"></a>
+<h2>tyreworld</h2>
+
+<button type="button" class="toggle-table" onclick="toggle_table(this)">Show table</button><p></p>
+
+<table border="1" style="display:none">
+<tr>
+<th>total_<wbr>time</th>
+<th>asnet_<wbr>search</th>
+</tr>
+<tr>
+<td>d-01.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">2.00</span></td>
+</tr>
+<tr>
+<td>d-02.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">5.36</span></td>
+</tr>
+<tr>
+<td>d-03.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">12.36</span></td>
+</tr>
+<tr>
+<td>d-04.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">19.65</span></td>
+</tr>
+<tr>
+<td>d-05.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">34.74</span></td>
+</tr>
+<tr>
+<td>d-06.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">42.64</span></td>
+</tr>
+<tr>
+<td>d-07.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">59.09</span></td>
+</tr>
+<tr>
+<td>d-08.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">84.83</span></td>
+</tr>
+<tr>
+<td>d-09.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">136.72</span></td>
+</tr>
+<tr>
+<td>d-10.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">138.54</span></td>
+</tr>
+<tr>
+<td>d-11.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">195.04</span></td>
+</tr>
+<tr>
+<td>d-12.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">221.06</span></td>
+</tr>
+<tr>
+<td>d-13.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">296.49</span></td>
+</tr>
+<tr>
+<td>d-14.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">324.27</span></td>
+</tr>
+<tr>
+<td>d-15.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">354.23</span></td>
+</tr>
+<tr>
+<td>d-16.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">436.58</span></td>
+</tr>
+<tr>
+<td>d-17.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">523.99</span></td>
+</tr>
+<tr>
+<td>d-18.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">645.02</span></td>
+</tr>
+<tr>
+<td>d-19.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">676.33</span></td>
+</tr>
+<tr>
+<td>d-20.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">677.61</span></td>
+</tr>
+</table>
+
+<a id="unsolvable" name="unsolvable"></a>
+<h1>unsolvable</h1>
+
+<button type="button" class="toggle-table" onclick="toggle_table(this)">Show table</button><p></p>
+
+<table border="1" style="display:none">
+<tr>
+<th>unsolvable</th>
+<th>asnet_<wbr>search</th>
+</tr>
+<tr>
+<td><a href="#unsolvable-blocksworld" onclick="show_table(document.getElementById('unsolvable-blocksworld'));">blocksworld</a> (33)</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td><a href="#unsolvable-elevator" onclick="show_table(document.getElementById('unsolvable-elevator'));">elevator</a> (29)</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td><a href="#unsolvable-floortile" onclick="show_table(document.getElementById('unsolvable-floortile'));">floortile</a> (19)</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td><a href="#unsolvable-hanoi" onclick="show_table(document.getElementById('unsolvable-hanoi'));">hanoi</a> (20)</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td><a href="#unsolvable-parcprinter" onclick="show_table(document.getElementById('unsolvable-parcprinter'));">parcprinter</a> (10)</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td><a href="#unsolvable-sokoban" onclick="show_table(document.getElementById('unsolvable-sokoban'));">sokoban</a> (30)</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td><a href="#unsolvable-turnandopen" onclick="show_table(document.getElementById('unsolvable-turnandopen'));">turnandopen</a> (18)</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td><a href="#unsolvable-tyreworld" onclick="show_table(document.getElementById('unsolvable-tyreworld'));">tyreworld</a> (20)</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td><b>Sum (184)</b></td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+</table>
+
+<p>
+The last row reports the sum across all domains.
+</p>
+
+<a id="unsolvable-blocksworld" name="unsolvable-blocksworld"></a>
+<h2>blocksworld</h2>
+
+<button type="button" class="toggle-table" onclick="toggle_table(this)">Show table</button><p></p>
+
+<table border="1" style="display:none">
+<tr>
+<th>unsolvable</th>
+<th>asnet_<wbr>search</th>
+</tr>
+<tr>
+<td>d-4-0.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-4-1.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-4-2.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-5-0.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-5-1.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-5-2.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-6-0.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-6-1.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-6-2.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-7-0.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-7-1.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-7-2.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-8-0.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-8-1.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-8-2.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-9-0.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-9-1.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-9-2.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-10-0.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-10-1.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-10-2.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-11-0.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-11-1.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-11-2.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-12-0.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-12-1.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-13-0.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-13-1.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-14-0.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-14-1.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-15-0.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-15-1.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-16-1.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-16-2.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-17-0.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+</table>
+
+<a id="unsolvable-elevator" name="unsolvable-elevator"></a>
+<h2>elevator</h2>
+
+<button type="button" class="toggle-table" onclick="toggle_table(this)">Show table</button><p></p>
+
+<table border="1" style="display:none">
+<tr>
+<th>unsolvable</th>
+<th>asnet_<wbr>search</th>
+</tr>
+<tr>
+<td>d-01.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-02.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-03.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-04.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-05.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-06.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-07.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-08.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-09.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-10.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-11.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-12.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-13.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-14.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-15.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-16.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-17.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-18.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-19.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-20.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-21.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-22.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-23.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-24.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-25.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-26.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-27.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-28.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-29.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-30.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+</table>
+
+<a id="unsolvable-floortile" name="unsolvable-floortile"></a>
+<h2>floortile</h2>
+
+<button type="button" class="toggle-table" onclick="toggle_table(this)">Show table</button><p></p>
+
+<table border="1" style="display:none">
+<tr>
+<th>unsolvable</th>
+<th>asnet_<wbr>search</th>
+</tr>
+<tr>
+<td>d-01-4-3-2.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-01-4-4-2.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-01-5-3-2.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-01-5-4-2.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-01-5-5-2.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-01-6-4-2.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-01-6-5-2.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-02-4-4-2.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-02-5-3-2.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-02-5-4-2.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-02-5-5-2.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-02-6-4-2.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-02-6-5-2.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-03-4-3-2.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-03-4-4-2.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-03-5-3-2.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-03-5-4-2.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-03-5-5-2.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-03-6-4-2.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-03-6-5-2.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+</table>
+
+<a id="unsolvable-hanoi" name="unsolvable-hanoi"></a>
+<h2>hanoi</h2>
+
+<button type="button" class="toggle-table" onclick="toggle_table(this)">Show table</button><p></p>
+
+<table border="1" style="display:none">
+<tr>
+<th>unsolvable</th>
+<th>asnet_<wbr>search</th>
+</tr>
+<tr>
+<td>d-01.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-02.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-03.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-04.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-05.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-06.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-07.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-08.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-09.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-10.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-11.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-12.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-13.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-14.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-15.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-16.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-17.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-18.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-19.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-20.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+</table>
+
+<a id="unsolvable-parcprinter" name="unsolvable-parcprinter"></a>
+<h2>parcprinter</h2>
+
+<button type="button" class="toggle-table" onclick="toggle_table(this)">Show table</button><p></p>
+
+<table border="1" style="display:none">
+<tr>
+<th>unsolvable</th>
+<th>asnet_<wbr>search</th>
+</tr>
+<tr>
+<td>d-01.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-02.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-03.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-04.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-05.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-06.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-07.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-08.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-09.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-10.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+</table>
+
+<a id="unsolvable-sokoban" name="unsolvable-sokoban"></a>
+<h2>sokoban</h2>
+
+<button type="button" class="toggle-table" onclick="toggle_table(this)">Show table</button><p></p>
+
+<table border="1" style="display:none">
+<tr>
+<th>unsolvable</th>
+<th>asnet_<wbr>search</th>
+</tr>
+<tr>
+<td>d-01.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-02.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-03.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-04.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-05.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-06.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-07.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-08.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-09.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-10.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-11.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-12.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-13.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-14.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-15.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-16.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-17.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-18.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-19.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-20.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-21.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-22.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-23.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-24.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-25.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-26.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-27.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-28.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-29.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-30.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+</table>
+
+<a id="unsolvable-turnandopen" name="unsolvable-turnandopen"></a>
+<h2>turnandopen</h2>
+
+<button type="button" class="toggle-table" onclick="toggle_table(this)">Show table</button><p></p>
+
+<table border="1" style="display:none">
+<tr>
+<th>unsolvable</th>
+<th>asnet_<wbr>search</th>
+</tr>
+<tr>
+<td>d-01.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-02.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-03.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-04.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-05.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-06.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-07.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-08.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-09.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-10.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-11.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-12.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-13.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-14.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-15.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-16.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-17.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-18.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-19.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+</table>
+
+<a id="unsolvable-tyreworld" name="unsolvable-tyreworld"></a>
+<h2>tyreworld</h2>
+
+<button type="button" class="toggle-table" onclick="toggle_table(this)">Show table</button><p></p>
+
+<table border="1" style="display:none">
+<tr>
+<th>unsolvable</th>
+<th>asnet_<wbr>search</th>
+</tr>
+<tr>
+<td>d-01.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-02.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-03.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-04.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-05.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-06.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-07.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-08.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-09.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-10.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-11.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-12.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-13.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-14.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-15.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-16.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-17.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-18.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-19.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-20.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+</table>
+
+</div>
+<!-- xhtml code generated by txt2tags 2.6b (http://txt2tags.sf.net) -->
+<!-- cmdline: txt2tags  -->
+</body></html>
