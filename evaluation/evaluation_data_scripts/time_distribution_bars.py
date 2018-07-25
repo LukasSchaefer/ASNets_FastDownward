@@ -42,6 +42,14 @@ def extract_time_distribution(log_lines):
         training_match = re.match(training_time_regex, line)
         if training_match:
             training_time += float(training_match.group(1))
+
+    if current_problem != '':
+        if current_problem in problem_times.keys():
+            model_time, sampling_time, train_time = problem_times[current_problem]
+            model_build_time += model_time
+            sampling_search_time += sampling_time
+            training_time += train_time
+        problem_times[current_problem] = (model_build_time, sampling_search_time, training_time)
     return problem_times
 
 
