@@ -2,369 +2,330 @@ Training log data for domain floortile:
 printing the data chronological
 Epoch 1:
 Training data for problem d-01-4-3-2.pddl in epoch 1:
-model creation time: 56.388293743133545s
+model creation time: 36.27665638923645s
 problem epoch data for epoch 1, problem epoch 1
-	sampling search time: 6232.4831392765045s
+	sampling search time: 4489.18416762352s
 	during this search the following actions were chosen:
-		up robot2 tile_2-2 tile_3-2 was chosen with probability 0.134899
-		up robot1 tile_0-1 tile_1-1 was chosen with probability 0.125102
-		up robot1 tile_1-1 tile_2-1 was chosen with probability 0.132429
-		up robot1 tile_2-1 tile_3-1 was chosen with probability 0.143680
-		up robot1 tile_3-1 tile_4-1 was chosen with probability 0.129881
-		right robot2 tile_3-2 tile_3-3 was chosen with probability 0.121300
-		left robot2 tile_3-3 tile_3-2 was chosen with probability 0.126284
-	training time: 248.9217598438263s
+		right robot1 tile_0-1 tile_0-2 was chosen with probability 0.144376
+		paint-down robot2 tile_1-2 tile_2-2 black was chosen with probability 0.112577
+		right robot2 tile_2-2 tile_2-3 was chosen with probability 0.173549
+		right robot1 tile_0-2 tile_0-3 was chosen with probability 0.144985
+		paint-down robot2 tile_1-3 tile_2-3 black was chosen with probability 0.125575
+	training time: 174.28396224975586s
 	during the training the following losses were computed:
-		loss: 4.953200
-		loss: 4.663500
-		loss: 4.446000
-		loss: 4.291300
-		loss: 4.183600
-		loss: 4.090600
-		loss: 4.013100
-		loss: 3.950800
-		loss: 3.901800
-		loss: 3.857700
-		loss: 3.813100
-		loss: 3.767500
-		loss: 3.724000
-		loss: 3.686000
-		loss: 3.654400
-		loss: 3.626800
-		loss: 3.600100
-		loss: 3.573500
-		loss: 3.547400
-		loss: 3.522300
-		loss: 3.497900
-		loss: 3.473600
-		loss: 3.449300
-		loss: 3.425600
-		loss: 3.403400
-		loss: 3.382400
-		loss: 3.362100
-		loss: 3.341300
-		loss: 3.320600
-		loss: 3.300700
-		loss: 3.281300
-		loss: 3.261800
-		loss: 3.242100
-		loss: 3.222300
-		loss: 3.203500
-		loss: 3.184800
-		loss: 3.166000
-		loss: 3.147100
-		loss: 3.128400
-		loss: 3.109700
-		loss: 3.091200
-		loss: 3.072900
-		loss: 3.055000
-		loss: 3.037200
-		loss: 3.019000
-		loss: 3.000900
-		loss: 2.983300
-		loss: 2.965800
-		loss: 2.948600
-		loss: 2.931500
-		loss: 2.914700
-		loss: 2.898100
-		loss: 2.881800
-		loss: 2.865700
-		loss: 2.849700
-		loss: 2.833900
-		loss: 2.818400
+		loss: 5.479100
+		loss: 5.157000
+		loss: 4.904200
+		loss: 4.710200
+		loss: 4.561400
+		loss: 4.443500
+		loss: 4.345300
+		loss: 4.260200
+		loss: 4.186600
+		loss: 4.122300
+		loss: 4.067600
+		loss: 4.020800
+		loss: 3.979000
+		loss: 3.939700
+		loss: 3.901300
+		loss: 3.863300
+		loss: 3.826700
+		loss: 3.791900
+		loss: 3.759300
+		loss: 3.728400
+		loss: 3.698300
+		loss: 3.669400
+		loss: 3.641000
+		loss: 3.612600
+		loss: 3.584600
+		loss: 3.556900
+		loss: 3.530000
+		loss: 3.504200
+		loss: 3.479400
+		loss: 3.455400
+		loss: 3.431500
+		loss: 3.408000
+		loss: 3.384600
+		loss: 3.361900
+		loss: 3.340200
+		loss: 3.319300
+		loss: 3.299000
+		loss: 3.278700
+		loss: 3.258500
+		loss: 3.239000
+		loss: 3.220400
+		loss: 3.202400
+		loss: 3.184700
+		loss: 3.167400
+		loss: 3.150300
+		loss: 3.133800
+		loss: 3.117800
+		loss: 3.102300
+		loss: 3.087300
+		loss: 3.072700
+		loss: 3.058100
+		loss: 3.044300
+		loss: 3.031100
+		loss: 3.018300
+		loss: 3.005800
+		loss: 2.993800
+		loss: 2.982100
+		loss: 2.970800
+		loss: 2.959800
+		loss: 2.949100
+		loss: 2.938700
+		loss: 2.928400
+		loss: 2.918500
+		loss: 2.908700
+		loss: 2.898900
+		loss: 2.889300
+		loss: 2.880000
+		loss: 2.870800
+		loss: 2.861800
+		loss: 2.852900
+		loss: 2.844300
+		loss: 2.835700
+		loss: 2.827300
+		loss: 2.819100
+		loss: 2.811000
 		loss: 2.803100
-		loss: 2.788000
-		loss: 2.773200
+		loss: 2.795300
+		loss: 2.787700
+		loss: 2.780200
+		loss: 2.772800
+		loss: 2.765600
 		loss: 2.758600
-		loss: 2.744200
-		loss: 2.730100
-		loss: 2.716200
-		loss: 2.702400
-		loss: 2.689000
-		loss: 2.675800
-		loss: 2.662700
-		loss: 2.649900
-		loss: 2.637400
-		loss: 2.625200
-		loss: 2.613100
-		loss: 2.601400
-		loss: 2.589800
-		loss: 2.578600
-		loss: 2.567600
-		loss: 2.556900
-		loss: 2.546500
-		loss: 2.536300
-		loss: 2.526400
-		loss: 2.516700
-		loss: 2.507400
-		loss: 2.498200
-		loss: 2.489500
-		loss: 2.481000
-		loss: 2.472700
-		loss: 2.464700
-		loss: 2.457000
-		loss: 2.449600
-		loss: 2.442400
-		loss: 2.435500
-		loss: 2.428800
-		loss: 2.422300
-		loss: 2.416100
-		loss: 2.410000
-		loss: 2.404200
-		loss: 2.398600
-		loss: 2.393200
-		loss: 2.388000
-		loss: 2.383000
-	Overall the loss development was 4.953200 -> 2.383000
+		loss: 2.751600
+		loss: 2.744900
+		loss: 2.738200
+		loss: 2.731700
+		loss: 2.725300
+		loss: 2.719000
+		loss: 2.712800
+		loss: 2.706700
+		loss: 2.700900
+		loss: 2.695100
+		loss: 2.689400
+		loss: 2.683900
+		loss: 2.678500
+		loss: 2.673200
+		loss: 2.668000
+		loss: 2.662900
+		loss: 2.658000
+		loss: 2.653200
+	Overall the loss development was 5.479100 -> 2.653200
 problem epoch data for epoch 1, problem epoch 2
-	sampling search time: 6542.536611795425s
+	sampling search time: 6391.661540746689s
 	during this search the following actions were chosen:
-		up robot1 tile_0-1 tile_1-1 was chosen with probability 0.409233
-		left robot2 tile_2-2 tile_2-1 was chosen with probability 0.626580
-		up robot2 tile_2-1 tile_3-1 was chosen with probability 0.686061
-		up robot1 tile_1-1 tile_2-1 was chosen with probability 0.491432
-		paint-up robot2 tile_4-1 tile_3-1 black was chosen with probability 0.877104
-		right robot2 tile_3-1 tile_3-2 was chosen with probability 0.887891
-		paint-up robot1 tile_3-1 tile_2-1 white was chosen with probability 0.536262
-		right robot2 tile_3-2 tile_3-3 was chosen with probability 0.698342
-		paint-up robot2 tile_4-3 tile_3-3 black was chosen with probability 0.532699
-		down robot2 tile_3-3 tile_2-3 was chosen with probability 0.449730
-		right robot1 tile_2-1 tile_2-2 was chosen with probability 0.976118
-		up robot1 tile_2-2 tile_3-2 was chosen with probability 0.725453
-		paint-up robot1 tile_4-2 tile_3-2 white was chosen with probability 0.603874
-		right robot1 tile_3-2 tile_3-3 was chosen with probability 0.545620
-		left robot2 tile_2-3 tile_2-2 was chosen with probability 0.589579
-		down robot1 tile_3-3 tile_2-3 was chosen with probability 0.577874
-		paint-up robot1 tile_3-3 tile_2-3 white was chosen with probability 0.689933
-		paint-up robot2 tile_3-2 tile_2-2 black was chosen with probability 0.980391
-		down robot2 tile_2-2 tile_1-2 was chosen with probability 0.892779
-		right robot2 tile_1-2 tile_1-3 was chosen with probability 0.371768
-		left robot2 tile_1-3 tile_1-2 was chosen with probability 0.797480
-	training time: 235.00836563110352s
+		up robot1 tile_0-1 tile_1-1 was chosen with probability 0.361305
+		up robot1 tile_1-1 tile_2-1 was chosen with probability 0.328579
+		up robot1 tile_2-1 tile_3-1 was chosen with probability 0.359046
+		up robot2 tile_2-2 tile_3-2 was chosen with probability 0.308440
+		right robot2 tile_3-2 tile_3-3 was chosen with probability 0.627507
+		paint-up robot2 tile_4-3 tile_3-3 black was chosen with probability 0.569891
+		down robot2 tile_3-3 tile_2-3 was chosen with probability 0.373368
+		paint-up robot1 tile_4-1 tile_3-1 white was chosen with probability 0.519446
+	training time: 78.34201240539551s
 	during the training the following losses were computed:
-		loss: 2.476800
-		loss: 2.469100
-		loss: 2.462100
-		loss: 2.454800
-		loss: 2.445300
-		loss: 2.437600
-		loss: 2.429300
-		loss: 2.420900
-		loss: 2.415100
-		loss: 2.407400
-		loss: 2.399900
-		loss: 2.393700
-		loss: 2.386800
-		loss: 2.381200
-		loss: 2.375400
-		loss: 2.369600
-		loss: 2.365400
-		loss: 2.360800
-		loss: 2.356100
-		loss: 2.352300
-		loss: 2.348000
-		loss: 2.344300
-		loss: 2.340900
-		loss: 2.337000
-		loss: 2.333600
-		loss: 2.330400
-		loss: 2.326800
-		loss: 2.323600
-		loss: 2.320400
-		loss: 2.317300
-		loss: 2.314300
+		loss: 2.547800
+		loss: 2.749400
+		loss: 2.748500
+		loss: 2.735200
+		loss: 2.860300
+		loss: 2.699200
+		loss: 2.772800
+		loss: 2.656500
+		loss: 2.254900
+		loss: 2.623600
+		loss: 2.723300
+		loss: 2.599500
+		loss: 2.619500
+		loss: 2.570800
+		loss: 2.685100
+		loss: 2.549500
+		loss: 2.709400
+		loss: 2.526600
+		loss: 2.660600
+		loss: 2.504500
+		loss: 2.828300
+		loss: 2.513600
+		loss: 2.429700
+		loss: 2.492400
+		loss: 2.685400
+		loss: 2.487200
+		loss: 2.475600
+		loss: 2.455600
+		loss: 2.696500
+		loss: 2.448400
+		loss: 2.571600
+		loss: 2.437700
+		loss: 2.589500
+		loss: 2.419000
+		loss: 2.788700
+		loss: 2.418500
+		loss: 2.255700
+		loss: 2.405500
+		loss: 2.397000
+		loss: 2.400500
+		loss: 2.442900
+		loss: 2.391900
+		loss: 2.148400
+		loss: 2.385300
+		loss: 2.315900
+		loss: 2.379600
+		loss: 2.626700
+		loss: 2.369300
+		loss: 2.014600
+		loss: 2.365200
+		loss: 2.311300
+		loss: 2.354300
+		loss: 2.186100
+		loss: 2.351500
+		loss: 2.315100
+		loss: 2.343900
+		loss: 2.386600
+		loss: 2.347100
+		loss: 2.475000
+		loss: 2.333100
+		loss: 2.405500
+		loss: 2.333400
+		loss: 2.209800
+		loss: 2.330900
+		loss: 2.131200
+		loss: 2.323000
+		loss: 2.402400
 		loss: 2.311400
-		loss: 2.308600
-		loss: 2.305700
-		loss: 2.302900
-		loss: 2.300200
-		loss: 2.297500
-		loss: 2.294900
-		loss: 2.292400
-		loss: 2.289900
-		loss: 2.287500
-		loss: 2.285000
-		loss: 2.282600
-		loss: 2.280300
-		loss: 2.278000
-		loss: 2.275800
-		loss: 2.273500
-		loss: 2.271400
-		loss: 2.269200
-		loss: 2.267100
-		loss: 2.265000
-		loss: 2.262900
-		loss: 2.260900
-		loss: 2.258900
-		loss: 2.257000
-		loss: 2.255100
-		loss: 2.253300
-		loss: 2.251500
-		loss: 2.250000
-		loss: 2.249100
-		loss: 2.249900
-		loss: 2.253000
-		loss: 2.254700
-		loss: 2.245800
-		loss: 2.239500
-		loss: 2.243400
-		loss: 2.242300
-		loss: 2.235400
-		loss: 2.235700
-		loss: 2.236700
-		loss: 2.231700
-		loss: 2.230300
-		loss: 2.231400
-		loss: 2.227800
-		loss: 2.225800
-		loss: 2.226600
-		loss: 2.223900
-		loss: 2.221800
-		loss: 2.222100
-		loss: 2.220200
-		loss: 2.217900
-		loss: 2.217900
-		loss: 2.216500
-		loss: 2.214300
-		loss: 2.213900
-		loss: 2.212900
-		loss: 2.210900
-		loss: 2.210000
-		loss: 2.209400
-		loss: 2.207700
-		loss: 2.206300
-		loss: 2.205700
-		loss: 2.204500
-		loss: 2.203000
-		loss: 2.202100
-		loss: 2.201300
-		loss: 2.200000
-		loss: 2.198700
-		loss: 2.197800
-		loss: 2.196900
-	Overall the loss development was 2.476800 -> 2.196900
-problem epoch data for epoch 1, problem epoch 3
-	sampling search time: 6360.220709562302s
-	during this search the following actions were chosen:
-		up robot1 tile_0-1 tile_1-1 was chosen with probability 0.392307
-		left robot2 tile_2-2 tile_2-1 was chosen with probability 0.363111
-		up robot2 tile_2-1 tile_3-1 was chosen with probability 0.964114
-		paint-up robot2 tile_4-1 tile_3-1 black was chosen with probability 0.503692
-		right robot2 tile_3-1 tile_3-2 was chosen with probability 0.522597
-		right robot2 tile_3-2 tile_3-3 was chosen with probability 0.542573
-		up robot1 tile_1-1 tile_2-1 was chosen with probability 0.508350
-		paint-up robot1 tile_3-1 tile_2-1 white was chosen with probability 0.498743
-		paint-up robot2 tile_4-3 tile_3-3 black was chosen with probability 0.504601
-		right robot1 tile_2-1 tile_2-2 was chosen with probability 0.495539
-		right robot1 tile_2-2 tile_2-3 was chosen with probability 0.380174
-		left robot1 tile_2-3 tile_2-2 was chosen with probability 0.544172
-	training time: 74.21128439903259s
-	during the training the following losses were computed:
-		loss: 2.241200
-		loss: 2.239100
-		loss: 2.236000
-		loss: 2.233100
-		loss: 2.230500
-		loss: 2.227300
-		loss: 2.224200
-		loss: 2.221200
+		loss: 2.428700
+		loss: 2.307800
+		loss: 2.503400
+		loss: 2.301400
+		loss: 2.211300
+		loss: 2.300300
+		loss: 2.314100
+		loss: 2.295300
+		loss: 2.406200
+		loss: 2.285700
+		loss: 1.991300
+		loss: 2.285400
+		loss: 2.584200
+		loss: 2.284000
 		loss: 2.218600
-		loss: 2.215800
-		loss: 2.212900
-		loss: 2.209900
-		loss: 2.207300
-		loss: 2.204700
-		loss: 2.202000
-		loss: 2.199200
-		loss: 2.196800
-		loss: 2.194500
-		loss: 2.192300
-		loss: 2.189900
-		loss: 2.187800
-		loss: 2.185900
-		loss: 2.184100
-		loss: 2.182400
-		loss: 2.180600
-		loss: 2.179000
-		loss: 2.177400
-		loss: 2.175900
-		loss: 2.174500
-		loss: 2.173200
-		loss: 2.171900
-		loss: 2.170600
-		loss: 2.169400
-		loss: 2.168100
-		loss: 2.166900
-		loss: 2.165700
-		loss: 2.164500
-		loss: 2.163500
-		loss: 2.162600
-		loss: 2.161800
-		loss: 2.161600
-		loss: 2.162300
-		loss: 2.164400
-		loss: 2.167900
-		loss: 2.168300
-		loss: 2.163000
-		loss: 2.155000
-		loss: 2.153800
-		loss: 2.157800
-		loss: 2.157900
-		loss: 2.152700
-		loss: 2.149500
-		loss: 2.151500
-		loss: 2.152600
-		loss: 2.148900
-		loss: 2.146200
-		loss: 2.147300
-		loss: 2.147800
-		loss: 2.145300
-		loss: 2.143100
-		loss: 2.143600
-		loss: 2.143900
+		loss: 2.276700
+		loss: 1.822300
+		loss: 2.266700
+		loss: 2.105000
+		loss: 2.265600
+		loss: 2.044100
+		loss: 2.259200
+		loss: 2.340800
+		loss: 2.258000
+		loss: 2.376700
+		loss: 2.251100
+		loss: 2.307800
+		loss: 2.247500
+		loss: 2.269200
+		loss: 2.243600
+		loss: 2.134400
+		loss: 2.238800
+		loss: 2.088900
+		loss: 2.235900
+		loss: 2.285000
+		loss: 2.235000
+		loss: 2.192800
+		loss: 2.228600
+		loss: 2.176200
+		loss: 2.226000
+		loss: 2.143500
+		loss: 2.221300
+		loss: 2.152900
+		loss: 2.219600
+		loss: 2.198600
+		loss: 2.215900
+		loss: 2.133700
+		loss: 2.213700
+		loss: 2.094100
+		loss: 2.209500
+		loss: 2.353000
+		loss: 2.211800
+		loss: 2.372800
+		loss: 2.203900
+		loss: 2.131900
+		loss: 2.200500
+		loss: 1.920000
+		loss: 2.196700
+		loss: 2.251300
+		loss: 2.196100
+		loss: 2.237900
+		loss: 2.192200
+		loss: 2.268700
+		loss: 2.195200
+		loss: 2.242500
+		loss: 2.191100
+		loss: 2.091900
+		loss: 2.200000
+		loss: 1.945600
+		loss: 2.178500
+		loss: 2.365900
+		loss: 2.191900
+		loss: 2.264700
+		loss: 2.179400
+		loss: 2.205800
+		loss: 2.177900
 		loss: 2.142000
-		loss: 2.140200
-		loss: 2.140200
-		loss: 2.140300
-		loss: 2.139000
-		loss: 2.137500
-		loss: 2.137000
-		loss: 2.137000
-		loss: 2.136200
-		loss: 2.134900
-		loss: 2.134000
-		loss: 2.133800
-		loss: 2.133400
-		loss: 2.132500
-		loss: 2.131500
-		loss: 2.130800
-		loss: 2.130400
-		loss: 2.129900
-		loss: 2.129200
-		loss: 2.128300
-		loss: 2.127600
+		loss: 2.171600
+		loss: 2.418400
+		loss: 2.164600
+		loss: 2.008100
+		loss: 2.165600
+		loss: 2.183800
+		loss: 2.160800
+		loss: 2.108700
+		loss: 2.159000
+		loss: 2.240900
+		loss: 2.157200
+		loss: 2.227300
+		loss: 2.153400
+		loss: 1.984600
+		loss: 2.152000
+		loss: 2.009000
+		loss: 2.151800
+		loss: 2.085600
+		loss: 2.146500
+		loss: 2.247500
+		loss: 2.145200
+		loss: 1.843400
+		loss: 2.142600
+		loss: 2.036400
+		loss: 2.139600
+		loss: 2.132200
+		loss: 2.141700
+		loss: 1.818100
+		loss: 2.141400
+		loss: 2.093100
+		loss: 2.136300
+		loss: 2.153600
+		loss: 2.134300
+		loss: 2.421200
+		loss: 2.131300
+		loss: 2.145400
+		loss: 2.130200
+		loss: 2.137100
+		loss: 2.125100
+		loss: 2.277000
 		loss: 2.127100
-		loss: 2.126600
-		loss: 2.126100
-		loss: 2.125400
-		loss: 2.124600
-		loss: 2.124000
-		loss: 2.123400
-		loss: 2.122900
-		loss: 2.122400
-		loss: 2.121800
-		loss: 2.121200
-		loss: 2.120600
-		loss: 2.120000
-		loss: 2.119400
-		loss: 2.118800
+		loss: 2.265300
+		loss: 2.122700
+		loss: 2.330200
+		loss: 2.122300
+		loss: 2.047400
+		loss: 2.118300
+		loss: 2.065000
 		loss: 2.118200
-		loss: 2.117700
-	Overall the loss development was 2.241200 -> 2.117700
-In the epoch 1 for problem d-01-4-3-2.pddl 0 explorations in the sampling searches reached a goal
-Success rate: 0
-
-Epoch 2:
-Training data for problem d-01-4-3-2.pddl in epoch 2:
-model creation time: 82.80120396614075s
+		loss: 2.130200
+		loss: 2.115800
+		loss: 1.827800
+		loss: 2.114700
+		loss: 2.097100
+		loss: 2.109700
+	Overall the loss development was 2.547800 -> 2.109700
 
