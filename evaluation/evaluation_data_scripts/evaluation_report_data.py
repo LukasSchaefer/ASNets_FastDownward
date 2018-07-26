@@ -248,8 +248,9 @@ def write_evaluation_tables(report_data, tables_dir):
     # creating coverage table
     with open(os.path.join(tables_dir, 'eval_coverage_table.tex'), 'w') as f:
         f.write('\\section{Coverage}\n')
-        f.write('\\begin{tabular}{l || l | l | l | l | c | c | c}\n')
-        f.write('\tDomain & A$^*$ LM & A$^*$ add & GBFS & LAMA & ASNet LM & ASNet add & ASNet FF\\\\ \\hhline{========}\n')
+        f.write('\\resizebox{\linewidth}{!}{\n')
+        f.write('\t\\begin{tabular}{l || l | l | l | l | c | c | c}\n')
+        f.write('\t\tDomain & A$^*$ LM & A$^*$ add & GBFS & LAMA & ASNet LM & ASNet add & ASNet FF\\\\ \\hhline{========}\n')
         for dom in report_data.keys():
             dom_dict = report_data[dom]
             dom_name = dom[0].capitalize() + dom[1:]
@@ -260,8 +261,9 @@ def write_evaluation_tables(report_data, tables_dir):
             # add - for ASNets
             for _ in range(3):
                 cov_list.append('-')
-            f.write('\t%s & %s & %s & %s & %s & %s & %s & %s\\\\ \n' % tuple(cov_list))
-        f.write('\\end{tabular}')
+            f.write('\t\t%s & %s & %s & %s & %s & %s & %s & %s\\\\ \n' % tuple(cov_list))
+        f.write('\t\\end{tabular}\n')
+        f.write('}')
 
 
     for dom in report_data.keys():
@@ -287,14 +289,14 @@ def write_evaluation_tables(report_data, tables_dir):
 
                 f.write('\\vspace{0.5cm}\n')
                 f.write('\\noindent\n')
-                # f.write('\\resizebox{1.1\linewidth}{!}{\n')
+                f.write('\\resizebox{\\textwidth}{!}{\n')
                 f.write('\t\\begin{tabular}{l || l l l l | l l l}\n')
                 f.write('\t\t\\textbf{%s} & A$^*$ LM & A$^*$ add & GBFS & LAMA & ASNet LM & ASNet add & ASNet FF\\\\ \\hline\n' % prob_name)
                 f.write('\t\tPlan cost & %s & %s & %s & %s & %s & %s & %s\\\\ \n' % tuple(costs))
                 f.write('\t\tSearch time & %s & %s & %s & %s & %s & %s & %s\\\\ \n' % tuple(search_times))
                 f.write('\t\tModel creation time & - & - & - & - & - & - & -\\\\ \n')
                 f.write('\t\\end{tabular}\n')
-                # f.write('}\n')
+                f.write('}\n')
             
 
 def main(argv):
