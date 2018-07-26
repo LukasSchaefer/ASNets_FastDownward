@@ -10,12 +10,13 @@ def extract_points(network_dir):
     network_time_regex = r'Model building & saving time: ([0-9]+\.[0-9]+)'
     groundings_regex = r'Number of groundings: (\d+)'
     network_size_regex = r'Protobuf network size: (\d+)MB'
+    network_size_float_regex = r'Protobuf network size: (\d+\.\d+)MB'
     network_creation_time_points = []
     network_size_points = []
     for d in os.listdir(network_dir):
         dom_dir = os.path.join(network_dir, d)
         assert os.path.isdir(dom_dir)
-        c = 'conf1'
+        c = 'conf2'
         # only do it for one conf (information is the same just different weights)
         conf_dir = os.path.join(dom_dir, c)
         assert os.path.isdir(conf_dir)
@@ -38,8 +39,12 @@ def extract_points(network_dir):
             assert groundings_match
             groundings = int(groundings_match.group(1))
             size_match = re.match(network_size_regex, log_lines[2])
-            assert size_match
-            size = int(size_match.group(1))
+            if not size_match:
+                size_match = re.match(network_size_float_regex, log_lines[2])
+                assert size_match
+                size = int(float(size_match.group(1)))
+            else:
+                size = int(size_match.group(1))
 
             network_creation_time_points.append((groundings, time, d))
             network_size_points.append((groundings, size, d))
@@ -49,15 +54,17 @@ def extract_points(network_dir):
 
 def write_groundings_graph(network_creation_time_points, network_size_points, save_dir):
     with open(os.path.join(save_dir, 'groundings_time_graph.tex'), 'w') as f:
-        f.write('\\begin{tikzpicture}[trim axis left]\n')
+        f.write('\\begin{tikzpicture}\n')
         f.write('\t\\begin{axis}[\n')
         f.write('\t\tscale only axis,\n')
+        f.write('\t\tscaled ticks=false,\n')
         f.write('\t\theight=6cm,\n')
         f.write('\t\twidth=\\textwidth,\n')
         f.write('\t\tmax space between ticks=50,\n')
         f.write('\t\tminor x tick num=4,\n')
         f.write('\t\tminor y tick num=6,\n')
-        f.write('\t\tytick={0,1000, 2500, 5000, 7500},\n')
+        f.write('\t\txtick={0, 2000, 4000, 6000, 8000, 10000, 12000, 14000},\n')
+        f.write('\t\tytick={0, 1000, 2000, 3000, 4000},\n')
         f.write('\t\ttick style={semithick,color=black},\n')
         f.write('\t\txlabel=number of groundings,\n')
         f.write('\t\tylabel=network creation time (in seconds),\n')
@@ -92,12 +99,14 @@ def write_groundings_graph(network_creation_time_points, network_size_points, sa
         f.write('\\begin{tikzpicture}[trim axis left]\n')
         f.write('\t\\begin{axis}[\n')
         f.write('\t\tscale only axis,\n')
+        f.write('\t\tscaled ticks=false,\n')
         f.write('\t\theight=6cm,\n')
         f.write('\t\twidth=\\textwidth,\n')
         f.write('\t\tmax space between ticks=50,\n')
         f.write('\t\tminor x tick num=4,\n')
         f.write('\t\tminor y tick num=6,\n')
-        f.write('\t\tytick={0,50, 100, 150, 200},\n')
+        f.write('\t\txtick={0, 2000, 4000, 6000, 8000, 10000, 12000, 14000},\n')
+        f.write('\t\tytick={0, 100, 200, 300, 400, 500},\n')
         f.write('\t\ttick style={semithick,color=black},\n')
         f.write('\t\txlabel=number of groundings,\n')
         f.write('\t\tylabel=protobuf network size (in MB),\n')

@@ -319,7 +319,8 @@ def main(argv):
     assert os.path.isdir(tables_dir)
 
     confs = ['conf1', 'conf2', 'conf3']
-    exps = ['', 'exp_']
+    # exps = ['', 'exp_']
+    exps = ['']
     report_dicts = []
 
     
