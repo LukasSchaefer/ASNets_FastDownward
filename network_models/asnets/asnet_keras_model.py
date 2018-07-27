@@ -39,12 +39,16 @@ class ASNet_Model_Builder():
         :param layer_index: index number of the layer this module is built for
         :return: keras layer representing the module
         """
+        num_related_preds = len(self.problem_meta.action_to_related_preds[action])
         if layer_index == 0:
             mod_name = '1st_layer_actmod_' + re.sub(r"\W+", "", action.name)
+            input_dim = num_related_preds * 2 + 1 + self.extra_input_size
         else:
             mod_name = ('%d_layer_actmod_' % layer_index) + re.sub(r"\W+", "", action.name)
+            input_dim = num_related_preds * self.hidden_representation_size
 
         return ActionModuleLayer(hidden_representation_size=self.hidden_representation_size,
+                                 input_dimension=input_dim,
                                  activation=self.activation,
                                  dropout=self.dropout,
                                  kernel_initializer=self.kernel_initializer,
@@ -62,9 +66,12 @@ class ASNet_Model_Builder():
         :param action: action schema this module is built for
         :return: keras layer representing the module of the final output layer
         """
+        num_related_preds = len(self.problem_meta.action_to_related_preds[action])
         mod_name = 'last_layer_actmod_' + re.sub(r"\W+", "", action.name)
         # scalar output with identity activation function
+        input_dim = num_related_preds * self.hidden_representation_size
         return ActionModuleLayer(hidden_representation_size=1,
+                                 input_dimension=input_dim,
                                  activation='linear',
                                  dropout=0,
                                  kernel_initializer=self.kernel_initializer,
@@ -305,7 +312,7 @@ class ASNet_Model_Builder():
     def build_asnet_keras_model(self,
                                 num_layers,
                                 hidden_representation_size=16,
-                                activation='relu',
+                                activation='elu',
                                 dropout=0.25,
                                 kernel_initializer='glorot_normal',
                                 bias_initializer='zeros',

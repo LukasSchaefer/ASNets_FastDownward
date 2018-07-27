@@ -125,7 +125,7 @@ class FirstActionInputLayer(Layer):
         # add additional input features if existing
         if self.extra_input_size:
             start_index = self.extra_input_size * self.action_index
-            end_index = (self.extra_input_size + 1) * self.action_index
+            end_index = start_index + self.extra_input_size
             input_list.append(additional_input_features[:, start_index : end_index])
 
         # convert input list to tensor
@@ -213,6 +213,7 @@ class ActionModuleLayer(Layer):
 
     def __init__(self,
                  hidden_representation_size,
+                 input_dimension,
                  activation,
                  dropout,
                  kernel_initializer,
@@ -222,6 +223,7 @@ class ActionModuleLayer(Layer):
         """
         :param hidden_representation_size: hidden representation size used by every
             module (= size of module outputs)
+        :param input_dimension: dimension of input tensor(s)
         :param activation: name of activation function to be used in all modules
             of all layers but the last output layer
         :param dropout rate used in every intermediate node
@@ -233,6 +235,7 @@ class ActionModuleLayer(Layer):
             to all weights (-matrices and bias vectors!)
         """
         self.hidden_representation_size = hidden_representation_size
+        self.input_dimension = input_dimension
         self.activation = activations.get(activation)
         self.dropout = dropout
         self.kernel_initializer = initializers.get(kernel_initializer)
@@ -242,7 +245,7 @@ class ActionModuleLayer(Layer):
 
     def build(self, input_shape):
         self.kernel = self.add_weight(name='kernel', 
-                                      shape=(input_shape[1], self.hidden_representation_size),
+                                      shape=(self.input_dimension, self.hidden_representation_size),
                                       initializer=self.kernel_initializer,
                                       regularizer=regularizers.l2(self.regularizer_value),
                                       trainable=True)

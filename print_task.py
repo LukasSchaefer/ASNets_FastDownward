@@ -126,7 +126,7 @@ def main(argv):
 
         print("Building the model:")
         asnet_builder = ASNet_Model_Builder(task_meta, True)
-        asnet_model = asnet_builder.build_asnet_keras_model(1, dropout=0.25)
+        asnet_model = asnet_builder.build_asnet_keras_model(2, dropout=0.25, extra_input_size=2)
         print(asnet_model.summary())
         print("The ASNet has %d layers." % len(asnet_model.layers))
 
