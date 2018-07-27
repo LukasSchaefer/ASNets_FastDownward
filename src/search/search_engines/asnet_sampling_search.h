@@ -38,7 +38,8 @@ namespace asnet_sampling_search {
      * any additions need also to be considered/ added in extract_sample_entries_trajectory
      * to extract the corresponding values for the samples
      */
-    const std::vector<std::string> supported_additional_input_features("none", "landmarks", "binary_landmarks");
+    const std::string arr[] = {"none", "landmarks", "binary_landmarks"};
+    const std::vector<std::string> supported_additional_input_features(arr, arr + sizeof(arr)/sizeof(std::string));
 
     class ASNetSamplingSearch : public SearchEngine {
     private:
@@ -61,7 +62,7 @@ namespace asnet_sampling_search {
         const std::string additional_input_features;
 
         // LM-cut landmark generator for additional landmark features if used
-        std::unique_ptr<LandmarkCutLandmarks> landmark_generator;
+        std::unique_ptr<lm_cut_heuristic::LandmarkCutLandmarks> landmark_generator;
 
         // the fact_goal_values should be stored (equal for all samples)
         std::vector<int> fact_goal_values;
@@ -104,15 +105,16 @@ namespace asnet_sampling_search {
                 const GlobalState &state, std::vector<int> applicable_values,
                 StateRegistry &sr, const OperatorsProxy &ops,
                 std::ostringstream &action_opts_stream);
-        void ASNetSamplingSearch::landmark_values_input_stream(
-                const GlobalState &state,
+        void landmark_values_input_stream(
+                const GlobalState &global_state, const TaskProxy &tp,
                 std::ostringstream &add_input_features_stream) const;
-        void ASNetSamplingSearch::binary_landmark_values_input_stream(
-                const GlobalState &state,
+        void binary_landmark_values_input_stream(
+                const GlobalState &global_state, const TaskProxy &tp,
                 std::ostringstream &add_input_features_stream) const;
         void extract_sample_entries_trajectory(
-                const Trajectory &trajectory, StateRegistry &sr,
-                const OperatorsProxy &ops, std::ostream &stream);
+                const Trajectory &trajectory, const TaskProxy &tp,
+		StateRegistry &sr, const OperatorsProxy &ops,
+		std::ostream &stream);
         std::string extract_exploration_sample_entries();
         std::string extract_teacher_sample_entries();
         void set_modified_task_with_new_initial_state(StateID state_id,

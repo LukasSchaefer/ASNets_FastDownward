@@ -58,7 +58,7 @@ protected:
     std::vector<int> operator_indeces_sorted_reversed;
 
     // LM-cut landmark generator for additional landmark features if used
-    std::unique_ptr<LandmarkCutLandmarks> landmark_generator;
+    std::unique_ptr<lm_cut_heuristic::LandmarkCutLandmarks> landmark_generator;
 
     PolicyResult last_policy_output = std::pair<std::vector<OperatorID>, std::vector<float>>(std::vector<OperatorID>(), std::vector<float>());
     

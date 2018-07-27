@@ -26,7 +26,7 @@ ASNet::ASNet(const Options& opts)
       operator_indeces_sorted(lexicographical_access::get_operator_indeces_lexicographically(task_proxy)),
       operator_indeces_sorted_reversed(reverse_operator_sorted_vec(operator_indeces_sorted)) {
     if (additional_input_features == "landmarks" || additional_input_features == "binary_landmarks") {
-        landmark_generator = utils::make_unique_ptr<LandmarkCutLandmarks>(task_proxy);
+        landmark_generator = utils::make_unique_ptr<lm_cut_heuristic::LandmarkCutLandmarks>(task_proxy);
     }
 }
 
@@ -118,17 +118,15 @@ void ASNet::fill_input(const State& state){
 
     // additional input features
     if (additional_input_features != "none") {
-        auto additional_input_features = inputs[3].second.matrix<float>();
+        auto additional_input_tensor = inputs[3].second.matrix<float>();
 
         if (additional_input_features == "landmarks") {
             vector< vector<int> > cuts_ids;
             // compute LM-cut landmarks and collect cut op ids
-            bool dead_end = landmark_generator->compute_landmarks(
+            landmark_generator->compute_landmarks(
                 state,
                 nullptr,
-                [&cuts_ids](vector<int> cut, int cut_cost) {cuts_ids.push_back(cut); });
-
-            unsigned long number_of_operators = operator_indeces_sorted.size();
+                [&cuts_ids](vector<int> cut, int /*cut_cost*/) {cuts_ids.push_back(cut); });
 
             for (vector<int> cut : cuts_ids) {
                 bool single_element = false;
@@ -138,20 +136,20 @@ void ASNet::fill_input(const State& state){
                 for (int unsorted_op_index : cut) {
                     int sorted_index = operator_indeces_sorted_reversed[unsorted_op_index];
                     // op was contained in contain -> increment counter
-                    additional_input_features(0, 2 * sorted_index) += 1;
+                    additional_input_tensor(0, 2 * sorted_index) += 1;
                     if (single_element) {
                         // op was only action in the cut -> increment 2nd counter
-                        additional_input_features(0, 2 * sorted_index + 1) += 1;
+                        additional_input_tensor(0, 2 * sorted_index + 1) += 1;
                     }
                 }
             }
         } else if (additional_input_features == "binary_landmarks") {
             vector< vector<int> > cuts_ids;
             // compute LM-cut landmarks and collect cut op ids
-            bool dead_end = landmark_generator->compute_landmarks(
+            landmark_generator->compute_landmarks(
                 state,
                 nullptr,
-                [&cuts_ids](vector<int> cut, int cut_cost) {cuts_ids.push_back(cut); });
+                [&cuts_ids](vector<int> cut, int /*cut_cost*/) {cuts_ids.push_back(cut); });
 
             unsigned long number_of_operators = operator_indeces_sorted.size();
             for (unsigned int op_id = 0; op_id < number_of_operators; op_id++) {
@@ -159,7 +157,7 @@ void ASNet::fill_input(const State& state){
                 * initialize third value of each action with 1 (at first it appeared
                 * in no LM yet)
                 */
-                additional_input_features(0, op_id * 3 + 2) = 1;
+                additional_input_tensor(0, op_id * 3 + 2) = 1;
             }
 
             for (vector<int> cut : cuts_ids) {
@@ -175,14 +173,14 @@ void ASNet::fill_input(const State& state){
                     int sorted_index = operator_indeces_sorted_reversed[unsorted_op_index];
                     if (single_element) {
                         // op was only action in the cut -> set first binary value
-                        additional_input_features(0, 3 * sorted_index) = 1;
+                        additional_input_tensor(0, 3 * sorted_index) = 1;
                     }
                     if (two_or_more_elements) {
                         // op included in a cut with at least 2 actions
-                        additional_input_features(0, 3 * sorted_index + 1) = 1;
+                        additional_input_tensor(0, 3 * sorted_index + 1) = 1;
                     }
                     // op was contained in a cut
-                    additional_input_features(0, 3 * sorted_index + 2) = 0;
+                    additional_input_tensor(0, 3 * sorted_index + 2) = 0;
                 }
             }
         }
