@@ -276,7 +276,7 @@ void ASNetSamplingSearch::landmark_values_input_stream(
     vector< vector<int> > cuts_ids;
     // compute LM-cut landmarks and collect cut op ids
     State state(*modified_task, global_state.get_values());
-    state = tp.convert_ancestor_state(state);
+    // state = tp.convert_ancestor_state(state);
     landmark_generator->compute_landmarks(
         state,
         nullptr,
@@ -325,7 +325,7 @@ void ASNetSamplingSearch::binary_landmark_values_input_stream(
     vector< vector<int> > cuts_ids;
     // compute LM-cut landmarks and collect cut op ids
     State state(*modified_task, global_state.get_values());
-    state = tp.convert_ancestor_state(state);
+    // state = tp.convert_ancestor_state(state);
 
     landmark_generator->compute_landmarks(
         state,
