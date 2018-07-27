@@ -52,7 +52,7 @@ def load_samples(sample_path, data_container, prune=True,
 def load_asnet_sample_data(path_read, prune=True,
                            data_container=None,
                            delete=False, forget=0.0,
-                           extra_input_size=0):
+                           extra_input_size):
     """
     loads the samples in path_read file and saves these in the given container
 

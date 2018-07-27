@@ -299,8 +299,9 @@ bool LandmarkCutLandmarks::compute_landmarks(
         second_exploration(state, second_exploration_queue, cut);
         assert(!cut.empty());
         int cut_cost = numeric_limits<int>::max();
-        for (RelaxedOperator *op : cut)
+        for (RelaxedOperator *op : cut) {
             cut_cost = min(cut_cost, op->cost);
+        }
         for (RelaxedOperator *op : cut)
             op->cost -= cut_cost;
 

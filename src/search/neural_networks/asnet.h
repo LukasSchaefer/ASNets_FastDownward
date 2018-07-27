@@ -7,6 +7,8 @@
 #include "../task_utils/lexicographical_access.h"
 #include "../option_parser.h"
 
+#include "../heuristics/lm_cut_landmarks.h"
+
 #include <tuple>
 
 namespace neural_networks {
@@ -42,12 +44,22 @@ namespace neural_networks {
  */
 class ASNet : public ProtobufNetwork {
 protected:
-    const int extra_input_size = 0;
+    // name of additional input features to be used
+    const std::string additional_input_features;
     /* vector of entries of form (variable_index, value_index) for each fact in lexicographical ordering
        of their names */
     std::vector<std::pair<int, int>> facts_sorted;
     /* vector of operator indeces sorted by the corresponding operator names */
     std::vector<int> operator_indeces_sorted;
+    /*
+    * vector where index corresponds to original operator index and entry is sorted operator
+    * index
+    */
+    std::vector<int> operator_indeces_sorted_reversed;
+
+    // LM-cut landmark generator for additional landmark features if used
+    std::unique_ptr<LandmarkCutLandmarks> landmark_generator;
+
     PolicyResult last_policy_output = std::pair<std::vector<OperatorID>, std::vector<float>>(std::vector<OperatorID>(), std::vector<float>());
     
 public:

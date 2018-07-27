@@ -6,8 +6,8 @@
 
 #include "../tasks/modified_init_goals_task.h"
 #include "../task_utils/successor_generator.h"
-
 #include "../task_utils/lexicographical_access.h"
+#include "../utils/memory.h"
 
 #include <fstream>
 
@@ -21,6 +21,15 @@ template <typename t> void vector_into_stream(vector<t> vec, ostringstream &oss)
     oss << vec.back() << "]";
 }
 
+vector<int> reverse_operator_sorted_vec(vector<int> operator_indeces_sorted) {
+    vector<int> operator_indeces_sorted_reversed(operator_indeces_sorted.size());
+    for (unsigned int sorted_index = 0; sorted_index < operator_indeces_sorted.size(); sorted_index++) {
+        int unsorted_index = operator_indeces_sorted[sorted_index];
+        operator_indeces_sorted_reversed[unsorted_index] = sorted_index;
+    }
+    return operator_indeces_sorted_reversed;
+}
+
 ASNetSamplingSearch::ASNetSamplingSearch(const Options &opts)
 : SearchEngine(opts),
   search_parse_tree(prepare_search_parse_tree(opts.get_unparsed_config())),
@@ -28,9 +37,19 @@ ASNetSamplingSearch::ASNetSamplingSearch(const Options &opts)
   target_location(opts.get<string>("target")),
   use_non_goal_teacher_paths(opts.get<bool>("use_non_goal_teacher_paths")),
   use_teacher_search(opts.get<bool>("use_teacher_search")),
+  additional_input_features(opts.get<string>("additional_input_features")),
   facts_sorted(lexicographical_access::get_facts_lexicographically(task_proxy)),
   operator_indeces_sorted(lexicographical_access::get_operator_indeces_lexicographically(task_proxy)),
+  operator_indeces_sorted_reversed(reverse_operator_sorted_vec(operator_indeces_sorted)),
   network_search(opts.get<shared_ptr<SearchEngine>>("network_search")) {
+    if (find(supported_additional_input_features.begin(), supported_additional_input_features.end(),
+        additional_input_features) == supported_additional_input_features.end()) {
+        // additional input features are not supported
+        throw "Additional input features " + additional_input_features + "are not supported";
+    }
+    if (additional_input_features == "landmarks" || additional_input_features == "binary_landmarks") {
+        landmark_generator = utils::make_unique_ptr<LandmarkCutLandmarks>(task_proxy);
+    }
 }
 
 options::ParseTree ASNetSamplingSearch::prepare_search_parse_tree(
@@ -199,14 +218,14 @@ void ASNetSamplingSearch::action_opt_values_into_stream(
             set_modified_task_with_new_initial_state(succ_state.get_id(), sr);
             shared_ptr<SearchEngine> teacher_search_from_succ_state = get_new_teacher_search_with_modified_task();
             // search and compute plan-cost if solution was found
-	    bool subtask_no_solution = false;
-	    try {
-                teacher_search_from_succ_state->search();
-	    } catch (const char* msg) {
-		// subtask was deemed unsolvable/ unsolved -> set opt value to 0
-		cout << "EXCEPTION CAUGHT" << endl;
-		subtask_no_solution = true;
-	    }
+            bool subtask_no_solution = false;
+            try {
+                    teacher_search_from_succ_state->search();
+            } catch (const char* msg) {
+            // subtask was deemed unsolvable/ unsolved -> set opt value to 0
+            cout << "EXCEPTION CAUGHT" << endl;
+            subtask_no_solution = true;
+            }
 
             if (subtask_no_solution || !teacher_search_from_succ_state->found_solution()) {
                 // applying action and search does not find a solution -> not good path
@@ -241,11 +260,116 @@ void ASNetSamplingSearch::action_opt_values_into_stream(
     vector_into_stream<float>(action_opt_values, action_opts_stream);
 }
 
+
+/*
+  * function extracts non-binary landmark features for additonal input features
+  * These include two int values for each operator with the first indicating in
+  * how many disjunctive action landmarks the action is included and the second
+  * indicating in how many disjunctive action landmarks the action is the only
+  * included. The disj. action LMs are computed with the LM-cut heuristic
+  * The values are ordered lexicographically by action-names in a "," separated list form.
+*/
+void ASNetSamplingSearch::landmark_values_input_stream(
+    const GlobalState &state,
+    std::ostringstream &add_input_features_stream) const {
+            
+    vector< vector<int> > cuts_ids;
+    // compute LM-cut landmarks and collect cut op ids
+    bool dead_end = landmark_generator->compute_landmarks(
+        state,
+        nullptr,
+        [&cuts_ids](vector<int> cut, int cut_cost) {cuts_ids.push_back(cut); });
+
+    unsigned long number_of_operators = operator_indeces_sorted.size();
+    vector<int> additional_landmark_features(number_of_operators * 2, 0);
+
+    for (vector<int> cut : cuts_ids) {
+        bool single_element = false;
+        if (cut.size() == 1) {
+            single_element = true;
+        }
+        for (int unsorted_op_index : cut) {
+            int sorted_index = operator_indeces_sorted_reversed[unsorted_op_index];
+            // op was contained in contain -> increment counter
+            additional_landmark_features[2 * sorted_index] += 1;
+            if (single_element) {
+                // op was only action in the cut -> increment 2nd counter
+                additional_landmark_features[2 * sorted_index + 1] += 1;
+            }
+        }
+    }
+
+    vector_into_stream<int>(additional_landmark_features, add_input_features_stream);
+}
+
+
+/*
+  * function extracts non-binary landmark features for additonal input features
+  * These include three binary values for each operator with
+  *  - first value indicating whether the action is the sole action in at least
+  *    one landmark
+  *  - second value indicating whether the action is included in at least one
+  *    landmark of two or more actions
+  *  - third value indicating whether the action appears in no landmark at all
+  * how many disjunctive action landmarks the action is included and the second
+  * indicating in how many disjunctive action landmarks the action is the only
+  * included. The disj. action LMs are computed with the LM-cut heuristic
+  * The values are ordered lexicographically by action-names in a "," separated list form.
+*/
+void ASNetSamplingSearch::binary_landmark_values_input_stream(
+    const GlobalState &state,
+    std::ostringstream &add_input_features_stream) const {
+            
+    vector< vector<int> > cuts_ids;
+    // compute LM-cut landmarks and collect cut op ids
+    bool dead_end = landmark_generator->compute_landmarks(
+        state,
+        nullptr,
+        [&cuts_ids](vector<int> cut, int cut_cost) {cuts_ids.push_back(cut); });
+
+    unsigned long number_of_operators = operator_indeces_sorted.size();
+    vector<int> additional_landmark_features(number_of_operators * 3, 0);
+    for (unsigned int op_id = 0; op_id < number_of_operators; op_id++) {
+        /*
+         * initialize third value of each action with 1 (at first it appeared
+         * in no LM yet)
+         */
+        additional_landmark_features[op_id * 3 + 2] = 1;
+    }
+
+    for (vector<int> cut : cuts_ids) {
+        bool single_element = false;
+        if (cut.size() == 1) {
+            single_element = true;
+        }
+        bool two_or_more_elements = false;
+        if (cut.size() >= 2) {
+            two_or_more_elements = true;
+        }
+        for (int unsorted_op_index : cut) {
+            int sorted_index = operator_indeces_sorted_reversed[unsorted_op_index];
+            if (single_element) {
+                // op was only action in the cut -> set first binary value
+                additional_landmark_features[3 * sorted_index] = 1;
+            }
+            if (two_or_more_elements) {
+                // op included in a cut with at least 2 actions
+                additional_landmark_features[3 * sorted_index + 1] = 1;
+            }
+            // op was contained in a cut
+            additional_landmark_features[3 * sorted_index + 2] = 0;
+        }
+    }
+
+    vector_into_stream<int>(additional_landmark_features, add_input_features_stream);
+}
+
+
 /*
   * Extracts the state_representation and puts it into stream for the sample
   * 
   * Format to represent a state:
-  * <HASH>; <FACT_GOAL_VALUES>; <FACT_VALUES>; <ACTION_APPLICABLE_VALUES>; <ACTION_OPT_VALUES>
+  * <HASH>; <FACT_GOAL_VALUES>; <FACT_VALUES>; <ACTION_APPLICABLE_VALUES>; <ACTION_OPT_VALUES>(; <ADDITIONAL_FEATURES>)
   * 
   * using ";" as a separator
   * 
@@ -260,6 +384,8 @@ void ASNetSamplingSearch::action_opt_values_into_stream(
   *                               separated list form for all actions.
   * - <ACTION_OPT_VALUES>: binary value for each action indicating whether the action starts a found plan according to
   *                        the teacher-search. Again ordered lexicographically by action-names in a "," separated list.
+  * - <ADDITIONAL_FEATURES>: additional input features given for each action in lexicographical order. The supported
+  *                          features are listed in supported_additional_input_features
 */
 void ASNetSamplingSearch::extract_sample_entries_trajectory(
     const Trajectory &trajectory, StateRegistry &sr,
@@ -289,9 +415,20 @@ void ASNetSamplingSearch::extract_sample_entries_trajectory(
         ostringstream action_opts_stream;
         action_opt_values_into_stream(state, applicable_values, sr, ops, action_opts_stream);
 
+        ostringstream additional_input_features_stream;
+        if (additional_input_features != "none") {
+            // extract additional input features
+            if (additional_input_features == "landmarks") {
+                landmark_values_input_stream(state, additional_input_features_stream);
+            } else if (additional_input_features == "binary_landmarks") {
+                binary_landmark_values_input_stream(state, additional_input_features_stream);
+            }
+        }
+
         stream << problem_hash << ";" << goal_stream.str() << ";"
                << state_stream.str() << ";" << applicable_stream.str() << ";"
-               /*<< network_probs_stream.str() << ";" */ << action_opts_stream.str();
+               /*<< network_probs_stream.str() << ";" */ << action_opts_stream.str() << ";"
+               << additional_input_features_stream.str();
 
         stream << "~";
     }
@@ -367,7 +504,7 @@ std::string ASNetSamplingSearch::extract_teacher_sample_entries() {
         const GlobalState goal_state = teacher_search->get_goal_state();
         Plan plan = teacher_search->get_plan();
         Trajectory trajectory;
-	cout << "Teacher search start extracting trajectory from goal" << endl;
+        cout << "Teacher search start extracting trajectory from goal" << endl;
         ss.trace_path(goal_state, trajectory);
 
         extract_sample_entries_trajectory(trajectory, sr, ops, new_entries);
@@ -467,7 +604,7 @@ SearchStatus ASNetSamplingSearch::step() {
                     }
                     [[fallthrough]];
                 default:
-		    // teacher search found goal
+                    // teacher search found goal
                     samples << extract_teacher_sample_entries();
                     save_plan_intermediate();
             }
@@ -494,12 +631,13 @@ void ASNetSamplingSearch::print_statistics() const {
 void ASNetSamplingSearch::add_header_samples(ostream &stream) const {
     stream << "# Everything in a line after '#' is a comment" << endl;
     stream << "# (NO_)GOAL_EXPLORATION indicate whether the executed network search exploration reached a goal state (or not)" << endl;
-    stream << "# Entry format:<HASH>; <FACT_GOAL_VALUES>; <FACT_VALUES>; <ACTION_APPLICABLE_VALUES>; <ACTION_OPT_VALUES>" << endl;
+    stream << "# Entry format:<HASH>; <FACT_GOAL_VALUES>; <FACT_VALUES>; <ACTION_APPLICABLE_VALUES>; <ACTION_OPT_VALUES>(; <ADDITIONAL_FEATURES>)" << endl;
     stream << "# <HASH> := hash value to identify where the sample comes from" << endl;
     stream << "# <FACT_GOAL_VALUES> := binary value for every fact indicating whether the fact is part of the goal. Values are ordered lexicographically by fact-names in a \",\" separated list form." << endl;
     stream << "# <FACT_VALUES> := binary values (0,1) indicating whether a fact is true. Values are ordered lexicographically by fact-names and are all \",\" separated in a list and are given for every fact (e.g. [0,1,1,0])." << endl;
     stream << "# <ACTION_APPLICABLE_VALUES> := binary values indicating whether an action is applicable in the current state. Ordering again is lexicographically by action-names and the values are in a \",\" separated list form for all actions." << endl;
     stream << "# <ACTION_OPT_VALUES> := binary value for each action indicating whether the action starts a found plan according to the teacher-search. Again ordered lexicographically by action-names in a \",\" separated list." << endl;
+    stream << "# <ADDITIONAL_FEATURES>:= additional input features given for each action in lexicographical order. The supported features are listed in supported_additional_input_features." << endl;
 }
 
 void ASNetSamplingSearch::save_plan_intermediate() {
@@ -546,6 +684,9 @@ void ASNetSamplingSearch::add_sampling_options(OptionParser &parser) {
         "Bool value indicating whether the teacher search should be used for sampling. "
         "If false: only the network search exploration is used for sampling BUT teacher "
         "search in general is still needed for opt values", "true");
+    parser.add_option<std::string> ("additional_input_features",
+        "Name of additional input features to be used for the network. These "
+        "will be extracted and added to the samples", "none");
     parser.add_option<shared_ptr<SearchEngine>>("network_search",
         "Policy search using the network policy", "policysearch(p=np(network=asnet(path=asnet.pb)))");
 }

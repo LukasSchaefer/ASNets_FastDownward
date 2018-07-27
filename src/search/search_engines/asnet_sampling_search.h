@@ -6,6 +6,8 @@
 #include "../state_id.h"
 #include "../neural_networks/abstract_network.h"
 
+#include "../heuristics/lm_cut_landmarks.h"
+
 #include <functional>
 #include <memory>
 #include <ostream>
@@ -31,6 +33,13 @@ namespace asnet_sampling_search {
         TEACHER_TRAJECTORY, NETWORK_TRAJECTORY
     };
 
+    /*
+     * exhaustive list of all supported additional input features (by name)
+     * any additions need also to be considered/ added in extract_sample_entries_trajectory
+     * to extract the corresponding values for the samples
+     */
+    const std::vector<std::string> supported_additional_input_features("none", "landmarks", "binary_landmarks");
+
     class ASNetSamplingSearch : public SearchEngine {
     private:
         static std::hash<std::string> shash;
@@ -48,14 +57,25 @@ namespace asnet_sampling_search {
         // if false -> only sample using the network search
         const bool use_teacher_search;
 
+        // name of additional input features to be used
+        const std::string additional_input_features;
+
+        // LM-cut landmark generator for additional landmark features if used
+        std::unique_ptr<LandmarkCutLandmarks> landmark_generator;
+
         // the fact_goal_values should be stored (equal for all samples)
-	std::vector<int> fact_goal_values;
+        std::vector<int> fact_goal_values;
 
         /* vector of entries of form (variable_index, value_index) for each fact in lexicographical ordering
            of their names */
         std::vector<std::pair<int, int>> facts_sorted;
-        /* vector of operator indeces sorted by the corresponding operator names */
+        /* vector of (original) operator indeces sorted by the corresponding operator names */
         std::vector<int> operator_indeces_sorted;
+        /*
+         * vector where index corresponds to original operator index and entry is sorted operator
+         * index
+         */
+        std::vector<int> operator_indeces_sorted_reversed;
 
         // search of network policy
         std::shared_ptr<SearchEngine> network_search;
@@ -82,8 +102,14 @@ namespace asnet_sampling_search {
                 std::ostringstream &network_probs_stream) const;
         void action_opt_values_into_stream(
                 const GlobalState &state, std::vector<int> applicable_values,
-		StateRegistry &sr, const OperatorsProxy &ops,
-		std::ostringstream &action_opts_stream);
+                StateRegistry &sr, const OperatorsProxy &ops,
+                std::ostringstream &action_opts_stream);
+        void ASNetSamplingSearch::landmark_values_input_stream(
+                const GlobalState &state,
+                std::ostringstream &add_input_features_stream) const;
+        void ASNetSamplingSearch::binary_landmark_values_input_stream(
+                const GlobalState &state,
+                std::ostringstream &add_input_features_stream) const;
         void extract_sample_entries_trajectory(
                 const Trajectory &trajectory, StateRegistry &sr,
                 const OperatorsProxy &ops, std::ostream &stream);

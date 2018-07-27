@@ -203,7 +203,7 @@ pasnet.add_argument("--regularizer_value", type=float,
                     help="Regularization value used for L2 regularization applied to all "
                          "weights (including bias vectors)")
 pasnet.add_argument("--extra_input_features", type=str,
-                    action="store", default=None,
+                    action="store", default="none",
                     help="Additional input features per action. This involves additional "
                          "heuristic input features from landmarks or None. The options for "
                          "these landmark inputs are 'landmarks' or 'binary_landmarks'.")
@@ -387,7 +387,7 @@ def prepare_and_construct_network_before_loading(options, extra_input_size, mode
                       epochs=options.train_epochs)
 
 
-def sample(options, directory, domain_path, problem_path, extra_input_size):
+def sample(options, directory, domain_path, problem_path):
     """
     Execute sampling search for asnets with given configuration
 
@@ -395,28 +395,21 @@ def sample(options, directory, domain_path, problem_path, extra_input_size):
     :param directory: currently processed directory
     :param domain_path: path to domain file
     :param problem_path: path to problem file to execute sampling on
-    :param extra_input_size: size for additional input features per action
     :return: retcode of call
     """
-    if options.heuristic == "":
-        cmd = ['python', 'fast-downward.py',
-                    "--build", options.build, domain_path, problem_path,
-                    '--search', 'asnet_sampling_search(search=' + options.teacher_search +
-                                ', use_non_goal_teacher_paths=' + str(not options.use_only_goal_teacher_paths) +
-                                ', use_teacher_search=' + str(not options.use_no_teacher_search) +
-                                ', network_search=policysearch(p=np(network=asnet(path=' + str(os.path.join(directory, 'asnet.pb')) +
-                                ', extra_input_size=' + str(extra_input_size) + ')),trajectory_limit=' + str(options.trajectory_limit) + ')' +
-                                ', target=' + os.path.join(directory, "sample.data") + ')']
-    else:
-        cmd = ['python', 'fast-downward.py',
-                    "--build", options.build, domain_path, problem_path,
-                    '--heuristic', options.heuristic,
-                    '--search', 'asnet_sampling_search(search=' + options.teacher_search +
-                                ', use_non_goal_teacher_paths=' + str(not options.use_only_goal_teacher_paths) +
-                                ', use_teacher_search=' + str(not options.use_no_teacher_search) +
-                                ', network_search=policysearch(p=np(network=asnet(path=' + str(os.path.join(directory, 'asnet.pb')) +
-                                ', extra_input_size=' + str(extra_input_size) + ')),trajectory_limit=' + str(options.trajectory_limit) + ')' +
-                                ', target=' + os.path.join(directory, "sample.data") + ')']
+    cmd = ['python', 'fast-downward.py',
+                "--build", options.build, domain_path, problem_path,
+                '--search', 'asnet_sampling_search(search=' + options.teacher_search +
+                            ', use_non_goal_teacher_paths=' + str(not options.use_only_goal_teacher_paths) +
+                            ', use_teacher_search=' + str(not options.use_no_teacher_search) +
+                            ', network_search=policysearch(p=np(network=asnet(path=' + str(os.path.join(directory, 'asnet.pb')) +
+                            ', additional_input_features=' + options.extra_input_features + '))' +
+                            ', trajectory_limit=' + str(options.trajectory_limit) + ')' +
+                            ', additional_input_features=' + options.extra_input_features + 
+                            ', target=' + os.path.join(directory, "sample.data") + ')']
+    if options.heuristic != "":
+        cmd.insert(6, '--heuristic')
+        cmd.insert(7, options.heuristic)
     print('Running sampling search for ' + problem_path + '...')
     try:
         if options.print_all:
@@ -577,12 +570,14 @@ def train(options, directory, domain_path, problem_list):
     options.finalize = parse_key_value_pairs_to_kwargs(options.finalize)
 
     # set extra_input_size per action depending on extra_input_features
-    if options.extra_input_features is None:
+    if options.extra_input_features == "none":
         extra_input_size = 0
     elif options.extra_input_features == "landmarks":
+        print("Training uses additional landmark input features.")
         extra_input_size = 2
     elif options.extra_input_features == "binary_landmarks":
         extra_input_size = 3
+        print("Training uses additional binary landmark input features.")
     else:
         raise ValueError("Invalid extra input feature value: %s" % options.extra_input_features)
 
@@ -687,7 +682,7 @@ def train(options, directory, domain_path, problem_list):
                 # build ASNetSamplingSearch command and execute for sampling -> saves samples in sample.data
                 if not os.path.isfile(os.path.join(directory, "sample.data")):
                     open(os.path.join(directory, "sample.data"), 'a')
-                retcode = sample(options, directory, domain_path, problem_path, extra_input_size)
+                retcode = sample(options, directory, domain_path, problem_path)
                 print("Sampling Search retcode:", retcode)
                 if retcode < 0:
                     raise ValueError("Training process is stopped due to error signal of sampling search call with retcode %d" % retcode)
@@ -796,7 +791,7 @@ def evaluate(options, directory, domain_path, problem_list):
     options.finalize = parse_key_value_pairs_to_kwargs(options.finalize)
 
     # set extra_input_size per action depending on extra_input_features
-    if options.extra_input_features is None:
+    if options.extra_input_features == "none":
         extra_input_size = 0
     elif options.extra_input_features == "landmarks":
         extra_input_size = 2
