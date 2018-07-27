@@ -43,27 +43,25 @@ def load_samples(sample_path, data_container, prune=True,
             raise FileNotFoundError("A sample file to load does not exist:"
                                     + str(sample_path))
     load_asnet_sample_data(
-        path_read=sample_path, prune=prune,
+        path_read=sample_path,
         data_container=data_container,
-        forget=forget,
+        prune=prune, forget=forget,
         extra_input_size=extra_input_size)
 
 
-def load_asnet_sample_data(path_read, prune=True,
-                           data_container=None,
-                           delete=False, forget=0.0,
-                           extra_input_size):
+def load_asnet_sample_data(path_read, data_container,
+                           prune=True, forget=0.0,
+                           extra_input_size=0):
     """
     loads the samples in path_read file and saves these in the given container
 
     :param path_read: Path to the file containing the samples to load
-    :param prune: If true prunes duplicate entries (the meta information is
-                  except for the type attribute ignored)
     :param data_container: Data gathering object for the loaded entries. Object
                            requires an add(entry, type) method
                            (e.g. SizeBatchData). If None is given, the adding
                            is skipped.
-    :param delete: Deletes path_input at the end of this method
+    :param prune: If true prunes duplicate entries (the meta information is
+                  except for the type attribute ignored)
     :param forget: probability (value should be in range [0.0, 1.0]) to forget/ skip
                    sample states
     :param extra_input_size: input size of additional input features per action
@@ -81,9 +79,6 @@ def load_asnet_sample_data(path_read, prune=True,
                 continue
             # load sample entry into container
             load_sample_line(line, data_container, old_hashs, extra_input_size)
-
-        if delete:
-            os.remove(path_read)
 
 
 def load_sample_line(line, data_container, old_hashs, extra_input_size):
