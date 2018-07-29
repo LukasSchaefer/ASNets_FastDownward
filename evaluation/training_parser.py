@@ -272,7 +272,7 @@ class TrainingParser:
         Parse entire logfile
         """
         line = self.log_lines[self.log_line_index].strip()
-        while line == '' or line.startswith('Parsing time'):
+        while line == '' or line.startswith('Parsing time') or line.startswith('Training uses additional'):
             self.log_line_index += 1
             line = self.log_lines[self.log_line_index].strip()
 

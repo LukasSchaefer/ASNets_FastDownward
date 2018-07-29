@@ -270,7 +270,7 @@ void ASNetSamplingSearch::action_opt_values_into_stream(
   * The values are ordered lexicographically by action-names in a "," separated list form.
 */
 void ASNetSamplingSearch::landmark_values_input_stream(
-    const GlobalState &global_state, //const TaskProxy &tp,
+    const GlobalState &global_state, const TaskProxy &tp,
     std::ostringstream &add_input_features_stream) const {
             
     vector< vector<int> > cuts_ids;
@@ -285,12 +285,17 @@ void ASNetSamplingSearch::landmark_values_input_stream(
     unsigned long number_of_operators = operator_indeces_sorted.size();
     vector<int> additional_landmark_features(number_of_operators * 2, 0);
 
+    OperatorsProxy operators = tp.get_operators();
+
     for (vector<int> cut : cuts_ids) {
+	cout << "Cut:" << endl;
         bool single_element = false;
         if (cut.size() == 1) {
             single_element = true;
         }
         for (int unsorted_op_index : cut) {
+	    OperatorProxy op = operators[unsorted_op_index];
+	    cout << op.get_name() << endl;
             int sorted_index = operator_indeces_sorted_reversed[unsorted_op_index];
             // op was contained in contain -> increment counter
             additional_landmark_features[2 * sorted_index] += 1;
@@ -393,7 +398,7 @@ void ASNetSamplingSearch::binary_landmark_values_input_stream(
   *                          features are listed in supported_additional_input_features
 */
 void ASNetSamplingSearch::extract_sample_entries_trajectory(
-    const Trajectory &trajectory, //const TaskProxy &tp,
+    const Trajectory &trajectory, const TaskProxy &tp,
     StateRegistry &sr, const OperatorsProxy &ops, ostream &stream) {
     
     // extract fact_goal_values into goal_stream
@@ -424,7 +429,7 @@ void ASNetSamplingSearch::extract_sample_entries_trajectory(
         if (additional_input_features != "none") {
             // extract additional input features
             if (additional_input_features == "landmarks") {
-                landmark_values_input_stream(state, /*tp,*/ additional_input_features_stream);
+                landmark_values_input_stream(state, tp, additional_input_features_stream);
             } else if (additional_input_features == "binary_landmarks") {
                 binary_landmark_values_input_stream(state, /*tp,*/ additional_input_features_stream);
             }
@@ -466,7 +471,7 @@ std::string ASNetSamplingSearch::extract_exploration_sample_entries() {
         // add all StateIDs from trajectory to list of explored states
         network_explored_states.insert(network_explored_states.end(), trajectory.begin(), trajectory.end());
 
-        extract_sample_entries_trajectory(trajectory, /*tp,*/ sr, ops, new_entries);
+        extract_sample_entries_trajectory(trajectory, tp, sr, ops, new_entries);
     } else {
         // no solution found -> termination due to timeout, dead-end or trajectory limit reached
         new_entries << "NO_GOAL_EXPLORATION~";
@@ -478,7 +483,7 @@ std::string ASNetSamplingSearch::extract_exploration_sample_entries() {
         network_explored_states.insert(network_explored_states.end(), trajectory.begin(), trajectory.end());
 
 	cout << network_explored_states.size() << " states extracted by network search" << endl;
-        extract_sample_entries_trajectory(trajectory, /*tp,*/ sr, ops, new_entries);
+        extract_sample_entries_trajectory(trajectory, tp, sr, ops, new_entries);
     }
 
     string post = new_entries.str();
@@ -512,7 +517,7 @@ std::string ASNetSamplingSearch::extract_teacher_sample_entries() {
         cout << "Teacher search start extracting trajectory from goal" << endl;
         ss.trace_path(goal_state, trajectory);
 
-        extract_sample_entries_trajectory(trajectory, /*tp,*/ sr, ops, new_entries);
+        extract_sample_entries_trajectory(trajectory, tp, sr, ops, new_entries);
     } else if (use_non_goal_teacher_paths) {
         // no solution found -> termination due to timeout, dead-end or trajectory limit reached
         const GlobalState last_state = teacher_search->get_last_state();
@@ -520,7 +525,7 @@ std::string ASNetSamplingSearch::extract_teacher_sample_entries() {
         Trajectory trajectory;
         ss.trace_path(last_state, plan, trajectory);
 
-        extract_sample_entries_trajectory(trajectory, /*tp,*/ sr, ops, new_entries);
+        extract_sample_entries_trajectory(trajectory, tp, sr, ops, new_entries);
     }
 
     string post = new_entries.str();

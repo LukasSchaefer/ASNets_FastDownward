@@ -106,13 +106,13 @@ namespace asnet_sampling_search {
                 StateRegistry &sr, const OperatorsProxy &ops,
                 std::ostringstream &action_opts_stream);
         void landmark_values_input_stream(
-                const GlobalState &global_state, //const TaskProxy &tp,
+                const GlobalState &global_state, const TaskProxy &tp,
                 std::ostringstream &add_input_features_stream) const;
         void binary_landmark_values_input_stream(
                 const GlobalState &global_state, //const TaskProxy &tp,
                 std::ostringstream &add_input_features_stream) const;
         void extract_sample_entries_trajectory(
-                const Trajectory &trajectory, //const TaskProxy &tp,
+                const Trajectory &trajectory, const TaskProxy &tp,
 		StateRegistry &sr, const OperatorsProxy &ops,
 		std::ostream &stream);
         std::string extract_exploration_sample_entries();

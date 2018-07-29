@@ -1,0 +1,670 @@
+Training log data for domain elevator:
+printing the data chronological
+Epoch 1:
+Training data for problem d-01.pddl in epoch 1:
+model creation time: 93.23790550231934s
+problem epoch data for epoch 1, problem epoch 1
+	sampling search time: 1909.39884018898s
+	during this search the following actions were chosen:
+		board p0 fast0 n0 n0 n1 was chosen with probability 0.000000
+		board p0 fast0 n0 n0 n1 was chosen with probability 0.000000
+	training time: 454.5598933696747s
+	during the training the following losses were computed:
+		loss: 9.564100
+		loss: 8.998600
+		loss: 8.487900
+		loss: 8.038700
+		loss: 7.679000
+		loss: 7.365500
+		loss: 7.122200
+		loss: 6.939100
+		loss: 6.801200
+		loss: 6.686600
+		loss: 6.581500
+		loss: 6.477100
+		loss: 6.371600
+		loss: 6.268200
+		loss: 6.173300
+		loss: 6.093500
+		loss: 6.034100
+		loss: 5.997300
+		loss: 5.981000
+		loss: 5.978600
+		loss: 5.981600
+		loss: 5.982200
+		loss: 5.975100
+		loss: 5.958900
+		loss: 5.933900
+		loss: 5.903100
+		loss: 5.869700
+		loss: 5.836600
+		loss: 5.805800
+		loss: 5.778800
+		loss: 5.755600
+		loss: 5.735600
+		loss: 5.717700
+		loss: 5.701000
+		loss: 5.684600
+		loss: 5.667800
+		loss: 5.650800
+		loss: 5.633400
+		loss: 5.616000
+		loss: 5.599000
+		loss: 5.582800
+		loss: 5.567400
+		loss: 5.552700
+		loss: 5.537900
+		loss: 5.522900
+		loss: 5.507200
+		loss: 5.490900
+		loss: 5.474200
+		loss: 5.457300
+		loss: 5.440600
+		loss: 5.424300
+		loss: 5.408300
+		loss: 5.392500
+		loss: 5.377200
+		loss: 5.362300
+		loss: 5.347700
+		loss: 5.332800
+		loss: 5.317600
+		loss: 5.302100
+		loss: 5.286800
+		loss: 5.271400
+		loss: 5.256200
+		loss: 5.240900
+		loss: 5.225300
+		loss: 5.209700
+		loss: 5.194000
+		loss: 5.178000
+		loss: 5.161800
+		loss: 5.145500
+		loss: 5.129200
+		loss: 5.112800
+		loss: 5.096400
+		loss: 5.079900
+		loss: 5.063200
+		loss: 5.046600
+		loss: 5.029900
+		loss: 5.013000
+		loss: 4.996100
+		loss: 4.979100
+		loss: 4.962200
+		loss: 4.945300
+		loss: 4.928500
+		loss: 4.911900
+		loss: 4.895300
+		loss: 4.878900
+		loss: 4.862700
+		loss: 4.846700
+		loss: 4.830900
+		loss: 4.815400
+		loss: 4.800100
+		loss: 4.785100
+		loss: 4.770400
+		loss: 4.756100
+		loss: 4.742100
+		loss: 4.728400
+		loss: 4.715000
+		loss: 4.701900
+		loss: 4.688900
+		loss: 4.676200
+		loss: 4.663800
+	Overall the loss development was 9.564100 -> 4.663800
+problem epoch data for epoch 1, problem epoch 2
+	sampling search time: 451.00200176239014s
+	during this search the following actions were chosen:
+		move-down-slow slow0-0 n4 n0 was chosen with probability 0.249285
+		board p3 slow0-0 n0 n0 n1 was chosen with probability 0.878742
+		leave p3 slow0-0 n0 n1 n0 was chosen with probability 0.627211
+	training time: 127.18218421936035s
+	during the training the following losses were computed:
+		loss: 4.651600
+		loss: 4.639600
+		loss: 4.627700
+		loss: 4.616100
+		loss: 4.604800
+		loss: 4.593500
+		loss: 4.582400
+		loss: 4.571500
+		loss: 4.560600
+		loss: 4.550000
+		loss: 4.539400
+		loss: 4.529000
+		loss: 4.518700
+		loss: 4.508500
+		loss: 4.498500
+		loss: 4.488700
+		loss: 4.478900
+		loss: 4.469300
+		loss: 4.459800
+		loss: 4.450300
+		loss: 4.441000
+		loss: 4.431600
+		loss: 4.422300
+		loss: 4.413100
+		loss: 4.403900
+		loss: 4.394800
+		loss: 4.385700
+		loss: 4.376700
+		loss: 4.367700
+		loss: 4.358700
+		loss: 4.349800
+		loss: 4.341000
+		loss: 4.332200
+		loss: 4.323500
+		loss: 4.314800
+		loss: 4.306200
+		loss: 4.297700
+		loss: 4.289300
+		loss: 4.280900
+		loss: 4.272600
+		loss: 4.264400
+		loss: 4.256300
+		loss: 4.248300
+		loss: 4.240400
+		loss: 4.232600
+		loss: 4.224900
+		loss: 4.217400
+		loss: 4.209900
+		loss: 4.202700
+		loss: 4.195500
+		loss: 4.188500
+		loss: 4.181600
+		loss: 4.174800
+		loss: 4.168200
+		loss: 4.161700
+		loss: 4.155300
+		loss: 4.149100
+		loss: 4.143100
+		loss: 4.137200
+		loss: 4.131500
+		loss: 4.125800
+		loss: 4.120400
+		loss: 4.115000
+		loss: 4.109800
+		loss: 4.104600
+		loss: 4.099600
+		loss: 4.094800
+		loss: 4.090000
+		loss: 4.085300
+		loss: 4.080800
+		loss: 4.076300
+		loss: 4.072000
+		loss: 4.067800
+		loss: 4.063600
+		loss: 4.059600
+		loss: 4.055600
+		loss: 4.051800
+		loss: 4.048000
+		loss: 4.044300
+		loss: 4.040700
+		loss: 4.037100
+		loss: 4.033700
+		loss: 4.030300
+		loss: 4.026900
+		loss: 4.023600
+		loss: 4.020400
+		loss: 4.017200
+		loss: 4.014100
+		loss: 4.011100
+		loss: 4.008100
+		loss: 4.005100
+		loss: 4.002200
+		loss: 3.999400
+		loss: 3.996600
+		loss: 3.993800
+		loss: 3.991100
+		loss: 3.988500
+		loss: 3.985800
+		loss: 3.983300
+		loss: 3.980800
+	Overall the loss development was 4.651600 -> 3.980800
+problem epoch data for epoch 1, problem epoch 3
+	sampling search time: 1903.886619567871s
+	during this search the following actions were chosen:
+		board p0 fast0 n0 n0 n1 was chosen with probability 0.000000
+		board p0 fast0 n0 n0 n1 was chosen with probability 0.000000
+	training time: 127.57607555389404s
+	during the training the following losses were computed:
+		loss: 3.978300
+		loss: 3.975900
+		loss: 3.973500
+		loss: 3.971200
+		loss: 3.968900
+		loss: 3.966700
+		loss: 3.964500
+		loss: 3.962400
+		loss: 3.960200
+		loss: 3.958200
+		loss: 3.956100
+		loss: 3.954100
+		loss: 3.952200
+		loss: 3.950300
+		loss: 3.948400
+		loss: 3.946600
+		loss: 3.944700
+		loss: 3.942900
+		loss: 3.941200
+		loss: 3.939500
+		loss: 3.937800
+		loss: 3.936100
+		loss: 3.934500
+		loss: 3.932900
+		loss: 3.931300
+		loss: 3.929700
+		loss: 3.928100
+		loss: 3.926600
+		loss: 3.925100
+		loss: 3.923700
+		loss: 3.922200
+		loss: 3.920800
+		loss: 3.919300
+		loss: 3.917900
+		loss: 3.916500
+		loss: 3.915200
+		loss: 3.913800
+		loss: 3.912500
+		loss: 3.911200
+		loss: 3.909900
+		loss: 3.908600
+		loss: 3.907400
+		loss: 3.906100
+		loss: 3.904900
+		loss: 3.903700
+		loss: 3.902500
+		loss: 3.901300
+		loss: 3.900100
+		loss: 3.899000
+		loss: 3.897800
+		loss: 3.896700
+		loss: 3.895500
+		loss: 3.894400
+		loss: 3.893300
+		loss: 3.892200
+		loss: 3.891200
+		loss: 3.890200
+		loss: 3.889300
+		loss: 3.888900
+		loss: 3.889500
+		loss: 3.891500
+		loss: 3.892600
+		loss: 3.888100
+		loss: 3.883100
+		loss: 3.884300
+		loss: 3.885700
+		loss: 3.881800
+		loss: 3.879600
+		loss: 3.881200
+		loss: 3.879800
+		loss: 3.876800
+		loss: 3.877300
+		loss: 3.877100
+		loss: 3.874500
+		loss: 3.874000
+		loss: 3.874200
+		loss: 3.872300
+		loss: 3.871200
+		loss: 3.871300
+		loss: 3.870100
+		loss: 3.868700
+		loss: 3.868500
+		loss: 3.867900
+		loss: 3.866400
+		loss: 3.865900
+		loss: 3.865500
+		loss: 3.864300
+		loss: 3.863400
+		loss: 3.863100
+		loss: 3.862200
+		loss: 3.861200
+		loss: 3.860700
+		loss: 3.860100
+		loss: 3.859200
+		loss: 3.858400
+		loss: 3.857900
+		loss: 3.857200
+		loss: 3.856400
+		loss: 3.855700
+		loss: 3.855100
+	Overall the loss development was 3.978300 -> 3.855100
+In the epoch 1 for problem d-01.pddl 0 explorations in the sampling searches reached a goal
+Success rate: 0
+
+Epoch 2:
+Training data for problem d-01.pddl in epoch 2:
+model creation time: 102.91893720626831s
+problem epoch data for epoch 2, problem epoch 1
+	sampling search time: 453.17811274528503s
+	during this search the following actions were chosen:
+		move-down-slow slow0-0 n4 n0 was chosen with probability 0.474194
+		board p3 slow0-0 n0 n0 n1 was chosen with probability 0.996080
+		leave p3 slow0-0 n0 n1 n0 was chosen with probability 0.480456
+	training time: 403.9122757911682s
+	during the training the following losses were computed:
+		loss: 2.600800
+		loss: 2.887400
+		loss: 2.611000
+		loss: 2.729200
+		loss: 2.748800
+		loss: 2.634200
+		loss: 2.601500
+		loss: 2.652500
+		loss: 2.679600
+		loss: 2.654300
+		loss: 2.610100
+		loss: 2.594300
+		loss: 2.616700
+		loss: 2.635100
+		loss: 2.621100
+		loss: 2.595200
+		loss: 2.588200
+		loss: 2.600500
+		loss: 2.610200
+		loss: 2.604500
+		loss: 2.589700
+		loss: 2.581100
+		loss: 2.585800
+		loss: 2.593700
+		loss: 2.591900
+		loss: 2.581800
+		loss: 2.575200
+		loss: 2.577700
+		loss: 2.582700
+		loss: 2.581900
+		loss: 2.575600
+		loss: 2.570500
+		loss: 2.571100
+		loss: 2.574000
+		loss: 2.573300
+		loss: 2.569000
+		loss: 2.565900
+		loss: 2.566300
+		loss: 2.567300
+		loss: 2.566000
+		loss: 2.563000
+		loss: 2.561400
+		loss: 2.561600
+		loss: 2.561400
+		loss: 2.559600
+		loss: 2.557600
+		loss: 2.557100
+		loss: 2.557000
+		loss: 2.555800
+		loss: 2.554000
+		loss: 2.552900
+		loss: 2.552700
+		loss: 2.552000
+		loss: 2.550500
+		loss: 2.549200
+		loss: 2.548600
+		loss: 2.548100
+		loss: 2.546900
+		loss: 2.545600
+		loss: 2.544800
+		loss: 2.544200
+		loss: 2.543200
+		loss: 2.542100
+		loss: 2.541200
+		loss: 2.540500
+		loss: 2.539500
+		loss: 2.538500
+		loss: 2.537600
+		loss: 2.536900
+		loss: 2.535900
+		loss: 2.534900
+		loss: 2.534100
+		loss: 2.533300
+		loss: 2.532400
+		loss: 2.531400
+		loss: 2.530600
+		loss: 2.529700
+		loss: 2.528800
+		loss: 2.527900
+		loss: 2.527100
+		loss: 2.526300
+		loss: 2.525400
+		loss: 2.524500
+		loss: 2.523700
+		loss: 2.522900
+		loss: 2.522000
+		loss: 2.521200
+		loss: 2.520400
+		loss: 2.519500
+		loss: 2.518700
+		loss: 2.517900
+		loss: 2.517100
+		loss: 2.516200
+		loss: 2.515400
+		loss: 2.514600
+		loss: 2.513800
+		loss: 2.513000
+		loss: 2.512200
+		loss: 2.511400
+		loss: 2.510600
+	Overall the loss development was 2.600800 -> 2.510600
+problem epoch data for epoch 2, problem epoch 2
+	sampling search time: 488.2940847873688s
+	during this search the following actions were chosen:
+		move-down-slow slow0-0 n4 n1 was chosen with probability 0.485655
+		board p1 slow0-0 n1 n0 n1 was chosen with probability 0.877834
+		leave p1 slow0-0 n1 n1 n0 was chosen with probability 0.567132
+	training time: 89.88356804847717s
+	during the training the following losses were computed:
+		loss: 2.462800
+		loss: 2.447000
+		loss: 2.443600
+		loss: 2.442900
+		loss: 2.430200
+		loss: 2.420600
+		loss: 2.422500
+		loss: 2.418100
+		loss: 2.409000
+		loss: 2.408500
+		loss: 2.407500
+		loss: 2.400500
+		loss: 2.397600
+		loss: 2.398500
+		loss: 2.394700
+		loss: 2.391700
+		loss: 2.392900
+		loss: 2.391500
+		loss: 2.388600
+		loss: 2.388600
+		loss: 2.387600
+		loss: 2.384500
+		loss: 2.383500
+		loss: 2.383100
+		loss: 2.381000
+		loss: 2.380200
+		loss: 2.380200
+		loss: 2.378800
+		loss: 2.377700
+		loss: 2.377500
+		loss: 2.376200
+		loss: 2.375000
+		loss: 2.374600
+		loss: 2.373600
+		loss: 2.372500
+		loss: 2.372000
+		loss: 2.371100
+		loss: 2.370100
+		loss: 2.369500
+		loss: 2.368700
+		loss: 2.367700
+		loss: 2.367100
+		loss: 2.366400
+		loss: 2.365600
+		loss: 2.365100
+		loss: 2.364400
+		loss: 2.363600
+		loss: 2.363100
+		loss: 2.362400
+		loss: 2.361700
+		loss: 2.361100
+		loss: 2.360500
+		loss: 2.359800
+		loss: 2.359300
+		loss: 2.358700
+		loss: 2.358000
+		loss: 2.357500
+		loss: 2.356900
+		loss: 2.356300
+		loss: 2.355700
+		loss: 2.355200
+		loss: 2.354600
+		loss: 2.354100
+		loss: 2.353500
+		loss: 2.353000
+		loss: 2.352400
+		loss: 2.351900
+		loss: 2.351400
+		loss: 2.350900
+		loss: 2.350400
+		loss: 2.349900
+		loss: 2.349300
+		loss: 2.348900
+		loss: 2.348400
+		loss: 2.347900
+		loss: 2.347400
+		loss: 2.346900
+		loss: 2.346400
+		loss: 2.346000
+		loss: 2.345500
+		loss: 2.345000
+		loss: 2.344600
+		loss: 2.344100
+		loss: 2.343700
+		loss: 2.343200
+		loss: 2.342800
+		loss: 2.342400
+		loss: 2.341900
+		loss: 2.341500
+		loss: 2.341100
+		loss: 2.340600
+		loss: 2.340200
+		loss: 2.339800
+		loss: 2.339400
+		loss: 2.339000
+		loss: 2.338600
+		loss: 2.338200
+		loss: 2.337800
+		loss: 2.337400
+		loss: 2.337000
+	Overall the loss development was 2.462800 -> 2.337000
+problem epoch data for epoch 2, problem epoch 3
+	sampling search time: 2082.645082473755s
+	during this search the following actions were chosen:
+		move-up-slow slow1-0 n4 n8 was chosen with probability 0.999113
+		board p0 fast0 n0 n0 n1 was chosen with probability 0.000000
+		board p0 fast0 n0 n0 n1 was chosen with probability 0.000000
+	training time: 185.70789575576782s
+	during the training the following losses were computed:
+		loss: 6.170600
+		loss: 5.913500
+		loss: 5.968500
+		loss: 5.809400
+		loss: 5.652400
+		loss: 5.619000
+		loss: 5.529500
+		loss: 5.427100
+		loss: 5.428100
+		loss: 5.401700
+		loss: 5.308500
+		loss: 5.259600
+		loss: 5.241400
+		loss: 5.195700
+		loss: 5.146400
+		loss: 5.122800
+		loss: 5.104900
+		loss: 5.074700
+		loss: 5.054600
+		loss: 5.050100
+		loss: 5.034000
+		loss: 5.003900
+		loss: 4.982400
+		loss: 4.974300
+		loss: 4.963900
+		loss: 4.944400
+		loss: 4.925800
+		loss: 4.916300
+		loss: 4.911300
+		loss: 4.903400
+		loss: 4.893600
+		loss: 4.885500
+		loss: 4.878700
+		loss: 4.871200
+		loss: 4.863900
+		loss: 4.857800
+		loss: 4.852000
+		loss: 4.845200
+		loss: 4.838400
+		loss: 4.833500
+		loss: 4.830000
+		loss: 4.825500
+		loss: 4.819600
+		loss: 4.814100
+		loss: 4.810200
+		loss: 4.806700
+		loss: 4.802400
+		loss: 4.797800
+		loss: 4.793900
+		loss: 4.790800
+		loss: 4.787700
+		loss: 4.784200
+		loss: 4.780900
+		loss: 4.777900
+		loss: 4.774800
+		loss: 4.771700
+		loss: 4.768800
+		loss: 4.766100
+		loss: 4.763300
+		loss: 4.760500
+		loss: 4.757900
+		loss: 4.755500
+		loss: 4.753100
+		loss: 4.750600
+		loss: 4.748000
+		loss: 4.745800
+		loss: 4.743700
+		loss: 4.741500
+		loss: 4.739400
+		loss: 4.737400
+		loss: 4.735400
+		loss: 4.733500
+		loss: 4.731600
+		loss: 4.729600
+		loss: 4.727700
+		loss: 4.725800
+		loss: 4.724000
+		loss: 4.722200
+		loss: 4.720400
+		loss: 4.718600
+		loss: 4.716900
+		loss: 4.715200
+		loss: 4.713500
+		loss: 4.711800
+		loss: 4.710200
+		loss: 4.708600
+		loss: 4.707000
+		loss: 4.705400
+		loss: 4.703900
+		loss: 4.702400
+		loss: 4.700900
+		loss: 4.699400
+		loss: 4.697900
+		loss: 4.696500
+		loss: 4.695100
+		loss: 4.693700
+		loss: 4.692300
+		loss: 4.690900
+		loss: 4.689600
+		loss: 4.688300
+	Overall the loss development was 6.170600 -> 4.688300
+In the epoch 2 for problem d-01.pddl 0 explorations in the sampling searches reached a goal
+Success rate: 0
+
+Epoch 3:
+Training data for problem d-01.pddl in epoch 3:
+model creation time: 112.22576403617859s
+
