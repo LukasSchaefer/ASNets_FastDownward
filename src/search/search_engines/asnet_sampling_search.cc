@@ -288,7 +288,7 @@ void ASNetSamplingSearch::landmark_values_input_stream(
     OperatorsProxy operators = tp.get_operators();
 
     for (vector<int> cut : cuts_ids) {
-        cout < "Cut:" << endl;
+        cout << "Cut:" << endl;
         bool single_element = false;
         if (cut.size() == 1) {
             single_element = true;
@@ -437,8 +437,10 @@ void ASNetSamplingSearch::extract_sample_entries_trajectory(
 
         stream << problem_hash << ";" << goal_stream.str() << ";"
                << state_stream.str() << ";" << applicable_stream.str() << ";"
-               /*<< network_probs_stream.str() << ";" */ << action_opts_stream.str() << ";"
-               << additional_input_features_stream.str();
+               /*<< network_probs_stream.str() << ";" */ << action_opts_stream.str();
+       if (additional_input_features != "none") {
+           stream << ";" << additional_input_features_stream.str();
+       }
 
         stream << "~";
     }
