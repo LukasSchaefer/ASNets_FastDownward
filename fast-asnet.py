@@ -438,7 +438,7 @@ def fd_evaluate(options, domain_path, problem_path, network_path, extra_input_si
     cmd = ['python', 'fast-downward.py',
                 "--build", options.build, domain_path, problem_path,
                 '--search', 'policysearch(p=np(network=asnet(path=' + str(network_path) +
-                ', extra_input_size=' + str(extra_input_size) + ')))']
+                ', additional_input_features=' + options.extra_input_features + ')))']
     print('Running network policy search for ' + problem_path + '...')
     # run process
     p = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
