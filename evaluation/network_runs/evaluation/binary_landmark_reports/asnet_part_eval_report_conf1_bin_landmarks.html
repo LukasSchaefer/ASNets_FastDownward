@@ -1,0 +1,2389 @@
+<?xml version="1.0"
+      encoding="UTF-8"
+?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>report</title>
+<meta name="generator" content="http://txt2tags.sf.net" />
+<style type="text/css">
+    body {
+        font-family: Ubuntu, Helvetica, Arial, sans-serif;
+    }
+    blockquote {
+        margin: 1em 2em;
+        border-left: 2px solid #999;
+        font-style: oblique;
+        padding-left: 1em;
+    }
+    blockquote:first-letter {
+        margin: .2em .1em .1em 0;
+        font-size: 160%;
+        font-weight: bold;
+    }
+    blockquote:first-line {
+        font-weight: bold;
+    }
+    table {
+        border-collapse: collapse;
+    }
+    td, th {
+        <!--border: 1px solid #888;--> <!--Allow tables without borders-->
+        padding: 3px 7px 2px 7px;
+    }
+    th {
+        text-align: left;
+        padding-top: 5px;
+        padding-bottom: 4px;
+        background-color: #aaa;
+        color: #ffffff;
+    }
+    hr.heavy {
+        height: 2px;
+        background-color: black;
+    }
+</style>
+<script type="text/javascript">
+function toggle_element(element) {
+    if (element.style.display == "none") {
+        element.style.display = "";
+    } else {
+        element.style.display = "none";
+    }
+}
+
+function find_next(element, classname) {
+    element = element.nextSibling;
+    while(element.nodeName != classname)
+        element = element.nextSibling;
+    return element;
+}
+
+function toggle_table(toggle_button) {
+    toggle_element(find_next(toggle_button, "TABLE"));
+    if (toggle_button.innerHTML == "Show table") {
+        toggle_button.innerHTML = "Hide table";
+    } else {
+        toggle_button.innerHTML = "Show table";
+    }
+}
+
+function show_table(link) {
+    var toggle_button = find_next(link, "BUTTON");
+    var table = find_next(toggle_button, "TABLE");
+    table.style.display = "";
+    toggle_button.innerHTML = "Hide table";
+}
+
+function show_overview_tables() {
+    var names = ["unexplained-errors", "info", "summary"];
+    for (var i = 0; i < names.length; i++) {
+        var link = document.getElementById(names[i]);
+        if (link) {
+            show_table(link);
+        }
+    }
+}
+
+document.addEventListener("DOMContentLoaded", show_overview_tables);
+</script>
+</head>
+<body>
+
+<div class="header" id="header">
+<h1>report</h1>
+<h3>2018-08-03</h3>
+</div>
+
+<div class="body" id="body">
+
+<ul>
+<li><b><a href="#unexplained-errors" onclick="show_table(document.getElementById('unexplained-errors'));">Unexplained Errors</a></b>
+</li>
+<li><b><a href="#info" onclick="show_table(document.getElementById('info'));">Info</a></b>
+</li>
+<li><b><a href="#summary" onclick="show_table(document.getElementById('summary'));">Summary</a></b>
+</li>
+<li><b><a href="#cost" onclick="show_table(document.getElementById('cost'));">cost</a></b>
+  <ul>
+  <li><a href="#cost-hanoi" onclick="show_table(document.getElementById('cost-hanoi'));">hanoi</a> <a href="#cost-parcprinter" onclick="show_table(document.getElementById('cost-parcprinter'));">parcprinter</a> <a href="#cost-sokoban" onclick="show_table(document.getElementById('cost-sokoban'));">sokoban</a>
+  </li>
+  </ul>
+</li>
+<li><b><a href="#coverage" onclick="show_table(document.getElementById('coverage'));">coverage</a></b>
+  <ul>
+  <li><a href="#coverage-hanoi" onclick="show_table(document.getElementById('coverage-hanoi'));">hanoi</a> <a href="#coverage-parcprinter" onclick="show_table(document.getElementById('coverage-parcprinter'));">parcprinter</a> <a href="#coverage-sokoban" onclick="show_table(document.getElementById('coverage-sokoban'));">sokoban</a>
+  </li>
+  </ul>
+</li>
+<li><b><a href="#error" onclick="show_table(document.getElementById('error'));">error</a></b>
+  <ul>
+  <li><a href="#error-hanoi" onclick="show_table(document.getElementById('error-hanoi'));">hanoi</a> <a href="#error-parcprinter" onclick="show_table(document.getElementById('error-parcprinter'));">parcprinter</a> <a href="#error-sokoban" onclick="show_table(document.getElementById('error-sokoban'));">sokoban</a>
+  </li>
+  </ul>
+</li>
+<li><b><a href="#memory" onclick="show_table(document.getElementById('memory'));">memory</a></b>
+  <ul>
+  <li><a href="#memory-hanoi" onclick="show_table(document.getElementById('memory-hanoi'));">hanoi</a> <a href="#memory-parcprinter" onclick="show_table(document.getElementById('memory-parcprinter'));">parcprinter</a> <a href="#memory-sokoban" onclick="show_table(document.getElementById('memory-sokoban'));">sokoban</a>
+  </li>
+  </ul>
+</li>
+<li><b><a href="#plan_length" onclick="show_table(document.getElementById('plan_length'));">plan_length</a></b>
+  <ul>
+  <li><a href="#plan_length-hanoi" onclick="show_table(document.getElementById('plan_length-hanoi'));">hanoi</a> <a href="#plan_length-parcprinter" onclick="show_table(document.getElementById('plan_length-parcprinter'));">parcprinter</a> <a href="#plan_length-sokoban" onclick="show_table(document.getElementById('plan_length-sokoban'));">sokoban</a>
+  </li>
+  </ul>
+</li>
+<li><b><a href="#total_time" onclick="show_table(document.getElementById('total_time'));">total_time</a></b>
+  <ul>
+  <li><a href="#total_time-hanoi" onclick="show_table(document.getElementById('total_time-hanoi'));">hanoi</a> <a href="#total_time-parcprinter" onclick="show_table(document.getElementById('total_time-parcprinter'));">parcprinter</a> <a href="#total_time-sokoban" onclick="show_table(document.getElementById('total_time-sokoban'));">sokoban</a>
+  </li>
+  </ul>
+</li>
+<li><b><a href="#unsolvable" onclick="show_table(document.getElementById('unsolvable'));">unsolvable</a></b>
+  <ul>
+  <li><a href="#unsolvable-hanoi" onclick="show_table(document.getElementById('unsolvable-hanoi'));">hanoi</a> <a href="#unsolvable-parcprinter" onclick="show_table(document.getElementById('unsolvable-parcprinter'));">parcprinter</a> <a href="#unsolvable-sokoban" onclick="show_table(document.getElementById('unsolvable-sokoban'));">sokoban</a>
+  </li>
+  </ul>
+</li>
+</ul>
+
+<a id="unexplained-errors" name="unexplained-errors"></a>
+<h1>unexplained-errors</h1>
+
+<button type="button" class="toggle-table" onclick="toggle_table(this)">Show table</button><p></p>
+
+<table border="1" style="display:none">
+<tr>
+<th>Unexplained errors</th>
+<th>domain</th>
+<th>problem</th>
+<th>algorithm</th>
+<th>error</th>
+<th>fast-downward_<wbr>wall_<wbr>clock_<wbr>time</th>
+<th>raw_<wbr>memory</th>
+</tr>
+<tr>
+<td>runs-00001-00100/00001</td>
+<td>hanoi</td>
+<td>asnet.pb</td>
+<td>asnet_search</td>
+<td>unexplained-could-not-determine-peak-memory</td>
+<td align="right">2.74</td>
+<td>?</td>
+</tr>
+</table>
+
+<a id="info" name="info"></a>
+<h1>info</h1>
+
+<button type="button" class="toggle-table" onclick="toggle_table(this)">Show table</button><p></p>
+
+<table border="1" style="display:none">
+<tr>
+<th>algorithm</th>
+<th>local_<wbr>revision</th>
+<th>global_<wbr>revision</th>
+<th>revision_<wbr>summary</th>
+<th>build_<wbr>options</th>
+<th>driver_<wbr>options</th>
+<th>component_<wbr>options</th>
+</tr>
+<tr>
+<td>asnet_search</td>
+<td>default</td>
+<td>540c1dc4c459</td>
+<td>540c1dc4c459 tip</td>
+<td>['-j12', 'release64dynamic']</td>
+<td>['--search-time-limit', '30m', '--build', 'release64dynamic']</td>
+<td>['--search', 'policysearch(p=np(network=asnet(path=NETWORK_PATH, additional_input_features=binary_landmarks)))']</td>
+</tr>
+</table>
+
+<a id="summary" name="summary"></a>
+<h1>summary</h1>
+
+<button type="button" class="toggle-table" onclick="toggle_table(this)">Show table</button><p></p>
+
+<table border="1" style="display:none">
+<tr>
+<th>Summary</th>
+<th>asnet_<wbr>search</th>
+</tr>
+<tr>
+<td><a href="#cost" onclick="show_table(document.getElementById('cost'));">cost - Sum</a></td>
+<td align="right"><span style="color:rgb(127,127,127)">169017.00</span></td>
+</tr>
+<tr>
+<td><a href="#coverage" onclick="show_table(document.getElementById('coverage'));">coverage - Sum</a></td>
+<td align="right"><span style="color:rgb(127,127,127)">3</span></td>
+</tr>
+<tr>
+<td><a href="#memory" onclick="show_table(document.getElementById('memory'));">memory - Sum</a></td>
+<td align="right"><span style="color:rgb(127,127,127)">4709824</span></td>
+</tr>
+<tr>
+<td><a href="#plan_length" onclick="show_table(document.getElementById('plan_length'));">plan_length - Sum</a></td>
+<td align="right"><span style="color:rgb(127,127,127)">19</span></td>
+</tr>
+<tr>
+<td><a href="#total_time" onclick="show_table(document.getElementById('total_time'));">total_time - Geometric mean</a></td>
+<td align="right"><span style="color:rgb(127,127,127)">32.78</span></td>
+</tr>
+<tr>
+<td><a href="#unsolvable" onclick="show_table(document.getElementById('unsolvable'));">unsolvable - Sum</a></td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+</table>
+
+<a id="cost" name="cost"></a>
+<h1>cost</h1>
+
+<button type="button" class="toggle-table" onclick="toggle_table(this)">Show table</button><p></p>
+
+<table border="1" style="display:none">
+<tr>
+<th>cost</th>
+<th>asnet_<wbr>search</th>
+</tr>
+<tr>
+<td><a href="#cost-hanoi" onclick="show_table(document.getElementById('cost-hanoi'));">hanoi</a> (2)</td>
+<td align="right"><span style="color:rgb(127,127,127)">8.00</span></td>
+</tr>
+<tr>
+<td><a href="#cost-parcprinter" onclick="show_table(document.getElementById('cost-parcprinter'));">parcprinter</a> (1)</td>
+<td align="right"><span style="color:rgb(127,127,127)">169009.00</span></td>
+</tr>
+<tr>
+<td><b>Sum (3)</b></td>
+<td align="right"><span style="color:rgb(127,127,127)">169017.00</span></td>
+</tr>
+</table>
+
+<p>
+Only instances where all algorithms have a value for "cost" are considered. Each table entry gives the sum of "cost" for that domain. The last row reports the sum across all domains.
+</p>
+
+<a id="cost-hanoi" name="cost-hanoi"></a>
+<h2>hanoi</h2>
+
+<button type="button" class="toggle-table" onclick="toggle_table(this)">Show table</button><p></p>
+
+<table border="1" style="display:none">
+<tr>
+<th>cost</th>
+<th>asnet_<wbr>search</th>
+</tr>
+<tr>
+<td>asnet.pb</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-01.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">1.00</span></td>
+</tr>
+<tr>
+<td>d-02.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-03.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">7.00</span></td>
+</tr>
+<tr>
+<td>d-04.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-05.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-06.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-07.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-08.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-09.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-10.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-11.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-12.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-13.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-14.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-15.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-16.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-17.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-18.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-19.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-20.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+</table>
+
+<a id="cost-parcprinter" name="cost-parcprinter"></a>
+<h2>parcprinter</h2>
+
+<button type="button" class="toggle-table" onclick="toggle_table(this)">Show table</button><p></p>
+
+<table border="1" style="display:none">
+<tr>
+<th>cost</th>
+<th>asnet_<wbr>search</th>
+</tr>
+<tr>
+<td>d-01.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">169009.00</span></td>
+</tr>
+<tr>
+<td>d-02.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-03.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-04.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-05.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-06.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-07.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-08.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-09.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-10.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+</table>
+
+<a id="cost-sokoban" name="cost-sokoban"></a>
+<h2>sokoban</h2>
+
+<button type="button" class="toggle-table" onclick="toggle_table(this)">Show table</button><p></p>
+
+<table border="1" style="display:none">
+<tr>
+<th>cost</th>
+<th>asnet_<wbr>search</th>
+</tr>
+<tr>
+<td>d-01.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-02.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-03.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-04.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-05.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-06.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-07.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-08.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-09.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-10.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-11.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-12.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-13.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-14.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-15.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-16.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-17.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-18.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-19.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-20.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-21.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-22.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-23.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-24.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-25.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-26.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-27.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-28.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-29.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-30.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+</table>
+
+<a id="coverage" name="coverage"></a>
+<h1>coverage</h1>
+
+<button type="button" class="toggle-table" onclick="toggle_table(this)">Show table</button><p></p>
+
+<table border="1" style="display:none">
+<tr>
+<th>coverage</th>
+<th>asnet_<wbr>search</th>
+</tr>
+<tr>
+<td><a href="#coverage-hanoi" onclick="show_table(document.getElementById('coverage-hanoi'));">hanoi</a> (21)</td>
+<td align="right"><span style="color:rgb(127,127,127)">2</span></td>
+</tr>
+<tr>
+<td><a href="#coverage-parcprinter" onclick="show_table(document.getElementById('coverage-parcprinter'));">parcprinter</a> (10)</td>
+<td align="right"><span style="color:rgb(127,127,127)">1</span></td>
+</tr>
+<tr>
+<td><a href="#coverage-sokoban" onclick="show_table(document.getElementById('coverage-sokoban'));">sokoban</a> (30)</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td><b>Sum (61)</b></td>
+<td align="right"><span style="color:rgb(127,127,127)">3</span></td>
+</tr>
+</table>
+
+<p>
+The last row reports the sum across all domains.
+</p>
+
+<a id="coverage-hanoi" name="coverage-hanoi"></a>
+<h2>hanoi</h2>
+
+<button type="button" class="toggle-table" onclick="toggle_table(this)">Show table</button><p></p>
+
+<table border="1" style="display:none">
+<tr>
+<th>coverage</th>
+<th>asnet_<wbr>search</th>
+</tr>
+<tr>
+<td>asnet.pb</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-01.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">1</span></td>
+</tr>
+<tr>
+<td>d-02.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-03.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">1</span></td>
+</tr>
+<tr>
+<td>d-04.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-05.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-06.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-07.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-08.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-09.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-10.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-11.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-12.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-13.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-14.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-15.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-16.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-17.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-18.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-19.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-20.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+</table>
+
+<a id="coverage-parcprinter" name="coverage-parcprinter"></a>
+<h2>parcprinter</h2>
+
+<button type="button" class="toggle-table" onclick="toggle_table(this)">Show table</button><p></p>
+
+<table border="1" style="display:none">
+<tr>
+<th>coverage</th>
+<th>asnet_<wbr>search</th>
+</tr>
+<tr>
+<td>d-01.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">1</span></td>
+</tr>
+<tr>
+<td>d-02.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-03.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-04.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-05.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-06.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-07.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-08.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-09.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-10.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+</table>
+
+<a id="coverage-sokoban" name="coverage-sokoban"></a>
+<h2>sokoban</h2>
+
+<button type="button" class="toggle-table" onclick="toggle_table(this)">Show table</button><p></p>
+
+<table border="1" style="display:none">
+<tr>
+<th>coverage</th>
+<th>asnet_<wbr>search</th>
+</tr>
+<tr>
+<td>d-01.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-02.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-03.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-04.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-05.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-06.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-07.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-08.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-09.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-10.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-11.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-12.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-13.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-14.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-15.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-16.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-17.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-18.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-19.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-20.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-21.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-22.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-23.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-24.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-25.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-26.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-27.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-28.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-29.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-30.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+</table>
+
+<a id="error" name="error"></a>
+<h1>error</h1>
+
+<p>
+Domain-wise reports only support numeric attributes, but error has type str.
+</p>
+
+<a id="error-hanoi" name="error-hanoi"></a>
+<h2>hanoi</h2>
+
+<button type="button" class="toggle-table" onclick="toggle_table(this)">Show table</button><p></p>
+
+<table border="1" style="display:none">
+<tr>
+<th>error</th>
+<th>asnet_<wbr>search</th>
+</tr>
+<tr>
+<td>asnet.pb</td>
+<td>unexplained-could-not-determine-peak-memory</td>
+</tr>
+<tr>
+<td>d-01.pddl</td>
+<td>none</td>
+</tr>
+<tr>
+<td>d-02.pddl</td>
+<td>incomplete-search-found-no-plan</td>
+</tr>
+<tr>
+<td>d-03.pddl</td>
+<td>none</td>
+</tr>
+<tr>
+<td>d-04.pddl</td>
+<td>incomplete-search-found-no-plan</td>
+</tr>
+<tr>
+<td>d-05.pddl</td>
+<td>incomplete-search-found-no-plan</td>
+</tr>
+<tr>
+<td>d-06.pddl</td>
+<td>incomplete-search-found-no-plan</td>
+</tr>
+<tr>
+<td>d-07.pddl</td>
+<td>incomplete-search-found-no-plan</td>
+</tr>
+<tr>
+<td>d-08.pddl</td>
+<td>incomplete-search-found-no-plan</td>
+</tr>
+<tr>
+<td>d-09.pddl</td>
+<td>incomplete-search-found-no-plan</td>
+</tr>
+<tr>
+<td>d-10.pddl</td>
+<td>incomplete-search-found-no-plan</td>
+</tr>
+<tr>
+<td>d-11.pddl</td>
+<td>incomplete-search-found-no-plan</td>
+</tr>
+<tr>
+<td>d-12.pddl</td>
+<td>incomplete-search-found-no-plan</td>
+</tr>
+<tr>
+<td>d-13.pddl</td>
+<td>incomplete-search-found-no-plan</td>
+</tr>
+<tr>
+<td>d-14.pddl</td>
+<td>incomplete-search-found-no-plan</td>
+</tr>
+<tr>
+<td>d-15.pddl</td>
+<td>incomplete-search-found-no-plan</td>
+</tr>
+<tr>
+<td>d-16.pddl</td>
+<td>incomplete-search-found-no-plan</td>
+</tr>
+<tr>
+<td>d-17.pddl</td>
+<td>incomplete-search-found-no-plan</td>
+</tr>
+<tr>
+<td>d-18.pddl</td>
+<td>incomplete-search-found-no-plan</td>
+</tr>
+<tr>
+<td>d-19.pddl</td>
+<td>incomplete-search-found-no-plan</td>
+</tr>
+<tr>
+<td>d-20.pddl</td>
+<td>incomplete-search-found-no-plan</td>
+</tr>
+</table>
+
+<a id="error-parcprinter" name="error-parcprinter"></a>
+<h2>parcprinter</h2>
+
+<button type="button" class="toggle-table" onclick="toggle_table(this)">Show table</button><p></p>
+
+<table border="1" style="display:none">
+<tr>
+<th>error</th>
+<th>asnet_<wbr>search</th>
+</tr>
+<tr>
+<td>d-01.pddl</td>
+<td>none</td>
+</tr>
+<tr>
+<td>d-02.pddl</td>
+<td>incomplete-search-found-no-plan</td>
+</tr>
+<tr>
+<td>d-03.pddl</td>
+<td>incomplete-search-found-no-plan</td>
+</tr>
+<tr>
+<td>d-04.pddl</td>
+<td>incomplete-search-found-no-plan</td>
+</tr>
+<tr>
+<td>d-05.pddl</td>
+<td>incomplete-search-found-no-plan</td>
+</tr>
+<tr>
+<td>d-06.pddl</td>
+<td>incomplete-search-found-no-plan</td>
+</tr>
+<tr>
+<td>d-07.pddl</td>
+<td>incomplete-search-found-no-plan</td>
+</tr>
+<tr>
+<td>d-08.pddl</td>
+<td>incomplete-search-found-no-plan</td>
+</tr>
+<tr>
+<td>d-09.pddl</td>
+<td>incomplete-search-found-no-plan</td>
+</tr>
+<tr>
+<td>d-10.pddl</td>
+<td>incomplete-search-found-no-plan</td>
+</tr>
+</table>
+
+<a id="error-sokoban" name="error-sokoban"></a>
+<h2>sokoban</h2>
+
+<button type="button" class="toggle-table" onclick="toggle_table(this)">Show table</button><p></p>
+
+<table border="1" style="display:none">
+<tr>
+<th>error</th>
+<th>asnet_<wbr>search</th>
+</tr>
+<tr>
+<td>d-01.pddl</td>
+<td>incomplete-search-found-no-plan</td>
+</tr>
+<tr>
+<td>d-02.pddl</td>
+<td>incomplete-search-found-no-plan</td>
+</tr>
+<tr>
+<td>d-03.pddl</td>
+<td>incomplete-search-found-no-plan</td>
+</tr>
+<tr>
+<td>d-04.pddl</td>
+<td>incomplete-search-found-no-plan</td>
+</tr>
+<tr>
+<td>d-05.pddl</td>
+<td>incomplete-search-found-no-plan</td>
+</tr>
+<tr>
+<td>d-06.pddl</td>
+<td>incomplete-search-found-no-plan</td>
+</tr>
+<tr>
+<td>d-07.pddl</td>
+<td>incomplete-search-found-no-plan</td>
+</tr>
+<tr>
+<td>d-08.pddl</td>
+<td>incomplete-search-found-no-plan</td>
+</tr>
+<tr>
+<td>d-09.pddl</td>
+<td>incomplete-search-found-no-plan</td>
+</tr>
+<tr>
+<td>d-10.pddl</td>
+<td>incomplete-search-found-no-plan</td>
+</tr>
+<tr>
+<td>d-11.pddl</td>
+<td>incomplete-search-found-no-plan</td>
+</tr>
+<tr>
+<td>d-12.pddl</td>
+<td>incomplete-search-found-no-plan</td>
+</tr>
+<tr>
+<td>d-13.pddl</td>
+<td>incomplete-search-found-no-plan</td>
+</tr>
+<tr>
+<td>d-14.pddl</td>
+<td>incomplete-search-found-no-plan</td>
+</tr>
+<tr>
+<td>d-15.pddl</td>
+<td>incomplete-search-found-no-plan</td>
+</tr>
+<tr>
+<td>d-16.pddl</td>
+<td>incomplete-search-found-no-plan</td>
+</tr>
+<tr>
+<td>d-17.pddl</td>
+<td>incomplete-search-found-no-plan</td>
+</tr>
+<tr>
+<td>d-18.pddl</td>
+<td>incomplete-search-found-no-plan</td>
+</tr>
+<tr>
+<td>d-19.pddl</td>
+<td>incomplete-search-found-no-plan</td>
+</tr>
+<tr>
+<td>d-20.pddl</td>
+<td>incomplete-search-found-no-plan</td>
+</tr>
+<tr>
+<td>d-21.pddl</td>
+<td>incomplete-search-found-no-plan</td>
+</tr>
+<tr>
+<td>d-22.pddl</td>
+<td>incomplete-search-found-no-plan</td>
+</tr>
+<tr>
+<td>d-23.pddl</td>
+<td>incomplete-search-found-no-plan</td>
+</tr>
+<tr>
+<td>d-24.pddl</td>
+<td>incomplete-search-found-no-plan</td>
+</tr>
+<tr>
+<td>d-25.pddl</td>
+<td>incomplete-search-found-no-plan</td>
+</tr>
+<tr>
+<td>d-26.pddl</td>
+<td>incomplete-search-found-no-plan</td>
+</tr>
+<tr>
+<td>d-27.pddl</td>
+<td>incomplete-search-found-no-plan</td>
+</tr>
+<tr>
+<td>d-28.pddl</td>
+<td>incomplete-search-found-no-plan</td>
+</tr>
+<tr>
+<td>d-29.pddl</td>
+<td>incomplete-search-found-no-plan</td>
+</tr>
+<tr>
+<td>d-30.pddl</td>
+<td>incomplete-search-found-no-plan</td>
+</tr>
+</table>
+
+<a id="memory" name="memory"></a>
+<h1>memory</h1>
+
+<button type="button" class="toggle-table" onclick="toggle_table(this)">Show table</button><p></p>
+
+<table border="1" style="display:none">
+<tr>
+<th>memory</th>
+<th>asnet_<wbr>search</th>
+</tr>
+<tr>
+<td><a href="#memory-hanoi" onclick="show_table(document.getElementById('memory-hanoi'));">hanoi</a> (2)</td>
+<td align="right"><span style="color:rgb(127,127,127)">3187228</span></td>
+</tr>
+<tr>
+<td><a href="#memory-parcprinter" onclick="show_table(document.getElementById('memory-parcprinter'));">parcprinter</a> (1)</td>
+<td align="right"><span style="color:rgb(127,127,127)">1522596</span></td>
+</tr>
+<tr>
+<td><b>Sum (3)</b></td>
+<td align="right"><span style="color:rgb(127,127,127)">4709824</span></td>
+</tr>
+</table>
+
+<p>
+Only instances where all algorithms have a value for "memory" are considered. Each table entry gives the sum of "memory" for that domain. The last row reports the sum across all domains.
+</p>
+
+<a id="memory-hanoi" name="memory-hanoi"></a>
+<h2>hanoi</h2>
+
+<button type="button" class="toggle-table" onclick="toggle_table(this)">Show table</button><p></p>
+
+<table border="1" style="display:none">
+<tr>
+<th>memory</th>
+<th>asnet_<wbr>search</th>
+</tr>
+<tr>
+<td>asnet.pb</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-01.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">1653348</span></td>
+</tr>
+<tr>
+<td>d-02.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-03.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">1533880</span></td>
+</tr>
+<tr>
+<td>d-04.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-05.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-06.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-07.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-08.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-09.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-10.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-11.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-12.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-13.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-14.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-15.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-16.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-17.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-18.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-19.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-20.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+</table>
+
+<a id="memory-parcprinter" name="memory-parcprinter"></a>
+<h2>parcprinter</h2>
+
+<button type="button" class="toggle-table" onclick="toggle_table(this)">Show table</button><p></p>
+
+<table border="1" style="display:none">
+<tr>
+<th>memory</th>
+<th>asnet_<wbr>search</th>
+</tr>
+<tr>
+<td>d-01.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">1522596</span></td>
+</tr>
+<tr>
+<td>d-02.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-03.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-04.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-05.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-06.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-07.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-08.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-09.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-10.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+</table>
+
+<a id="memory-sokoban" name="memory-sokoban"></a>
+<h2>sokoban</h2>
+
+<button type="button" class="toggle-table" onclick="toggle_table(this)">Show table</button><p></p>
+
+<table border="1" style="display:none">
+<tr>
+<th>memory</th>
+<th>asnet_<wbr>search</th>
+</tr>
+<tr>
+<td>d-01.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-02.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-03.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-04.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-05.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-06.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-07.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-08.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-09.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-10.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-11.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-12.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-13.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-14.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-15.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-16.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-17.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-18.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-19.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-20.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-21.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-22.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-23.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-24.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-25.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-26.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-27.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-28.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-29.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-30.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+</table>
+
+<a id="plan_length" name="plan_length"></a>
+<h1>plan_length</h1>
+
+<button type="button" class="toggle-table" onclick="toggle_table(this)">Show table</button><p></p>
+
+<table border="1" style="display:none">
+<tr>
+<th>plan_<wbr>length</th>
+<th>asnet_<wbr>search</th>
+</tr>
+<tr>
+<td><a href="#plan_length-hanoi" onclick="show_table(document.getElementById('plan_length-hanoi'));">hanoi</a> (2)</td>
+<td align="right"><span style="color:rgb(127,127,127)">8</span></td>
+</tr>
+<tr>
+<td><a href="#plan_length-parcprinter" onclick="show_table(document.getElementById('plan_length-parcprinter'));">parcprinter</a> (1)</td>
+<td align="right"><span style="color:rgb(127,127,127)">11</span></td>
+</tr>
+<tr>
+<td><b>Sum (3)</b></td>
+<td align="right"><span style="color:rgb(127,127,127)">19</span></td>
+</tr>
+</table>
+
+<p>
+Only instances where all algorithms have a value for "plan_length" are considered. Each table entry gives the sum of "plan_length" for that domain. The last row reports the sum across all domains.
+</p>
+
+<a id="plan_length-hanoi" name="plan_length-hanoi"></a>
+<h2>hanoi</h2>
+
+<button type="button" class="toggle-table" onclick="toggle_table(this)">Show table</button><p></p>
+
+<table border="1" style="display:none">
+<tr>
+<th>plan_<wbr>length</th>
+<th>asnet_<wbr>search</th>
+</tr>
+<tr>
+<td>asnet.pb</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-01.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">1</span></td>
+</tr>
+<tr>
+<td>d-02.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-03.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">7</span></td>
+</tr>
+<tr>
+<td>d-04.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-05.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-06.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-07.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-08.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-09.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-10.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-11.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-12.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-13.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-14.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-15.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-16.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-17.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-18.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-19.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-20.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+</table>
+
+<a id="plan_length-parcprinter" name="plan_length-parcprinter"></a>
+<h2>parcprinter</h2>
+
+<button type="button" class="toggle-table" onclick="toggle_table(this)">Show table</button><p></p>
+
+<table border="1" style="display:none">
+<tr>
+<th>plan_<wbr>length</th>
+<th>asnet_<wbr>search</th>
+</tr>
+<tr>
+<td>d-01.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">11</span></td>
+</tr>
+<tr>
+<td>d-02.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-03.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-04.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-05.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-06.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-07.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-08.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-09.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-10.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+</table>
+
+<a id="plan_length-sokoban" name="plan_length-sokoban"></a>
+<h2>sokoban</h2>
+
+<button type="button" class="toggle-table" onclick="toggle_table(this)">Show table</button><p></p>
+
+<table border="1" style="display:none">
+<tr>
+<th>plan_<wbr>length</th>
+<th>asnet_<wbr>search</th>
+</tr>
+<tr>
+<td>d-01.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-02.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-03.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-04.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-05.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-06.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-07.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-08.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-09.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-10.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-11.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-12.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-13.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-14.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-15.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-16.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-17.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-18.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-19.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-20.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-21.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-22.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-23.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-24.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-25.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-26.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-27.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-28.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-29.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-30.pddl</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+</table>
+
+<a id="total_time" name="total_time"></a>
+<h1>total_time</h1>
+
+<button type="button" class="toggle-table" onclick="toggle_table(this)">Show table</button><p></p>
+
+<table border="1" style="display:none">
+<tr>
+<th>total_<wbr>time</th>
+<th>asnet_<wbr>search</th>
+</tr>
+<tr>
+<td><a href="#total_time-hanoi" onclick="show_table(document.getElementById('total_time-hanoi'));">hanoi</a> (20)</td>
+<td align="right"><span style="color:rgb(127,127,127)">34.42</span></td>
+</tr>
+<tr>
+<td><a href="#total_time-parcprinter" onclick="show_table(document.getElementById('total_time-parcprinter'));">parcprinter</a> (10)</td>
+<td align="right"><span style="color:rgb(127,127,127)">21.78</span></td>
+</tr>
+<tr>
+<td><a href="#total_time-sokoban" onclick="show_table(document.getElementById('total_time-sokoban'));">sokoban</a> (30)</td>
+<td align="right"><span style="color:rgb(127,127,127)">46.98</span></td>
+</tr>
+<tr>
+<td><b>Geometric mean (60)</b></td>
+<td align="right"><span style="color:rgb(127,127,127)">32.78</span></td>
+</tr>
+</table>
+
+<p>
+Only instances where all algorithms have a value for "total_time" are considered. Each table entry gives the geometric mean of "total_time" for that domain. The last row reports the geometric mean across all domains.
+</p>
+
+<a id="total_time-hanoi" name="total_time-hanoi"></a>
+<h2>hanoi</h2>
+
+<button type="button" class="toggle-table" onclick="toggle_table(this)">Show table</button><p></p>
+
+<table border="1" style="display:none">
+<tr>
+<th>total_<wbr>time</th>
+<th>asnet_<wbr>search</th>
+</tr>
+<tr>
+<td>asnet.pb</td>
+<td><span style="color:rgb(127,127,127)">None</span></td>
+</tr>
+<tr>
+<td>d-01.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0.44</span></td>
+</tr>
+<tr>
+<td>d-02.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">1.25</span></td>
+</tr>
+<tr>
+<td>d-03.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">3.32</span></td>
+</tr>
+<tr>
+<td>d-04.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">5.14</span></td>
+</tr>
+<tr>
+<td>d-05.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">8.50</span></td>
+</tr>
+<tr>
+<td>d-06.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">12.82</span></td>
+</tr>
+<tr>
+<td>d-07.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">19.32</span></td>
+</tr>
+<tr>
+<td>d-08.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">26.79</span></td>
+</tr>
+<tr>
+<td>d-09.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">36.08</span></td>
+</tr>
+<tr>
+<td>d-10.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">49.27</span></td>
+</tr>
+<tr>
+<td>d-11.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">60.74</span></td>
+</tr>
+<tr>
+<td>d-12.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">78.24</span></td>
+</tr>
+<tr>
+<td>d-13.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">98.47</span></td>
+</tr>
+<tr>
+<td>d-14.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">113.51</span></td>
+</tr>
+<tr>
+<td>d-15.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">143.90</span></td>
+</tr>
+<tr>
+<td>d-16.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">169.29</span></td>
+</tr>
+<tr>
+<td>d-17.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">207.15</span></td>
+</tr>
+<tr>
+<td>d-18.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">237.36</span></td>
+</tr>
+<tr>
+<td>d-19.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">277.02</span></td>
+</tr>
+<tr>
+<td>d-20.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">327.25</span></td>
+</tr>
+</table>
+
+<a id="total_time-parcprinter" name="total_time-parcprinter"></a>
+<h2>parcprinter</h2>
+
+<button type="button" class="toggle-table" onclick="toggle_table(this)">Show table</button><p></p>
+
+<table border="1" style="display:none">
+<tr>
+<th>total_<wbr>time</th>
+<th>asnet_<wbr>search</th>
+</tr>
+<tr>
+<td>d-01.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">4.47</span></td>
+</tr>
+<tr>
+<td>d-02.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">8.21</span></td>
+</tr>
+<tr>
+<td>d-03.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">6.81</span></td>
+</tr>
+<tr>
+<td>d-04.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">18.46</span></td>
+</tr>
+<tr>
+<td>d-05.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">24.44</span></td>
+</tr>
+<tr>
+<td>d-06.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">27.95</span></td>
+</tr>
+<tr>
+<td>d-07.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">53.37</span></td>
+</tr>
+<tr>
+<td>d-08.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">44.97</span></td>
+</tr>
+<tr>
+<td>d-09.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">54.80</span></td>
+</tr>
+<tr>
+<td>d-10.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">58.00</span></td>
+</tr>
+</table>
+
+<a id="total_time-sokoban" name="total_time-sokoban"></a>
+<h2>sokoban</h2>
+
+<button type="button" class="toggle-table" onclick="toggle_table(this)">Show table</button><p></p>
+
+<table border="1" style="display:none">
+<tr>
+<th>total_<wbr>time</th>
+<th>asnet_<wbr>search</th>
+</tr>
+<tr>
+<td>d-01.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">10.43</span></td>
+</tr>
+<tr>
+<td>d-02.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">22.57</span></td>
+</tr>
+<tr>
+<td>d-03.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">13.70</span></td>
+</tr>
+<tr>
+<td>d-04.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">33.81</span></td>
+</tr>
+<tr>
+<td>d-05.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">23.51</span></td>
+</tr>
+<tr>
+<td>d-06.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">36.48</span></td>
+</tr>
+<tr>
+<td>d-07.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">23.85</span></td>
+</tr>
+<tr>
+<td>d-08.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">30.22</span></td>
+</tr>
+<tr>
+<td>d-09.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">37.29</span></td>
+</tr>
+<tr>
+<td>d-10.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">52.20</span></td>
+</tr>
+<tr>
+<td>d-11.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">140.72</span></td>
+</tr>
+<tr>
+<td>d-12.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">45.65</span></td>
+</tr>
+<tr>
+<td>d-13.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">34.85</span></td>
+</tr>
+<tr>
+<td>d-14.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">43.35</span></td>
+</tr>
+<tr>
+<td>d-15.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">47.01</span></td>
+</tr>
+<tr>
+<td>d-16.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">48.92</span></td>
+</tr>
+<tr>
+<td>d-17.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">64.53</span></td>
+</tr>
+<tr>
+<td>d-18.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">45.95</span></td>
+</tr>
+<tr>
+<td>d-19.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">183.85</span></td>
+</tr>
+<tr>
+<td>d-20.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">222.62</span></td>
+</tr>
+<tr>
+<td>d-21.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">54.58</span></td>
+</tr>
+<tr>
+<td>d-22.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">52.16</span></td>
+</tr>
+<tr>
+<td>d-23.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">49.65</span></td>
+</tr>
+<tr>
+<td>d-24.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">47.16</span></td>
+</tr>
+<tr>
+<td>d-25.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">49.77</span></td>
+</tr>
+<tr>
+<td>d-26.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">65.95</span></td>
+</tr>
+<tr>
+<td>d-27.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">114.79</span></td>
+</tr>
+<tr>
+<td>d-28.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">69.92</span></td>
+</tr>
+<tr>
+<td>d-29.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">46.36</span></td>
+</tr>
+<tr>
+<td>d-30.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">49.58</span></td>
+</tr>
+</table>
+
+<a id="unsolvable" name="unsolvable"></a>
+<h1>unsolvable</h1>
+
+<button type="button" class="toggle-table" onclick="toggle_table(this)">Show table</button><p></p>
+
+<table border="1" style="display:none">
+<tr>
+<th>unsolvable</th>
+<th>asnet_<wbr>search</th>
+</tr>
+<tr>
+<td><a href="#unsolvable-hanoi" onclick="show_table(document.getElementById('unsolvable-hanoi'));">hanoi</a> (21)</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td><a href="#unsolvable-parcprinter" onclick="show_table(document.getElementById('unsolvable-parcprinter'));">parcprinter</a> (10)</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td><a href="#unsolvable-sokoban" onclick="show_table(document.getElementById('unsolvable-sokoban'));">sokoban</a> (30)</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td><b>Sum (61)</b></td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+</table>
+
+<p>
+The last row reports the sum across all domains.
+</p>
+
+<a id="unsolvable-hanoi" name="unsolvable-hanoi"></a>
+<h2>hanoi</h2>
+
+<button type="button" class="toggle-table" onclick="toggle_table(this)">Show table</button><p></p>
+
+<table border="1" style="display:none">
+<tr>
+<th>unsolvable</th>
+<th>asnet_<wbr>search</th>
+</tr>
+<tr>
+<td>asnet.pb</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-01.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-02.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-03.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-04.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-05.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-06.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-07.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-08.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-09.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-10.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-11.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-12.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-13.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-14.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-15.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-16.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-17.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-18.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-19.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-20.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+</table>
+
+<a id="unsolvable-parcprinter" name="unsolvable-parcprinter"></a>
+<h2>parcprinter</h2>
+
+<button type="button" class="toggle-table" onclick="toggle_table(this)">Show table</button><p></p>
+
+<table border="1" style="display:none">
+<tr>
+<th>unsolvable</th>
+<th>asnet_<wbr>search</th>
+</tr>
+<tr>
+<td>d-01.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-02.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-03.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-04.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-05.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-06.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-07.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-08.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-09.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-10.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+</table>
+
+<a id="unsolvable-sokoban" name="unsolvable-sokoban"></a>
+<h2>sokoban</h2>
+
+<button type="button" class="toggle-table" onclick="toggle_table(this)">Show table</button><p></p>
+
+<table border="1" style="display:none">
+<tr>
+<th>unsolvable</th>
+<th>asnet_<wbr>search</th>
+</tr>
+<tr>
+<td>d-01.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-02.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-03.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-04.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-05.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-06.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-07.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-08.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-09.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-10.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-11.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-12.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-13.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-14.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-15.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-16.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-17.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-18.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-19.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-20.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-21.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-22.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-23.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-24.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-25.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-26.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-27.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-28.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-29.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+<tr>
+<td>d-30.pddl</td>
+<td align="right"><span style="color:rgb(127,127,127)">0</span></td>
+</tr>
+</table>
+
+</div>
+<!-- xhtml code generated by txt2tags 2.6b (http://txt2tags.sf.net) -->
+<!-- cmdline: txt2tags  -->
+</body></html>

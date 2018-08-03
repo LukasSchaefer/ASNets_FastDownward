@@ -40,9 +40,9 @@ def create_pddl_task(domain_path, problem_path):
     return task_meta
 
 
-def build_asnet_model(task_meta, number_of_layers, loss_just_opt, weights_path):
+def build_asnet_model(task_meta, number_of_layers, loss_just_opt, extra_input_size, weights_path):
     asnet_builder = ASNet_Model_Builder(task_meta, False)
-    asnet_model = asnet_builder.build_asnet_keras_model(num_layers=number_of_layers)
+    asnet_model = asnet_builder.build_asnet_keras_model(num_layers=number_of_layers, extra_input_size=extra_input_size)
     optimizer = Adam(lr=0.001)
     if loss_just_opt:
         asnet_model.compile(loss=custom_binary_crossentropy, optimizer=optimizer)
@@ -54,10 +54,10 @@ def build_asnet_model(task_meta, number_of_layers, loss_just_opt, weights_path):
 
 def main(argv):
     """
-    Usage: ./build_and_store_asnet_as_pb.py <domain_path> <problem_path> <number_of_layers> <loss_just_opt> <weights_path> <network_path>
+    Usage: ./build_and_store_asnet_as_pb.py <domain_path> <problem_path> <number_of_layers> <loss_just_opt> <weights_path> <network_path> (<extra_input_size>)
     """
-    if not len(argv) == 7:
-        print("Usage: ./build_and_store_asnet_as_pb.py <domain_path> <problem_path> <number_of_layers> <loss_just_opt> <weights_path> <network_path>")
+    if len(argv) < 7 or len(argv) > 8:
+        print("Usage: ./build_and_store_asnet_as_pb.py <domain_path> <problem_path> <number_of_layers> <loss_just_opt> <weights_path> <network_path> (<extra_input_size>)")
         sys.exit(1)
     domain_path = argv[1]
     problem_path = argv[2]
@@ -65,12 +65,16 @@ def main(argv):
     loss_just_opt = bool(argv[4])
     weights_path = argv[5]
     network_path = argv[6]
+    if len(argv) == 8:
+        extra_input_size = int(argv[7])
+    else:
+        extra_input_size = 0
 
     K.clear_session()
     print("Creating PDDL task for %s" % problem_path)
     task_meta = create_pddl_task(domain_path, problem_path)
     print("Building model for %s" % problem_path)
-    asnet_model = build_asnet_model(task_meta, number_of_layers, loss_just_opt, weights_path)
+    asnet_model = build_asnet_model(task_meta, number_of_layers, loss_just_opt, extra_input_size, weights_path)
     print("Storing model for %s as protobuf-file" % problem_path)
     store_keras_model_as_protobuf(asnet_model, file=network_path)
 
