@@ -301,7 +301,7 @@ def write_evaluation_tables(report_data, tables_dir):
 
 def main(argv):
     if len(argv) != 3:
-        print("Usage: python3 evaluation_report_data.py <path/to/report.html> <path/to/tables/directory>")
+        print("Usage: python3 baselines_evaluation_report_data.py <path/to/report.html> <path/to/tables/directory>")
         print("Should be executed on LAB report")
         sys.exit(1)
     report_path = argv[1]

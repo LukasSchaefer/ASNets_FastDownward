@@ -63,8 +63,8 @@ def write_dom_training_sum(domain_name, domain_dir, included_confs):
 
 def main(argv):
     if len(argv) != 3:
-        print("Usage: python3 loss_graph.py <path/to/training_log_dir> <path/to/save_dir>")
-        print("Note that the benchmark/ conf folder hierarchy from the training log dir must already " +
+        print("Usage: python3 training_graphs_generator.py <path/to/training_log_dir> <path/to/save_dir>")
+        print("Note that the benchmark/confx folder hierarchy from the training log dir must already " +
               "exist in the save dir")
         sys.exit(1)
     training_dir = argv[1]
