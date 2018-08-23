@@ -866,6 +866,11 @@ def main(argv):
     if len(problem_list) == 0:
         raise ValueError("No valid problem files found.")
 
+    if 'asnet_sampling_transform' not in options.teacher_search:
+        print("The given teacher search does not contain the ASNet sampling transform which has to be includded in each teacher search!")
+        print("Add the argument 'tranform=asnet_sampling_transform()' to the teacher search.")
+        raise ValueError("No ASNet sampling transformation included in the teacher search.")
+
     if options.train:
         train(options, directory, domain_path, problem_list)
         if options.evaluate:
